@@ -15,7 +15,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Dashboard");
         }
 
         public IActionResult Dashboard()
