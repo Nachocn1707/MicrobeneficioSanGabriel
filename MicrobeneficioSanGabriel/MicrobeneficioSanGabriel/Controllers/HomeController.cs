@@ -18,6 +18,16 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View();
         }
 
+        public IActionResult Dashboard()
+        {
+            ViewBag.TotalUsuarios = 1;
+            ViewBag.TotalProductores = 0;
+            ViewBag.TotalProductos = 0;
+            ViewBag.TotalInventario = 0;
+
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

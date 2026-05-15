@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Administrativo";
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Dashboard Administrativo</h2>
+            <p class="text-muted">
+                Panel general del sistema Microbeneficio San Gabriel.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Usuarios</h6>
+                    <h2 class="fw-bold">@ViewBag.TotalUsuarios</h2>
+                    <p class="mb-0 text-muted">Usuarios registrados</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Productores</h6>
+                    <h2 class="fw-bold">@ViewBag.TotalProductores</h2>
+                    <p class="mb-0 text-muted">Productores registrados</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Productos</h6>
+                    <h2 class="fw-bold">@ViewBag.TotalProductos</h2>
+                    <p class="mb-0 text-muted">Productos disponibles</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Inventario</h6>
+                    <h2 class="fw-bold">@ViewBag.TotalInventario</h2>
+                    <p class="mb-0 text-muted">Movimientos registrados</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-5 g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">Gestión de productores</h5>
+                    <p class="text-muted">
+                        Registro y administración de productores asociados al microbeneficio.
+                    </p>
+                    <a href="#" class="btn btn-primary disabled">Próximamente</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">Inventario</h5>
+                    <p class="text-muted">
+                        Control de existencias, entradas, salidas y movimientos internos.
+                    </p>
+                    <a href="#" class="btn btn-primary disabled">Próximamente</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold">Reportes</h5>
+                    <p class="text-muted">
+                        Consulta visual de información operativa y administrativa.
+                    </p>
+                    <a href="#" class="btn btn-primary disabled">Próximamente</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
