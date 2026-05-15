@@ -1,57 +1,60 @@
 ﻿@{
-    ViewData["Title"] = "Dashboard Administrativo";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="container-fluid mt-4">
+<link rel="stylesheet" href="~/css/dashboard.css" />
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="fw-bold">Dashboard Administrativo</h2>
-            <p class="text-muted">
-                Panel general del sistema Microbeneficio San Gabriel.
-            </p>
-        </div>
+<div class="sidebar">
+
+    <h3>San Gabriel</h3>
+
+    <a href="#">Dashboard</a>
+    <a href="#">Usuarios</a>
+    <a href="#">Productores</a>
+    <a href="#">Inventario</a>
+    <a href="#">Recepción Café</a>
+    <a href="#">Productos</a>
+    <a href="#">Reportes</a>
+
+</div>
+
+<div class="main-content">
+
+    <div class="topbar">
+        <h2 class="mb-0">Dashboard Administrativo</h2>
     </div>
 
     <div class="row g-4">
 
         <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Usuarios</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalUsuarios</h2>
-                    <p class="mb-0 text-muted">Usuarios registrados</p>
-                </div>
+            <div class="card-dashboard">
+                <h6>Usuarios</h6>
+                <h2>@ViewBag.TotalUsuarios</h2>
+                <p>Usuarios registrados</p>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Productores</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalProductores</h2>
-                    <p class="mb-0 text-muted">Productores registrados</p>
-                </div>
+            <div class="card-dashboard">
+                <h6>Productores</h6>
+                <h2>@ViewBag.TotalProductores</h2>
+                <p>Productores registrados</p>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Productos</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalProductos</h2>
-                    <p class="mb-0 text-muted">Productos disponibles</p>
-                </div>
+            <div class="card-dashboard">
+                <h6>Productos</h6>
+                <h2>@ViewBag.TotalProductos</h2>
+                <p>Productos disponibles</p>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Inventario</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalInventario</h2>
-                    <p class="mb-0 text-muted">Movimientos registrados</p>
-                </div>
+            <div class="card-dashboard">
+                <h6>Inventario</h6>
+                <h2>@ViewBag.TotalInventario</h2>
+                <p>Movimientos registrados</p>
             </div>
         </div>
 
@@ -60,38 +63,41 @@
     <div class="row mt-5 g-4">
 
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold">Gestión de productores</h5>
-                    <p class="text-muted">
-                        Registro y administración de productores asociados al microbeneficio.
-                    </p>
-                    <a href="#" class="btn btn-primary disabled">Próximamente</a>
-                </div>
+            <div class="module-card">
+                <h4>Gestión de productores</h4>
+                <p>
+                    Registro y administración de productores asociados al microbeneficio.
+                </p>
+
+                <button class="btn btn-dark">
+                    Próximamente
+                </button>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold">Inventario</h5>
-                    <p class="text-muted">
-                        Control de existencias, entradas, salidas y movimientos internos.
-                    </p>
-                    <a href="#" class="btn btn-primary disabled">Próximamente</a>
-                </div>
+            <div class="module-card">
+                <h4>Inventario</h4>
+                <p>
+                    Control de existencias, entradas y salidas.
+                </p>
+
+                <button class="btn btn-dark">
+                    Próximamente
+                </button>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold">Reportes</h5>
-                    <p class="text-muted">
-                        Consulta visual de información operativa y administrativa.
-                    </p>
-                    <a href="#" class="btn btn-primary disabled">Próximamente</a>
-                </div>
+            <div class="module-card">
+                <h4>Reportes</h4>
+                <p>
+                    Visualización de información operativa y administrativa.
+                </p>
+
+                <button class="btn btn-dark">
+                    Próximamente
+                </button>
             </div>
         </div>
 
