@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Microbeneficio San Gabriel</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+</head>
+<body>
+
+    <div class="admin-wrapper">
+
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <h4>San Gabriel</h4>
+                <span>Microbeneficio</span>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+                <a asp-controller="Productores" asp-action="Index">Productores</a>
+                <a href="#">Lotes</a>
+                <a href="#">Producción</a>
+                <a href="#">Inventario</a>
+                <a href="#">Productos</a>
+                <a href="#">Pedidos</a>
+                <a href="#">Facturación</a>
+                <a href="#">Reportes</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+
+            <header class="admin-topbar">
+                <div>
+                    <h5 class="mb-0">@ViewData["Title"]</h5>
+                    <small>Sistema de gestión administrativa</small>
+                </div>
+
+                <div class="topbar-user">
+                    <span>Administrador</span>
+                </div>
+            </header>
+
+            <section class="admin-content">
+                @RenderBody()
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
