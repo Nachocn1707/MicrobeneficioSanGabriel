@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Data
 {
@@ -9,5 +10,8 @@ namespace MicrobeneficioSanGabriel.Data
             : base(options)
         {
         }
+
+        public DbSet<Productor> Productores { get; set; }
     }
+
 }
