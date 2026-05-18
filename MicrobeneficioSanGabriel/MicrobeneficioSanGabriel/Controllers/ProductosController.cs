@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MicrobeneficioSanGabriel.Data;
-using MicrobeneficioSanGabriel.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
+    [Authorize]
     public class ProductosController : Controller
     {
         private readonly ApplicationDbContext _context;

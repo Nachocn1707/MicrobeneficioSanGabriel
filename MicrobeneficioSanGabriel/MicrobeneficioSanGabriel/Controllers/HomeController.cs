@@ -1,6 +1,7 @@
 using MicrobeneficioSanGabriel.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -18,6 +19,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return RedirectToAction("Dashboard");
         }
 
+        [Authorize]
         public IActionResult Dashboard()
         {
             ViewBag.TotalUsuarios = 1;

@@ -3,101 +3,133 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="sidebar">
+<div class="page-header">
 
-    <h3>San Gabriel</h3>
-
-    <a href="#">Dashboard</a>
-    <a href="#">Usuarios</a>
-    <a href="#">Productores</a>
-    <a href="#">Inventario</a>
-    <a href="#">Recepción Café</a>
-    <a href="#">Productos</a>
-    <a href="#">Reportes</a>
+    <div>
+        <h1>Dashboard Administrativo</h1>
+        <p>
+            Panel general del sistema Microbeneficio San Gabriel.
+        </p>
+    </div>
 
 </div>
 
-<div class="main-content">
+<div class="row g-4 mb-4">
 
-    <div class="topbar">
-        <h2 class="mb-0">Dashboard Administrativo</h2>
+    <div class="col-md-3">
+        <div class="admin-card dashboard-card">
+
+            <div class="dashboard-number">
+                1
+            </div>
+
+            <div class="dashboard-label">
+                Usuarios registrados
+            </div>
+
+        </div>
     </div>
 
-    <div class="row g-4">
+    <div class="col-md-3">
+        <div class="admin-card dashboard-card">
 
-        <div class="col-md-3">
-            <div class="card-dashboard">
-                <h6>Usuarios</h6>
-                <h2>@ViewBag.TotalUsuarios</h2>
-                <p>Usuarios registrados</p>
+            <div class="dashboard-number">
+                1
             </div>
+
+            <div class="dashboard-label">
+                Productores activos
+            </div>
+
         </div>
+    </div>
 
-        <div class="col-md-3">
-            <div class="card-dashboard">
-                <h6>Productores</h6>
-                <h2>@ViewBag.TotalProductores</h2>
-                <p>Productores registrados</p>
+    <div class="col-md-3">
+        <div class="admin-card dashboard-card">
+
+            <div class="dashboard-number">
+                1
             </div>
+
+            <div class="dashboard-label">
+                Productos registrados
+            </div>
+
         </div>
+    </div>
 
-        <div class="col-md-3">
-            <div class="card-dashboard">
-                <h6>Productos</h6>
-                <h2>@ViewBag.TotalProductos</h2>
-                <p>Productos disponibles</p>
+    <div class="col-md-3">
+        <div class="admin-card dashboard-card">
+
+            <div class="dashboard-number">
+                0
             </div>
+
+            <div class="dashboard-label">
+                Movimientos inventario
+            </div>
+
         </div>
+    </div>
 
-        <div class="col-md-3">
-            <div class="card-dashboard">
-                <h6>Inventario</h6>
-                <h2>@ViewBag.TotalInventario</h2>
-                <p>Movimientos registrados</p>
-            </div>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <div class="admin-card dashboard-module">
+
+            <h4>Productores</h4>
+
+            <p>
+                Gestión de productores asociados al microbeneficio.
+            </p>
+
+            <a asp-controller="Productores"
+                   asp-action="Index"
+                   class="btn btn-admin-primary">
+                Ir al módulo
+            </a>
+
         </div>
 
     </div>
 
-    <div class="row mt-5 g-4">
+    <div class="col-md-4">
 
-        <div class="col-md-4">
-            <div class="module-card">
-                <h4>Gestión de productores</h4>
-                <p>
-                    Registro y administración de productores asociados al microbeneficio.
-                </p>
+        <div class="admin-card dashboard-module">
 
-                <button class="btn btn-dark">
-                    Próximamente
-                </button>
-            </div>
+            <h4>Productos</h4>
+
+            <p>
+                Administración de productos y stock disponible.
+            </p>
+
+            <a asp-controller="Productos"
+                   asp-action="Index"
+                   class="btn btn-admin-primary">
+                Ir al módulo
+            </a>
+
         </div>
 
-        <div class="col-md-4">
-            <div class="module-card">
-                <h4>Inventario</h4>
-                <p>
-                    Control de existencias, entradas y salidas.
-                </p>
+    </div>
 
-                <button class="btn btn-dark">
-                    Próximamente
-                </button>
-            </div>
-        </div>
+    <div class="col-md-4">
 
-        <div class="col-md-4">
-            <div class="module-card">
-                <h4>Reportes</h4>
-                <p>
-                    Visualización de información operativa y administrativa.
-                </p>
+        <div class="admin-card dashboard-module">
 
-                <button class="btn btn-dark">
-                    Próximamente
-                </button>
-            </div>
+            <h4>Inventario</h4>
+
+            <p>
+                Control de entradas, salidas y movimientos internos.
+            </p>
+
+            <button class="btn btn-secondary">
+                Próximamente
+            </button>
+
         </div>
 
     </div>

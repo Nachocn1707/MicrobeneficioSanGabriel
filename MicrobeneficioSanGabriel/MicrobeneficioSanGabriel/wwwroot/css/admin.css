@@ -137,3 +137,35 @@ body {
         background: #157347;
         color: white;
     }
+
+.dashboard-card {
+    text-align: center;
+    transition: 0.2s;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-4px);
+    }
+
+.dashboard-number {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.dashboard-label {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.dashboard-module h4 {
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.dashboard-module p {
+    color: #6b7280;
+    margin-bottom: 24px;
+    min-height: 48px;
+}

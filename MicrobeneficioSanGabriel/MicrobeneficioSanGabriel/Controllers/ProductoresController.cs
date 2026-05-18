@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
+    [Authorize]
     public class ProductoresController : Controller
     {
         private readonly ApplicationDbContext _context;
