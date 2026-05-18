@@ -1,0 +1,130 @@
+﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Trazabilidad>
+
+@{
+    ViewData["Title"] = "Trazabilidad";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h1 class="admin-title">Trazabilidad</h1>
+
+        <p class="admin-subtitle">
+            Seguimiento y control del proceso del café.
+        </p>
+    </div>
+
+    <a asp-action="Create" class="btn btn-admin-primary">
+        + Nuevo Registro
+    </a>
+
+</div>
+
+<div class="admin-card">
+
+    <div class="table-responsive">
+
+        <table class="table admin-table align-middle">
+
+            <thead>
+                <tr>
+                    <th>Lote</th>
+                    <th>Producción</th>
+                    <th>Etapa</th>
+                    <th>Fecha</th>
+                    <th>Responsable</th>
+                    <th>Observación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <strong>
+                                @item.Lote?.CodigoLote
+                            </strong>
+                        </td>
+
+                        <td>
+                            #@item.ProduccionId
+                        </td>
+
+                        <td>
+
+                            @if (item.Etapa == "Recepción")
+                            {
+                                <span class="badge bg-primary">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else if (item.Etapa == "Producción")
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else if (item.Etapa == "Empaque")
+                            {
+                                <span class="badge bg-success">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    @item.Etapa
+                                </span>
+                            }
+
+                        </td>
+
+                        <td>
+                            @item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+                        </td>
+
+                        <td>
+                            @item.Responsable
+                        </td>
+
+                        <td>
+                            @item.Observacion
+                        </td>
+
+                        <td>
+
+                            <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+
+                            <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-info btn-sm">
+                                Detalles
+                            </a>
+
+                            <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger btn-sm">
+                                Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Produccion
+﻿@model MicrobeneficioSanGabriel.Models.Trazabilidad
 
 @{
     ViewData["Title"] = "Details";
@@ -8,7 +8,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Produccion</h4>
+    <h4>Trazabilidad</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,34 +18,28 @@
             @Html.DisplayFor(model => model.Lote.CodigoLote)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaProduccion)
+            @Html.DisplayNameFor(model => model.Produccion)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaProduccion)
+            @Html.DisplayFor(model => model.Produccion.Estado)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoProceso)
+            @Html.DisplayNameFor(model => model.Etapa)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoProceso)
+            @Html.DisplayFor(model => model.Etapa)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadProcesadaKg)
+            @Html.DisplayNameFor(model => model.FechaRegistro)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadProcesadaKg)
+            @Html.DisplayFor(model => model.FechaRegistro)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadResultanteKg)
+            @Html.DisplayNameFor(model => model.Responsable)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadResultanteKg)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+            @Html.DisplayFor(model => model.Responsable)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Observacion)

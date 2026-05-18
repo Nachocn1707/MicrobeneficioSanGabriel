@@ -16,6 +16,24 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
         public DbSet<Lote> Lotes { get; set; }
         public DbSet<Produccion> Producciones { get; set; }
+        public DbSet<Trazabilidad> Trazabilidades { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Trazabilidad>()
+                .HasOne(t => t.Lote)
+                .WithMany()
+                .HasForeignKey(t => t.LoteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Trazabilidad>()
+                .HasOne(t => t.Produccion)
+                .WithMany()
+                .HasForeignKey(t => t.ProduccionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 
 }
