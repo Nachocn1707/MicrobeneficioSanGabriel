@@ -13,6 +13,7 @@ namespace MicrobeneficioSanGabriel.Data
 
         public DbSet<Productor> Productores { get; set; }
         public DbSet<Producto> Productos { get; set; }
+        public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
     }
 
 }
