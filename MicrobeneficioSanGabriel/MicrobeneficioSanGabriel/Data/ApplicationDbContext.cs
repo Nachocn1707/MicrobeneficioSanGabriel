@@ -17,6 +17,7 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<Lote> Lotes { get; set; }
         public DbSet<Produccion> Producciones { get; set; }
         public DbSet<Trazabilidad> Trazabilidades { get; set; }
+        public DbSet<Pedido> Pedidos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
