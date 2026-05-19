@@ -1,6 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Reportes";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    decimal totalVentas = ViewBag.TotalVentas ?? 0;
+    int totalStock = ViewBag.TotalStock ?? 0;
+    int pedidosPendientes = ViewBag.PedidosPendientes ?? 0;
+    int facturasPendientes = ViewBag.FacturasPendientes ?? 0;
+    int productosStockBajo = ViewBag.ProductosStockBajo ?? 0;
+
+    int stockPorcentaje = totalStock > 100 ? 100 : totalStock;
 }
 
 <h1 class="fw-bold">Reportes</h1>
@@ -44,7 +52,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Ventas totales</h5>
             <h2 class="text-success fw-bold">
-                ₡ @ViewBag.TotalVentas.ToString("N2")
+                ₡ @totalVentas.ToString("N2")
             </h2>
         </div>
     </div>
@@ -53,7 +61,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Stock total disponible</h5>
             <h2 class="fw-bold">
-                @ViewBag.TotalStock unidades
+                @totalStock unidades
             </h2>
         </div>
     </div>
@@ -62,7 +70,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Pedidos pendientes</h5>
             <h2 class="text-warning fw-bold">
-                @ViewBag.PedidosPendientes
+                @pedidosPendientes
             </h2>
         </div>
     </div>
@@ -71,7 +79,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Facturas pendientes</h5>
             <h2 class="text-danger fw-bold">
-                @ViewBag.FacturasPendientes
+                @facturasPendientes
             </h2>
         </div>
     </div>
@@ -80,7 +88,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Productos con stock bajo</h5>
             <h2 class="text-danger fw-bold">
-                @ViewBag.ProductosStockBajo
+                @productosStockBajo
             </h2>
         </div>
     </div>
@@ -92,61 +100,56 @@
     <div class="col-md-6">
         <div class="card shadow-sm border-0 rounded-4 p-4">
             <h4 class="mb-4 fw-bold">Ventas totales</h4>
-            <canvas id="ventasChart"></canvas>
+
+            <div class="progress" style="height: 35px;">
+                <div class="progress-bar bg-success"
+                     role="progressbar"
+                     style="width: 100%;">
+                    ₡ @totalVentas.ToString("N2")
+                </div>
+            </div>
+
         </div>
     </div>
 
     <div class="col-md-6">
+
         <div class="card shadow-sm border-0 rounded-4 p-4">
-            <h4 class="mb-4 fw-bold">Stock disponible</h4>
-            <canvas id="stockChart"></canvas>
+
+            <h4 class="mb-4 fw-bold">
+                Stock disponible
+            </h4>
+
+            @foreach (var producto in ViewBag.Productos)
+            {
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between mb-2">
+
+                        <span class="fw-semibold">
+                            @producto.Nombre
+                        </span>
+
+                        <span class="fw-bold text-primary">
+                            @producto.Stock unidades
+                        </span>
+
+                    </div>
+
+                    <div class="progress" style="height: 24px;">
+
+                        <div class="progress-bar bg-primary"
+                             role="progressbar"
+                             style="width:@(producto.Stock > 100 ? 100 : producto.Stock)%">
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
         </div>
+
     </div>
 
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    const ventasTotales = @ViewBag.TotalVentas;
-    const stockTotal = @ViewBag.TotalStock;
-    const pedidosPendientes = @ViewBag.PedidosPendientes;
-    const facturasPendientes = @ViewBag.FacturasPendientes;
-    const productosStockBajo = @ViewBag.ProductosStockBajo;
-
-    const ventasCtx = document.getElementById('ventasChart');
-
-    new Chart(ventasCtx, {
-    type: 'bar',
-    data: {
-    labels: ['Ventas totales'],
-    datasets: [{
-    label: 'Monto en colones',
-    data: [ventasTotales],
-    borderWidth: 1
-    }]
-    }
-    });
-
-    const stockCtx = document.getElementById('stockChart');
-
-    new Chart(stockCtx, {
-    type: 'doughnut',
-    data: {
-    labels: [
-    'Stock disponible',
-    'Pedidos pendientes',
-    'Facturas pendientes',
-    'Stock bajo'
-    ],
-    datasets: [{
-    data: [
-    stockTotal,
-    pedidosPendientes,
-    facturasPendientes,
-    productosStockBajo
-    ]
-    }]
-    }
-    });
-</script>

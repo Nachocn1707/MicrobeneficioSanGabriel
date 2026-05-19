@@ -30,6 +30,8 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             ViewBag.ProductosStockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
 
+            ViewBag.Productos = _context.Productos.ToList();
+
             return View();
         }
     }
