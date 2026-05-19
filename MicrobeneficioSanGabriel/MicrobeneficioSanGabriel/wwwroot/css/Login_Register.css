@@ -1,0 +1,96 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0b5fa5, #0d8ddb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 420px;
+    background: rgba(0, 0, 0, 0.20);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+}
+
+.user-icon {
+    text-align: center;
+    font-size: 70px;
+    color: #7ea6ff;
+    margin-bottom: 30px;
+}
+
+.custom-input {
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: white;
+    margin-bottom: 20px;
+    height: 45px;
+}
+
+    .custom-input:focus {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        box-shadow: none;
+    }
+
+.form-label {
+    color: white;
+}
+
+.btn-login {
+    width: 100%;
+    background: #11b5ff;
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+    .links a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+.validation-box {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.08);
+    padding: 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.rule-item {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+    .rule-item i {
+        margin-right: 8px;
+        color: #ff4d4d;
+    }

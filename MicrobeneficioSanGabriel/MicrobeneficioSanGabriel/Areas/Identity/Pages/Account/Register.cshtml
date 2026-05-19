@@ -1,0 +1,121 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="user-icon">
+            <i class="fa-solid fa-user-plus"></i>
+        </div>
+
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">Correo</label>
+
+                <input asp-for="Input.Email"
+                       id="email"
+                       class="form-control custom-input" />
+
+                <span asp-validation-for="Input.Email"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">Contraseña</label>
+
+                <input asp-for="Input.Password"
+                       id="password"
+                       class="form-control custom-input" />
+
+                <span asp-validation-for="Input.Password"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Confirmar contraseña
+                </label>
+
+                <input asp-for="Input.ConfirmPassword"
+                       id="confirmPassword"
+                       class="form-control custom-input" />
+
+                <span asp-validation-for="Input.ConfirmPassword"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="validation-box">
+
+                <div id="emailMessage" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Correo válido
+                </div>
+
+                <div id="length" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Mínimo 8 caracteres
+                </div>
+
+                <div id="uppercase" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Una mayúscula
+                </div>
+
+                <div id="lowercase" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Una minúscula
+                </div>
+
+                <div id="number" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Un número
+                </div>
+
+                <div id="symbol" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Un símbolo
+                </div>
+
+                <div id="match" class="rule-item">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    Las contraseñas coinciden
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-login">
+                REGISTRARSE
+            </button>
+
+            <div class="links">
+
+                <a asp-page="./Login">
+                    Volver al login
+                </a>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
