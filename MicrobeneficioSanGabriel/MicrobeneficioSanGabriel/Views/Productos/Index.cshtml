@@ -51,7 +51,20 @@
                     </td>
 
                     <td>
-                        @item.Stock unidades
+
+                        @if (item.Stock <= item.StockMinimo)
+                        {
+                            <span class="badge bg-danger">
+                                Stock Bajo (@item.Stock)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">
+                                @item.Stock unidades
+                            </span>
+                        }
+
                     </td>
 
                     <td>

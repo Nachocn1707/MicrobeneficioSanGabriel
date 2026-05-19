@@ -28,6 +28,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             ViewBag.PedidosPendientes = await _context.Pedidos.CountAsync(p => p.Estado == "Pendiente");
             ViewBag.FacturasPendientes = await _context.Facturas.CountAsync(f => f.EstadoPago == "Pendiente");
 
+            ViewBag.ProductosStockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
+
             return View();
         }
     }

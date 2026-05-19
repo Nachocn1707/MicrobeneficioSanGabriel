@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using Rotativa.AspNetCore;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -155,6 +156,30 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Imprimir(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var factura = await _context.Facturas
+                .Include(f => f.Pedido)
+                .ThenInclude(p => p.Producto)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (factura == null)
+            {
+                return NotFound();
+            }
+
+            return new ViewAsPdf("FacturaPDF", factura)
+            {
+                FileName = $"Factura_{factura.Id}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
         }
 
         private void CargarPedidos(int? pedidoSeleccionado = null)

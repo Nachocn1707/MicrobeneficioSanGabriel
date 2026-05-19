@@ -22,6 +22,9 @@ namespace MicrobeneficioSanGabriel.Models
         [Range(0, 999999, ErrorMessage = "El stock no puede ser negativo")]
         public int Stock { get; set; }
 
+        [Display(Name = "Stock mínimo")]
+        public int StockMinimo { get; set; } = 20;
+
         [StringLength(300)]
         public string? Descripcion { get; set; }
 

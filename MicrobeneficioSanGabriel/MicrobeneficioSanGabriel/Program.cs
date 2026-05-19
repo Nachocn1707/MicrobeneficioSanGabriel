@@ -1,8 +1,7 @@
 using MicrobeneficioSanGabriel.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using MicrobeneficioSanGabriel.Data;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,5 +48,7 @@ using (var scope = app.Services.CreateScope())
 {
     await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
+
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
 
 app.Run();
