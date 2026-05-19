@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="fw-bold">Reportes</h1>
+<p class="text-muted mb-4">Resumen general de información operativa y administrativa.</p>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h6 class="text-muted">Productores</h6>
+            <h2 class="fw-bold">@ViewBag.TotalProductores</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h6 class="text-muted">Productos</h6>
+            <h2 class="fw-bold">@ViewBag.TotalProductos</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h6 class="text-muted">Pedidos</h6>
+            <h2 class="fw-bold">@ViewBag.TotalPedidos</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h6 class="text-muted">Facturas</h6>
+            <h2 class="fw-bold">@ViewBag.TotalFacturas</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold">Ventas totales</h5>
+            <h2 class="text-success fw-bold">₡ @ViewBag.TotalVentas.ToString("N2")</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold">Stock total disponible</h5>
+            <h2 class="fw-bold">@ViewBag.TotalStock unidades</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold">Pedidos pendientes</h5>
+            <h2 class="text-warning fw-bold">@ViewBag.PedidosPendientes</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold">Facturas pendientes</h5>
+            <h2 class="text-danger fw-bold">@ViewBag.FacturasPendientes</h2>
+        </div>
+    </div>
+</div>
