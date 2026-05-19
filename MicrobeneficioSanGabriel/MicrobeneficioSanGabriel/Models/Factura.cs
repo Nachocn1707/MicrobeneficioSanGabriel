@@ -1,83 +1,39 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrobeneficioSanGabriel.Models
 {
-    public class Factura : Controller
+    public class Factura
     {
-        // GET: Factura
-        public ActionResult Index()
-        {
-            return View();
-        }
+        public int Id { get; set; }
 
-        // GET: Factura/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        [Required(ErrorMessage = "Debe seleccionar un pedido")]
+        [Display(Name = "Pedido")]
+        public int PedidoId { get; set; }
 
-        // GET: Factura/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        [ForeignKey("PedidoId")]
+        public Pedido? Pedido { get; set; }
 
-        // POST: Factura/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        [Required]
+        [Display(Name = "Fecha de factura")]
+        public DateTime FechaFactura { get; set; } = DateTime.Now;
 
-        // GET: Factura/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        [Required]
+        [Display(Name = "Subtotal")]
+        public decimal Subtotal { get; set; }
 
-        // POST: Factura/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        [Required]
+        [Display(Name = "IVA")]
+        public decimal IVA { get; set; }
 
-        // GET: Factura/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        [Required]
+        [Display(Name = "Total")]
+        public decimal Total { get; set; }
 
-        // POST: Factura/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        [Required(ErrorMessage = "El estado es obligatorio")]
+        public string EstadoPago { get; set; } = "Pendiente";
+
+        [Display(Name = "Observación")]
+        public string? Observacion { get; set; }
     }
 }

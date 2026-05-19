@@ -18,6 +18,7 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<Produccion> Producciones { get; set; }
         public DbSet<Trazabilidad> Trazabilidades { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<Factura> Facturas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +35,17 @@ namespace MicrobeneficioSanGabriel.Data
                 .WithMany()
                 .HasForeignKey(t => t.ProduccionId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Factura>()
+                .Property(f => f.Subtotal)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Factura>()
+                .Property(f => f.IVA)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Factura>()
+                .Property(f => f.Total)
+                .HasPrecision(18, 2);
         }
     }
 
