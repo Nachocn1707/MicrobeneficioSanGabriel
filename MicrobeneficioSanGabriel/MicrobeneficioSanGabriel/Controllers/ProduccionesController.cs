@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -17,92 +17,117 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context = context;
         }
 
-        // LISTA
+        // GET: Producciones
         public async Task<IActionResult> Index()
         {
             var producciones = _context.Producciones
-                .Include(p => p.Lote);
+                .Include(p => p.Lote)
+                .Include(p => p.Producto)
+                .OrderByDescending(p => p.FechaProduccion);
 
             return View(await producciones.ToListAsync());
         }
 
-        // DETALLES
+        // GET: Producciones/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
             var produccion = await _context.Producciones
                 .Include(p => p.Lote)
+                .Include(p => p.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (produccion == null)
+            {
                 return NotFound();
+            }
 
             return View(produccion);
         }
 
-        // CREAR
+        // GET: Producciones/Create
         public IActionResult Create()
         {
-            ViewBag.LoteId = new SelectList(
-                _context.Lotes,
-                "Id",
-                "CodigoLote"
-            );
-
+            CargarCombos();
             return View();
         }
 
+        // POST: Producciones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Produccion produccion)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(produccion);
+                if (produccion.ProductoId.HasValue)
+                {
+                    var producto = await _context.Productos
+                        .FindAsync(produccion.ProductoId.Value);
+
+                    if (producto != null)
+                    {
+                        producto.Stock += (int)produccion.CantidadResultanteKg;
+
+                        var movimiento = new MovimientoInventario
+                        {
+                            ProductoId = producto.Id,
+                            TipoMovimiento = "Entrada",
+                            Cantidad = (int)produccion.CantidadResultanteKg,
+                            FechaMovimiento = DateTime.Now,
+                            Observacion = $"Entrada automática por producción #{produccion.Id}"
+                        };
+
+                        _context.MovimientosInventario.Add(movimiento);
+                        _context.Productos.Update(producto);
+                    }
+                }
+
+                produccion.FechaProduccion = DateTime.Now;
+
+                _context.Producciones.Add(produccion);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.LoteId = new SelectList(
-                _context.Lotes,
-                "Id",
-                "CodigoLote",
-                produccion.LoteId
-            );
+            CargarCombos(produccion.LoteId, produccion.ProductoId);
 
             return View(produccion);
         }
 
-        // EDITAR
+        // GET: Producciones/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
             var produccion = await _context.Producciones.FindAsync(id);
 
             if (produccion == null)
+            {
                 return NotFound();
+            }
 
-            ViewBag.LoteId = new SelectList(
-                _context.Lotes,
-                "Id",
-                "CodigoLote",
-                produccion.LoteId
-            );
+            CargarCombos(produccion.LoteId, produccion.ProductoId);
 
             return View(produccion);
         }
 
+        // POST: Producciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Produccion produccion)
         {
             if (id != produccion.Id)
+            {
                 return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
@@ -113,41 +138,46 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Producciones.Any(e => e.Id == produccion.Id))
+                    if (!ProduccionExists(produccion.Id))
+                    {
                         return NotFound();
-
-                    throw;
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.LoteId = new SelectList(
-                _context.Lotes,
-                "Id",
-                "CodigoLote",
-                produccion.LoteId
-            );
+            CargarCombos(produccion.LoteId, produccion.ProductoId);
 
             return View(produccion);
         }
 
-        // ELIMINAR
+        // GET: Producciones/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
             var produccion = await _context.Producciones
                 .Include(p => p.Lote)
+                .Include(p => p.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (produccion == null)
+            {
                 return NotFound();
+            }
 
             return View(produccion);
         }
 
+        // POST: Producciones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -157,10 +187,33 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (produccion != null)
             {
                 _context.Producciones.Remove(produccion);
-                await _context.SaveChangesAsync();
             }
 
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
+        }
+
+        private void CargarCombos(int? loteId = null, int? productoId = null)
+        {
+            ViewBag.LoteId = new SelectList(
+                _context.Lotes.OrderBy(l => l.CodigoLote),
+                "Id",
+                "CodigoLote",
+                loteId
+            );
+
+            ViewBag.ProductoId = new SelectList(
+                _context.Productos.OrderBy(p => p.Nombre),
+                "Id",
+                "Nombre",
+                productoId
+            );
+        }
+
+        private bool ProduccionExists(int id)
+        {
+            return _context.Producciones.Any(e => e.Id == id);
         }
     }
 }

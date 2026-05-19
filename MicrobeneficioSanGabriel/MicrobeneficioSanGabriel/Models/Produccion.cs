@@ -37,5 +37,11 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Display(Name = "Observación")]
         public string? Observacion { get; set; }
+
+        [Display(Name = "Producto resultante")]
+        public int? ProductoId { get; set; }
+
+        [ForeignKey("ProductoId")]
+        public Producto? Producto { get; set; }
     }
 }

@@ -28,12 +28,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.ProductoId = new SelectList(
-                _context.Productos.OrderBy(p => p.Nombre),
-                "Id",
-                "Nombre"
-            );
-
+            CargarProductos();
             return View();
         }
 
@@ -43,19 +38,48 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pedido);
+                var producto = await _context.Productos.FindAsync(pedido.ProductoId);
+
+                if (producto == null)
+                {
+                    ModelState.AddModelError("", "El producto seleccionado no existe.");
+                    CargarProductos(pedido.ProductoId);
+                    return View(pedido);
+                }
+
+                if (pedido.Estado == "Completado")
+                {
+                    if (producto.Stock < pedido.Cantidad)
+                    {
+                        ModelState.AddModelError("", "No hay suficiente stock para completar el pedido.");
+                        CargarProductos(pedido.ProductoId);
+                        return View(pedido);
+                    }
+
+                    producto.Stock -= pedido.Cantidad;
+
+                    var movimiento = new MovimientoInventario
+                    {
+                        ProductoId = producto.Id,
+                        TipoMovimiento = "Salida",
+                        Cantidad = pedido.Cantidad,
+                        FechaMovimiento = DateTime.Now,
+                        Observacion = $"Salida por pedido del cliente {pedido.ClienteNombre}"
+                    };
+
+                    _context.MovimientosInventario.Add(movimiento);
+                    _context.Productos.Update(producto);
+                }
+
+                pedido.FechaPedido = DateTime.Now;
+
+                _context.Pedidos.Add(pedido);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.ProductoId = new SelectList(
-                _context.Productos.OrderBy(p => p.Nombre),
-                "Id",
-                "Nombre",
-                pedido.ProductoId
-            );
-
+            CargarProductos(pedido.ProductoId);
             return View(pedido);
         }
 
@@ -80,13 +104,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido == null) return NotFound();
 
-            ViewBag.ProductoId = new SelectList(
-                _context.Productos.OrderBy(p => p.Nombre),
-                "Id",
-                "Nombre",
-                pedido.ProductoId
-            );
-
+            CargarProductos(pedido.ProductoId);
             return View(pedido);
         }
 
@@ -106,20 +124,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PedidoExists(pedido.Id)) return NotFound();
-
                     throw;
                 }
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.ProductoId = new SelectList(
-                _context.Productos.OrderBy(p => p.Nombre),
-                "Id",
-                "Nombre",
-                pedido.ProductoId
-            );
-
+            CargarProductos(pedido.ProductoId);
             return View(pedido);
         }
 
@@ -149,6 +160,16 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private void CargarProductos(int? productoSeleccionado = null)
+        {
+            ViewBag.ProductoId = new SelectList(
+                _context.Productos.OrderBy(p => p.Nombre),
+                "Id",
+                "Nombre",
+                productoSeleccionado
+            );
         }
 
         private bool PedidoExists(int id)
