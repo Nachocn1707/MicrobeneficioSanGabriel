@@ -1,5 +1,9 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Factura
 
+@{
+    Layout = null;
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -137,6 +141,10 @@
 <body>
 
     <div class="header">
+
+        <img src="@Url.Content("~/img/logo.png")"
+             style="width:120px; margin-bottom:15px;" />
+
         <div class="title">
             Microbeneficio San Gabriel
         </div>
@@ -144,6 +152,7 @@
         <div class="subtitle">
             Factura electrónica
         </div>
+
     </div>
 
     <div class="card">
