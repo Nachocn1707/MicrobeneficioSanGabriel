@@ -17,18 +17,39 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? fechaInicio, DateTime? fechaFin)
         {
+            var facturasQuery = _context.Facturas.AsQueryable();
+            var pedidosQuery = _context.Pedidos.AsQueryable();
+
+            if (fechaInicio.HasValue)
+            {
+                facturasQuery = facturasQuery.Where(f => f.FechaFactura >= fechaInicio.Value);
+                pedidosQuery = pedidosQuery.Where(p => p.FechaPedido >= fechaInicio.Value);
+            }
+
+            if (fechaFin.HasValue)
+            {
+                var fechaFinCompleta = fechaFin.Value.Date.AddDays(1).AddTicks(-1);
+
+                facturasQuery = facturasQuery.Where(f => f.FechaFactura <= fechaFinCompleta);
+                pedidosQuery = pedidosQuery.Where(p => p.FechaPedido <= fechaFinCompleta);
+            }
+
+            ViewBag.FechaInicio = fechaInicio?.ToString("yyyy-MM-dd");
+            ViewBag.FechaFin = fechaFin?.ToString("yyyy-MM-dd");
+
             ViewBag.TotalProductores = await _context.Productores.CountAsync();
             ViewBag.TotalProductos = await _context.Productos.CountAsync();
-            ViewBag.TotalPedidos = await _context.Pedidos.CountAsync();
-            ViewBag.TotalFacturas = await _context.Facturas.CountAsync();
 
-            ViewBag.TotalVentas = await _context.Facturas.SumAsync(f => f.Total);
+            ViewBag.TotalPedidos = await pedidosQuery.CountAsync();
+            ViewBag.TotalFacturas = await facturasQuery.CountAsync();
+
+            ViewBag.TotalVentas = await facturasQuery.SumAsync(f => f.Total);
             ViewBag.TotalStock = await _context.Productos.SumAsync(p => p.Stock);
 
-            ViewBag.PedidosPendientes = await _context.Pedidos.CountAsync(p => p.Estado == "Pendiente");
-            ViewBag.FacturasPendientes = await _context.Facturas.CountAsync(f => f.EstadoPago == "Pendiente");
+            ViewBag.PedidosPendientes = await pedidosQuery.CountAsync(p => p.Estado == "Pendiente");
+            ViewBag.FacturasPendientes = await facturasQuery.CountAsync(f => f.EstadoPago == "Pendiente");
 
             ViewBag.ProductosStockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
 
@@ -39,47 +60,76 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View();
         }
 
-        public IActionResult ExportarExcel()
+        public IActionResult ExportarExcel(DateTime? fechaInicio, DateTime? fechaFin)
         {
+            var facturasQuery = _context.Facturas.AsQueryable();
+            var pedidosQuery = _context.Pedidos.AsQueryable();
+
+            if (fechaInicio.HasValue)
+            {
+                facturasQuery = facturasQuery.Where(f => f.FechaFactura >= fechaInicio.Value);
+                pedidosQuery = pedidosQuery.Where(p => p.FechaPedido >= fechaInicio.Value);
+            }
+
+            if (fechaFin.HasValue)
+            {
+                var fechaFinCompleta = fechaFin.Value.Date.AddDays(1).AddTicks(-1);
+
+                facturasQuery = facturasQuery.Where(f => f.FechaFactura <= fechaFinCompleta);
+                pedidosQuery = pedidosQuery.Where(p => p.FechaPedido <= fechaFinCompleta);
+            }
+
+            var totalPedidos = pedidosQuery.Count();
+            var totalFacturas = facturasQuery.Count();
+            var totalVentas = facturasQuery.Sum(f => f.Total);
+
             using (var workbook = new XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add("Reporte");
 
                 worksheet.Cell(1, 1).Value = "Microbeneficio San Gabriel";
                 worksheet.Cell(2, 1).Value = "Reporte general administrativo";
-                worksheet.Cell(3, 1).Value = $"Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}";
 
-                worksheet.Cell(5, 1).Value = "Indicador";
-                worksheet.Cell(5, 2).Value = "Valor";
+                worksheet.Cell(3, 1).Value =
+                    fechaInicio.HasValue || fechaFin.HasValue
+                        ? $"Periodo: {fechaInicio?.ToString("dd/MM/yyyy") ?? "Inicio"} - {fechaFin?.ToString("dd/MM/yyyy") ?? "Actual"}"
+                        : "Periodo: General";
 
-                worksheet.Cell(6, 1).Value = "Productores";
-                worksheet.Cell(6, 2).Value = _context.Productores.Count();
+                worksheet.Cell(4, 1).Value = $"Fecha de generación: {DateTime.Now:dd/MM/yyyy HH:mm}";
 
-                worksheet.Cell(7, 1).Value = "Productos";
-                worksheet.Cell(7, 2).Value = _context.Productos.Count();
+                worksheet.Cell(6, 1).Value = "Indicador";
+                worksheet.Cell(6, 2).Value = "Valor";
 
-                worksheet.Cell(8, 1).Value = "Pedidos";
-                worksheet.Cell(8, 2).Value = _context.Pedidos.Count();
+                worksheet.Cell(7, 1).Value = "Productores";
+                worksheet.Cell(7, 2).Value = _context.Productores.Count();
 
-                worksheet.Cell(9, 1).Value = "Facturas";
-                worksheet.Cell(9, 2).Value = _context.Facturas.Count();
+                worksheet.Cell(8, 1).Value = "Productos";
+                worksheet.Cell(8, 2).Value = _context.Productos.Count();
 
-                worksheet.Cell(10, 1).Value = "Ventas totales";
-                worksheet.Cell(10, 2).Value = _context.Facturas.Sum(f => f.Total);
+                worksheet.Cell(9, 1).Value = "Pedidos";
+                worksheet.Cell(9, 2).Value = totalPedidos;
 
-                worksheet.Cell(11, 1).Value = "Stock total disponible";
-                worksheet.Cell(11, 2).Value = _context.Productos.Sum(p => p.Stock);
+                worksheet.Cell(10, 1).Value = "Facturas";
+                worksheet.Cell(10, 2).Value = totalFacturas;
 
-                worksheet.Cell(12, 1).Value = "Productos con stock bajo";
-                worksheet.Cell(12, 2).Value = _context.Productos.Count(p => p.Stock <= p.StockMinimo);
+                worksheet.Cell(11, 1).Value = "Ventas totales";
+                worksheet.Cell(11, 2).Value = totalVentas;
+
+                worksheet.Cell(12, 1).Value = "Stock total disponible";
+                worksheet.Cell(12, 2).Value = _context.Productos.Sum(p => p.Stock);
+
+                worksheet.Cell(13, 1).Value = "Productos con stock bajo";
+                worksheet.Cell(13, 2).Value = _context.Productos.Count(p => p.Stock <= p.StockMinimo);
 
                 worksheet.Range("A1:B1").Merge();
                 worksheet.Cell(1, 1).Style.Font.Bold = true;
                 worksheet.Cell(1, 1).Style.Font.FontSize = 18;
 
-                worksheet.Range("A5:B5").Style.Font.Bold = true;
-                worksheet.Range("A5:B5").Style.Fill.BackgroundColor = XLColor.DarkBlue;
-                worksheet.Range("A5:B5").Style.Font.FontColor = XLColor.White;
+                worksheet.Range("A6:B6").Style.Font.Bold = true;
+                worksheet.Range("A6:B6").Style.Fill.BackgroundColor = XLColor.DarkBlue;
+                worksheet.Range("A6:B6").Style.Font.FontColor = XLColor.White;
+
+                worksheet.Cell(11, 2).Style.NumberFormat.Format = "₡ #,##0.00";
 
                 worksheet.Columns().AdjustToContents();
 
