@@ -8,7 +8,7 @@ using MicrobeneficioSanGabriel.ViewModels;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize(Roles = "Administrador,Operador")]
+    [Authorize(Roles = "Administrador,Operador,Cliente")]
     public class TrazabilidadesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -120,6 +120,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrador,Operador")]
         public IActionResult Create()
         {
             CargarListas();
@@ -128,6 +129,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Create([Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
         {
             if (ModelState.IsValid)

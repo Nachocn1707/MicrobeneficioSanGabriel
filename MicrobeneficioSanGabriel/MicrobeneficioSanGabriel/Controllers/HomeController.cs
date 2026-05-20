@@ -33,6 +33,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                     return RedirectToAction(nameof(Dashboard));
                 }
 
+                if (User.IsInRole("Cliente"))
+                {
+                    return RedirectToAction(nameof(ClienteDashboard));
+                }
+
                 return RedirectToAction(nameof(AccessDenied));
             }
 
@@ -93,6 +98,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 })
                 .ToListAsync();
 
+            return View();
+        }
+
+        [Authorize(Roles = "Cliente")]
+        public IActionResult ClienteDashboard()
+        {
             return View();
         }
 

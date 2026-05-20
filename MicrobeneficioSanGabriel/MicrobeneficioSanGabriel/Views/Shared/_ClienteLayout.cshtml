@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - San Gabriel</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+            body {
+                margin: 0;
+                background: #fff8df;
+                font-family: "Segoe UI", Arial, sans-serif;
+                color: #2b160d;
+            }
+
+            .cliente-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .cliente-sidebar {
+                width: 260px;
+                background: linear-gradient(180deg, #3a1f12, #7a5230);
+                color: #fff8df;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                border-right: 4px solid #f3d27a;
+            }
+
+            .cliente-brand {
+                padding: 28px 24px;
+                border-bottom: 1px solid rgba(243, 210, 122, 0.28);
+            }
+
+            .cliente-brand h4 {
+                color: #fff3c4;
+                font-weight: 900;
+                margin: 0;
+            }
+
+            .cliente-menu {
+                padding-top: 22px;
+            }
+
+            .cliente-menu a {
+                display: block;
+                color: #fff8df;
+                text-decoration: none;
+                padding: 14px 24px;
+                border-left: 4px solid transparent;
+                font-weight: 600;
+            }
+
+            .cliente-menu a:hover {
+                background: rgba(243, 210, 122, 0.22);
+                border-left-color: #f3d27a;
+            }
+
+            .cliente-main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
+
+            .cliente-topbar {
+                height: 76px;
+                background: #fff3c4;
+                border-bottom: 1px solid #ead8a2;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 32px;
+            }
+
+            .cliente-content {
+                padding: 32px;
+            }
+
+            .logout-btn {
+                background: #4a2c1a;
+                border: 1px solid #4a2c1a;
+                color: #fff8df;
+                border-radius: 8px;
+                padding: 8px 14px;
+                font-weight: 800;
+            }
+    </style>
+</head>
+<body>
+    <div class="cliente-wrapper">
+
+        <aside class="cliente-sidebar">
+            <div class="cliente-brand">
+                <h4>San Gabriel</h4>
+                <span>Portal cliente</span>
+            </div>
+
+            <nav class="cliente-menu">
+                <a asp-controller="Home" asp-action="ClienteDashboard">Inicio</a>
+                <a asp-controller="Productos" asp-action="Index">Productos</a>
+                <a asp-controller="Pedidos" asp-action="Create">Realizar pedido</a>
+                <a asp-controller="Pedidos" asp-action="Index">Mis pedidos</a>
+                <a asp-controller="Trazabilidades" asp-action="Index">Trazabilidad</a>
+            </nav>
+        </aside>
+
+        <main class="cliente-main">
+            <header class="cliente-topbar">
+                <div>
+                    <h5 class="mb-0">@ViewData["Title"]</h5>
+                    <small>Sistema de compras del microbeneficio</small>
+                </div>
+
+                <form asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="/Identity/Account/Login"
+                      method="post">
+                    <button type="submit" class="logout-btn">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+            </header>
+
+            <section class="cliente-content">
+                @RenderBody()
+            </section>
+        </main>
+
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

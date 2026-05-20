@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Portal cliente";
+    Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+}
+
+<style>
+    .cliente-hero {
+        background: #fffdf2;
+        border: 1px solid #ead8a2;
+        border-top: 6px solid #f3d27a;
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
+        margin-bottom: 28px;
+    }
+
+        .cliente-hero h1 {
+            color: #2b160d;
+            font-weight: 900;
+        }
+
+        .cliente-hero p {
+            color: #6f5b4a;
+            margin: 0;
+        }
+
+    .cliente-modules {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .cliente-module {
+        background: #fffdf2;
+        border: 1px solid #ead8a2;
+        border-top: 5px solid #f3d27a;
+        border-radius: 18px;
+        padding: 26px;
+        box-shadow: 0 12px 28px rgba(74, 44, 26, 0.12);
+        text-decoration: none;
+        color: #2b160d;
+        transition: 0.2s ease;
+        min-height: 210px;
+    }
+
+        .cliente-module:hover {
+            transform: translateY(-4px);
+            color: #2b160d;
+        }
+
+        .cliente-module i {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: #4a2c1a;
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .cliente-module h3 {
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .cliente-module p {
+            color: #6f5b4a;
+            margin: 0;
+        }
+
+    @@media (max-width: 1200px) {
+        .cliente-modules {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .cliente-modules {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="cliente-hero">
+    <h1>Bienvenido al portal cliente</h1>
+    <p>Consultá productos, realizá pedidos y revisá la trazabilidad del café.</p>
+</div>
+
+<div class="cliente-modules">
+
+    <a asp-controller="Productos" asp-action="Index" class="cliente-module">
+        <i class="fa-solid fa-mug-hot"></i>
+        <h3>Productos</h3>
+        <p>Ver productos disponibles del microbeneficio.</p>
+    </a>
+
+    <a asp-controller="Pedidos" asp-action="Create" class="cliente-module">
+        <i class="fa-solid fa-cart-plus"></i>
+        <h3>Realizar pedido</h3>
+        <p>Crear una nueva solicitud de compra.</p>
+    </a>
+
+    <a asp-controller="Pedidos" asp-action="Index" class="cliente-module">
+        <i class="fa-solid fa-box"></i>
+        <h3>Mis pedidos</h3>
+        <p>Consultar el historial de pedidos realizados.</p>
+    </a>
+
+    <a asp-controller="Trazabilidades" asp-action="Index" class="cliente-module">
+        <i class="fa-solid fa-route"></i>
+        <h3>Trazabilidad</h3>
+        <p>Revisar el origen y proceso del café.</p>
+    </a>
+
+</div>

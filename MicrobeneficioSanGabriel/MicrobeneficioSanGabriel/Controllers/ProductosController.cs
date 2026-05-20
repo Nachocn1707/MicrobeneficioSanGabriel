@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize(Roles = "Administrador,Operador,Vendedor")]
+    [Authorize(Roles = "Administrador,Operador,Vendedor,Cliente")]
     public class ProductosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -42,6 +42,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // GET: Productos/Create
+        [Authorize(Roles = "Administrador,Operador,Vendedor")]
         public IActionResult Create()
         {
             return View();
@@ -50,6 +51,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Operador,Vendedor")]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto)
         {
             if (ModelState.IsValid)

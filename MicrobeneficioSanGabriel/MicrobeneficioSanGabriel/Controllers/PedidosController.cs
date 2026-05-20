@@ -7,7 +7,7 @@ using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize(Roles = "Administrador,Vendedor")]
+    [Authorize(Roles = "Administrador,Vendedor,Cliente")]
     public class PedidosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,7 +21,15 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             var pedidos = _context.Pedidos
                 .Include(p => p.Producto)
-                .OrderByDescending(p => p.FechaPedido);
+                .OrderByDescending(p => p.FechaPedido)
+                .AsQueryable();
+
+            if (User.IsInRole("Cliente"))
+            {
+                var correoCliente = User.Identity?.Name;
+
+                pedidos = pedidos.Where(p => p.ClienteNombre == correoCliente);
+            }
 
             return View(await pedidos.ToListAsync());
         }
@@ -36,6 +44,12 @@ namespace MicrobeneficioSanGabriel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Pedido pedido)
         {
+            if (User.IsInRole("Cliente"))
+            {
+                pedido.ClienteNombre = User.Identity?.Name ?? pedido.ClienteNombre;
+                pedido.Estado = "Pendiente";
+            }
+
             if (ModelState.IsValid)
             {
                 var producto = await _context.Productos.FindAsync(pedido.ProductoId);
@@ -92,6 +106,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pedido == null) return NotFound();
+
+            if (User.IsInRole("Cliente") && pedido.ClienteNombre != User.Identity?.Name)
+            {
+                return Forbid();
+            }
 
             return View(pedido);
         }
