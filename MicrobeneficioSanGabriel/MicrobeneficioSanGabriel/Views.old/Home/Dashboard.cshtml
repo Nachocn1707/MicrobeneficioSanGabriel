@@ -1,0 +1,246 @@
+﻿@using System.Text.Json
+@using MicrobeneficioSanGabriel.Models
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var ultimosPedidos = ViewBag.UltimosPedidos as List<Pedido>;
+    var ultimasFacturas = ViewBag.UltimasFacturas as List<Factura>;
+    var productosStockBajo = ViewBag.ProductosStockBajo as List<Producto>;
+
+    var nombresProductosJson = JsonSerializer.Serialize(ViewBag.NombresProductos);
+    var stockProductosJson = JsonSerializer.Serialize(ViewBag.StockProductos);
+    var ventasProductosJson = JsonSerializer.Serialize(ViewBag.VentasProductos);
+}
+
+<div class="mb-4">
+    <h1 class="fw-bold">Dashboard Administrativo</h1>
+    <p class="text-muted">
+        Panel general del sistema Microbeneficio San Gabriel.
+    </p>
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+            <h1 class="fw-bold text-primary">@ViewBag.TotalUsuarios</h1>
+            <p class="text-muted mb-0">Usuarios registrados</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+            <h1 class="fw-bold text-success">@ViewBag.TotalProductores</h1>
+            <p class="text-muted mb-0">Productores activos</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+            <h1 class="fw-bold text-warning">@ViewBag.TotalProductos</h1>
+            <p class="text-muted mb-0">Productos registrados</p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+            <h1 class="fw-bold text-danger">@ViewBag.StockBajo</h1>
+            <p class="text-muted mb-0">Productos con stock bajo</p>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h2 class="fw-bold mb-3">Pedidos</h2>
+            <p class="text-muted">Gestión de pedidos realizados por clientes.</p>
+            <h1 class="fw-bold text-primary">@ViewBag.TotalPedidos</h1>
+
+            <a asp-controller="Pedidos"
+                   asp-action="Index"
+                   class="btn btn-success mt-3">
+                Ir al módulo
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h2 class="fw-bold mb-3">Facturación</h2>
+            <p class="text-muted">Administración de facturas y pagos.</p>
+            <h1 class="fw-bold text-success">@ViewBag.TotalFacturas</h1>
+
+            <a asp-controller="Facturas"
+                   asp-action="Index"
+                   class="btn btn-success mt-3">
+                Ir al módulo
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h2 class="fw-bold mb-3">Ventas totales</h2>
+            <p class="text-muted">Total acumulado de ventas realizadas.</p>
+            <h1 class="fw-bold text-success">
+                ₡ @ViewBag.TotalVentas.ToString("N2")
+            </h1>
+
+            <a asp-controller="Reportes"
+                   asp-action="Index"
+                   class="btn btn-success mt-3">
+                Ver reportes
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h3 class="fw-bold mb-4">Stock por producto</h3>
+
+            <div style="height: 320px;">
+                <canvas id="stockChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h3 class="fw-bold mb-4">Ventas por producto</h3>
+
+            <div style="height: 320px; display:flex; justify-content:center;">
+                <canvas id="ventasChart"
+                        style="max-width:300px; max-height:300px;">
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h2 class="fw-bold mb-4">Últimos pedidos</h2>
+
+            @if (ultimosPedidos != null && ultimosPedidos.Any())
+            {
+                foreach (var pedido in ultimosPedidos)
+                {
+                    <div class="border-bottom pb-2 mb-2">
+                        <strong>@pedido.ClienteNombre</strong>
+                        <br />
+                        <span class="text-muted">@pedido.Producto?.Nombre</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">No hay pedidos registrados.</p>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h2 class="fw-bold mb-4">Últimas facturas</h2>
+
+            @if (ultimasFacturas != null && ultimasFacturas.Any())
+            {
+                foreach (var factura in ultimasFacturas)
+                {
+                    <div class="border-bottom pb-2 mb-2">
+                        <strong>Factura #@factura.Id</strong>
+                        <br />
+                        <span class="text-success fw-bold">
+                            ₡ @factura.Total.ToString("N2")
+                        </span>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">No hay facturas registradas.</p>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+            <h2 class="fw-bold mb-4">Alertas de stock</h2>
+
+            @if (productosStockBajo != null && productosStockBajo.Any())
+            {
+                foreach (var producto in productosStockBajo)
+                {
+                    <div class="border-bottom pb-2 mb-2">
+                        <strong class="text-danger">@producto.Nombre</strong>
+                        <br />
+                        <span class="text-muted">
+                            Stock: @producto.Stock
+                        </span>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">No hay alertas de stock.</p>
+            }
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const productos = @Html.Raw(nombresProductosJson);
+    const stockProductos = @Html.Raw(stockProductosJson);
+    const ventasProductos = @Html.Raw(ventasProductosJson);
+
+    const stockCtx = document.getElementById('stockChart');
+
+    new Chart(stockCtx, {
+    type: 'bar',
+    data: {
+    labels: productos,
+    datasets: [{
+    label: 'Stock disponible',
+    data: stockProductos,
+    borderWidth: 1
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false
+    }
+    });
+
+    const ventasCtx = document.getElementById('ventasChart');
+
+    new Chart(ventasCtx, {
+    type: 'doughnut',
+    data: {
+    labels: ventasProductos.map(v => v.Producto),
+    datasets: [{
+    label: 'Ventas por producto',
+    data: ventasProductos.map(v => v.Total)
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%'
+    }
+    });
+</script>

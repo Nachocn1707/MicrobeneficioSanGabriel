@@ -6,7 +6,7 @@ using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class RegistrosFinancierosController : Controller
     {
         private readonly ApplicationDbContext _context;

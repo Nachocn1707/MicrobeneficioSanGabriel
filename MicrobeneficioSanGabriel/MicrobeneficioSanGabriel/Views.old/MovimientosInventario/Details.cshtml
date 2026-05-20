@@ -1,0 +1,45 @@
+﻿@model MicrobeneficioSanGabriel.Models.MovimientoInventario
+
+@{
+    ViewData["Title"] = "Detalle Movimiento";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Detalle Movimiento</h1>
+        <p>Información del movimiento de inventario.</p>
+    </div>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Volver
+    </a>
+</div>
+
+<div class="admin-card">
+    <dl class="row">
+        <dt class="col-sm-3">Producto</dt>
+        <dd class="col-sm-9">@Model.Producto?.Nombre</dd>
+
+        <dt class="col-sm-3">Tipo Movimiento</dt>
+        <dd class="col-sm-9">
+            @if (Model.TipoMovimiento == "Entrada")
+            {
+                <span class="badge bg-success">Entrada</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Salida</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Cantidad</dt>
+        <dd class="col-sm-9">@Model.Cantidad unidades</dd>
+
+        <dt class="col-sm-3">Observación</dt>
+        <dd class="col-sm-9">@Model.Observacion</dd>
+
+        <dt class="col-sm-3">Fecha</dt>
+        <dd class="col-sm-9">@Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")</dd>
+    </dl>
+</div>

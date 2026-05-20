@@ -8,7 +8,7 @@ using MicrobeneficioSanGabriel.ViewModels;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador,Operador")]
     public class TrazabilidadesController : Controller
     {
         private readonly ApplicationDbContext _context;

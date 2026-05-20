@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador,Operador,Vendedor")]
     public class ProductosController : Controller
     {
         private readonly ApplicationDbContext _context;

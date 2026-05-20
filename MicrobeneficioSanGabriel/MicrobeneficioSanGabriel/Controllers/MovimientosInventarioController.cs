@@ -10,7 +10,7 @@ using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador,Operador")]
     public class MovimientosInventarioController : Controller
     {
         private readonly ApplicationDbContext _context;

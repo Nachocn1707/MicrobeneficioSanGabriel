@@ -8,7 +8,7 @@ using Rotativa.AspNetCore;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador,Vendedor")]
     public class FacturasController : Controller
     {
         private readonly ApplicationDbContext _context;

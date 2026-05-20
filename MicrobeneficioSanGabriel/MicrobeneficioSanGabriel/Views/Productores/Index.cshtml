@@ -60,20 +60,26 @@
 
                         <td class="acciones">
 
+                            @if (User.IsInRole("Administrador"))
+                            {
                             <a asp-action="Edit" asp-route-id="@item.Id"
-                                   class="btn btn-warning btn-sm">
-                                Editar
-                            </a>
+                                       class="btn btn-warning btn-sm">
+                                    Editar
+                                </a>
+                            }
 
                             <a asp-action="Details" asp-route-id="@item.Id"
                                    class="btn btn-info btn-sm text-white">
                                 Detalles
                             </a>
 
+                            @if (User.IsInRole("Administrador"))
+                            {
                             <a asp-action="Delete" asp-route-id="@item.Id"
-                                   class="btn btn-danger btn-sm">
-                                Eliminar
-                            </a>
+                                       class="btn btn-danger btn-sm">
+                                    Eliminar
+                                </a>
+                            }
 
                         </td>
 

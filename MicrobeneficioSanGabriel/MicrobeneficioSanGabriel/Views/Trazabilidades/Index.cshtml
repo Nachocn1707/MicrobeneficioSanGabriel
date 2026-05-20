@@ -122,9 +122,15 @@
                             <td>@(item.Observacion ?? "Sin observación")</td>
 
                             <td class="text-end">
+                                @if (User.IsInRole("Administrador"))
+                                {
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                                }
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
+                                @if (User.IsInRole("Administrador"))
+                                {
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                                }
                             </td>
                         </tr>
                     }

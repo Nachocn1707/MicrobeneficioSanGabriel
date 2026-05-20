@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador,Operador")]
     public class ProductoresController : Controller
     {
         private readonly ApplicationDbContext _context;

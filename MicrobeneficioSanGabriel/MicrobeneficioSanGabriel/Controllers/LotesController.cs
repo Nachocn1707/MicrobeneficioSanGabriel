@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador,Operador")]
     public class LotesController : Controller
     {
         private readonly ApplicationDbContext _context;

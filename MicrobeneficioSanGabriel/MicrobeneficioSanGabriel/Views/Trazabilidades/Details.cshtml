@@ -109,7 +109,10 @@
 </div>
 
 <div class="mt-3 d-flex gap-2">
+    @if (User.IsInRole("Administrador"))
+    {
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    }
     <a asp-action="Historial" asp-route-loteId="@Model.LoteId" class="btn btn-primary">Ver historial del lote</a>
     <a asp-action="Index" class="btn btn-secondary">Volver</a>
 </div>

@@ -26,10 +26,20 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("Dashboard");
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Administrador") || User.IsInRole("Operador") || User.IsInRole("Vendedor"))
+                {
+                    return RedirectToAction(nameof(Dashboard));
+                }
+
+                return RedirectToAction(nameof(AccessDenied));
+            }
+
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
-        [Authorize]
+        [Authorize(Roles = "Administrador,Operador,Vendedor")]
         public async Task<IActionResult> Dashboard()
         {
             ViewBag.TotalUsuarios = await _userManager.Users.CountAsync();
@@ -83,6 +93,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 })
                 .ToListAsync();
 
+            return View();
+        }
+
+        public IActionResult AccessDenied()
+        {
             return View();
         }
 

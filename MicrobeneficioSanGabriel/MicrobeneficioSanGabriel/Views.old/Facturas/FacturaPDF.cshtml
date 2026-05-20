@@ -1,0 +1,221 @@
+﻿@model MicrobeneficioSanGabriel.Models.Factura
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Factura</title>
+
+    <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                padding: 35px;
+                color: #1f2937;
+                background-color: #ffffff;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 35px;
+                border-bottom: 2px solid #e5e7eb;
+                padding-bottom: 20px;
+            }
+
+            .title {
+                font-size: 36px;
+                font-weight: bold;
+                color: #111827;
+            }
+
+            .subtitle {
+                font-size: 16px;
+                color: #6b7280;
+                margin-top: 5px;
+            }
+
+            .card {
+                border: 1px solid #e5e7eb;
+                padding: 24px;
+                border-radius: 10px;
+            }
+
+            h2 {
+                margin-bottom: 15px;
+                color: #111827;
+            }
+
+            p {
+                font-size: 15px;
+                margin: 8px 0;
+            }
+
+            hr {
+                border: none;
+                border-top: 1px solid #e5e7eb;
+                margin: 20px 0;
+            }
+
+            table {
+                width: 100%;
+                margin-top: 20px;
+                border-collapse: collapse;
+                table-layout: fixed;
+            }
+
+                table th {
+                    background: #1f2937;
+                    color: white;
+                    padding: 12px;
+                    text-align: center;
+                    border: 1px solid #1f2937;
+                    font-size: 14px;
+                }
+
+                table td {
+                    padding: 12px;
+                    border: 1px solid #d1d5db;
+                    text-align: center;
+                    word-wrap: break-word;
+                    font-size: 14px;
+                }
+
+                    table th:nth-child(1),
+                    table td:nth-child(1) {
+                        width: 45%;
+                    }
+
+                    table th:nth-child(2),
+                    table td:nth-child(2) {
+                        width: 20%;
+                    }
+
+                    table th:nth-child(3),
+                    table td:nth-child(3) {
+                        width: 35%;
+                    }
+
+            .total-box {
+                margin-top: 30px;
+                width: 310px;
+                margin-left: auto;
+                border: 2px solid #16a34a;
+                border-radius: 10px;
+                padding: 15px;
+                background-color: #f0fdf4;
+            }
+
+            .total-row {
+                display: table;
+                width: 100%;
+                margin-bottom: 10px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #16a34a;
+            }
+
+            .total-label {
+                display: table-cell;
+                text-align: left;
+            }
+
+            .total-value {
+                display: table-cell;
+                text-align: right;
+            }
+
+            .footer {
+                margin-top: 45px;
+                text-align: center;
+                color: #6b7280;
+                font-size: 13px;
+                border-top: 1px solid #e5e7eb;
+                padding-top: 15px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+
+        <img src="@Url.Content("~/img/logo.png")"
+             style="width:120px; margin-bottom:15px;" />
+
+        <div class="title">
+            Microbeneficio San Gabriel
+        </div>
+
+        <div class="subtitle">
+            Factura electrónica
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Información de factura</h2>
+
+        <p>
+            <strong>Factura #:</strong> @Model.Id
+        </p>
+
+        <p>
+            <strong>Fecha:</strong> @Model.FechaFactura.ToString("dd/MM/yyyy")
+        </p>
+
+        <p>
+            <strong>Estado:</strong> @Model.EstadoPago
+        </p>
+
+        <hr />
+
+        <h2>Cliente</h2>
+
+        <p>
+            @Model.Pedido?.ClienteNombre
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>@Model.Pedido?.Producto?.Nombre</td>
+                    <td>@Model.Pedido?.Cantidad</td>
+                    <td>₡ @Model.Subtotal.ToString("N2")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-box">
+
+            <div class="total-row">
+                <span class="total-label">IVA:</span>
+                <span class="total-value">₡ @Model.IVA.ToString("N2")</span>
+            </div>
+
+            <div class="total-row">
+                <span class="total-label">TOTAL:</span>
+                <span class="total-value">₡ @Model.Total.ToString("N2")</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Gracias por su compra - Microbeneficio San Gabriel
+    </div>
+
+</body>
+</html>
