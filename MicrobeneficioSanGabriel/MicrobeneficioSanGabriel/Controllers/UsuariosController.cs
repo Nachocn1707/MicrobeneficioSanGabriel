@@ -42,6 +42,33 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(lista);
         }
 
+        public async Task<IActionResult> Details(string? id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+
+            var usuario = await _userManager.FindByIdAsync(id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            var roles = await _userManager.GetRolesAsync(usuario);
+
+            var model = new UsuarioListadoViewModel
+            {
+                Id = usuario.Id,
+                Email = usuario.Email ?? "",
+                UserName = usuario.UserName ?? "",
+                PhoneNumber = usuario.PhoneNumber,
+                Rol = roles.FirstOrDefault() ?? "Sin rol"
+            };
+
+            return View(model);
+        }
         public async Task<IActionResult> Create()
         {
             var model = new UsuarioCrearViewModel
