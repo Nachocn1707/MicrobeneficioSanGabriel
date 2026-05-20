@@ -2,65 +2,98 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Iniciar sesión";
 }
 
-<div class="login-container">
+<div class="login-page">
 
-    <div class="login-card">
+    <section class="login-brand-panel">
+        <div class="brand-content">
+            <div class="brand-badge">
+                <i class="fa-solid fa-mug-hot"></i>
+            </div>
 
-        <div class="user-icon">
-            <i class="fa-solid fa-user"></i>
+            <h1>San Gabriel</h1>
+            <p>Microbeneficio cafetalero</p>
+
+            <div class="brand-line"></div>
+
+            <span>Sistema de gestión administrativa</span>
         </div>
+    </section>
 
-        <form method="post">
+    <section class="login-form-panel">
+        <div class="login-card">
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger mb-3">
+            <div class="login-card-header">
+                <div class="user-icon">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <h2>Bienvenido</h2>
+                <p>Ingresá tus credenciales para continuar.</p>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Correo</label>
+            <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
 
-                <input asp-for="Input.Email"
-                       class="form-control custom-input" />
-            </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger validation-summary mb-3"></div>
 
-            <div class="form-group">
-                <label class="form-label">Contraseña</label>
+                <div class="form-group">
+                    <label class="form-label" asp-for="Input.Email">Correo</label>
 
-                <input asp-for="Input.Password"
-                       class="form-control custom-input" />
-            </div>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input asp-for="Input.Email"
+                               class="form-control custom-input"
+                               autocomplete="username"
+                               placeholder="correo@ejemplo.com" />
+                    </div>
 
-            <div class="form-check text-white mb-3">
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
 
-                <input asp-for="Input.RememberMe"
-                       class="form-check-input" />
+                <div class="form-group">
+                    <label class="form-label" asp-for="Input.Password">Contraseña</label>
 
-                <label class="form-check-label">
-                    Recordarme
-                </label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input asp-for="Input.Password"
+                               class="form-control custom-input"
+                               autocomplete="current-password"
+                               placeholder="Ingresá tu contraseña" />
+                    </div>
 
-            </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
 
-            <button type="submit" class="btn-login">
-                LOGIN
-            </button>
+                <div class="login-options">
+                    <div class="form-check">
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label class="form-check-label" asp-for="Input.RememberMe">
+                            Recordarme
+                        </label>
+                    </div>
+                </div>
 
-            <div class="links">
+                <button type="submit" class="btn-login">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Iniciar sesión
+                </button>
 
-                <a asp-page="./ForgotPassword">
-                    ¿Olvidó su contraseña?
-                </a>
+                <div class="links">
+                    <a asp-page="./ForgotPassword">
+                        ¿Olvidó su contraseña?
+                    </a>
 
-                <a asp-page="./Register">
-                    Registrarse
-                </a>
+                    <a asp-page="./Register">
+                        Registrarse
+                    </a>
+                </div>
 
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
+    </section>
+
 </div>
 
 @section Scripts {

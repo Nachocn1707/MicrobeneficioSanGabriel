@@ -1,59 +1,229 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Pedido
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar pedido";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<style>
+    body,
+    .admin-main,
+    .admin-content {
+        background: #fff8df !important;
+    }
 
-<h4>Pedido</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ClienteNombre" class="control-label"></label>
-                <input asp-for="ClienteNombre" class="form-control" />
-                <span asp-validation-for="ClienteNombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductoId" class="control-label"></label>
-                <select asp-for="ProductoId" class="form-control" asp-items="ViewBag.ProductoId"></select>
-                <span asp-validation-for="ProductoId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" class="form-control" />
-                <span asp-validation-for="Cantidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaPedido" class="control-label"></label>
-                <input asp-for="FechaPedido" class="form-control" />
-                <span asp-validation-for="FechaPedido" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Observacion" class="control-label"></label>
-                <input asp-for="Observacion" class="form-control" />
-                <span asp-validation-for="Observacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    .pedido-edit-page {
+        min-height: calc(100vh - 90px);
+        padding: 32px;
+    }
+
+    .pedido-header {
+        margin-bottom: 24px;
+    }
+
+        .pedido-header h1 {
+            color: #2b160d;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .pedido-header p {
+            color: #6f5b4a;
+            margin: 0;
+        }
+
+    .pedido-card {
+        max-width: 920px;
+        background: #fffdf2;
+        border: 1px solid #ead8a2;
+        border-top: 6px solid #f3d27a;
+        border-radius: 18px;
+        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
+        overflow: hidden;
+    }
+
+    .pedido-card-header {
+        background: linear-gradient(90deg, #4a2c1a, #7a5230);
+        color: #fff8df;
+        padding: 22px 28px;
+    }
+
+        .pedido-card-header h2 {
+            font-weight: 800;
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .pedido-card-header span {
+            color: #fff3c4;
+            font-size: 14px;
+        }
+
+    .pedido-card-body {
+        padding: 28px;
+    }
+
+    .form-label {
+        color: #2b160d;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .form-control,
+    .form-select {
+        background: #fff8df;
+        border: 1px solid #d8bd77;
+        border-radius: 10px;
+        color: #2b2118;
+        padding: 10px 12px;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d6a53a;
+            box-shadow: 0 0 0 0.2rem rgba(214, 165, 58, 0.22);
+            background: #fffdf2;
+        }
+
+    .text-danger {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .pedido-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 26px;
+        padding-top: 22px;
+        border-top: 1px solid #ead8a2;
+    }
+
+    .btn-cafe {
+        background: #4a2c1a;
+        border: 1px solid #4a2c1a;
+        color: #fff8df;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-decoration: none;
+    }
+
+        .btn-cafe:hover {
+            background: #2b160d;
+            border-color: #2b160d;
+            color: #fff8df;
+        }
+
+    .btn-volver {
+        background: #fff3c4;
+        border: 1px solid #d8bd77;
+        color: #4a2c1a;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-decoration: none;
+    }
+
+        .btn-volver:hover {
+            background: #f3d27a;
+            color: #2b160d;
+        }
+
+    @@media (max-width: 768px) {
+        .pedido-edit-page {
+            padding: 20px;
+        }
+
+        .pedido-card-body {
+            padding: 20px;
+        }
+
+        .pedido-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-cafe,
+        .btn-volver {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="pedido-edit-page">
+
+    <div class="pedido-header">
+        <h1>Editar pedido</h1>
+        <p>Actualizá la información del pedido seleccionado.</p>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="pedido-card">
+        <div class="pedido-card-header">
+            <h2>Pedido #@Model.Id</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+
+        <div class="pedido-card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="ClienteNombre" class="form-label">Cliente</label>
+                        <input asp-for="ClienteNombre" class="form-control" />
+                        <span asp-validation-for="ClienteNombre" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ProductoId" class="form-label">Producto</label>
+                        <select asp-for="ProductoId" class="form-select" asp-items="ViewBag.ProductoId"></select>
+                        <span asp-validation-for="ProductoId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Cantidad" class="form-label">Cantidad</label>
+                        <input asp-for="Cantidad" class="form-control" />
+                        <span asp-validation-for="Cantidad" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="FechaPedido" class="form-label">Fecha del pedido</label>
+                        <input asp-for="FechaPedido" type="date" class="form-control" />
+                        <span asp-validation-for="FechaPedido" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Estado" class="form-label">Estado</label>
+                        <select asp-for="Estado" class="form-select">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Observacion" class="form-label">Observación</label>
+                        <textarea asp-for="Observacion" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Observacion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="pedido-actions">
+                    <a asp-action="Index" class="btn-volver">Volver a la lista</a>
+                    <button type="submit" class="btn-cafe">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

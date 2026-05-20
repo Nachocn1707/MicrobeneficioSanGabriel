@@ -1,64 +1,248 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Productor
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Details</h1>
+<style>
+    body,
+    .admin-main,
+    .admin-content {
+        background: #fff8df !important;
+    }
 
-<div>
-    <h4>Productor</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cedula)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cedula)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Direccion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Direccion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Finca)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Finca)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Activo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Activo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaRegistro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaRegistro)
-        </dd>
-    </dl>
-</div>
-<div>
-    @if (User.IsInRole("Administrador"))
-    {
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-    } |
-    <a asp-action="Index">Back to List</a>
+    .productor-detalle-page {
+        padding: 32px;
+        min-height: calc(100vh - 90px);
+    }
+
+    .productor-header {
+        margin-bottom: 24px;
+    }
+
+        .productor-header h1 {
+            color: #2b160d;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .productor-header p {
+            color: #6f5b4a;
+            margin: 0;
+        }
+
+    .productor-card {
+        max-width: 980px;
+        background: #fffdf2;
+        border: 1px solid #ead8a2;
+        border-top: 6px solid #f3d27a;
+        border-radius: 18px;
+        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
+        overflow: hidden;
+    }
+
+    .productor-card-header {
+        background: linear-gradient(90deg, #4a2c1a, #7a5230);
+        color: #fff8df;
+        padding: 24px 30px;
+    }
+
+        .productor-card-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .productor-card-header span {
+            color: #fff3c4;
+            font-size: 14px;
+        }
+
+    .productor-card-body {
+        padding: 30px;
+    }
+
+    .detalle-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .detalle-item {
+        background: #fff8df;
+        border: 1px solid #ead8a2;
+        border-radius: 14px;
+        padding: 16px 18px;
+    }
+
+        .detalle-item.full {
+            grid-column: 1 / -1;
+        }
+
+    .detalle-label {
+        display: block;
+        color: #7a5230;
+        font-weight: 800;
+        font-size: 13px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .detalle-value {
+        color: #2b160d;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .estado-activo {
+        display: inline-block;
+        background: #f3d27a;
+        color: #2b160d;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-weight: 800;
+    }
+
+    .estado-inactivo {
+        display: inline-block;
+        background: #ead8a2;
+        color: #6f5b4a;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-weight: 800;
+    }
+
+    .productor-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 26px;
+        padding-top: 22px;
+        border-top: 1px solid #ead8a2;
+    }
+
+    .btn-editar {
+        background: #4a2c1a;
+        border: 1px solid #4a2c1a;
+        color: #fff8df;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-decoration: none;
+    }
+
+        .btn-editar:hover {
+            background: #2b160d;
+            color: #fff8df;
+        }
+
+    .btn-volver {
+        background: #fff3c4;
+        border: 1px solid #d8bd77;
+        color: #4a2c1a;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-decoration: none;
+    }
+
+        .btn-volver:hover {
+            background: #f3d27a;
+            color: #2b160d;
+        }
+
+    @@media (max-width: 768px) {
+        .productor-detalle-page {
+            padding: 20px;
+        }
+
+        .productor-card-body {
+            padding: 22px;
+        }
+
+        .detalle-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .productor-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-editar,
+        .btn-volver {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="productor-detalle-page">
+
+    <div class="productor-header">
+        <h1>Detalles del productor</h1>
+        <p>Información registrada del productor cafetalero.</p>
+    </div>
+
+    <div class="productor-card">
+        <div class="productor-card-header">
+            <h2>@Model.Nombre</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+
+        <div class="productor-card-body">
+            <div class="detalle-grid">
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Nombre</span>
+                    <span class="detalle-value">@Model.Nombre</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Cédula</span>
+                    <span class="detalle-value">@Model.Cedula</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Teléfono</span>
+                    <span class="detalle-value">@Model.Telefono</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Finca</span>
+                    <span class="detalle-value">@Model.Finca</span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">Dirección</span>
+                    <span class="detalle-value">@Model.Direccion</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Estado</span>
+
+                    @if (Model.Activo)
+                    {
+                        <span class="estado-activo">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="estado-inactivo">Inactivo</span>
+                    }
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Fecha de registro</span>
+                    <span class="detalle-value">@Model.FechaRegistro.ToString("dd/MM/yyyy hh:mm tt")</span>
+                </div>
+
+            </div>
+
+            <div class="productor-actions">
+                <a asp-action="Index" class="btn-volver">Volver a la lista</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-editar">Editar</a>
+            </div>
+        </div>
+    </div>
+
 </div>

@@ -14,189 +14,310 @@
     var ventasProductosJson = JsonSerializer.Serialize(ViewBag.VentasProductos);
 }
 
-<div class="mb-4">
-    <h1 class="fw-bold">Dashboard Administrativo</h1>
-    <p class="text-muted">
-        Panel general del sistema Microbeneficio San Gabriel.
-    </p>
-</div>
+<style>
+    body {
+        background: #fff8df !important;
+        color: #2b2118 !important;
+    }
 
-<div class="row g-4 mb-4">
+    main,
+    .main-content,
+    .dashboard-container,
+    .content-wrapper,
+    .container-fluid {
+        background: #fff8df !important;
+    }
 
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
-            <h1 class="fw-bold text-primary">@ViewBag.TotalUsuarios</h1>
-            <p class="text-muted mb-0">Usuarios registrados</p>
-        </div>
+    .sidebar {
+        background: linear-gradient(180deg, #3a1f12 0%, #5a351f 55%, #7a5230 100%) !important;
+        color: #fff8df !important;
+        border-right: 4px solid #f3d27a !important;
+        box-shadow: 8px 0 24px rgba(58, 31, 18, 0.35) !important;
+    }
+
+        .sidebar h1,
+        .sidebar h2,
+        .sidebar h3,
+        .sidebar h4,
+        .sidebar span,
+        .sidebar-brand {
+            color: #fff3c4 !important;
+        }
+
+        .sidebar a,
+        .sidebar .nav-link {
+            color: #fff8df !important;
+            background: transparent !important;
+            border-left: 4px solid transparent !important;
+        }
+
+            .sidebar a:hover,
+            .sidebar .nav-link:hover {
+                background: rgba(243, 210, 122, 0.25) !important;
+                border-left-color: #f3d27a !important;
+                color: white !important;
+            }
+
+            .sidebar a.active,
+            .sidebar .nav-link.active {
+                background: rgba(255, 243, 196, 0.18) !important;
+                border-left-color: #fff3c4 !important;
+                color: white !important;
+            }
+
+    .topbar,
+    header,
+    .navbar {
+        background: #fff3c4 !important;
+        border-bottom: 1px solid #ead8a2 !important;
+        box-shadow: 0 4px 16px rgba(74, 44, 26, 0.10) !important;
+    }
+
+    .dashboard-cafe h1,
+    .dashboard-cafe h2,
+    .dashboard-cafe h3,
+    .dashboard-cafe h4 {
+        color: #2b160d !important;
+        font-weight: 800;
+    }
+
+    .dashboard-cafe .text-muted {
+        color: #6f5b4a !important;
+    }
+
+    .dashboard-cafe .card {
+        background: #fffdf2 !important;
+        border: 1px solid #ead8a2 !important;
+        border-top: 5px solid #f3d27a !important;
+        box-shadow: 0 10px 24px rgba(74, 44, 26, 0.14) !important;
+    }
+
+        .dashboard-cafe .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(74, 44, 26, 0.18) !important;
+            transition: 0.25s ease;
+        }
+
+    .dashboard-cafe .text-primary,
+    .dashboard-cafe .text-success,
+    .dashboard-cafe .text-warning,
+    .dashboard-cafe .text-danger {
+        color: #7a5230 !important;
+    }
+
+    .dashboard-cafe .btn-success,
+    .dashboard-cafe .btn-primary {
+        background: #4a2c1a !important;
+        border-color: #4a2c1a !important;
+        color: #fff8df !important;
+        font-weight: 700;
+        border-radius: 8px;
+    }
+
+        .dashboard-cafe .btn-success:hover,
+        .dashboard-cafe .btn-primary:hover {
+            background: #2b160d !important;
+            border-color: #2b160d !important;
+            color: #fff8df !important;
+        }
+
+    .dashboard-cafe .border-bottom {
+        border-bottom-color: #ead8a2 !important;
+    }
+
+    .dashboard-cafe canvas {
+        background: #fffdf2;
+        border-radius: 12px;
+    }
+</style>
+
+<div class="dashboard-cafe">
+
+    <div class="mb-4">
+        <h1 class="fw-bold">Dashboard Administrativo</h1>
+        <p class="text-muted">
+            Panel general del sistema Microbeneficio San Gabriel.
+        </p>
     </div>
 
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
-            <h1 class="fw-bold text-success">@ViewBag.TotalProductores</h1>
-            <p class="text-muted mb-0">Productores activos</p>
-        </div>
-    </div>
+    <div class="row g-4 mb-4">
 
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
-            <h1 class="fw-bold text-warning">@ViewBag.TotalProductos</h1>
-            <p class="text-muted mb-0">Productos registrados</p>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
-            <h1 class="fw-bold text-danger">@ViewBag.StockBajo</h1>
-            <p class="text-muted mb-0">Productos con stock bajo</p>
-        </div>
-    </div>
-
-</div>
-
-<div class="row g-4 mb-4">
-
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <h2 class="fw-bold mb-3">Pedidos</h2>
-            <p class="text-muted">Gestión de pedidos realizados por clientes.</p>
-            <h1 class="fw-bold text-primary">@ViewBag.TotalPedidos</h1>
-
-            <a asp-controller="Pedidos"
-                   asp-action="Index"
-                   class="btn btn-success mt-3">
-                Ir al módulo
-            </a>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <h2 class="fw-bold mb-3">Facturación</h2>
-            <p class="text-muted">Administración de facturas y pagos.</p>
-            <h1 class="fw-bold text-success">@ViewBag.TotalFacturas</h1>
-
-            <a asp-controller="Facturas"
-                   asp-action="Index"
-                   class="btn btn-success mt-3">
-                Ir al módulo
-            </a>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <h2 class="fw-bold mb-3">Ventas totales</h2>
-            <p class="text-muted">Total acumulado de ventas realizadas.</p>
-            <h1 class="fw-bold text-success">
-                ₡ @ViewBag.TotalVentas.ToString("N2")
-            </h1>
-
-            <a asp-controller="Reportes"
-                   asp-action="Index"
-                   class="btn btn-success mt-3">
-                Ver reportes
-            </a>
-        </div>
-    </div>
-
-</div>
-
-<div class="row g-4 mb-4">
-
-    <div class="col-md-7">
-        <div class="card border-0 shadow-sm rounded-4 p-4">
-            <h3 class="fw-bold mb-4">Stock por producto</h3>
-
-            <div style="height: 320px;">
-                <canvas id="stockChart"></canvas>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <h1 class="fw-bold text-primary">@ViewBag.TotalUsuarios</h1>
+                <p class="text-muted mb-0">Usuarios registrados</p>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-5">
-        <div class="card border-0 shadow-sm rounded-4 p-4">
-            <h3 class="fw-bold mb-4">Ventas por producto</h3>
-
-            <div style="height: 320px; display:flex; justify-content:center;">
-                <canvas id="ventasChart"
-                        style="max-width:300px; max-height:300px;">
-                </canvas>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <h1 class="fw-bold text-success">@ViewBag.TotalProductores</h1>
+                <p class="text-muted mb-0">Productores activos</p>
             </div>
         </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <h1 class="fw-bold text-warning">@ViewBag.TotalProductos</h1>
+                <p class="text-muted mb-0">Productos registrados</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <h1 class="fw-bold text-danger">@ViewBag.StockBajo</h1>
+                <p class="text-muted mb-0">Productos con stock bajo</p>
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <div class="row g-4 mb-4">
 
-<div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h2 class="fw-bold mb-3">Pedidos</h2>
+                <p class="text-muted">Gestión de pedidos realizados por clientes.</p>
+                <h1 class="fw-bold text-primary">@ViewBag.TotalPedidos</h1>
 
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <h2 class="fw-bold mb-4">Últimos pedidos</h2>
-
-            @if (ultimosPedidos != null && ultimosPedidos.Any())
-            {
-                foreach (var pedido in ultimosPedidos)
-                {
-                    <div class="border-bottom pb-2 mb-2">
-                        <strong>@pedido.ClienteNombre</strong>
-                        <br />
-                        <span class="text-muted">@pedido.Producto?.Nombre</span>
-                    </div>
-                }
-            }
-            else
-            {
-                <p class="text-muted">No hay pedidos registrados.</p>
-            }
+                <a asp-controller="Pedidos"
+                   asp-action="Index"
+                   class="btn btn-success mt-3">
+                    Ir al módulo
+                </a>
+            </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h2 class="fw-bold mb-3">Facturación</h2>
+                <p class="text-muted">Administración de facturas y pagos.</p>
+                <h1 class="fw-bold text-success">@ViewBag.TotalFacturas</h1>
+
+                <a asp-controller="Facturas"
+                   asp-action="Index"
+                   class="btn btn-success mt-3">
+                    Ir al módulo
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h2 class="fw-bold mb-3">Ventas totales</h2>
+                <p class="text-muted">Total acumulado de ventas realizadas.</p>
+                <h1 class="fw-bold text-success">
+                    ₡ @ViewBag.TotalVentas.ToString("N2")
+                </h1>
+
+                <a asp-controller="Reportes"
+                   asp-action="Index"
+                   class="btn btn-success mt-3">
+                    Ver reportes
+                </a>
+            </div>
+        </div>
+
     </div>
 
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <h2 class="fw-bold mb-4">Últimas facturas</h2>
+    <div class="row g-4 mb-4">
 
-            @if (ultimasFacturas != null && ultimasFacturas.Any())
-            {
-                foreach (var factura in ultimasFacturas)
-                {
-                    <div class="border-bottom pb-2 mb-2">
-                        <strong>Factura #@factura.Id</strong>
-                        <br />
-                        <span class="text-success fw-bold">
-                            ₡ @factura.Total.ToString("N2")
-                        </span>
-                    </div>
-                }
-            }
-            else
-            {
-                <p class="text-muted">No hay facturas registradas.</p>
-            }
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h3 class="fw-bold mb-4">Stock por producto</h3>
+
+                <div style="height: 320px;">
+                    <canvas id="stockChart"></canvas>
+                </div>
+            </div>
         </div>
+
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h3 class="fw-bold mb-4">Ventas por producto</h3>
+
+                <div style="height: 320px; display:flex; justify-content:center;">
+                    <canvas id="ventasChart"
+                            style="max-width:300px; max-height:300px;">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <h2 class="fw-bold mb-4">Alertas de stock</h2>
+    <div class="row g-4 mb-4">
 
-            @if (productosStockBajo != null && productosStockBajo.Any())
-            {
-                foreach (var producto in productosStockBajo)
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h2 class="fw-bold mb-4">Últimos pedidos</h2>
+
+                @if (ultimosPedidos != null && ultimosPedidos.Any())
                 {
-                    <div class="border-bottom pb-2 mb-2">
-                        <strong class="text-danger">@producto.Nombre</strong>
-                        <br />
-                        <span class="text-muted">
-                            Stock: @producto.Stock
-                        </span>
-                    </div>
+                    foreach (var pedido in ultimosPedidos)
+                    {
+                        <div class="border-bottom pb-2 mb-2">
+                            <strong>@pedido.ClienteNombre</strong>
+                            <br />
+                            <span class="text-muted">@pedido.Producto?.Nombre</span>
+                        </div>
+                    }
                 }
-            }
-            else
-            {
-                <p class="text-muted">No hay alertas de stock.</p>
-            }
+                else
+                {
+                    <p class="text-muted">No hay pedidos registrados.</p>
+                }
+            </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h2 class="fw-bold mb-4">Últimas facturas</h2>
+
+                @if (ultimasFacturas != null && ultimasFacturas.Any())
+                {
+                    foreach (var factura in ultimasFacturas)
+                    {
+                        <div class="border-bottom pb-2 mb-2">
+                            <strong>Factura #@factura.Id</strong>
+                            <br />
+                            <span class="text-success fw-bold">
+                                ₡ @factura.Total.ToString("N2")
+                            </span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No hay facturas registradas.</p>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                <h2 class="fw-bold mb-4">Alertas de stock</h2>
+
+                @if (productosStockBajo != null && productosStockBajo.Any())
+                {
+                    foreach (var producto in productosStockBajo)
+                    {
+                        <div class="border-bottom pb-2 mb-2">
+                            <strong class="text-danger">@producto.Nombre</strong>
+                            <br />
+                            <span class="text-muted">
+                                Stock: @producto.Stock
+                            </span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No hay alertas de stock.</p>
+                }
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -217,6 +338,8 @@
     datasets: [{
     label: 'Stock disponible',
     data: stockProductos,
+    backgroundColor: '#f3d27a',
+    borderColor: '#7a5230',
     borderWidth: 1
     }]
     },
@@ -234,7 +357,16 @@
     labels: ventasProductos.map(v => v.Producto),
     datasets: [{
     label: 'Ventas por producto',
-    data: ventasProductos.map(v => v.Total)
+    data: ventasProductos.map(v => v.Total),
+    backgroundColor: [
+    '#4a2c1a',
+    '#7a5230',
+    '#f3d27a',
+    '#d6a53a',
+    '#fff3c4'
+    ],
+    borderColor: '#fffdf2',
+    borderWidth: 2
     }]
     },
     options: {

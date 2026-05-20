@@ -1,65 +1,251 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Productor
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<style>
+    body,
+    .admin-main,
+    .admin-content {
+        background: #fff8df !important;
+    }
 
-<h4>Productor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" />
-                <span asp-validation-for="Cedula" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Finca" class="control-label"></label>
-                <input asp-for="Finca" class="form-control" />
-                <span asp-validation-for="Finca" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-                <input asp-for="FechaRegistro" class="form-control" />
-                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    .productor-edit-page {
+        padding: 32px;
+        min-height: calc(100vh - 90px);
+    }
+
+    .productor-header {
+        margin-bottom: 24px;
+    }
+
+        .productor-header h1 {
+            color: #2b160d;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .productor-header p {
+            color: #6f5b4a;
+            margin: 0;
+        }
+
+    .productor-card {
+        max-width: 980px;
+        background: #fffdf2;
+        border: 1px solid #ead8a2;
+        border-top: 6px solid #f3d27a;
+        border-radius: 18px;
+        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
+        overflow: hidden;
+    }
+
+    .productor-card-header {
+        background: linear-gradient(90deg, #4a2c1a, #7a5230);
+        color: #fff8df;
+        padding: 24px 30px;
+    }
+
+        .productor-card-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .productor-card-header span {
+            color: #fff3c4;
+            font-size: 14px;
+        }
+
+    .productor-card-body {
+        padding: 30px;
+    }
+
+    .form-label {
+        color: #2b160d;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .form-control,
+    .form-select {
+        background: #fff8df;
+        border: 1px solid #d8bd77;
+        border-radius: 10px;
+        color: #2b2118;
+        padding: 10px 12px;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d6a53a;
+            box-shadow: 0 0 0 0.2rem rgba(214, 165, 58, 0.22);
+            background: #fffdf2;
+        }
+
+    .form-check {
+        background: #fff8df;
+        border: 1px solid #ead8a2;
+        border-radius: 12px;
+        padding: 14px 18px 14px 42px;
+        margin-top: 8px;
+    }
+
+    .form-check-input:checked {
+        background-color: #4a2c1a;
+        border-color: #4a2c1a;
+    }
+
+    .form-check-label {
+        color: #2b160d;
+        font-weight: 700;
+    }
+
+    .text-danger {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .productor-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 26px;
+        padding-top: 22px;
+        border-top: 1px solid #ead8a2;
+    }
+
+    .btn-guardar {
+        background: #4a2c1a;
+        border: 1px solid #4a2c1a;
+        color: #fff8df;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-decoration: none;
+    }
+
+        .btn-guardar:hover {
+            background: #2b160d;
+            border-color: #2b160d;
+            color: #fff8df;
+        }
+
+    .btn-volver {
+        background: #fff3c4;
+        border: 1px solid #d8bd77;
+        color: #4a2c1a;
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-decoration: none;
+    }
+
+        .btn-volver:hover {
+            background: #f3d27a;
+            color: #2b160d;
+        }
+
+    @@media (max-width: 768px) {
+        .productor-edit-page {
+            padding: 20px;
+        }
+
+        .productor-card-body {
+            padding: 22px;
+        }
+
+        .productor-actions {
+            flex-direction: column-reverse;
+        }
+
+        .btn-guardar,
+        .btn-volver {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="productor-edit-page">
+
+    <div class="productor-header">
+        <h1>Editar productor</h1>
+        <p>Actualizá la información del productor registrado.</p>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="productor-card">
+        <div class="productor-card-header">
+            <h2>@Model.Nombre</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+
+        <div class="productor-card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="Nombre" class="form-label">Nombre</label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Cedula" class="form-label">Cédula</label>
+                        <input asp-for="Cedula" class="form-control" />
+                        <span asp-validation-for="Cedula" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Telefono" class="form-label">Teléfono</label>
+                        <input asp-for="Telefono" class="form-control" />
+                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Finca" class="form-label">Finca</label>
+                        <input asp-for="Finca" class="form-control" />
+                        <span asp-validation-for="Finca" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Direccion" class="form-label">Dirección</label>
+                        <textarea asp-for="Direccion" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Direccion" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
+                        <input asp-for="FechaRegistro" class="form-control" />
+                        <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check w-100">
+                            <input class="form-check-input" asp-for="Activo" />
+                            <label class="form-check-label" asp-for="Activo">
+                                Productor activo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="productor-actions">
+                    <a asp-action="Index" class="btn-volver">Volver a la lista</a>
+                    <button type="submit" class="btn-guardar">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

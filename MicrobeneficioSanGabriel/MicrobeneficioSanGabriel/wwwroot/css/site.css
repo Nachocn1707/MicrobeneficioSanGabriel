@@ -1,61 +1,334 @@
-/* Responsive para tablets y celulares */
-@media (max-width: 992px) {
-    .sidebar {
-        width: 100%;
-        min-height: auto;
-        position: relative;
+/* =========================
+   Estetica cafetalera cafe + amarillo suave
+========================= */
+
+:root {
+    --cafe-oscuro: #2b160d;
+    --cafe: #4a2c1a;
+    --cafe-medio: #7a5230;
+    --amarillo-suave: #f3d27a;
+    --amarillo-crema: #fff3c4;
+    --crema: #fff8df;
+    --crema-card: #fffdf2;
+    --dorado: #d6a53a;
+    --texto: #2b2118;
+}
+
+body {
+    background: var(--crema) !important;
+    color: var(--texto);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(180deg, var(--cafe-oscuro), var(--cafe)) !important;
+    color: white;
+    box-shadow: 8px 0 24px rgba(43, 22, 13, 0.22);
+}
+
+.sidebar-brand,
+.sidebar-brand h4,
+.sidebar-brand span {
+    color: var(--amarillo-crema) !important;
+}
+
+.sidebar .nav-link {
+    color: #fff8df !important;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+}
+
+    .sidebar .nav-link:hover {
+        background: rgba(243, 210, 122, 0.20) !important;
+        border-left-color: var(--amarillo-suave);
+        color: white !important;
     }
 
-    .main-content {
-        margin-left: 0;
-        width: 100%;
+    .sidebar .nav-link.active,
+    .sidebar .nav-link.selected {
+        background: rgba(243, 210, 122, 0.26) !important;
+        border-left-color: var(--dorado);
+        color: white !important;
     }
 
-    .dashboard-container,
-    .content-wrapper {
-        padding: 20px;
+/* Contenido principal */
+.main-content,
+.dashboard-container,
+.content-wrapper {
+    background: var(--crema) !important;
+}
+
+/* Barra superior */
+.topbar,
+.navbar,
+header {
+    background: var(--amarillo-crema) !important;
+    border-bottom: 1px solid #ead8a2 !important;
+    box-shadow: 0 4px 16px rgba(74, 44, 26, 0.08);
+}
+
+/* Titulos */
+h1, h2, h3, h4 {
+    color: var(--cafe-oscuro);
+    font-weight: 800;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+}
+
+    h1::after,
+    h2::after {
+        content: "";
+        display: block;
+        width: 72px;
+        height: 4px;
+        margin-top: 10px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--cafe-medio), var(--amarillo-suave));
     }
 
-    .card {
-        margin-bottom: 15px;
+/* Tarjetas */
+.card {
+    background: var(--crema-card) !important;
+    border: 1px solid #ead8a2 !important;
+    border-top: 4px solid var(--amarillo-suave) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 24px rgba(74, 44, 26, 0.12) !important;
+    min-width: 240px;
+}
+
+    .card h1,
+    .card h2,
+    .card h3,
+    .card h4,
+    .card-title {
+        color: var(--cafe-oscuro) !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
     }
 
-    table {
-        font-size: 14px;
+    .card p,
+    .card span {
+        word-break: normal !important;
+        overflow-wrap: anywhere;
     }
 
-    .table-responsive {
-        overflow-x: auto;
+    /* Numeros del dashboard */
+    .card .display-4,
+    .card .fs-1,
+    .card .h1,
+    .card strong {
+        color: var(--cafe-medio) !important;
     }
 
-    .btn {
-        margin-bottom: 5px;
+/* Acomodo del dashboard */
+.dashboard-container .row,
+.content-wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dashboard-container .card,
+.content-wrapper .card {
+    min-width: 240px;
+}
+
+/* Botones */
+.btn-primary,
+.btn-success,
+button[type="submit"],
+input[type="submit"] {
+    background: var(--cafe) !important;
+    border-color: var(--cafe) !important;
+    color: #fff8df !important;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+    .btn-primary:hover,
+    .btn-success:hover,
+    button[type="submit"]:hover,
+    input[type="submit"]:hover {
+        background: var(--cafe-oscuro) !important;
+        border-color: var(--cafe-oscuro) !important;
+    }
+
+/* Boton cerrar sesion */
+.btn-outline-dark,
+.btn-outline-secondary {
+    border-color: var(--cafe) !important;
+    color: var(--cafe) !important;
+    border-radius: 8px;
+}
+
+    .btn-outline-dark:hover,
+    .btn-outline-secondary:hover {
+        background: var(--cafe) !important;
+        color: #fff8df !important;
+    }
+
+/* Tablas */
+.table {
+    background: var(--crema-card);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table thead {
+        background: var(--cafe);
+        color: #fff8df;
+    }
+
+    .table tbody tr:hover {
+        background: var(--amarillo-crema);
+    }
+
+/* Formularios */
+.form-control,
+.form-select {
+    border: 1px solid #d8bd77;
+    border-radius: 8px;
+    background: #fffdf2;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--dorado);
+        box-shadow: 0 0 0 0.2rem rgba(214, 165, 58, 0.22);
+    }
+
+/* En pantallas medianas, las tarjetas tienen mas espacio */
+@media (max-width: 1200px) {
+    .dashboard-container .col-md-3,
+    .dashboard-container .col-md-4,
+    .content-wrapper .col-md-3,
+    .content-wrapper .col-md-4 {
+        width: 50%;
+        flex: 0 0 50%;
+        max-width: 50%;
     }
 }
 
-@media (max-width: 576px) {
-    h1 {
-        font-size: 28px;
-    }
-
-    h2 {
-        font-size: 22px;
-    }
-
-    .sidebar-brand h4 {
-        font-size: 22px;
+/* En celular, una tarjeta por fila */
+@media (max-width: 768px) {
+    .dashboard-container .col-md-3,
+    .dashboard-container .col-md-4,
+    .content-wrapper .col-md-3,
+    .content-wrapper .col-md-4 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
     }
 
     .card {
-        padding: 15px !important;
+        min-width: 100%;
+    }
+    /* =========================
+   FORZAR ESTILO CAFE + AMARILLO
+========================= */
+
+    html body {
+        background-color: #fff8df !important;
+        color: #2b2118 !important;
     }
 
-    .btn {
-        width: 100%;
-        margin-bottom: 8px;
-    }
+        html body .main-content,
+        html body .dashboard-container,
+        html body .content-wrapper {
+            background-color: #fff8df !important;
+        }
 
-    .row {
-        row-gap: 15px;
-    }
+        /* Sidebar cafe */
+        html body .sidebar {
+            background: linear-gradient(180deg, #2b160d, #4a2c1a) !important;
+            color: #fff8df !important;
+        }
+
+            html body .sidebar h3,
+            html body .sidebar h4,
+            html body .sidebar-brand,
+            html body .sidebar-brand span {
+                color: #fff3c4 !important;
+            }
+
+            html body .sidebar a,
+            html body .sidebar .nav-link {
+                color: #fff8df !important;
+                background-color: transparent !important;
+                border-left: 4px solid transparent !important;
+            }
+
+                html body .sidebar a:hover,
+                html body .sidebar .nav-link:hover {
+                    background-color: rgba(243, 210, 122, 0.25) !important;
+                    border-left-color: #f3d27a !important;
+                }
+
+        /* Barra superior amarillo suave */
+        html body .topbar,
+        html body header,
+        html body .navbar {
+            background-color: #fff3c4 !important;
+            border-bottom: 1px solid #ead8a2 !important;
+        }
+
+        /* Fondo del dashboard */
+        html body .main-content {
+            background-color: #fff8df !important;
+        }
+
+        /* Tarjetas */
+        html body .card,
+        html body .card-dashboard,
+        html body .module-card {
+            background-color: #fffdf2 !important;
+            border: 1px solid #ead8a2 !important;
+            border-top: 5px solid #f3d27a !important;
+            box-shadow: 0 10px 24px rgba(74, 44, 26, 0.14) !important;
+        }
+
+        /* Titulos */
+        html body h1,
+        html body h2,
+        html body h3,
+        html body h4,
+        html body .card-title {
+            color: #2b160d !important;
+        }
+
+        /* Numeros */
+        html body .card-dashboard h2,
+        html body .card .display-4,
+        html body .card .fs-1,
+        html body .card .h1,
+        html body .module-card strong {
+            color: #7a5230 !important;
+        }
+
+        /* Botones cafe */
+        html body .btn-success,
+        html body .btn-primary,
+        html body .module-card .btn,
+        html body .card .btn,
+        html body a.btn,
+        html body button[type="submit"],
+        html body input[type="submit"] {
+            background-color: #4a2c1a !important;
+            border-color: #4a2c1a !important;
+            color: #fff8df !important;
+        }
+
+            html body .btn-success:hover,
+            html body .btn-primary:hover,
+            html body .module-card .btn:hover,
+            html body .card .btn:hover,
+            html body a.btn:hover,
+            html body button[type="submit"]:hover,
+            html body input[type="submit"]:hover {
+                background-color: #2b160d !important;
+                border-color: #2b160d !important;
+                color: #fff8df !important;
+            }
 }
