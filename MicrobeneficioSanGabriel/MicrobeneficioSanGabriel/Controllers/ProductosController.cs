@@ -2,12 +2,7 @@
 using MicrobeneficioSanGabriel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -37,6 +32,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var producto = await _context.Productos
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (producto == null)
             {
                 return NotFound();
@@ -52,11 +48,9 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // POST: Productos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,Descripcion,Activo,FechaRegistro")] Producto producto)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto)
         {
             if (ModelState.IsValid)
             {
@@ -64,10 +58,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(producto);
         }
 
         // GET: Productos/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,19 +72,20 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             var producto = await _context.Productos.FindAsync(id);
+
             if (producto == null)
             {
                 return NotFound();
             }
+
             return View(producto);
         }
 
         // POST: Productos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,Descripcion,Activo,FechaRegistro")] Producto producto)
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto)
         {
             if (id != producto.Id)
             {
@@ -108,17 +105,18 @@ namespace MicrobeneficioSanGabriel.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(producto);
         }
 
         // GET: Productos/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -128,6 +126,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var producto = await _context.Productos
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (producto == null)
             {
                 return NotFound();
@@ -139,9 +138,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Productos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var producto = await _context.Productos.FindAsync(id);
+
             if (producto != null)
             {
                 _context.Productos.Remove(producto);

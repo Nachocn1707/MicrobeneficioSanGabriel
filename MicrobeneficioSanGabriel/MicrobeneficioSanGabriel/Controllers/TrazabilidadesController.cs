@@ -142,6 +142,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(trazabilidad);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -162,6 +163,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
         {
             if (id != trazabilidad.Id)
@@ -194,6 +196,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(trazabilidad);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -216,6 +219,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var trazabilidad = await _context.Trazabilidades.FindAsync(id);

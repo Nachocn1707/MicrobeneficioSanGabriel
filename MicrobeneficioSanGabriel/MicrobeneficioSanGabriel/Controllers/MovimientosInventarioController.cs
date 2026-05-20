@@ -98,6 +98,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(movimientoInventario);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -112,6 +113,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ProductoId,TipoMovimiento,Cantidad,Observacion,FechaMovimiento")] MovimientoInventario movimientoInventario)
         {
             if (id != movimientoInventario.Id) return NotFound();
@@ -138,6 +140,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(movimientoInventario);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -153,6 +156,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var movimientoInventario = await _context.MovimientosInventario.FindAsync(id);

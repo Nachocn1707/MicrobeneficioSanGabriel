@@ -69,6 +69,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             return View(model);
         }
+
         public async Task<IActionResult> Create()
         {
             var model = new UsuarioCrearViewModel

@@ -100,6 +100,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         // =========================
         // EDITAR
         // =========================
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -130,6 +131,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(
             int id,
             [Bind("Id,CodigoLote,ProductorId,PesoKg,FechaRecepcion,Estado,Observacion")]
@@ -177,6 +179,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         // =========================
         // ELIMINAR
         // =========================
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -198,6 +201,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var lote = await _context.Lotes.FindAsync(id);

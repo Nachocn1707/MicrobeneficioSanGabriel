@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
@@ -37,6 +32,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var productor = await _context.Productores
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (productor == null)
             {
                 return NotFound();
@@ -52,8 +48,6 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // POST: Productores/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Cedula,Telefono,Direccion,Finca,Activo,FechaRegistro")] Productor productor)
@@ -64,10 +58,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(productor);
         }
 
         // GET: Productores/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,18 +72,19 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             var productor = await _context.Productores.FindAsync(id);
+
             if (productor == null)
             {
                 return NotFound();
             }
+
             return View(productor);
         }
 
         // POST: Productores/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cedula,Telefono,Direccion,Finca,Activo,FechaRegistro")] Productor productor)
         {
             if (id != productor.Id)
@@ -108,17 +105,18 @@ namespace MicrobeneficioSanGabriel.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(productor);
         }
 
         // GET: Productores/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -128,6 +126,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var productor = await _context.Productores
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (productor == null)
             {
                 return NotFound();
@@ -139,9 +138,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Productores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productor = await _context.Productores.FindAsync(id);
+
             if (productor != null)
             {
                 _context.Productores.Remove(productor);

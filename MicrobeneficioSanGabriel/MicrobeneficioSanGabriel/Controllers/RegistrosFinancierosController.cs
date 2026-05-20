@@ -91,8 +91,10 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var csv = new System.Text.StringBuilder();
 
-            csv.AppendLine("REPORTE FINANCIERO"); 
-            csv.AppendLine($"Fecha de generación;{DateTime.Now:dd/MM/yyyy}"); csv.AppendLine();
+            csv.AppendLine("REPORTE FINANCIERO");
+            csv.AppendLine($"Fecha de generación;{DateTime.Now:dd/MM/yyyy}");
+            csv.AppendLine();
+
             csv.AppendLine($"Total ingresos;₡ {totalIngresos:N2}");
             csv.AppendLine($"Total gastos;₡ {totalGastos:N2}");
             csv.AppendLine($"Balance;₡ {balance:N2}");
@@ -120,6 +122,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             return File(bytes, "text/csv", nombreArchivo);
         }
+
         public IActionResult Create()
         {
             return View(new RegistroFinanciero

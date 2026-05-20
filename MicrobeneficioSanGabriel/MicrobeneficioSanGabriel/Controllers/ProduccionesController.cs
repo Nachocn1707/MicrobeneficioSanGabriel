@@ -100,6 +100,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // GET: Producciones/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,6 +123,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Producciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, Produccion produccion)
         {
             if (id != produccion.Id)
@@ -142,10 +144,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -157,6 +157,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // GET: Producciones/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -180,6 +181,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Producciones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var produccion = await _context.Producciones.FindAsync(id);

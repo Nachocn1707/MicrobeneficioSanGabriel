@@ -96,6 +96,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(pedido);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -110,6 +111,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, Pedido pedido)
         {
             if (id != pedido.Id) return NotFound();
@@ -134,6 +136,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(pedido);
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -149,6 +152,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var pedido = await _context.Pedidos.FindAsync(id);
