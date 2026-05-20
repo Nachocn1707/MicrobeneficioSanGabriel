@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using MicrobeneficioSanGabriel.ViewModels;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
+    [Authorize]
     public class TrazabilidadesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,14 +18,46 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context = context;
         }
 
-        // GET: Trazabilidades
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? codigoLote, string? etapa)
         {
-            var applicationDbContext = _context.Trazabilidades.Include(t => t.Lote).Include(t => t.Produccion);
-            return View(await applicationDbContext.ToListAsync());
+            var trazabilidades = _context.Trazabilidades
+                .Include(t => t.Lote)
+                    .ThenInclude(l => l.Productor)
+                .Include(t => t.Produccion)
+                    .ThenInclude(p => p.Producto)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(codigoLote))
+            {
+                trazabilidades = trazabilidades
+                    .Where(t => t.Lote != null && t.Lote.CodigoLote.Contains(codigoLote));
+            }
+
+            if (!string.IsNullOrWhiteSpace(etapa))
+            {
+                trazabilidades = trazabilidades
+                    .Where(t => t.Etapa == etapa);
+            }
+
+            ViewBag.CodigoLote = codigoLote;
+            ViewBag.Etapa = etapa;
+
+            ViewBag.Etapas = new SelectList(new List<string>
+            {
+                "Recepción",
+                "Producción",
+                "Secado",
+                "Empaque",
+                "Almacenamiento"
+            }, etapa);
+
+            var resultado = await trazabilidades
+                .OrderByDescending(t => t.FechaRegistro)
+                .ToListAsync();
+
+            return View(resultado);
         }
 
-        // GET: Trazabilidades/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,8 +67,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var trazabilidad = await _context.Trazabilidades
                 .Include(t => t.Lote)
+                    .ThenInclude(l => l.Productor)
                 .Include(t => t.Produccion)
+                    .ThenInclude(p => p.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (trazabilidad == null)
             {
                 return NotFound();
@@ -46,17 +80,52 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(trazabilidad);
         }
 
-        // GET: Trazabilidades/Create
+        public async Task<IActionResult> Historial(int? loteId)
+        {
+            if (loteId == null)
+            {
+                return NotFound();
+            }
+
+            var lote = await _context.Lotes
+                .Include(l => l.Productor)
+                .FirstOrDefaultAsync(l => l.Id == loteId);
+
+            if (lote == null)
+            {
+                return NotFound();
+            }
+
+            var producciones = await _context.Producciones
+                .Include(p => p.Producto)
+                .Where(p => p.LoteId == lote.Id)
+                .OrderBy(p => p.FechaProduccion)
+                .ToListAsync();
+
+            var trazabilidades = await _context.Trazabilidades
+                .Include(t => t.Produccion)
+                    .ThenInclude(p => p.Producto)
+                .Where(t => t.LoteId == lote.Id)
+                .OrderBy(t => t.FechaRegistro)
+                .ToListAsync();
+
+            var model = new TrazabilidadHistorialViewModel
+            {
+                Lote = lote,
+                Productor = lote.Productor,
+                Producciones = producciones,
+                Trazabilidades = trazabilidades
+            };
+
+            return View(model);
+        }
+
         public IActionResult Create()
         {
-            ViewData["LoteId"] = new SelectList(_context.Lotes, "Id", "CodigoLote");
-            ViewData["ProduccionId"] = new SelectList(_context.Producciones, "Id", "Estado");
+            CargarListas();
             return View();
         }
 
-        // POST: Trazabilidades/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
@@ -65,14 +134,14 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 _context.Add(trazabilidad);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Registro de trazabilidad creado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LoteId"] = new SelectList(_context.Lotes, "Id", "CodigoLote", trazabilidad.LoteId);
-            ViewData["ProduccionId"] = new SelectList(_context.Producciones, "Id", "Estado", trazabilidad.ProduccionId);
+
+            CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
             return View(trazabilidad);
         }
 
-        // GET: Trazabilidades/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,18 +150,16 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             var trazabilidad = await _context.Trazabilidades.FindAsync(id);
+
             if (trazabilidad == null)
             {
                 return NotFound();
             }
-            ViewData["LoteId"] = new SelectList(_context.Lotes, "Id", "CodigoLote", trazabilidad.LoteId);
-            ViewData["ProduccionId"] = new SelectList(_context.Producciones, "Id", "Estado", trazabilidad.ProduccionId);
+
+            CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
             return View(trazabilidad);
         }
 
-        // POST: Trazabilidades/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
@@ -108,6 +175,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     _context.Update(trazabilidad);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = "Registro de trazabilidad actualizado correctamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -115,19 +183,17 @@ namespace MicrobeneficioSanGabriel.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LoteId"] = new SelectList(_context.Lotes, "Id", "CodigoLote", trazabilidad.LoteId);
-            ViewData["ProduccionId"] = new SelectList(_context.Producciones, "Id", "Estado", trazabilidad.ProduccionId);
+
+            CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
             return View(trazabilidad);
         }
 
-        // GET: Trazabilidades/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,6 +205,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(t => t.Lote)
                 .Include(t => t.Produccion)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (trazabilidad == null)
             {
                 return NotFound();
@@ -147,19 +214,53 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(trazabilidad);
         }
 
-        // POST: Trazabilidades/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var trazabilidad = await _context.Trazabilidades.FindAsync(id);
+
             if (trazabilidad != null)
             {
                 _context.Trazabilidades.Remove(trazabilidad);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Registro de trazabilidad eliminado correctamente.";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private void CargarListas(int? loteId = null, int? produccionId = null)
+        {
+            ViewData["LoteId"] = new SelectList(
+                _context.Lotes.OrderBy(l => l.CodigoLote),
+                "Id",
+                "CodigoLote",
+                loteId
+            );
+
+            ViewData["ProduccionId"] = new SelectList(
+                _context.Producciones
+                    .Include(p => p.Lote)
+                    .OrderByDescending(p => p.FechaProduccion)
+                    .Select(p => new
+                    {
+                        p.Id,
+                        Descripcion = $"#{p.Id} - {p.Lote!.CodigoLote} - {p.TipoProceso} - {p.Estado}"
+                    }),
+                "Id",
+                "Descripcion",
+                produccionId
+            );
+
+            ViewBag.Etapas = new SelectList(new List<string>
+            {
+                "Recepción",
+                "Producción",
+                "Secado",
+                "Empaque",
+                "Almacenamiento"
+            });
         }
 
         private bool TrazabilidadExists(int id)
