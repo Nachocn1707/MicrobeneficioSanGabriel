@@ -25,7 +25,7 @@
                 <th>Cantidad</th>
                 <th>Observación</th>
                 <th>Fecha</th>
-                <th width="220">Acciones</th>
+                <th width="300">Acciones</th>
             </tr>
         </thead>
 
@@ -55,13 +55,26 @@
                     <td>@item.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")</td>
 
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm text-white">
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-warning btn-sm text-white">
+                                Editar inventario
+                            </a>
+                        }
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.Id"
+                           class="btn btn-info btn-sm text-white">
                             Detalles
                         </a>
 
                         @if (User.IsInRole("Administrador"))
                         {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-danger btn-sm">
                                 Eliminar
                             </a>
                         }

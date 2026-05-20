@@ -131,33 +131,22 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(factura);
         }
 
-        [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var factura = await _context.Facturas
-                .Include(f => f.Pedido)
-                .ThenInclude(p => p.Producto)
-                .FirstOrDefaultAsync(f => f.Id == id);
-
-            if (factura == null) return NotFound();
-
-            return View(factura);
-        }
-
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Anular(int id)
         {
             var factura = await _context.Facturas.FindAsync(id);
 
-            if (factura != null)
+            if (factura == null)
             {
-                _context.Facturas.Remove(factura);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            factura.EstadoPago = "Anulada";
+
+            _context.Update(factura);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

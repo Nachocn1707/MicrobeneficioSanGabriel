@@ -55,6 +55,7 @@
                 background: #fff3c4 !important;
                 border-bottom: 1px solid #ead8a2 !important;
                 box-shadow: 0 4px 16px rgba(74, 44, 26, 0.10) !important;
+                gap: 20px;
             }
 
                 .admin-topbar h5 {
@@ -84,6 +85,98 @@
                     border-color: #2b160d !important;
                     color: #fff8df !important;
                 }
+
+            .admin-search {
+                position: relative;
+                width: min(520px, 36vw);
+                margin-left: auto;
+            }
+
+            .admin-search-box {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: #fffdf2;
+                border: 1px solid #d8bd77;
+                border-radius: 999px;
+                padding: 9px 14px;
+                box-shadow: 0 6px 16px rgba(74, 44, 26, 0.08);
+            }
+
+                .admin-search-box i {
+                    color: #7a5230;
+                }
+
+                .admin-search-box input {
+                    width: 100%;
+                    border: none;
+                    outline: none;
+                    background: transparent;
+                    color: #2b160d;
+                    font-weight: 600;
+                }
+
+                    .admin-search-box input::placeholder {
+                        color: #8a735f;
+                    }
+
+            .search-clear {
+                border: none;
+                background: transparent;
+                color: #7a5230;
+                cursor: pointer;
+                display: none;
+            }
+
+            .search-results {
+                position: absolute;
+                top: calc(100% + 8px);
+                left: 0;
+                right: 0;
+                background: #fffdf2;
+                border: 1px solid #ead8a2;
+                border-radius: 14px;
+                box-shadow: 0 14px 30px rgba(74, 44, 26, 0.18);
+                padding: 8px;
+                z-index: 1000;
+            }
+
+                .search-results a,
+                .search-results div {
+                    display: block;
+                    padding: 10px 12px;
+                    border-radius: 10px;
+                    color: #2b160d;
+                    text-decoration: none;
+                    font-weight: 700;
+                }
+
+                    .search-results a:hover {
+                        background: #fff3c4;
+                    }
+
+            .search-empty {
+                color: #6f5b4a !important;
+                font-weight: 600 !important;
+            }
+
+            .search-hidden-row {
+                display: none !important;
+            }
+
+            @@media (max-width: 992px) {
+                .admin-topbar {
+                    height: auto;
+                    flex-wrap: wrap;
+                    padding: 16px 24px;
+                }
+
+                .admin-search {
+                    width: 100%;
+                    order: 3;
+                    margin-left: 0;
+                }
+            }
     </style>
 </head>
 <body>
@@ -148,6 +241,23 @@
                     <small>Sistema de gestión administrativa</small>
                 </div>
 
+                <div class="admin-search">
+                    <div class="admin-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input id="globalSearchInput"
+                               type="search"
+                               placeholder="Buscar módulo o registro..."
+                               autocomplete="off" />
+
+                        <button type="button" id="globalSearchClear" class="search-clear">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <div id="globalSearchResults" class="search-results" hidden></div>
+                </div>
+
                 <div class="topbar-user d-flex align-items-center gap-3">
 
                     <span class="admin-user">
@@ -199,6 +309,117 @@
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (() => {
+        const input = document.getElementById("globalSearchInput");
+        const results = document.getElementById("globalSearchResults");
+        const clearButton = document.getElementById("globalSearchClear");
+
+        if (!input || !results || !clearButton) return;
+
+        const normalize = (text) =>
+        (text || "")
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+
+        const getModules = () => {
+        return Array.from(document.querySelectorAll(".sidebar-menu a"))
+        .map(link => ({
+        name: link.textContent.trim(),
+        url: link.href
+        }))
+        .filter(item => item.name && item.url);
+        };
+
+        const getTableRows = () => {
+        return Array.from(document.querySelectorAll("table tbody tr"));
+        };
+
+        const filterTable = (query) => {
+        const rows = getTableRows();
+
+        if (!rows.length) return;
+
+        rows.forEach(row => {
+        const text = normalize(row.textContent);
+
+        if (!query || text.includes(query)) {
+        row.classList.remove("search-hidden-row");
+        } else {
+        row.classList.add("search-hidden-row");
+        }
+        });
+        };
+
+        const renderResults = (query) => {
+        const modules = getModules();
+        const matches = modules.filter(module =>
+        normalize(module.name).includes(query)
+        );
+
+        results.innerHTML = "";
+
+        if (!query) {
+        results.hidden = true;
+        return;
+        }
+
+        if (matches.length === 0) {
+        results.innerHTML = '<div class="search-empty">No se encontraron módulos.</div>';
+        results.hidden = false;
+        return;
+        }
+
+        matches.slice(0, 6).forEach(module => {
+        const link = document.createElement("a");
+        link.href = module.url;
+        link.textContent = module.name;
+        results.appendChild(link);
+        });
+
+        results.hidden = false;
+        };
+
+        input.addEventListener("input", () => {
+        const query = normalize(input.value);
+
+        clearButton.style.display = query ? "block" : "none";
+
+        filterTable(query);
+        renderResults(query);
+        });
+
+        input.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+
+        const query = normalize(input.value);
+        const firstResult = results.querySelector("a");
+
+        if (firstResult && query) {
+        window.location.href = firstResult.href;
+        }
+        });
+
+        clearButton.addEventListener("click", () => {
+        input.value = "";
+        clearButton.style.display = "none";
+        results.hidden = true;
+        filterTable("");
+        input.focus();
+        });
+
+        document.addEventListener("click", (event) => {
+        if (!event.target.closest(".admin-search")) {
+        results.hidden = true;
+        }
+        });
+        })();
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
