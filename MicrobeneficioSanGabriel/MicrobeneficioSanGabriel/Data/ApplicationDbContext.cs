@@ -19,6 +19,7 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<Trazabilidad> Trazabilidades { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<Factura> Facturas { get; set; }
+        public DbSet<RegistroFinanciero> RegistrosFinancieros { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
