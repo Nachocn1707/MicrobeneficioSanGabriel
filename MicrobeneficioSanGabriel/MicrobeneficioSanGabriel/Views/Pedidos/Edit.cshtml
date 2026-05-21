@@ -176,6 +176,17 @@
                         <span asp-validation-for="ClienteNombre" class="text-danger"></span>
                     </div>
 
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ClienteTelefono" class="form-label fw-semibold">
+                            Teléfono
+                        </label>
+
+                        <input asp-for="ClienteTelefono"
+                               class="form-control" />
+
+                        <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
+                    </div>
+
                     <div class="col-md-6">
                         <label asp-for="ProductoId" class="form-label">Producto</label>
                         <select asp-for="ProductoId" class="form-select" asp-items="ViewBag.ProductoId"></select>
@@ -199,6 +210,8 @@
                         <select asp-for="Estado" class="form-select">
                             <option value="Pendiente">Pendiente</option>
                             <option value="En proceso">En proceso</option>
+                            <option value="En camino">En camino</option>
+                            <option value="Listo para retirar">Listo para retirar</option>
                             <option value="Completado">Completado</option>
                             <option value="Cancelado">Cancelado</option>
                         </select>

@@ -27,7 +27,11 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (User.IsInRole("Cliente"))
             {
                 var correoCliente = User.Identity?.Name;
-                pedidos = pedidos.Where(p => p.ClienteNombre == correoCliente);
+
+                pedidos = pedidos.Where(p =>
+                    p.ClienteCorreo == correoCliente ||
+                    (p.ClienteCorreo == null && p.ClienteNombre == correoCliente)
+                );
             }
 
             return View(await pedidos.ToListAsync());
@@ -36,7 +40,14 @@ namespace MicrobeneficioSanGabriel.Controllers
         public IActionResult Create()
         {
             CargarProductos();
-            return View();
+
+            var pedido = new Pedido
+            {
+                FechaPedido = DateTime.Now,
+                Estado = "Pendiente"
+            };
+
+            return View(pedido);
         }
 
         [HttpPost]
@@ -45,9 +56,14 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (User.IsInRole("Cliente"))
             {
-                pedido.ClienteNombre = User.Identity?.Name ?? pedido.ClienteNombre;
+                pedido.ClienteCorreo = User.Identity?.Name;
                 pedido.Estado = "Pendiente";
                 pedido.FechaPedido = DateTime.Now;
+            }
+
+            if (string.IsNullOrWhiteSpace(pedido.Estado))
+            {
+                pedido.Estado = "Pendiente";
             }
 
             if (ModelState.IsValid)
@@ -85,11 +101,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                     _context.Productos.Update(producto);
                 }
 
-                pedido.FechaPedido = DateTime.Now;
-
                 _context.Pedidos.Add(pedido);
                 await _context.SaveChangesAsync();
 
+                TempData["Success"] = "Pedido creado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -107,7 +122,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido == null) return NotFound();
 
-            if (User.IsInRole("Cliente") && pedido.ClienteNombre != User.Identity?.Name)
+            if (User.IsInRole("Cliente") && !PedidoPerteneceAlCliente(pedido))
             {
                 return Forbid();
             }
@@ -141,6 +156,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     _context.Update(pedido);
                     await _context.SaveChangesAsync();
+
+                    TempData["Success"] = "Pedido actualizado correctamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,7 +183,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido == null) return NotFound();
 
-            if (pedido.ClienteNombre != User.Identity?.Name)
+            if (!PedidoPerteneceAlCliente(pedido))
             {
                 return Forbid();
             }
@@ -190,7 +207,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedidoOriginal == null) return NotFound();
 
-            if (pedidoOriginal.ClienteNombre != User.Identity?.Name)
+            if (!PedidoPerteneceAlCliente(pedidoOriginal))
             {
                 return Forbid();
             }
@@ -216,6 +233,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 pedidoOriginal.ProductoId = pedido.ProductoId;
                 pedidoOriginal.Cantidad = pedido.Cantidad;
+                pedidoOriginal.ClienteTelefono = pedido.ClienteTelefono;
                 pedidoOriginal.Observacion = pedido.Observacion;
 
                 await _context.SaveChangesAsync();
@@ -225,6 +243,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             pedido.ClienteNombre = pedidoOriginal.ClienteNombre;
+            pedido.ClienteCorreo = pedidoOriginal.ClienteCorreo;
+            pedido.ClienteTelefono = pedidoOriginal.ClienteTelefono;
             pedido.Estado = pedidoOriginal.Estado;
             pedido.FechaPedido = pedidoOriginal.FechaPedido;
 
@@ -243,7 +263,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido == null) return NotFound();
 
-            if (pedido.ClienteNombre != User.Identity?.Name)
+            if (!PedidoPerteneceAlCliente(pedido))
             {
                 return Forbid();
             }
@@ -266,7 +286,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido == null) return NotFound();
 
-            if (pedido.ClienteNombre != User.Identity?.Name)
+            if (!PedidoPerteneceAlCliente(pedido))
             {
                 return Forbid();
             }
@@ -311,13 +331,16 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            TempData["Success"] = "Pedido eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
         private void CargarProductos(int? productoSeleccionado = null)
         {
             ViewBag.ProductoId = new SelectList(
-                _context.Productos.OrderBy(p => p.Nombre),
+                _context.Productos
+                    .Where(p => p.Activo)
+                    .OrderBy(p => p.Nombre),
                 "Id",
                 "Nombre",
                 productoSeleccionado
@@ -327,6 +350,14 @@ namespace MicrobeneficioSanGabriel.Controllers
         private bool PedidoExists(int id)
         {
             return _context.Pedidos.Any(e => e.Id == id);
+        }
+
+        private bool PedidoPerteneceAlCliente(Pedido pedido)
+        {
+            var correoCliente = User.Identity?.Name;
+
+            return pedido.ClienteCorreo == correoCliente ||
+                   (pedido.ClienteCorreo == null && pedido.ClienteNombre == correoCliente);
         }
     }
 }

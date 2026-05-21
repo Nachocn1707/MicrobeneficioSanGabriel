@@ -2,9 +2,16 @@
 
 @{
     ViewData["Title"] = "Pedidos";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
 
+    if (User.IsInRole("Cliente"))
+    {
+        Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="fw-bold">Pedidos</h1>
@@ -28,6 +35,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Cliente</th>
+                        <th>Teléfono</th>
                         <th>Producto</th>
                         <th>Cantidad</th>
                         <th>Fecha</th>
@@ -47,6 +55,8 @@
                                 @item.ClienteNombre
                             </td>
 
+                            <td>@item.ClienteTelefono</td>
+
                             <td>
                                 @item.Producto?.Nombre
                             </td>
@@ -60,26 +70,34 @@
                             </td>
 
                             <td>
-
                                 @if (item.Estado == "Pendiente")
                                 {
-                                    <span class="badge bg-warning text-dark">
-                                        Pendiente
-                                    </span>
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                }
+                                else if (item.Estado == "En proceso")
+                                {
+                                    <span class="badge bg-primary">En proceso</span>
+                                }
+                                else if (item.Estado == "En camino")
+                                {
+                                    <span class="badge bg-info text-dark">En camino</span>
+                                }
+                                else if (item.Estado == "Listo para retirar")
+                                {
+                                    <span class="badge bg-secondary">Listo para retirar</span>
                                 }
                                 else if (item.Estado == "Completado")
                                 {
-                                    <span class="badge bg-success">
-                                        Completado
-                                    </span>
+                                    <span class="badge bg-success">Completado</span>
+                                }
+                                else if (item.Estado == "Cancelado")
+                                {
+                                    <span class="badge bg-danger">Cancelado</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary">
-                                        @item.Estado
-                                    </span>
+                                    <span class="badge bg-dark">@item.Estado</span>
                                 }
-
                             </td>
 
                             <td>

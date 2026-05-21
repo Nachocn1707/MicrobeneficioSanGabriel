@@ -148,6 +148,11 @@
             <div class="pedido-detalle-item">
                 <strong>Cliente</strong>
                 <span>@Model.ClienteNombre</span>
+            </div
+
+            <div class="pedido-detalle-item">
+                 <strong>Teléfono</strong>
+                 <span>@Model.ClienteTelefono</span>
             </div>
 
             <div class="pedido-detalle-item">
@@ -172,6 +177,18 @@
                 {
                     <span class="badge bg-warning text-dark">Pendiente</span>
                 }
+                else if (Model.Estado == "En proceso")
+                {
+                    <span class="badge bg-primary">En proceso</span>
+                }
+                else if (Model.Estado == "En camino")
+                {
+                    <span class="badge bg-info text-dark">En camino</span>
+                }
+                else if (Model.Estado == "Listo para retirar")
+                {
+                    <span class="badge bg-secondary">Listo para retirar</span>
+                }
                 else if (Model.Estado == "Completado")
                 {
                     <span class="badge bg-success">Completado</span>
@@ -182,7 +199,7 @@
                 }
                 else
                 {
-                    <span class="badge bg-secondary">@Model.Estado</span>
+                    <span class="badge bg-dark">@Model.Estado</span>
                 }
             </div>
         </div>

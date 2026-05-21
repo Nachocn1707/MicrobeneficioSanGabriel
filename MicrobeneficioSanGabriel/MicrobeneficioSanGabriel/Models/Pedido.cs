@@ -11,6 +11,13 @@ namespace MicrobeneficioSanGabriel.Models
         [Display(Name = "Cliente")]
         public string ClienteNombre { get; set; } = string.Empty;
 
+        [Display(Name = "Correo del cliente")]
+        public string? ClienteCorreo { get; set; }
+
+        [Required(ErrorMessage = "El teléfono del cliente es obligatorio")]
+        [Display(Name = "Teléfono del cliente")]
+        public string ClienteTelefono { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Debe seleccionar un producto")]
         [Display(Name = "Producto")]
         public int ProductoId { get; set; }

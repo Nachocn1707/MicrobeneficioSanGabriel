@@ -2,7 +2,15 @@
 
 @{
     ViewData["Title"] = "Productos";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    if (User.IsInRole("Cliente"))
+    {
+        Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
 }
 
 <div class="page-header">

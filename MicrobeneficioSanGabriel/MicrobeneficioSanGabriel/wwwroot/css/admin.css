@@ -169,3 +169,86 @@ body {
     margin-bottom: 24px;
     min-height: 48px;
 }
+
+.pedido-form-card {
+    width: 980px;
+    max-width: 100%;
+    background: #fffdf3;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 14px 34px rgba(70, 38, 18, 0.18);
+    border: 1px solid #e2c96b;
+}
+
+.pedido-form-header {
+    background: linear-gradient(90deg, #4b2413, #7a4a26);
+    color: white;
+    padding: 28px 34px;
+}
+
+    .pedido-form-header h3 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 28px;
+    }
+
+    .pedido-form-header span {
+        display: block;
+        margin-top: 4px;
+        font-size: 13px;
+        color: #f6df85;
+        font-weight: 600;
+    }
+
+.pedido-form-body {
+    padding: 34px;
+}
+
+.pedido-form-card .form-control,
+.pedido-form-card .form-select {
+    background-color: #fff6cf;
+    border: 1px solid #d7b65d;
+    border-radius: 8px;
+    min-height: 48px;
+}
+
+.pedido-form-card textarea.form-control {
+    min-height: 120px;
+}
+
+.pedido-form-actions {
+    border-top: 1px solid #e0c76f;
+    margin-top: 20px;
+    padding-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-volver {
+    background: #fff3c4;
+    color: #4b2413;
+    border: 1px solid #d7b65d;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.btn-guardar {
+    background: #4b2413;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.btn-volver:hover {
+    color: #4b2413;
+    background: #ffeaa0;
+}
+
+.btn-guardar:hover {
+    background: #6b351c;
+}

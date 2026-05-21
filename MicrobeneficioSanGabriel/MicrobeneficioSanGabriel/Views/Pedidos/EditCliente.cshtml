@@ -19,6 +19,18 @@
                 <input type="hidden" asp-for="Estado" />
                 <input type="hidden" asp-for="FechaPedido" />
 
+                <div class="mb-3">
+                    <label asp-for="ClienteTelefono" class="form-label">
+                        Teléfono
+                    </label>
+
+                    <input asp-for="ClienteTelefono"
+                           class="form-control"
+                           placeholder="Digite el número de teléfono" />
+
+                    <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="ProductoId" class="form-label fw-semibold">Producto</label>
