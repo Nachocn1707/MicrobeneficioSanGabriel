@@ -82,8 +82,8 @@
 
 <div class="admin-card">
     <div class="table-responsive">
-        <table class="table admin-table align-middle">
-            <thead>
+        <table id="tablaContabilidad" class="table admin-table align-middle">
+            <thead class="table-dark">
                 <tr>
                     <th>Fecha</th>
                     <th>Tipo</th>
@@ -94,54 +94,71 @@
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (item.Tipo == "Ingreso")
+                                    {
+                                        <span class="badge bg-success">Ingreso</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Gasto</span>
+                                    }
 
-            <tbody>
-                @if (!Model.Any())
-                {
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">
-                            No hay registros financieros.
-                        </td>
-                    </tr>
-                }
-                else
-                {
-                    foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                </td>
 
-                            <td>
-                                @if (item.Tipo == "Ingreso")
-                                {
-                                    <span class="badge bg-success">Ingreso</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Gasto</span>
-                                }
-                            </td>
+                                <td>@(item.Categoria ?? "Sin categoría")</td>
+                                <td>@item.Descripcion</td>
+                                <td>₡ @item.Monto.ToString("N2")</td>
+                                <td>@(item.Observacion ?? "Sin observación")</td>
+                                <td class="text-end">
 
-                            <td>@(item.Categoria ?? "Sin categoría")</td>
-                            <td>@item.Descripcion</td>
-                            <td>₡ @item.Monto.ToString("N2")</td>
-                            <td>@(item.Observacion ?? "Sin observación")</td>
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm">
+                                            Editar
+                                        </a>
+                                    }
 
-                            <td class="text-end">
-                                @if (User.IsInRole("Administrador"))
-                                {
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
-                                }
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
-                                @if (User.IsInRole("Administrador"))
-                                {
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-info btn-sm">
+                                        Detalles
+                                    </a>
+
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm">
+                                            Eliminar
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tablaContabilidad').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+                },
+                pageLength: 5,
+                lengthMenu: [5, 10, 15, 20] ,
+                responsive: true
+            });
+        });
+    </script>
+}

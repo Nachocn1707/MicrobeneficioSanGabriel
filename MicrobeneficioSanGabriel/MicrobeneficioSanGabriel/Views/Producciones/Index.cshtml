@@ -21,9 +21,9 @@
 <div class="admin-card">
     <div class="table-responsive">
 
-        <table class="table admin-table align-middle">
+        <table id="tablaProduccion" class="table admin-table align-middle">
 
-            <thead>
+            <thead class="table-dark">
                 <tr>
                     <th>Lote</th>
                     <th>Fecha</th>
@@ -126,3 +126,18 @@
 
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tablaProduccion').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+                },
+                pageLength: 5,
+                lengthMenu: [5, 10, 15, 20] ,
+                responsive: true
+            });
+        });
+    </script>
+}

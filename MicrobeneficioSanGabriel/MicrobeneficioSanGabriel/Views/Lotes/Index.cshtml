@@ -17,8 +17,10 @@
 </div>
 
 <div class="admin-card">
-    <table class="table table-admin align-middle">
-        <thead>
+
+    <table id="tablaLotes" class="table align-middle">
+
+        <thead class="table-dark">
             <tr>
                 <th>Código</th>
                 <th>Productor</th>
@@ -93,3 +95,18 @@
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tablaLotes').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+                },
+                pageLength: 5,
+                lengthMenu: [5, 10, 15, 20] ,
+                responsive: true
+            });
+        });
+    </script>
+}

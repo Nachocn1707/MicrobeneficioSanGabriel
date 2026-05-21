@@ -20,9 +20,9 @@
 
     <div class="tabla-container">
 
-        <table class="table tabla-productores">
+        <table id="tablaProductores" class="table tabla-productores">
 
-            <thead>
+            <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
                     <th>Cédula</th>
@@ -93,3 +93,18 @@
     </div>
 
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tablaProductores').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+                },
+                pageLength: 5,
+                lengthMenu: [5, 10, 15, 20] ,
+                responsive: true
+            });
+        });
+    </script>
+}

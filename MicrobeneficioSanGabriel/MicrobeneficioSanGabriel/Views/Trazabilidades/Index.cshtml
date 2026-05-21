@@ -47,8 +47,8 @@
 
 <div class="admin-card">
     <div class="table-responsive">
-        <table class="table admin-table align-middle">
-            <thead>
+        <table id="tablaTrazabilidad" class="table admin-table align-middle">
+            <thead class="table-dark">
                 <tr>
                     <th>Lote</th>
                     <th>Productor</th>
@@ -63,79 +63,105 @@
             </thead>
 
             <tbody>
-                @if (!Model.Any())
+                @foreach (var item in Model)
                 {
                     <tr>
-                        <td colspan="9" class="text-center text-muted">
-                            No hay registros de trazabilidad para los filtros seleccionados.
+                        <td>
+                            <strong>@item.Lote?.CodigoLote</strong>
+                            <br />
+                            <a asp-action="Historial"
+                               asp-route-loteId="@item.LoteId"
+                               class="small">
+                                Ver historial
+                            </a>
+                        </td>
+                        <td>@(item.Lote?.Productor?.Nombre ?? "Sin productor")</td>
+                        <td>#@item.ProduccionId<br/>
+                            <small class="text-muted">@item.Produccion?.TipoProceso</small>
+                        </td>
+                        <td>
+                            @(item.Produccion?.Producto?.Nombre ?? "Sin producto")
+                        </td>
+                        <td>
+                            @if (item.Etapa == "Recepción")
+                            {
+                                <span class="badge bg-primary">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else if (item.Etapa == "Producción")
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else if (item.Etapa == "Secado")
+                            {
+                                <span class="badge bg-info text-dark">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else if (item.Etapa == "Empaque")
+                            {
+                                <span class="badge bg-success">
+                                    @item.Etapa
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    @item.Etapa
+                                </span>
+                            }
+                        </td>
+
+                        <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(item.Responsable ?? "Sin responsable")</td>
+                        <td>@(item.Observacion ?? "Sin observación")</td>
+                        <td class="text-end">
+
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-warning btn-sm">
+                                    Editar
+                                </a>
+                            }
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-info btn-sm">
+                                Detalles
+                            </a>
+
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger btn-sm">
+                                    Eliminar
+                                </a>
+                            }
                         </td>
                     </tr>
-                }
-                else
-                {
-                    foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                <strong>@item.Lote?.CodigoLote</strong>
-                                <br />
-                                <a asp-action="Historial" asp-route-loteId="@item.LoteId" class="small">
-                                    Ver historial
-                                </a>
-                            </td>
-
-                            <td>@(item.Lote?.Productor?.Nombre ?? "Sin productor")</td>
-
-                            <td>
-                                #@item.ProduccionId
-                                <br />
-                                <small class="text-muted">@item.Produccion?.TipoProceso</small>
-                            </td>
-
-                            <td>@(item.Produccion?.Producto?.Nombre ?? "Sin producto")</td>
-
-                            <td>
-                                @if (item.Etapa == "Recepción")
-                                {
-                                    <span class="badge bg-primary">@item.Etapa</span>
-                                }
-                                else if (item.Etapa == "Producción")
-                                {
-                                    <span class="badge bg-warning text-dark">@item.Etapa</span>
-                                }
-                                else if (item.Etapa == "Secado")
-                                {
-                                    <span class="badge bg-info text-dark">@item.Etapa</span>
-                                }
-                                else if (item.Etapa == "Empaque")
-                                {
-                                    <span class="badge bg-success">@item.Etapa</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">@item.Etapa</span>
-                                }
-                            </td>
-
-                            <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>@(item.Responsable ?? "Sin responsable")</td>
-                            <td>@(item.Observacion ?? "Sin observación")</td>
-
-                            <td class="text-end">
-                                @if (User.IsInRole("Administrador"))
-                                {
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
-                                }
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
-                                @if (User.IsInRole("Administrador"))
-                                {
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
-                                }
-                            </td>
-                        </tr>
-                    }
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tablaTrazabilidad').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+                },
+                pageLength: 5,
+                lengthMenu: [5, 10, 15, 20] ,
+                responsive: true
+            });
+        });
+    </script>
+}
