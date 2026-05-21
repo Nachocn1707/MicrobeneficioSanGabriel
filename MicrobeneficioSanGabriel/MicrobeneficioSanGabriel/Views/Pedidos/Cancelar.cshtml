@@ -1,0 +1,47 @@
+﻿@model MicrobeneficioSanGabriel.Models.Pedido
+
+@{
+    ViewData["Title"] = "Cancelar pedido";
+    Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h1 class="fw-bold text-danger">Cancelar pedido</h1>
+
+            <p class="text-muted">
+                Confirme si desea cancelar este pedido. El registro no será eliminado, solo cambiará a estado Cancelado.
+            </p>
+
+            <dl class="row">
+                <dt class="col-sm-3">Producto</dt>
+                <dd class="col-sm-9">@Model.Producto?.Nombre</dd>
+
+                <dt class="col-sm-3">Cantidad</dt>
+                <dd class="col-sm-9">@Model.Cantidad</dd>
+
+                <dt class="col-sm-3">Fecha</dt>
+                <dd class="col-sm-9">@Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Estado actual</dt>
+                <dd class="col-sm-9">@Model.Estado</dd>
+
+                <dt class="col-sm-3">Observación</dt>
+                <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación" : Model.Observacion)</dd>
+            </dl>
+
+            <form asp-action="Cancelar" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit" class="btn btn-danger">
+                    Confirmar cancelación
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+                    Volver
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
