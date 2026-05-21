@@ -5,164 +5,24 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<style>
-    body,
-    .admin-main,
-    .admin-content {
-        background: #fff8df !important;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
 
-    .inventario-edit-page {
-        padding: 32px;
-        min-height: calc(100vh - 90px);
-    }
+<div class="EstiloEditar-edit-page">
 
-    .inventario-header {
-        margin-bottom: 24px;
-    }
-
-        .inventario-header h1 {
-            color: #2b160d;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .inventario-header p {
-            color: #6f5b4a;
-            margin: 0;
-        }
-
-    .inventario-card {
-        max-width: 980px;
-        background: #fffdf2;
-        border: 1px solid #ead8a2;
-        border-top: 6px solid #f3d27a;
-        border-radius: 18px;
-        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
-        overflow: hidden;
-    }
-
-    .inventario-card-header {
-        background: linear-gradient(90deg, #4a2c1a, #7a5230);
-        color: #fff8df;
-        padding: 24px 30px;
-    }
-
-        .inventario-card-header h2 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 800;
-        }
-
-        .inventario-card-header span {
-            color: #fff3c4;
-            font-size: 14px;
-        }
-
-    .inventario-card-body {
-        padding: 30px;
-    }
-
-    .form-label {
-        color: #2b160d;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .form-control,
-    .form-select {
-        background: #fff8df;
-        border: 1px solid #d8bd77;
-        border-radius: 10px;
-        color: #2b2118;
-        padding: 10px 12px;
-    }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #d6a53a;
-            box-shadow: 0 0 0 0.2rem rgba(214, 165, 58, 0.22);
-            background: #fffdf2;
-        }
-
-    .text-danger {
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .inventario-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 26px;
-        padding-top: 22px;
-        border-top: 1px solid #ead8a2;
-    }
-
-    .btn-guardar {
-        background: #4a2c1a;
-        border: 1px solid #4a2c1a;
-        color: #fff8df;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-    }
-
-        .btn-guardar:hover {
-            background: #2b160d;
-            color: #fff8df;
-        }
-
-    .btn-volver {
-        background: #fff3c4;
-        border: 1px solid #d8bd77;
-        color: #4a2c1a;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-        text-decoration: none;
-    }
-
-        .btn-volver:hover {
-            background: #f3d27a;
-            color: #2b160d;
-        }
-
-    @@media (max-width: 768px) {
-        .inventario-edit-page {
-            padding: 20px;
-        }
-
-        .inventario-card-body {
-            padding: 22px;
-        }
-
-        .inventario-actions {
-            flex-direction: column-reverse;
-        }
-
-        .btn-guardar,
-        .btn-volver {
-            width: 100%;
-            text-align: center;
-        }
-    }
-</style>
-
-<div class="inventario-edit-page">
-
-    <div class="inventario-header">
-        <h1>Editar inventario</h1>
-        <p>Actualizá los datos del movimiento de inventario.</p>
+    <div class="EstiloEditar-header">
+        <h1>Editar EstiloEditar</h1>
+        <p>Actualizá los datos del movimiento de EstiloEditar.</p>
     </div>
 
-    <div class="inventario-card">
-        <div class="inventario-card-header">
+    <div class="EstiloEditar-card">
+        <div class="EstiloEditar-card-header">
             <h2>Movimiento #@Model.Id</h2>
             <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="inventario-card-body">
+        <div class="EstiloEditar-card-body">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="Id" />
@@ -205,7 +65,7 @@
                     </div>
                 </div>
 
-                <div class="inventario-actions">
+                <div class="EstiloEditar-actions">
                     <a asp-action="Index" class="btn-volver">Volver a la lista</a>
                     <button type="submit" class="btn-guardar">Guardar cambios</button>
                 </div>

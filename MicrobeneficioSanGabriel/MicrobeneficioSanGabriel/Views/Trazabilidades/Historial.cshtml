@@ -5,151 +5,259 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="admin-title">Historial del lote @Model.Lote?.CodigoLote</h1>
-<p class="admin-subtitle">
-    Seguimiento completo desde el productor hasta la producción final.
-</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
 
-<div class="admin-card mb-4">
-    <h4 class="fw-bold mb-3">Origen del café</h4>
+<div class="EstiloDetalle-detalle-page">
 
-    <div class="row">
-        <div class="col-md-4">
-            <strong>Productor:</strong>
-            <p>@Model.Productor?.Nombre</p>
+    <div class="EstiloDetalle-header">
+        <h1>
+            Historial del lote @Model.Lote?.CodigoLote
+        </h1>
+
+        <p>
+            Seguimiento completo desde el productor hasta la producción final.
+        </p>
+    </div>
+
+    <div class="EstiloDetalle-card">
+
+        <div class="EstiloDetalle-card-header">
+            <h2>Origen del café</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="col-md-4">
-            <strong>Cédula:</strong>
-            <p>@Model.Productor?.Cedula</p>
-        </div>
+        <div class="EstiloDetalle-card-body">
+            <div class="detalle-grid">
 
-        <div class="col-md-4">
-            <strong>Finca:</strong>
-            <p>@(Model.Productor?.Finca ?? "No registrada")</p>
-        </div>
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Productor
+                    </span>
 
-        <div class="col-md-4">
-            <strong>Teléfono:</strong>
-            <p>@Model.Productor?.Telefono</p>
-        </div>
+                    <span class="detalle-value">
+                        @Model.Productor?.Nombre
+                    </span>
+                </div>
 
-        <div class="col-md-8">
-            <strong>Dirección:</strong>
-            <p>@Model.Productor?.Direccion</p>
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Cédula
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Productor?.Cedula
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Finca
+                    </span>
+
+                    <span class="detalle-value">
+                        @(Model.Productor?.Finca ?? "No registrada")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Teléfono
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Productor?.Telefono
+                    </span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">
+                        Dirección
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Productor?.Direccion
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="admin-card mb-4">
-    <h4 class="fw-bold mb-3">Datos del lote</h4>
+    <div class="EstiloDetalle-card mt-4">
 
-    <div class="row">
-        <div class="col-md-3">
-            <strong>Código:</strong>
-            <p>@Model.Lote?.CodigoLote</p>
+        <div class="EstiloDetalle-card-header">
+            <h2>Datos del lote</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="col-md-3">
-            <strong>Peso recibido:</strong>
-            <p>@Model.Lote?.PesoKg kg</p>
+        <div class="EstiloDetalle-card-body">
+
+            <div class="detalle-grid">
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Código
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Lote?.CodigoLote
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Peso recibido
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Lote?.PesoKg kg
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Fecha recepción
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Lote?.FechaRecepcion.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Estado
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Lote?.Estado
+                    </span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">
+                        Observación
+                    </span>
+
+                    <span class="detalle-value">
+                        @(Model.Lote?.Observacion ?? "Sin observación")
+                    </span>
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="col-md-3">
-            <strong>Fecha recepción:</strong>
-            <p>@Model.Lote?.FechaRecepcion.ToString("dd/MM/yyyy")</p>
+    </div>
+
+    <div class="EstiloDetalle-card mt-4">
+
+        <div class="EstiloDetalle-card-header">
+            <h2>Procesos de producción asociados</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="col-md-3">
-            <strong>Estado:</strong>
-            <p>@Model.Lote?.Estado</p>
-        </div>
+        <div class="EstiloDetalle-card-body">
 
-        <div class="col-md-12">
-            <strong>Observación:</strong>
-            <p>@(Model.Lote?.Observacion ?? "Sin observación")</p>
+            @if (!Model.Producciones.Any())
+            {
+                <p class="text-muted">
+                    No hay procesos de producción registrados para este lote.
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Proceso</th>
+                                <th>Procesado</th>
+                                <th>Resultante</th>
+                                <th>Producto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var p in Model.Producciones)
+                            {
+                                <tr>
+                                    <td>@p.FechaProduccion.ToString("dd/MM/yyyy")</td>
+                                    <td>@p.TipoProceso</td>
+                                    <td>@p.CantidadProcesadaKg kg</td>
+                                    <td>@p.CantidadResultanteKg kg</td>
+                                    <td>@(p.Producto?.Nombre ?? "Sin producto")</td>
+                                    <td>@p.Estado</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
-</div>
 
-<div class="admin-card mb-4">
-    <h4 class="fw-bold mb-3">Procesos de producción asociados</h4>
+    <div class="EstiloDetalle-card mt-4">
 
-    @if (!Model.Producciones.Any())
-    {
-        <p class="text-muted">No hay procesos de producción registrados para este lote.</p>
-    }
-    else
-    {
-        <div class="table-responsive">
-            <table class="table admin-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Proceso</th>
-                        <th>Procesado</th>
-                        <th>Resultante</th>
-                        <th>Producto</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var p in Model.Producciones)
-                    {
-                        <tr>
-                            <td>@p.FechaProduccion.ToString("dd/MM/yyyy")</td>
-                            <td>@p.TipoProceso</td>
-                            <td>@p.CantidadProcesadaKg kg</td>
-                            <td>@p.CantidadResultanteKg kg</td>
-                            <td>@(p.Producto?.Nombre ?? "Sin producto")</td>
-                            <td>@p.Estado</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="EstiloDetalle-card-header">
+            <h2>Línea de trazabilidad</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
-    }
-</div>
 
-<div class="admin-card">
-    <h4 class="fw-bold mb-3">Línea de trazabilidad</h4>
+        <div class="EstiloDetalle-card-body">
 
-    @if (!Model.Trazabilidades.Any())
-    {
-        <p class="text-muted">No hay registros de trazabilidad para este lote.</p>
-    }
-    else
-    {
-        <div class="table-responsive">
-            <table class="table admin-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Etapa</th>
-                        <th>Producción</th>
-                        <th>Producto</th>
-                        <th>Responsable</th>
-                        <th>Observación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var t in Model.Trazabilidades)
-                    {
-                        <tr>
-                            <td>@t.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>@t.Etapa</td>
-                            <td>#@t.ProduccionId - @t.Produccion?.TipoProceso</td>
-                            <td>@(t.Produccion?.Producto?.Nombre ?? "Sin producto")</td>
-                            <td>@(t.Responsable ?? "Sin responsable")</td>
-                            <td>@(t.Observacion ?? "Sin observación")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            @if (!Model.Trazabilidades.Any())
+            {
+                <p class="text-muted">
+                    No hay registros de trazabilidad para este lote.
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Etapa</th>
+                                <th>Producción</th>
+                                <th>Producto</th>
+                                <th>Responsable</th>
+                                <th>Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var t in Model.Trazabilidades)
+                            {
+                                <tr>
+                                    <td>@t.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@t.Etapa</td>
+                                    <td>#@t.ProduccionId - @t.Produccion?.TipoProceso</td>
+                                    <td>@(t.Produccion?.Producto?.Nombre ?? "Sin producto")</td>
+                                    <td>@(t.Responsable ?? "Sin responsable")</td>
+                                    <td>@(t.Observacion ?? "Sin observación") </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver a la lista
+                </a>
+
+            </div>
         </div>
-    }
-</div>
-
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    </div>
 </div>

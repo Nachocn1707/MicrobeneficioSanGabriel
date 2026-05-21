@@ -5,36 +5,70 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="admin-title">Detalle de usuario</h1>
-<p class="admin-subtitle">Información detallada del usuario registrado en el sistema.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
 
-<div class="admin-card">
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <strong>Correo:</strong>
-            <p>@Model.Email</p>
+<div class="EstiloDetalle-detalle-page">
+
+    <div class="EstiloDetalle-header">
+        <h1>Detalle de usuario</h1>
+        <p>Información detallada del usuario registrado en el sistema.</p>
+    </div>
+
+    <div class="EstiloDetalle-card">
+
+        <div class="EstiloDetalle-card-header">
+            <h2>@Model.UserName</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <strong>Usuario:</strong>
-            <p>@Model.UserName</p>
-        </div>
+        <div class="EstiloDetalle-card-body">
 
-        <div class="col-md-6 mb-3">
-            <strong>Teléfono:</strong>
-            <p>@(Model.PhoneNumber ?? "Sin teléfono")</p>
-        </div>
+            <div class="detalle-grid">
 
-        <div class="col-md-6 mb-3">
-            <strong>Rol:</strong>
-            <p>
-                <span class="badge bg-primary">@Model.Rol</span>
-            </p>
+                <div class="detalle-item">
+                    <span class="detalle-label">Correo</span>
+                    <span class="detalle-value">@Model.Email</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Usuario</span>
+                    <span class="detalle-value">@Model.UserName</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Teléfono</span>
+                    <span class="detalle-value">
+                        @(Model.PhoneNumber ?? "Sin teléfono")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Rol</span>
+
+                    <span class="detalle-value">
+                        <span class="estado-activo">
+                            @Model.Rol
+                        </span>
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver a la lista
+                </a>
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn-editar">
+                    Editar
+                </a>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="mt-3 d-flex gap-2">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
-    <a asp-action="Index" class="btn btn-secondary">Volver</a>
 </div>

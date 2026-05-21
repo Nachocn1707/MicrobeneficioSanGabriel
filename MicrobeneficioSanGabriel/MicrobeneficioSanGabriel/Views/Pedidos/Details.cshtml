@@ -13,241 +13,179 @@
     }
 }
 
-<style>
-    .pedido-detalle-card {
-        width: 720px;
-        max-width: 100%;
-        background: #fffdf3;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
-        border: 1px solid #e2c96b;
-        margin-top: 25px;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
 
-    .pedido-detalle-header {
-        background: linear-gradient(90deg, #4b2413, #7a4a26);
-        color: white;
-        padding: 22px 28px;
-    }
+<div class="EstiloDetalle-detalle-page">
 
-        .pedido-detalle-header h3 {
-            margin: 0;
-            font-weight: 800;
-            font-size: 26px;
-        }
-
-        .pedido-detalle-header span {
-            display: block;
-            margin-top: 4px;
-            font-size: 13px;
-            color: #f6df85;
-            font-weight: 600;
-        }
-
-    .pedido-detalle-body {
-        padding: 28px;
-    }
-
-    .pedido-detalle-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-    }
-
-    .pedido-detalle-item {
-        background: #fff8d8;
-        border: 1px solid #e5d58a;
-        border-radius: 8px;
-        padding: 14px;
-        min-height: 70px;
-    }
-
-        .pedido-detalle-item strong {
-            display: block;
-            text-transform: uppercase;
-            font-size: 12px;
-            color: #6b4a18;
-            margin-bottom: 8px;
-            font-weight: 800;
-        }
-
-        .pedido-detalle-item span {
-            font-size: 15px;
-            color: #1f2937;
-        }
-
-    .pedido-observacion {
-        margin-top: 14px;
-    }
-
-    .pedido-detalle-acciones {
-        margin-top: 14px;
-        display: flex;
-        gap: 8px;
-    }
-
-    .btn-volver,
-    .btn-editar,
-    .btn-eliminar {
-        padding: 8px 14px;
-        border-radius: 5px;
-        text-decoration: none;
-        color: white;
-        font-weight: 600;
-        font-size: 14px;
-        border: none;
-    }
-
-    .btn-volver {
-        background-color: #6c757d;
-    }
-
-    .btn-editar {
-        background-color: #ffc107;
-        color: #111;
-    }
-
-    .btn-eliminar {
-        background-color: #dc3545;
-    }
-
-        .btn-volver:hover,
-        .btn-eliminar:hover {
-            color: white;
-            opacity: 0.9;
-        }
-
-    .btn-editar:hover {
-        color: #111;
-        opacity: 0.9;
-    }
-
-    @@media (max-width: 768px) {
-        .pedido-detalle-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .pedido-detalle-card {
-            width: 100%;
-        }
-    }
-</style>
-
-<h1>Detalles del pedido</h1>
-<p>Información registrada para este pedido.</p>
-
-<div class="pedido-detalle-card">
-    <div class="pedido-detalle-header">
-        <h3>Pedido #@Model.Id</h3>
-        <span>Microbeneficio San Gabriel</span>
+    <div class="EstiloDetalle-header">
+        <h1>Detalles del pedido</h1>
+        <p>Información registrada para este pedido.</p>
     </div>
 
-    <div class="pedido-detalle-body">
-        <div class="pedido-detalle-grid">
-            <div class="pedido-detalle-item">
-                <strong>Cliente</strong>
-                <span>@Model.ClienteNombre</span>
-            </div
+    <div class="EstiloDetalle-card">
 
-            <div class="pedido-detalle-item">
-                 <strong>Teléfono</strong>
-                 <span>@Model.ClienteTelefono</span>
+        <div class="EstiloDetalle-card-header">
+            <h2>Pedido #@Model.Id</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+
+        <div class="EstiloDetalle-card-body">
+
+            <div class="detalle-grid">
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Cliente
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.ClienteNombre
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Teléfono
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.ClienteTelefono
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Producto
+                    </span>
+
+                    <span class="detalle-value">
+                        @(Model.Producto != null
+                            ? Model.Producto.Nombre
+                            : "Sin producto")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Cantidad
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Cantidad kg
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Fecha del pedido
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.FechaPedido.ToString("dd/MM/yyyy hh:mm tt")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Estado
+                    </span>
+
+                    @if (Model.Estado == "Pendiente")
+                    {
+                        <span class="estado-pendiente">
+                            Pendiente
+                        </span>
+                    }
+                    else if (Model.Estado == "En proceso")
+                    {
+                        <span class="estado-proceso">
+                            En proceso
+                        </span>
+                    }
+                    else if (Model.Estado == "En camino")
+                    {
+                        <span class="estado-camino">
+                            En camino
+                        </span>
+                    }
+                    else if (Model.Estado == "Listo para retirar")
+                    {
+                        <span class="estado-retiro">
+                            Listo para retirar
+                        </span>
+                    }
+                    else if (Model.Estado == "Completado")
+                    {
+                        <span class="estado-activo">
+                            Completado
+                        </span>
+                    }
+                    else if (Model.Estado == "Cancelado")
+                    {
+                        <span class="estado-inactivo">
+                            Cancelado
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="detalle-value">
+                            @Model.Estado
+                        </span>
+                    }
+                </div>
+                <div class="detalle-item full">
+                    <span class="detalle-label">
+                        Observación
+                    </span>
+
+                    <span class="detalle-value">
+                        @(string.IsNullOrWhiteSpace(Model.Observacion)
+                            ? "Sin observación"
+                            : Model.Observacion)
+                    </span>
+                </div>
             </div>
+            <div class="EstiloDetalle-actions">
 
-            <div class="pedido-detalle-item">
-                <strong>Producto</strong>
-                <span>@(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")</span>
-            </div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn-editar">
+                        Editar
+                    </a>
 
-            <div class="pedido-detalle-item">
-                <strong>Cantidad</strong>
-                <span>@Model.Cantidad kg</span>
-            </div>
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver
+                    </a>
+                }
+                else if (User.IsInRole("Cliente"))
+                {
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver
+                    </a>
 
-            <div class="pedido-detalle-item">
-                <strong>Fecha del pedido</strong>
-                <span>@Model.FechaPedido.ToString("dd/MM/yyyy hh:mm tt")</span>
-            </div>
-
-            <div class="pedido-detalle-item">
-                <strong>Estado</strong>
-
-                @if (Model.Estado == "Pendiente")
-                {
-                    <span class="badge bg-warning text-dark">Pendiente</span>
-                }
-                else if (Model.Estado == "En proceso")
-                {
-                    <span class="badge bg-primary">En proceso</span>
-                }
-                else if (Model.Estado == "En camino")
-                {
-                    <span class="badge bg-info text-dark">En camino</span>
-                }
-                else if (Model.Estado == "Listo para retirar")
-                {
-                    <span class="badge bg-secondary">Listo para retirar</span>
-                }
-                else if (Model.Estado == "Completado")
-                {
-                    <span class="badge bg-success">Completado</span>
-                }
-                else if (Model.Estado == "Cancelado")
-                {
-                    <span class="badge bg-danger">Cancelado</span>
+                    @if (Model.Estado == "Pendiente")
+                    {
+                        <a asp-action="Cancelar"
+                           asp-route-id="@Model.Id"
+                           class="btn-eliminar">
+                            Cancelar
+                        </a>
+                    }
                 }
                 else
                 {
-                    <span class="badge bg-dark">@Model.Estado</span>
-                }
-            </div>
-        </div>
-
-        <div class="pedido-detalle-item pedido-observacion">
-            <strong>Observación</strong>
-            <span>
-                @(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación" : Model.Observacion)
-            </span>
-        </div>
-
-        <div class="pedido-detalle-acciones">
-            @if (User.IsInRole("Administrador"))
-            {
-                <a asp-action="Edit"
-                   asp-route-id="@Model.Id"
-                   class="btn-editar">
-                    Editar
-                </a>
-
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver
-                </a>
-            }
-            else if (User.IsInRole("Cliente"))
-            {
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver
-                </a>
-
-                @if (Model.Estado == "Pendiente")
-                {
-                    <a asp-action="Cancelar"
-                       asp-route-id="@Model.Id"
-                       class="btn-eliminar">
-                        Cancelar
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver
                     </a>
                 }
-            }
-            else
-            {
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver
-                </a>
-            }
+            </div>
         </div>
     </div>
 </div>

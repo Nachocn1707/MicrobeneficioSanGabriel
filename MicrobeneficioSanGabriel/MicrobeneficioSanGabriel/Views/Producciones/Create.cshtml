@@ -5,89 +5,318 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold">Nueva Producción</h1>
-        <p class="text-muted">Registro de procesos de producción del microbeneficio.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
+
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+        <div class="VistaCrear-title">
+
+            <span class="VistaCrear-badge">
+                Gestión de producción
+            </span>
+
+            <h1>Nueva producción</h1>
+
+            <p>
+                Registrá procesos de producción y transformación
+                del café dentro del microbeneficio.
+            </p>
+
+        </div>
+
     </div>
+    <div class="VistaCrear-card">
 
-    <a asp-action="Index" class="btn btn-secondary">Volver</a>
-</div>
+        <div class="VistaCrear-side">
 
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body p-4">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="VistaCrear-side-content">
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="LoteId" class="form-label fw-semibold">Lote</label>
-                    <select asp-for="LoteId" class="form-select" asp-items="ViewBag.LoteId">
-                        <option value="">Seleccione un lote</option>
-                    </select>
-                    <span asp-validation-for="LoteId" class="text-danger"></span>
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-industry"></i>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label asp-for="ProductoId" class="form-label fw-semibold">Producto resultante</label>
-                    <select asp-for="ProductoId" class="form-select" asp-items="ViewBag.ProductoId">
-                        <option value="">Seleccione un producto</option>
-                    </select>
-                    <span asp-validation-for="ProductoId" class="text-danger"></span>
+                <h2>Producción</h2>
+
+                <p>
+                    Gestioná procesos, cantidades y estados
+                    de producción para mantener el control operativo.
+                </p>
+
+                <div class="VistaCrear-info">
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-gears"></i>
+                        Procesos productivos
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-weight-scale"></i>
+                        Control de cantidades
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Seguimiento operativo
+                    </div>
+
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label asp-for="TipoProceso" class="form-label fw-semibold">Tipo de proceso</label>
-                    <select asp-for="TipoProceso" class="form-select">
-                        <option value="">Seleccione un proceso</option>
-                        <option value="Lavado">Lavado</option>
-                        <option value="Secado">Secado</option>
-                        <option value="Tostado">Tostado</option>
-                        <option value="Molido">Molido</option>
-                        <option value="Empaque">Empaque</option>
-                    </select>
-                    <span asp-validation-for="TipoProceso" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="FechaProduccion" class="form-label fw-semibold">Fecha de producción</label>
-                    <input asp-for="FechaProduccion" type="datetime-local" class="form-control" />
-                    <span asp-validation-for="FechaProduccion" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="CantidadProcesadaKg" class="form-label fw-semibold">Cantidad procesada (Kg)</label>
-                    <input asp-for="CantidadProcesadaKg" class="form-control" />
-                    <span asp-validation-for="CantidadProcesadaKg" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="CantidadResultanteKg" class="form-label fw-semibold">Cantidad resultante (Kg)</label>
-                    <input asp-for="CantidadResultanteKg" class="form-control" />
-                    <span asp-validation-for="CantidadResultanteKg" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Estado" class="form-label fw-semibold">Estado</label>
-                    <select asp-for="Estado" class="form-select">
-                        <option value="En proceso">En proceso</option>
-                        <option value="Completado">Completado</option>
-                        <option value="Cancelado">Cancelado</option>
-                    </select>
-                    <span asp-validation-for="Estado" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Observacion" class="form-label fw-semibold">Observación</label>
-                    <input asp-for="Observacion" class="form-control" />
-                    <span asp-validation-for="Observacion" class="text-danger"></span>
-                </div>
             </div>
 
-            <button type="submit" class="btn btn-success px-4">
-                Guardar Producción
-            </button>
-        </form>
+        </div>
+        <div class="VistaCrear-form-container">
+
+            <form asp-action="Create"
+                  method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+
+                        <label asp-for="LoteId"
+                               class="form-label">
+                            Lote
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-box"></i>
+
+                            <select asp-for="LoteId"
+                                    class="form-select"
+                                    asp-items="ViewBag.LoteId">
+
+                                <option value="">
+                                    Seleccione un lote
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="LoteId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="ProductoId"
+                               class="form-label">
+                            Producto resultante
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-mug-hot"></i>
+
+                            <select asp-for="ProductoId"
+                                    class="form-select"
+                                    asp-items="ViewBag.ProductoId">
+
+                                <option value="">
+                                    Seleccione un producto
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="ProductoId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="TipoProceso"
+                               class="form-label">
+                            Tipo de proceso
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-gears"></i>
+
+                            <select asp-for="TipoProceso"
+                                    class="form-select">
+
+                                <option value="">
+                                    Seleccione un proceso
+                                </option>
+
+                                <option value="Lavado">
+                                    Lavado
+                                </option>
+
+                                <option value="Secado">
+                                    Secado
+                                </option>
+
+                                <option value="Tostado">
+                                    Tostado
+                                </option>
+
+                                <option value="Molido">
+                                    Molido
+                                </option>
+
+                                <option value="Empaque">
+                                    Empaque
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="TipoProceso"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="FechaProduccion"
+                               class="form-label">
+                            Fecha de producción
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-calendar"></i>
+
+                            <input asp-for="FechaProduccion"
+                                   type="datetime-local"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="FechaProduccion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="CantidadProcesadaKg"
+                               class="form-label">
+                            Cantidad procesada (Kg)
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-weight-scale"></i>
+
+                            <input asp-for="CantidadProcesadaKg"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="CantidadProcesadaKg"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="CantidadResultanteKg"
+                               class="form-label">
+                            Cantidad resultante (Kg)
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-scale-balanced"></i>
+
+                            <input asp-for="CantidadResultanteKg"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="CantidadResultanteKg"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Estado"
+                               class="form-label">
+                            Estado
+                        </label>
+
+                        <div class="input-modern">
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            <select asp-for="Estado"
+                                    class="form-select">
+
+                                <option value="En proceso">
+                                    En proceso
+                                </option>
+
+                                <option value="Completado">
+                                    Completado
+                                </option>
+
+                                <option value="Cancelado">
+                                    Cancelado
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="Estado"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                            Observación
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-comment"></i>
+
+                            <input asp-for="Observacion"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="VistaCrear-actions">
+
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Guardar producción
+
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

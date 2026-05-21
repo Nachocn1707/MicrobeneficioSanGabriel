@@ -5,47 +5,113 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="admin-title">Detalle financiero</h1>
-<p class="admin-subtitle">Información detallada del registro financiero.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
 
-<div class="admin-card">
-    <div class="row">
-        <div class="col-md-4">
-            <strong>Fecha:</strong>
-            <p>@Model.Fecha.ToString("dd/MM/yyyy")</p>
+<div class="EstiloDetalle-detalle-page">
+
+    <div class="EstiloDetalle-header">
+        <h1>Detalle financiero</h1>
+        <p>Información detallada del registro financiero.</p>
+    </div>
+
+    <div class="EstiloDetalle-card">
+
+        <div class="EstiloDetalle-card-header">
+            <h2>@Model.Tipo</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="col-md-4">
-            <strong>Tipo:</strong>
-            <p>@Model.Tipo</p>
-        </div>
+        <div class="EstiloDetalle-card-body">
+            <div class="detalle-grid">
 
-        <div class="col-md-4">
-            <strong>Categoría:</strong>
-            <p>@(Model.Categoria ?? "Sin categoría")</p>
-        </div>
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Fecha
+                    </span>
 
-        <div class="col-md-4">
-            <strong>Monto:</strong>
-            <p>₡ @Model.Monto.ToString("N2")</p>
-        </div>
+                    <span class="detalle-value">
+                        @Model.Fecha.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
 
-        <div class="col-md-8">
-            <strong>Descripción:</strong>
-            <p>@Model.Descripcion</p>
-        </div>
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Tipo
+                    </span>
 
-        <div class="col-md-12">
-            <strong>Observación:</strong>
-            <p>@(Model.Observacion ?? "Sin observación")</p>
+                    @if (Model.Tipo == "Ingreso")
+                    {
+                        <span class="estado-activo">
+                            Ingreso
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="estado-inactivo">
+                            Gasto
+                        </span>
+                    }
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Categoría
+                    </span>
+
+                    <span class="detalle-value">
+                        @(Model.Categoria ?? "Sin categoría")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Monto
+                    </span>
+
+                    <span class="detalle-value">
+                        ₡ @Model.Monto.ToString("N2")
+                    </span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">
+                        Descripción
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Descripcion
+                    </span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">
+                        Observación
+                    </span>
+
+                    <span class="detalle-value">
+                        @(Model.Observacion ?? "Sin observación")
+                    </span>
+                </div>
+
+            </div>
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver a la lista
+                </a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn-editar">
+                        Editar
+                    </a>
+                }
+            </div>
         </div>
     </div>
-</div>
-
-<div class="mt-3 d-flex gap-2">
-    @if (User.IsInRole("Administrador"))
-    {
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
-    }
-    <a asp-action="Index" class="btn btn-secondary">Volver</a>
 </div>

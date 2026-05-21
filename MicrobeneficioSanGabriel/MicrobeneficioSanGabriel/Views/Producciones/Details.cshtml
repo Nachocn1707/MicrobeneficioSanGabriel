@@ -4,61 +4,126 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
 
-<h1>Details</h1>
+<div class="EstiloDetalle-detalle-page">
 
-<div>
-    <h4>Produccion</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Lote)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Lote.CodigoLote)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaProduccion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaProduccion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoProceso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoProceso)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadProcesadaKg)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadProcesadaKg)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadResultanteKg)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadResultanteKg)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Observacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Observacion)
-        </dd>
-    </dl>
-</div>
-<div>
-    @if (User.IsInRole("Administrador"))
-    {
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-    } |
-    <a asp-action="Index">Back to List</a>
+    <div class="EstiloDetalle-header">
+        <h1>Detalle de producción</h1>
+        <p>Información registrada de la producción del microbeneficio.</p>
+    </div>
+
+    <div class="EstiloDetalle-card">
+
+        <div class="EstiloDetalle-card-header">
+            <h2>@Model.Lote?.CodigoLote</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+
+        <div class="EstiloDetalle-card-body">
+
+            <div class="detalle-grid">
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Lote
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Lote?.CodigoLote
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Fecha de producción
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.FechaProduccion.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Tipo de proceso
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.TipoProceso
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Cantidad procesada
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.CantidadProcesadaKg kg
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Cantidad resultante
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.CantidadResultanteKg kg
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Estado
+                    </span>
+
+                    @if (Model.Estado == "Finalizado")
+                    {
+                        <span class="estado-activo">
+                            @Model.Estado
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="estado-inactivo">
+                            @Model.Estado
+                        </span>
+                    }
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">
+                        Observación
+                    </span>
+
+                    <span class="detalle-value">
+                        @(Model.Observacion ?? "Sin observación")
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver a la lista
+                </a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model?.Id"
+                       class="btn-editar">
+                        Editar
+                    </a>
+                }
+
+            </div>
+        </div>
+    </div>
 </div>

@@ -5,58 +5,230 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
 
-<h4>Productor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" />
-                <span asp-validation-for="Cedula" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Finca" class="control-label"></label>
-                <input asp-for="Finca" class="form-control" />
-                <span asp-validation-for="Finca" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-                <input asp-for="FechaRegistro" class="form-control" />
-                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+
+        <div class="VistaCrear-title">
+
+            <span class="VistaCrear-badge">
+                Gestión de productores
+            </span>
+
+            <h1>Nuevo productor</h1>
+
+            <p>
+                Registrá productores y mantené el control
+                de la trazabilidad del café.
+            </p>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="VistaCrear-card">
+        <div class="VistaCrear-side">
+            <div class="VistaCrear-side-content">
+
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+
+                <h2>Productores</h2>
+
+                <p>
+                    Gestioná la información de productores,
+                    fincas y datos de contacto del sistema.
+                </p>
+
+                <div class="VistaCrear-info">
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-user-group"></i>
+                        Gestión de productores
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-mountain-sun"></i>
+                        Control de fincas
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-route"></i>
+                        Trazabilidad agrícola
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="VistaCrear-form-container">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Nombre"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <input asp-for="Nombre"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Nombre"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Cedula"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-id-card"></i>
+
+                            <input asp-for="Cedula"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Cedula"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Telefono"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                            <input asp-for="Telefono"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Telefono"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Direccion"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            <input asp-for="Direccion"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Direccion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Finca"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-mountain"></i>
+
+                            <input asp-for="Finca"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Finca"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="FechaRegistro"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-calendar"></i>
+
+                            <input asp-for="FechaRegistro"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="FechaRegistro"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-12">
+                        <div class="VistaCrear-checkbox">
+
+                            <label class="form-check-label">
+
+                                <input class="form-check-input"
+                                       asp-for="Activo" />
+
+                                @Html.DisplayNameFor(model => model.Activo)
+
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="VistaCrear-actions">
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Registrar productor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

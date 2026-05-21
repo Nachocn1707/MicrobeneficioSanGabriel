@@ -5,60 +5,207 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="page-header">
-    <div>
-        <h1>Nuevo Movimiento</h1>
-        <p>Registra una entrada o salida de inventario.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
+
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+
+        <div class="VistaCrear-title">
+
+            <span class="VistaCrear-badge">
+                Control de inventario
+            </span>
+
+            <h1>Nuevo movimiento</h1>
+
+            <p>
+                Registrá entradas y salidas de inventario
+                del Microbeneficio San Gabriel.
+            </p>
+
+        </div>
+
     </div>
+    <div class="VistaCrear-card">
 
-    <a asp-action="Index" class="btn btn-secondary">
-        Volver
-    </a>
+        <div class="VistaCrear-side">
+
+            <div class="VistaCrear-side-content">
+
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+
+                <h2>Inventario</h2>
+
+                <p>
+                    Controlá los movimientos de productos,
+                    existencias y flujo de inventario del sistema.
+                </p>
+
+                <div class="VistaCrear-info">
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        Entradas y salidas
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-warehouse"></i>
+                        Gestión de stock
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Control operativo
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="VistaCrear-form-container">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="ProductoId"
+                               class="form-label">
+                            Producto
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-box"></i>
+
+                            <select asp-for="ProductoId"
+                                    class="form-select"
+                                    asp-items="ViewBag.ProductoId">
+
+                                <option value="">
+                                    Seleccione un producto
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="ProductoId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="TipoMovimiento"
+                               class="form-label">
+                            Tipo de movimiento
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-right-left"></i>
+
+                            <select asp-for="TipoMovimiento"
+                                    class="form-select">
+
+                                <option value="">
+                                    Seleccione una opción
+                                </option>
+
+                                <option value="Entrada">
+                                    Entrada
+                                </option>
+
+                                <option value="Salida">
+                                    Salida
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="TipoMovimiento"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Cantidad"
+                               class="form-label">
+                            Cantidad
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-scale-balanced"></i>
+
+                            <input asp-for="Cantidad"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Cantidad"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                            Observación
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-comment"></i>
+
+                            <input asp-for="Observacion"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="VistaCrear-actions">
+
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Guardar movimiento
+
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<div class="admin-card">
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label asp-for="ProductoId" class="form-label">Producto</label>
-                <select asp-for="ProductoId" class="form-select" asp-items="ViewBag.ProductoId">
-                    <option value="">Seleccione un producto</option>
-                </select>
-                <span asp-validation-for="ProductoId" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="TipoMovimiento" class="form-label">Tipo de movimiento</label>
-                <select asp-for="TipoMovimiento" class="form-select">
-                    <option value="">Seleccione una opción</option>
-                    <option value="Entrada">Entrada</option>
-                    <option value="Salida">Salida</option>
-                </select>
-                <span asp-validation-for="TipoMovimiento" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="Cantidad" class="form-label">Cantidad</label>
-                <input asp-for="Cantidad" class="form-control" />
-                <span asp-validation-for="Cantidad" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="Observacion" class="form-label">Observación</label>
-                <input asp-for="Observacion" class="form-control" />
-                <span asp-validation-for="Observacion" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <button type="submit" class="btn btn-success">
-                Guardar Movimiento
-            </button>
-        </div>
-    </form>
-</div>
 
 @section Scripts {
     @{

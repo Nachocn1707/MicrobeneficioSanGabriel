@@ -5,44 +5,100 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="fw-bold">Editar usuario</h1>
-<p class="text-muted mb-4">Actualizar información básica y rol del usuario.</p>
 
-<div class="card border-0 shadow-sm rounded-4 p-4">
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="Id" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
 
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="EstiloEditar-edit-page">
 
-        <div class="mb-3">
-            <label asp-for="Email" class="form-label fw-semibold"></label>
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
+    <div class="EstiloEditar-header">
+        <h1>Editar usuario</h1>
+        <p>Actualizar información básica y rol del usuario.</p>
+    </div>
+
+    <div class="EstiloEditar-card">
+
+        <div class="EstiloEditar-card-header">
+            <h2>@Model.Email</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
+        <div class="EstiloEditar-card-body">
 
-        <div class="mb-3">
-            <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
-            <input asp-for="PhoneNumber" class="form-control" />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
+            <form asp-action="Edit" method="post">
 
-        <div class="mb-4">
-            <label asp-for="Rol" class="form-label fw-semibold"></label>
-            <select asp-for="Rol" asp-items="Model.Roles" class="form-select">
-                <option value="">Seleccione un rol</option>
-            </select>
-            <span asp-validation-for="Rol" class="text-danger"></span>
-        </div>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">
-                Guardar cambios
-            </button>
-            <a asp-action="Index" class="btn btn-secondary">
-                Volver
-            </a>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="Email"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="PhoneNumber"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="PhoneNumber"
+                               class="form-control" />
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-12">
+
+                        <label asp-for="Rol"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="Rol"
+                                asp-items="Model.Roles"
+                                class="form-select">
+
+                            <option value="">
+                                Seleccione un rol
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Rol"
+                              class="text-danger">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="EstiloEditar-actions">
+
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver a la lista
+                    </a>
+
+                    <button type="submit"
+                            class="btn-guardar">
+                        Guardar cambios
+                    </button>
+
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

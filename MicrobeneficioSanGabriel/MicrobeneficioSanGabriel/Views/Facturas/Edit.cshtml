@@ -5,162 +5,24 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<style>
-    body, .admin-main, .admin-content {
-        background: #fff8df !important;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
 
-    .factura-page {
-        padding: 32px;
-        min-height: calc(100vh - 90px);
-    }
+<div class="EstiloEditar-page">
 
-    .factura-header {
-        margin-bottom: 24px;
-    }
-
-        .factura-header h1 {
-            color: #2b160d;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .factura-header p {
-            color: #6f5b4a;
-            margin: 0;
-        }
-
-    .factura-card {
-        max-width: 980px;
-        background: #fffdf2;
-        border: 1px solid #ead8a2;
-        border-top: 6px solid #f3d27a;
-        border-radius: 18px;
-        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
-        overflow: hidden;
-    }
-
-    .factura-card-header {
-        background: linear-gradient(90deg, #4a2c1a, #7a5230);
-        color: #fff8df;
-        padding: 24px 30px;
-    }
-
-        .factura-card-header h2 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 800;
-        }
-
-        .factura-card-header span {
-            color: #fff3c4;
-            font-size: 14px;
-        }
-
-    .factura-card-body {
-        padding: 30px;
-    }
-
-    .form-label {
-        color: #2b160d;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .form-control,
-    .form-select {
-        background: #fff8df;
-        border: 1px solid #d8bd77;
-        border-radius: 10px;
-        color: #2b2118;
-        padding: 10px 12px;
-    }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #d6a53a;
-            box-shadow: 0 0 0 0.2rem rgba(214, 165, 58, 0.22);
-            background: #fffdf2;
-        }
-
-    .text-danger {
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .factura-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 26px;
-        padding-top: 22px;
-        border-top: 1px solid #ead8a2;
-    }
-
-    .btn-guardar {
-        background: #4a2c1a;
-        border: 1px solid #4a2c1a;
-        color: #fff8df;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-    }
-
-        .btn-guardar:hover {
-            background: #2b160d;
-            color: #fff8df;
-        }
-
-    .btn-volver {
-        background: #fff3c4;
-        border: 1px solid #d8bd77;
-        color: #4a2c1a;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-        text-decoration: none;
-    }
-
-        .btn-volver:hover {
-            background: #f3d27a;
-            color: #2b160d;
-        }
-
-    @@media (max-width: 768px) {
-        .factura-page {
-            padding: 20px;
-        }
-
-        .factura-card-body {
-            padding: 22px;
-        }
-
-        .factura-actions {
-            flex-direction: column-reverse;
-        }
-
-        .btn-guardar,
-        .btn-volver {
-            width: 100%;
-            text-align: center;
-        }
-    }
-</style>
-
-<div class="factura-page">
-
-    <div class="factura-header">
-        <h1>Editar factura</h1>
-        <p>Actualizá los datos de la factura registrada.</p>
+    <div class="EstiloEditar-header">
+        <h1>Editar EstiloEditar</h1>
+        <p>Actualizá los datos de la EstiloEditar registrada.</p>
     </div>
 
-    <div class="factura-card">
-        <div class="factura-card-header">
+    <div class="EstiloEditar-card">
+        <div class="EstiloEditar-card-header">
             <h2>Factura #@Model.Id</h2>
             <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="factura-card-body">
+        <div class="EstiloEditar-card-body">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="Id" />
@@ -173,7 +35,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="FechaFactura" class="form-label">Fecha de factura</label>
+                        <label asp-for="FechaFactura" class="form-label">Fecha de EstiloEditar</label>
                         <input asp-for="FechaFactura" class="form-control" />
                         <span asp-validation-for="FechaFactura" class="text-danger"></span>
                     </div>
@@ -213,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="factura-actions">
+                <div class="EstiloEditar-actions">
                     <a asp-action="Index" class="btn-volver">Volver a la lista</a>
                     <button type="submit" class="btn-guardar">Guardar cambios</button>
                 </div>

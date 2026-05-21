@@ -52,18 +52,17 @@ namespace MicrobeneficioSanGabriel.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,Descripcion,Activo,FechaRegistro")] Producto producto)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Cedula,Telefono,Direccion,Finca,Activo,FechaRegistro")] Productor productor)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(producto);
+                _context.Add(productor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(producto);
+            return View(productor);
         }
-
         // GET: Productores/Edit/5
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
@@ -72,17 +71,13 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-
             var productor = await _context.Productores.FindAsync(id);
-
             if (productor == null)
             {
                 return NotFound();
             }
-
             return View(productor);
         }
-
         // POST: Productores/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -93,7 +88,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -107,16 +101,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                     {
                         return NotFound();
                     }
-
                     throw;
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-
             return View(productor);
         }
-
         // GET: Productores/Delete/5
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
@@ -125,7 +115,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-
             var productor = await _context.Productores
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -133,10 +122,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-
             return View(productor);
         }
-
         // POST: Productores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -145,15 +132,29 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             var productor = await _context.Productores.FindAsync(id);
 
-            if (productor != null)
+            if (productor == null)
             {
-                _context.Productores.Remove(productor);
+                return NotFound();
             }
 
+            bool tieneLotes = await _context.Lotes
+                .AnyAsync(l => l.ProductorId == id);
+            if (tieneLotes)
+            {
+                TempData["Error"] =
+                    "No se puede eliminar el productor porque tiene lotes asociados.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            _context.Productores.Remove(productor);
+
             await _context.SaveChangesAsync();
+
+            TempData["Success"] =
+                "Productor eliminado correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
-
         private bool ProductorExists(int id)
         {
             return _context.Productores.Any(e => e.Id == id);

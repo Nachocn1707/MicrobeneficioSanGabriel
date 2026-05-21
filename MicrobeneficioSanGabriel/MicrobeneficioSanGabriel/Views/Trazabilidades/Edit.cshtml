@@ -5,83 +5,141 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
 
-<h4>Trazabilidad</h4>
-<hr />
+<div class="EstiloEditar-edit-page">
 
-<div class="row">
-    <div class="col-md-4">
-
-        <form asp-action="Edit">
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <input type="hidden" asp-for="Id" />
-
-            <div class="form-group mb-3">
-                <label asp-for="LoteId" class="control-label"></label>
-
-                <select asp-for="LoteId"
-                        class="form-control"
-                        asp-items="ViewBag.LoteId">
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="ProduccionId" class="control-label"></label>
-
-                <select asp-for="ProduccionId"
-                        class="form-control"
-                        asp-items="ViewBag.ProduccionId">
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Etapa" class="control-label"></label>
-
-                <input asp-for="Etapa" class="form-control" />
-
-                <span asp-validation-for="Etapa" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-
-                <input asp-for="FechaRegistro" class="form-control" />
-
-                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Responsable" class="control-label"></label>
-
-                <input asp-for="Responsable" class="form-control" />
-
-                <span asp-validation-for="Responsable" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Observacion" class="control-label"></label>
-
-                <input asp-for="Observacion" class="form-control" />
-
-                <span asp-validation-for="Observacion" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit"
-                       value="Save"
-                       class="btn btn-primary" />
-            </div>
-
-        </form>
-
+    <div class="EstiloEditar-header">
+        <h1>Editar trazabilidad</h1>
+        <p>Actualizá la información registrada del seguimiento del lote.</p>
     </div>
-</div>
 
-<div class="mt-3">
-    <a asp-action="Index">Back to List</a>
+    <div class="EstiloEditar-card">
+
+        <div class="EstiloEditar-card-header">
+            <h2>Registro #@Model.Id</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+        <div class="EstiloEditar-card-body">
+
+            <form asp-action="Edit">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+
+                        <label asp-for="LoteId"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="LoteId"
+                                class="form-select"
+                                asp-items="ViewBag.LoteId">
+                        </select>
+
+                        <span asp-validation-for="LoteId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="ProduccionId"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="ProduccionId"
+                                class="form-select"
+                                asp-items="ViewBag.ProduccionId">
+                        </select>
+
+                        <span asp-validation-for="ProduccionId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Etapa"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Etapa"
+                               class="form-control" />
+
+                        <span asp-validation-for="Etapa"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="FechaRegistro"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="FechaRegistro"
+                               class="form-control" />
+
+                        <span asp-validation-for="FechaRegistro"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Responsable"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Responsable"
+                               class="form-control" />
+
+                        <span asp-validation-for="Responsable"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-12">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Observacion"
+                                  class="form-control"
+                                  rows="4">
+                        </textarea>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="EstiloEditar-actions">
+
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver a la lista
+                    </a>
+
+                    <button type="submit"
+                            class="btn-guardar">
+                        Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

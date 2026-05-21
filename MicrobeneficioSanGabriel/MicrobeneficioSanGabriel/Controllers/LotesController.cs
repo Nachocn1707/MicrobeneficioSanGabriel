@@ -65,10 +65,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "Id",
                 "NombreCompleto"
             );
-
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -82,7 +80,6 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
             ViewData["ProductorId"] = new SelectList(
                 _context.Productores.Select(p => new
                 {
@@ -93,10 +90,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "NombreCompleto",
                 lote.ProductorId
             );
-
             return View(lote);
         }
-
         // =========================
         // EDITAR
         // =========================
@@ -107,14 +102,11 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-
             var lote = await _context.Lotes.FindAsync(id);
-
             if (lote == null)
             {
                 return NotFound();
             }
-
             ViewData["ProductorId"] = new SelectList(
                 _context.Productores.Select(p => new
                 {
@@ -125,10 +117,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "NombreCompleto",
                 lote.ProductorId
             );
-
             return View(lote);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
@@ -141,7 +131,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -155,13 +144,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                     {
                         return NotFound();
                     }
-
                     throw;
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-
             ViewData["ProductorId"] = new SelectList(
                 _context.Productores.Select(p => new
                 {
@@ -172,10 +158,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "NombreCompleto",
                 lote.ProductorId
             );
-
             return View(lote);
         }
-
         // =========================
         // ELIMINAR
         // =========================
@@ -190,7 +174,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             var lote = await _context.Lotes
                 .Include(l => l.Productor)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
             if (lote == null)
             {
                 return NotFound();
@@ -198,24 +181,34 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             return View(lote);
         }
-
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var lote = await _context.Lotes.FindAsync(id);
-
-            if (lote != null)
+            try
             {
+                var lote = await _context.Lotes.FindAsync(id);
+
+                if (lote == null)
+                {
+                    return NotFound();
+                }
+
                 _context.Lotes.Remove(lote);
+
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] =
+                    "Lote eliminado correctamente.";
             }
-
-            await _context.SaveChangesAsync();
-
+            catch
+            {
+                TempData["Error"] =
+                    "No se puede eliminar el lote porque tiene información relacionada con producción.";
+            }
             return RedirectToAction(nameof(Index));
         }
-
         // =========================
         // VALIDACIÓN
         // =========================

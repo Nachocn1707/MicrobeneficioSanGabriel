@@ -5,41 +5,91 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="page-header">
-    <div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
+
+<div class="EstiloDetalle-detalle-page">
+
+    <div class="EstiloDetalle-header">
         <h1>Detalle Movimiento</h1>
         <p>Información del movimiento de inventario.</p>
     </div>
 
-    <a asp-action="Index" class="btn btn-secondary">
-        Volver
-    </a>
-</div>
+    <div class="EstiloDetalle-card">
 
-<div class="admin-card">
-    <dl class="row">
-        <dt class="col-sm-3">Producto</dt>
-        <dd class="col-sm-9">@Model.Producto?.Nombre</dd>
+        <div class="EstiloDetalle-card-header">
+            <h2>@Model.Producto?.Nombre</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
 
-        <dt class="col-sm-3">Tipo Movimiento</dt>
-        <dd class="col-sm-9">
-            @if (Model.TipoMovimiento == "Entrada")
-            {
-                <span class="badge bg-success">Entrada</span>
-            }
-            else
-            {
-                <span class="badge bg-danger">Salida</span>
-            }
-        </dd>
+        <div class="EstiloDetalle-card-body">
 
-        <dt class="col-sm-3">Cantidad</dt>
-        <dd class="col-sm-9">@Model.Cantidad kg</dd>
+            <div class="detalle-grid">
 
-        <dt class="col-sm-3">Observación</dt>
-        <dd class="col-sm-9">@Model.Observacion</dd>
+                <div class="detalle-item">
+                    <span class="detalle-label">Producto</span>
+                    <span class="detalle-value">
+                        @Model.Producto?.Nombre
+                    </span>
+                </div>
 
-        <dt class="col-sm-3">Fecha</dt>
-        <dd class="col-sm-9">@Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")</dd>
-    </dl>
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Tipo Movimiento
+                    </span>
+
+                    @if (Model.TipoMovimiento == "Entrada")
+                    {
+                        <span class="estado-activo">
+                            Entrada
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="estado-inactivo">
+                            Salida
+                        </span>
+                    }
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Cantidad</span>
+                    <span class="detalle-value">
+                        @Model.Cantidad kg
+                    </span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label">Observación</span>
+                    <span class="detalle-value">
+                        @Model.Observacion
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">Fecha</span>
+                    <span class="detalle-value">
+                        @Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver a la lista
+                </a>
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn-editar">
+                    Editar
+                </a>
+
+            </div>
+        </div>
+    </div>
 </div>

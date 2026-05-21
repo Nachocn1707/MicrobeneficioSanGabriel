@@ -5,60 +5,150 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="admin-title">Editar registro financiero</h1>
-<p class="admin-subtitle">Actualizar información del ingreso o gasto registrado.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
 
-<div class="admin-card">
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="Id" />
+<div class="EstiloEditar-edit-page">
 
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="EstiloEditar-header">
+        <h1>Editar registro financiero</h1>
+        <p>Actualizar información del ingreso o gasto registrado.</p>
+    </div>
+    <div class="EstiloEditar-card">
 
-        <div class="mb-3">
-            <label asp-for="Tipo" class="form-label fw-semibold"></label>
-            <select asp-for="Tipo" class="form-select">
-                <option value="">Seleccione un tipo</option>
-                <option value="Ingreso">Ingreso</option>
-                <option value="Gasto">Gasto</option>
-            </select>
-            <span asp-validation-for="Tipo" class="text-danger"></span>
+        <div class="EstiloEditar-card-header">
+            <h2>@Model.Tipo</h2>
+            <span>Microbeneficio San Gabriel</span>
         </div>
+        <div class="EstiloEditar-card-body">
 
-        <div class="mb-3">
-            <label asp-for="Categoria" class="form-label fw-semibold"></label>
-            <input asp-for="Categoria" class="form-control" />
-            <span asp-validation-for="Categoria" class="text-danger"></span>
-        </div>
+            <form asp-action="Edit" method="post">
 
-        <div class="mb-3">
-            <label asp-for="Descripcion" class="form-label fw-semibold"></label>
-            <input asp-for="Descripcion" class="form-control" />
-            <span asp-validation-for="Descripcion" class="text-danger"></span>
-        </div>
+                <input type="hidden" asp-for="Id" />
 
-        <div class="mb-3">
-            <label asp-for="Monto" class="form-label fw-semibold"></label>
-            <input asp-for="Monto" class="form-control" />
-            <span asp-validation-for="Monto" class="text-danger"></span>
-        </div>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
 
-        <div class="mb-3">
-            <label asp-for="Fecha" class="form-label fw-semibold"></label>
-            <input asp-for="Fecha" class="form-control" />
-            <span asp-validation-for="Fecha" class="text-danger"></span>
-        </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
 
-        <div class="mb-4">
-            <label asp-for="Observacion" class="form-label fw-semibold"></label>
-            <textarea asp-for="Observacion" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Observacion" class="text-danger"></span>
-        </div>
+                        <label asp-for="Tipo"
+                               class="form-label">
+                        </label>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">Guardar cambios</button>
-            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                        <select asp-for="Tipo"
+                                class="form-select">
+
+                            <option value="">
+                                Seleccione un tipo
+                            </option>
+
+                            <option value="Ingreso">
+                                Ingreso
+                            </option>
+
+                            <option value="Gasto">
+                                Gasto
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Tipo"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Categoria"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Categoria"
+                               class="form-control" />
+
+                        <span asp-validation-for="Categoria"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Descripcion"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Descripcion"
+                               class="form-control" />
+
+                        <span asp-validation-for="Descripcion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Monto"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Monto"
+                               class="form-control" />
+
+                        <span asp-validation-for="Monto"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Fecha"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Fecha"
+                               class="form-control" />
+
+                        <span asp-validation-for="Fecha"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-12">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Observacion"
+                                  class="form-control"
+                                  rows="4">
+                        </textarea>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+                <div class="EstiloEditar-actions">
+
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver a la lista
+                    </a>
+
+                    <button type="submit"
+                            class="btn-guardar">
+                        Guardar cambios
+                    </button>
+
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

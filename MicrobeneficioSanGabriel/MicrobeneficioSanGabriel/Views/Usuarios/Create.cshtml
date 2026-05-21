@@ -5,54 +5,199 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1 class="fw-bold">Registrar usuario</h1>
-<p class="text-muted mb-4">Crear una nueva cuenta de acceso al sistema.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
 
-<div class="card border-0 shadow-sm rounded-4 p-4">
-    <form asp-action="Create" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+        <div class="VistaCrear-title">
+            <span class="VistaCrear-badge">
+                Administración
+            </span>
 
-        <div class="mb-3">
-            <label asp-for="Email" class="form-label fw-semibold"></label>
-            <input asp-for="Email" class="form-control" placeholder="usuario@correo.com" />
-            <span asp-validation-for="Email" class="text-danger"></span>
+            <h1>Registrar usuario</h1>
+            <p>
+                Creá una nueva cuenta para acceder al sistema administrativo.
+            </p>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
-            <input asp-for="PhoneNumber" class="form-control" placeholder="8888-8888" />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
+    </div>
+    <div class="VistaCrear-card">
 
-        <div class="mb-3">
-            <label asp-for="Rol" class="form-label fw-semibold"></label>
-            <select asp-for="Rol" asp-items="Model.Roles" class="form-select">
-                <option value="">Seleccione un rol</option>
-            </select>
-            <span asp-validation-for="Rol" class="text-danger"></span>
-        </div>
+        <div class="VistaCrear-side">
 
-        <div class="mb-3">
-            <label asp-for="Password" class="form-label fw-semibold"></label>
-            <input asp-for="Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+            <div class="VistaCrear-side-content">
 
-        <div class="mb-4">
-            <label asp-for="ConfirmPassword" class="form-label fw-semibold"></label>
-            <input asp-for="ConfirmPassword" class="form-control" />
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-        </div>
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">
-                Guardar
-            </button>
-            <a asp-action="Index" class="btn btn-secondary">
-                Volver
-            </a>
+                <h2>Nuevo acceso</h2>
+
+                <p>
+                    Registrá usuarios con acceso seguro al sistema del
+                    Microbeneficio San Gabriel.
+                </p>
+                <div class="VistaCrear-info">
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Seguridad avanzada
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-user-lock"></i>
+                        Control de roles
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-database"></i>
+                        Gestión centralizada
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
-    </form>
+        <div class="VistaCrear-form-container">
+
+            <form asp-action="Create" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Email"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   placeholder="usuario@correo.com" />
+
+                        </div>
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="PhoneNumber"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                            <input asp-for="PhoneNumber"
+                                   class="form-control"
+                                   placeholder="8888-8888" />
+
+                        </div>
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Rol"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+                            <i class="fa-solid fa-user-shield"></i>
+
+                            <select asp-for="Rol"
+                                    asp-items="Model.Roles"
+                                    class="form-select">
+
+                                <option value="">
+                                    Seleccione un rol
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="Rol"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Password"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input asp-for="Password"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Password"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-12">
+
+                        <label asp-for="ConfirmPassword"
+                               class="form-label">
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input asp-for="ConfirmPassword"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="ConfirmPassword"
+                              class="text-danger">
+                        </span>
+                    </div>
+                </div>
+                <div class="VistaCrear-actions">
+
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-user-plus"></i>
+
+                        Registrar usuario
+
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

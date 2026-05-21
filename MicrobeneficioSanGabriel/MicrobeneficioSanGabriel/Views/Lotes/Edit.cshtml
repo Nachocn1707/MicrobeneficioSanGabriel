@@ -1,57 +1,141 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Lote
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar lote";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
 
-<h4>Lote</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CodigoLote" class="control-label"></label>
-                <input asp-for="CodigoLote" class="form-control" />
-                <span asp-validation-for="CodigoLote" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductorId" class="control-label"></label>
-                <select asp-for="ProductorId" class="form-control" asp-items="ViewBag.ProductorId"></select>
-                <span asp-validation-for="ProductorId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PesoKg" class="control-label"></label>
-                <input asp-for="PesoKg" class="form-control" />
-                <span asp-validation-for="PesoKg" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaRecepcion" class="control-label"></label>
-                <input asp-for="FechaRecepcion" class="form-control" />
-                <span asp-validation-for="FechaRecepcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Observacion" class="control-label"></label>
-                <input asp-for="Observacion" class="form-control" />
-                <span asp-validation-for="Observacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="EstiloEditar-edit-page">
+
+    <div class="EstiloEditar-header">
+        <h1>Editar lote</h1>
+        <p>Actualizá los datos registrados del lote.</p>
     </div>
-</div>
+    <div class="EstiloEditar-card">
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="EstiloEditar-card-header">
+            <h2>@Model.CodigoLote</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+        <div class="EstiloEditar-card-body">
+
+            <form asp-action="Edit">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+
+                        <label asp-for="CodigoLote"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="CodigoLote"
+                               class="form-control" />
+
+                        <span asp-validation-for="CodigoLote"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="ProductorId"
+                               class="form-label">
+                        </label>
+
+                        <select asp-for="ProductorId"
+                                class="form-select"
+                                asp-items="ViewBag.ProductorId">
+                        </select>
+
+                        <span asp-validation-for="ProductorId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="PesoKg"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="PesoKg"
+                               class="form-control" />
+
+                        <span asp-validation-for="PesoKg"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="FechaRecepcion"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="FechaRecepcion"
+                               class="form-control" />
+
+                        <span asp-validation-for="FechaRecepcion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Estado"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="Estado"
+                               class="form-control" />
+
+                        <span asp-validation-for="Estado"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-12">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                        </label>
+
+                        <textarea asp-for="Observacion"
+                                  class="form-control"
+                                  rows="4">
+                        </textarea>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="EstiloEditar-actions">
+
+                    <a asp-action="Index"
+                       class="btn-volver">
+                        Volver a la lista
+                    </a>
+
+                    <button type="submit"
+                            class="btn-guardar">
+                        Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

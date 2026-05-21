@@ -13,155 +13,310 @@
     }
 }
 
-<div class="container mt-4">
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
 
-    <div class="card border-0 shadow-sm rounded-4">
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
 
-        <div class="card-body p-4">
+        <div class="VistaCrear-title">
 
-            <div class="d-flex justify-content-between align-items-start mb-4">
-                <div>
-                    <h1 class="fw-bold mb-1">Nuevo Pedido</h1>
-                    <p class="text-muted mb-0">
-                        Registro de pedidos realizados por clientes.
-                    </p>
-                </div>
+            <span class="VistaCrear-badge">
+                Gestión de pedidos
+            </span>
 
-                <a asp-action="Index" class="btn btn-secondary">
-                    Volver
-                </a>
-            </div>
+            <h1>Nuevo pedido</h1>
 
-            <form asp-action="Create" method="post">
-
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <input type="hidden" asp-for="ClienteCorreo" />
-
-                @if (User.IsInRole("Cliente"))
-                {
-                    <input type="hidden" asp-for="Estado" value="Pendiente" />
-                    <input type="hidden" asp-for="FechaPedido" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
-
-                    <div class="alert alert-info">
-                        El pedido se registrará automáticamente en estado <strong>Pendiente</strong>.
-                    </div>
-                }
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="ClienteNombre" class="form-label">
-                            Cliente
-                        </label>
-
-                        <input asp-for="ClienteNombre"
-                               class="form-control"
-                               placeholder="Digite el nombre completo del cliente" />
-
-                        <span asp-validation-for="ClienteNombre" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="ClienteTelefono" class="form-label">
-                            Teléfono
-                        </label>
-
-                        <input asp-for="ClienteTelefono"
-                               class="form-control"
-                               placeholder="Digite el número de teléfono" />
-
-                        <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="ProductoId" class="form-label">
-                            Producto
-                        </label>
-
-                        <select asp-for="ProductoId"
-                                class="form-select"
-                                asp-items="ViewBag.ProductoId">
-                        </select>
-
-                        <span asp-validation-for="ProductoId" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Cantidad" class="form-label">
-                            Cantidad en kg
-                        </label>
-
-                        <input asp-for="Cantidad"
-                               class="form-control"
-                               min="1" />
-
-                        <span asp-validation-for="Cantidad" class="text-danger"></span>
-                    </div>
-
-                    @if (!User.IsInRole("Cliente"))
-                    {
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="FechaPedido" class="form-label">
-                                Fecha del pedido
-                            </label>
-
-                            <input asp-for="FechaPedido"
-                                   type="datetime-local"
-                                   class="form-control" />
-
-                            <span asp-validation-for="FechaPedido" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Estado" class="form-label">
-                                Estado
-                            </label>
-
-                            <select asp-for="Estado" class="form-select">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="En proceso">En proceso</option>
-                                <option value="En camino">En camino</option>
-                                <option value="Listo para retirar">Listo para retirar</option>
-                                <option value="Completado">Completado</option>
-                                <option value="Cancelado">Cancelado</option>
-                            </select>
-
-                            <span asp-validation-for="Estado" class="text-danger"></span>
-                        </div>
-                    }
-
-                    <div class="col-md-12 mb-3">
-                        <label asp-for="Observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <textarea asp-for="Observacion"
-                                  class="form-control"
-                                  rows="5"
-                                  placeholder="Digite alguna observación del pedido"></textarea>
-
-                        <span asp-validation-for="Observacion" class="text-danger"></span>
-                    </div>
-
-                </div>
-
-                <div class="d-flex gap-2 mt-3">
-                    <button type="submit" class="btn btn-success">
-                        Guardar Pedido
-                    </button>
-
-                    <a asp-action="Index" class="btn btn-secondary">
-                        Volver
-                    </a>
-                </div>
-
-            </form>
+            <p>
+                Registrá pedidos realizados por clientes
+                dentro del sistema del microbeneficio.
+            </p>
 
         </div>
 
     </div>
+    <div class="VistaCrear-card">
 
+        <div class="VistaCrear-side">
+
+            <div class="VistaCrear-side-content">
+
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+
+                <h2>Pedidos</h2>
+
+                <p>
+                    Gestioná pedidos, clientes y productos
+                    para mantener el control comercial.
+                </p>
+
+                <div class="VistaCrear-info">
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-user-group"></i>
+                        Gestión de clientes
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-box"></i>
+                        Selección de productos
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        Seguimiento de pedidos
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="VistaCrear-form-container">
+
+            <form asp-action="Create"
+                  method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <input type="hidden"
+                       asp-for="ClienteCorreo" />
+
+                @if (User.IsInRole("Cliente"))
+                {
+                    <input type="hidden"
+                           asp-for="Estado"
+                           value="Pendiente" />
+
+                    <input type="hidden"
+                           asp-for="FechaPedido"
+                           value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+                    <div class="VistaCrear-alert">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        El pedido se registrará automáticamente
+                        en estado <strong>Pendiente</strong>.
+
+                    </div>
+                }
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+
+                        <label asp-for="ClienteNombre"
+                               class="form-label">
+                            Cliente
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <input asp-for="ClienteNombre"
+                                   class="form-control"
+                                   placeholder="Digite el nombre completo del cliente" />
+
+                        </div>
+
+                        <span asp-validation-for="ClienteNombre"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="ClienteTelefono"
+                               class="form-label">
+                            Teléfono
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                            <input asp-for="ClienteTelefono"
+                                   class="form-control"
+                                   placeholder="Digite el número de teléfono" />
+
+                        </div>
+
+                        <span asp-validation-for="ClienteTelefono"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="ProductoId"
+                               class="form-label">
+                            Producto
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-box"></i>
+
+                            <select asp-for="ProductoId"
+                                    class="form-select"
+                                    asp-items="ViewBag.ProductoId">
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="ProductoId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Cantidad"
+                               class="form-label">
+                            Cantidad en kg
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-weight-scale"></i>
+
+                            <input asp-for="Cantidad"
+                                   class="form-control"
+                                   min="1" />
+
+                        </div>
+
+                        <span asp-validation-for="Cantidad"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    @if (!User.IsInRole("Cliente"))
+                    {
+                        <div class="col-md-6">
+
+                            <label asp-for="FechaPedido"
+                                   class="form-label">
+                                Fecha del pedido
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-calendar"></i>
+
+                                <input asp-for="FechaPedido"
+                                       type="datetime-local"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="FechaPedido"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <label asp-for="Estado"
+                                   class="form-label">
+                                Estado
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-circle-info"></i>
+
+                                <select asp-for="Estado"
+                                        class="form-select">
+
+                                    <option value="Pendiente">
+                                        Pendiente
+                                    </option>
+
+                                    <option value="En proceso">
+                                        En proceso
+                                    </option>
+
+                                    <option value="En camino">
+                                        En camino
+                                    </option>
+
+                                    <option value="Listo para retirar">
+                                        Listo para retirar
+                                    </option>
+
+                                    <option value="Completado">
+                                        Completado
+                                    </option>
+
+                                    <option value="Cancelado">
+                                        Cancelado
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <span asp-validation-for="Estado"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+                    }
+
+                    <div class="col-md-12">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                            Observación
+                        </label>
+
+                        <div class="input-modern textarea-modern">
+
+                            <i class="fa-solid fa-comment"></i>
+
+                            <textarea asp-for="Observacion"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Digite alguna observación del pedido">
+                            </textarea>
+
+                        </div>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="VistaCrear-actions">
+
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Guardar pedido
+
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

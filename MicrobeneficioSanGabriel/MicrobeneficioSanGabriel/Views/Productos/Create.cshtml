@@ -5,59 +5,261 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
 
-<h4>Producto</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+
+        <div class="VistaCrear-title">
+
+            <span class="VistaCrear-badge">
+                Gestión de productos
+            </span>
+
+            <h1>Registrar producto</h1>
+
+            <p>
+                Agregá un nuevo producto al sistema del
+                Microbeneficio San Gabriel.
+            </p>
+
+        </div>
+
+    </div>
+    <div class="VistaCrear-card">
+
+        <div class="VistaCrear-side">
+
+            <div class="VistaCrear-side-content">
+
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+
+                <h2>Nuevo producto</h2>
+
+                <p>
+                    Registrá productos para mantener el
+                    control de inventario, ventas y trazabilidad.
+                </p>
+                <div class="VistaCrear-info">
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-cubes"></i>
+                        Control de stock
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-tags"></i>
+                        Gestión de categorías
+                    </div>
+
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-chart-column"></i>
+                        Seguimiento comercial
+                    </div>
+
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Categoria" class="control-label"></label>
-                <input asp-for="Categoria" class="form-control" />
-                <span asp-validation-for="Categoria" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Precio" class="control-label"></label>
-                <input asp-for="Precio" class="form-control" />
-                <span asp-validation-for="Precio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Activo" /> @Html.DisplayNameFor(model => model.Activo)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-                <input asp-for="FechaRegistro" class="form-control" />
-                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+
+        </div>
+        <div class="VistaCrear-form-container">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label asp-for="Nombre"
+                                   class="form-label">
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-box-open"></i>
+
+                                <input asp-for="Nombre"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="Nombre"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label asp-for="Categoria"
+                                   class="form-label">
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-layer-group"></i>
+
+                                <input asp-for="Categoria"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="Categoria"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label asp-for="Precio"
+                                   class="form-label">
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-colon-sign"></i>
+
+                                <input asp-for="Precio"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="Precio"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label asp-for="Stock"
+                                   class="form-label">
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-warehouse"></i>
+
+                                <input asp-for="Stock"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="Stock"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+                    <div class="col-12">
+
+                        <div class="form-group">
+
+                            <label asp-for="Descripcion"
+                                   class="form-label">
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-align-left"></i>
+
+                                <input asp-for="Descripcion"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="Descripcion"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group form-check">
+
+                            <label class="form-check-label">
+
+                                <input class="form-check-input"
+                                       asp-for="Activo" />
+
+                                @Html.DisplayNameFor(model => model.Activo)
+
+                            </label>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label asp-for="FechaRegistro"
+                                   class="form-label">
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-calendar"></i>
+
+                                <input asp-for="FechaRegistro"
+                                       class="form-control" />
+
+                            </div>
+
+                            <span asp-validation-for="FechaRegistro"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="VistaCrear-actions">
+
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Registrar producto
+
+                    </button>
+
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

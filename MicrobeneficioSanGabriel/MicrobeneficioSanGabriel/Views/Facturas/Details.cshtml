@@ -8,181 +8,25 @@
     var observacion = string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observaciones" : Model.Observacion;
 }
 
-<style>
-    body, .admin-main, .admin-content {
-        background: #fff8df !important;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
 
-    .factura-page {
-        padding: 32px;
-        min-height: calc(100vh - 90px);
-    }
 
-    .factura-header {
-        margin-bottom: 24px;
-    }
+<div class="EstiloDetalle-page">
 
-        .factura-header h1 {
-            color: #2b160d;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .factura-header p {
-            color: #6f5b4a;
-            margin: 0;
-        }
-
-    .factura-card {
-        max-width: 980px;
-        background: #fffdf2;
-        border: 1px solid #ead8a2;
-        border-top: 6px solid #f3d27a;
-        border-radius: 18px;
-        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
-        overflow: hidden;
-    }
-
-    .factura-card-header {
-        background: linear-gradient(90deg, #4a2c1a, #7a5230);
-        color: #fff8df;
-        padding: 24px 30px;
-    }
-
-        .factura-card-header h2 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: 800;
-        }
-
-        .factura-card-header span {
-            color: #fff3c4;
-            font-size: 14px;
-        }
-
-    .factura-card-body {
-        padding: 30px;
-    }
-
-    .detalle-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-    }
-
-    .detalle-item {
-        background: #fff8df;
-        border: 1px solid #ead8a2;
-        border-radius: 14px;
-        padding: 16px 18px;
-    }
-
-        .detalle-item.full {
-            grid-column: 1 / -1;
-        }
-
-    .detalle-label {
-        display: block;
-        color: #7a5230;
-        font-weight: 800;
-        font-size: 13px;
-        text-transform: uppercase;
-        margin-bottom: 6px;
-    }
-
-    .detalle-value {
-        color: #2b160d;
-        font-size: 17px;
-        font-weight: 600;
-    }
-
-    .estado-pill {
-        display: inline-block;
-        background: #f3d27a;
-        color: #2b160d;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-weight: 800;
-    }
-
-    .factura-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 26px;
-        padding-top: 22px;
-        border-top: 1px solid #ead8a2;
-    }
-
-    .btn-editar {
-        background: #4a2c1a;
-        border: 1px solid #4a2c1a;
-        color: #fff8df;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-        text-decoration: none;
-    }
-
-        .btn-editar:hover {
-            background: #2b160d;
-            color: #fff8df;
-        }
-
-    .btn-volver {
-        background: #fff3c4;
-        border: 1px solid #d8bd77;
-        color: #4a2c1a;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-        text-decoration: none;
-    }
-
-        .btn-volver:hover {
-            background: #f3d27a;
-            color: #2b160d;
-        }
-
-    @@media (max-width: 768px) {
-        .factura-page {
-            padding: 20px;
-        }
-
-        .factura-card-body {
-            padding: 22px;
-        }
-
-        .detalle-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .factura-actions {
-            flex-direction: column-reverse;
-        }
-
-        .btn-editar,
-        .btn-volver {
-            width: 100%;
-            text-align: center;
-        }
-    }
-</style>
-
-<div class="factura-page">
-
-    <div class="factura-header">
-        <h1>Detalles de factura</h1>
-        <p>Información registrada para esta factura.</p>
+    <div class="EstiloDetalle-header">
+        <h1>Detalles de la factura</h1>
+        <p>Información registrada para esta EstiloDetalle.</p>
     </div>
 
-    <div class="factura-card">
-        <div class="factura-card-header">
+    <div class="EstiloDetalle-card">
+        <div class="EstiloDetalle-card-header">
             <h2>Factura #@Model.Id</h2>
             <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="factura-card-body">
+        <div class="EstiloDetalle-card-body">
             <div class="detalle-grid">
 
                 <div class="detalle-item">
@@ -191,7 +35,7 @@
                 </div>
 
                 <div class="detalle-item">
-                    <span class="detalle-label">Fecha de factura</span>
+                    <span class="detalle-label">Fecha de EstiloDetalle</span>
                     <span class="detalle-value">@Model.FechaFactura.ToString("dd/MM/yyyy hh:mm tt")</span>
                 </div>
 
@@ -222,7 +66,7 @@
 
             </div>
 
-            <div class="factura-actions">
+            <div class="EstiloDetalle-actions">
                 <a asp-action="Index" class="btn-volver">Volver a la lista</a>
 
                 @if (User.IsInRole("Administrador"))

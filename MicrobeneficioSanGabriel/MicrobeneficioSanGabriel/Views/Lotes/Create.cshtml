@@ -5,74 +5,253 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="page-header">
-    <div>
-        <h1>Nuevo Lote</h1>
-        <p>Registro de lote de café recibido en el microbeneficio.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
+
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+
+        <div class="VistaCrear-title">
+
+            <span class="VistaCrear-badge">
+                Gestión de lotes
+            </span>
+
+            <h1>Nuevo lote</h1>
+
+            <p>
+                Registrá lotes de café recibidos en el
+                Microbeneficio San Gabriel.
+            </p>
+
+        </div>
+
     </div>
 
-    <a asp-action="Index" class="btn btn-secondary">
-        Volver
-    </a>
-</div>
+    <div class="VistaCrear-card">
+        <div class="VistaCrear-side">
 
-<div class="admin-card">
-    <form asp-action="Create" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="VistaCrear-side-content">
 
-        <div class="row g-3">
+                <div class="VistaCrear-icon">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
 
-            <div class="col-md-6">
-                <label asp-for="CodigoLote" class="form-label">Código del lote</label>
-                <input asp-for="CodigoLote" class="form-control" placeholder="Ej: LOT-001" />
-                <span asp-validation-for="CodigoLote" class="text-danger"></span>
-            </div>
+                <h2>Control de lotes</h2>
 
-            <div class="col-md-6">
-                <label asp-for="ProductorId" class="form-label">Productor</label>
-                <select asp-for="ProductorId" class="form-select" asp-items="ViewBag.ProductorId">
-                    <option value="">Seleccione un productor</option>
-                </select>
-                <span asp-validation-for="ProductorId" class="text-danger"></span>
-            </div>
+                <p>
+                    Gestioná la recepción, peso, estado y
+                    trazabilidad de los lotes de café.
+                </p>
 
-            <div class="col-md-6">
-                <label asp-for="PesoKg" class="form-label">Peso recibido (Kg)</label>
-                <input asp-for="PesoKg" class="form-control" placeholder="Ej: 150" />
-                <span asp-validation-for="PesoKg" class="text-danger"></span>
-            </div>
+                <div class="VistaCrear-info">
 
-            <div class="col-md-6">
-                <label asp-for="FechaRecepcion" class="form-label">Fecha de recepción</label>
-                <input asp-for="FechaRecepcion" type="datetime-local" class="form-control" />
-                <span asp-validation-for="FechaRecepcion" class="text-danger"></span>
-            </div>
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-weight-scale"></i>
+                        Control de peso
+                    </div>
 
-            <div class="col-md-6">
-                <label asp-for="Estado" class="form-label">Estado</label>
-                <select asp-for="Estado" class="form-select">
-                    <option value="">Seleccione un estado</option>
-                    <option value="Recibido">Recibido</option>
-                    <option value="En proceso">En proceso</option>
-                    <option value="Finalizado">Finalizado</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-seedling"></i>
+                        Relación con productores
+                    </div>
 
-            <div class="col-md-6">
-                <label asp-for="Observacion" class="form-label">Observación</label>
-                <input asp-for="Observacion" class="form-control" placeholder="Detalle adicional del lote" />
-                <span asp-validation-for="Observacion" class="text-danger"></span>
+                    <div class="VistaCrear-info-item">
+                        <i class="fa-solid fa-route"></i>
+                        Seguimiento de trazabilidad
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
+        <div class="VistaCrear-form-container">
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-success">
-                Guardar Lote
-            </button>
+            <form asp-action="Create"
+                  method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+
+                        <label asp-for="CodigoLote"
+                               class="form-label">
+                            Código del lote
+                        </label>
+
+                        <div class="input-modern">
+                            <i class="fa-solid fa-barcode"></i>
+
+                            <input asp-for="CodigoLote"
+                                   class="form-control"
+                                   placeholder="Ej: LOT-001" />
+
+                        </div>
+
+                        <span asp-validation-for="CodigoLote"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="ProductorId"
+                               class="form-label">
+                            Productor
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <select asp-for="ProductorId"
+                                    class="form-select"
+                                    asp-items="ViewBag.ProductorId">
+
+                                <option value="">
+                                    Seleccione un productor
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="ProductorId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="PesoKg"
+                               class="form-label">
+                            Peso recibido (Kg)
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-weight-scale"></i>
+
+                            <input asp-for="PesoKg"
+                                   class="form-control"
+                                   placeholder="Ej: 150" />
+
+                        </div>
+
+                        <span asp-validation-for="PesoKg"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="FechaRecepcion"
+                               class="form-label">
+                            Fecha de recepción
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-calendar"></i>
+
+                            <input asp-for="FechaRecepcion"
+                                   type="datetime-local"
+                                   class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="FechaRecepcion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Estado"
+                               class="form-label">
+                            Estado
+                        </label>
+
+                        <div class="input-modern">
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            <select asp-for="Estado"
+                                    class="form-select">
+
+                                <option value="">
+                                    Seleccione un estado
+                                </option>
+
+                                <option value="Recibido">
+                                    Recibido
+                                </option>
+
+                                <option value="En proceso">
+                                    En proceso
+                                </option>
+
+                                <option value="Finalizado">
+                                    Finalizado
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="Estado"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <label asp-for="Observacion"
+                               class="form-label">
+                            Observación
+                        </label>
+
+                        <div class="input-modern">
+
+                            <i class="fa-solid fa-comment"></i>
+
+                            <input asp-for="Observacion"
+                                   class="form-control"
+                                   placeholder="Detalle adicional del lote" />
+
+                        </div>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="VistaCrear-actions">
+
+                    <a asp-action="Index"
+                       class="btn-cancelar">
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-crear">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Guardar lote
+
+                    </button>
+
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
