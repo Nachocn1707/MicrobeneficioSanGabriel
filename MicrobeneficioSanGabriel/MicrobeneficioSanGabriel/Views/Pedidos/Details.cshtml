@@ -2,235 +2,235 @@
 
 @{
     ViewData["Title"] = "Detalles del pedido";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    var productoNombre = Model.Producto?.Nombre ?? Model.Producto?.Categoria ?? "Sin producto";
-    var observacion = string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observaciones" : Model.Observacion;
+    if (User.IsInRole("Cliente"))
+    {
+        Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
 }
 
 <style>
-    body,
-    .admin-main,
-    .admin-content {
-        background: #fff8df !important;
-    }
-
-    .pedido-detalle-page {
-        padding: 32px;
-        min-height: calc(100vh - 90px);
-    }
-
-    .pedido-header {
-        margin-bottom: 24px;
-    }
-
-        .pedido-header h1 {
-            color: #2b160d;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .pedido-header p {
-            color: #6f5b4a;
-            margin: 0;
-        }
-
-    .pedido-card {
-        max-width: 980px;
-        background: #fffdf2;
-        border: 1px solid #ead8a2;
-        border-top: 6px solid #f3d27a;
-        border-radius: 18px;
-        box-shadow: 0 16px 34px rgba(74, 44, 26, 0.14);
+    .pedido-detalle-card {
+        width: 720px;
+        max-width: 100%;
+        background: #fffdf3;
+        border-radius: 12px;
         overflow: hidden;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e2c96b;
+        margin-top: 25px;
     }
 
-    .pedido-card-header {
-        background: linear-gradient(90deg, #4a2c1a, #7a5230);
-        color: #fff8df;
-        padding: 24px 30px;
+    .pedido-detalle-header {
+        background: linear-gradient(90deg, #4b2413, #7a4a26);
+        color: white;
+        padding: 22px 28px;
     }
 
-        .pedido-card-header h2 {
+        .pedido-detalle-header h3 {
             margin: 0;
-            font-size: 28px;
+            font-weight: 800;
+            font-size: 26px;
+        }
+
+        .pedido-detalle-header span {
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+            color: #f6df85;
+            font-weight: 600;
+        }
+
+    .pedido-detalle-body {
+        padding: 28px;
+    }
+
+    .pedido-detalle-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .pedido-detalle-item {
+        background: #fff8d8;
+        border: 1px solid #e5d58a;
+        border-radius: 8px;
+        padding: 14px;
+        min-height: 70px;
+    }
+
+        .pedido-detalle-item strong {
+            display: block;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: #6b4a18;
+            margin-bottom: 8px;
             font-weight: 800;
         }
 
-        .pedido-card-header span {
-            color: #fff3c4;
-            font-size: 14px;
+        .pedido-detalle-item span {
+            font-size: 15px;
+            color: #1f2937;
         }
 
-    .pedido-card-body {
-        padding: 30px;
+    .pedido-observacion {
+        margin-top: 14px;
     }
 
-    .detalle-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-    }
-
-    .detalle-item {
-        background: #fff8df;
-        border: 1px solid #ead8a2;
-        border-radius: 14px;
-        padding: 16px 18px;
-    }
-
-        .detalle-item.full {
-            grid-column: 1 / -1;
-        }
-
-    .detalle-label {
-        display: block;
-        color: #7a5230;
-        font-weight: 800;
-        font-size: 13px;
-        text-transform: uppercase;
-        margin-bottom: 6px;
-    }
-
-    .detalle-value {
-        color: #2b160d;
-        font-size: 17px;
-        font-weight: 600;
-    }
-
-    .estado-pill {
-        display: inline-block;
-        background: #f3d27a;
-        color: #2b160d;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-weight: 800;
-    }
-
-    .pedido-actions {
+    .pedido-detalle-acciones {
+        margin-top: 14px;
         display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 26px;
-        padding-top: 22px;
-        border-top: 1px solid #ead8a2;
+        gap: 8px;
+    }
+
+    .btn-volver,
+    .btn-editar,
+    .btn-eliminar {
+        padding: 8px 14px;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+    }
+
+    .btn-volver {
+        background-color: #6c757d;
     }
 
     .btn-editar {
-        background: #4a2c1a;
-        border: 1px solid #4a2c1a;
-        color: #fff8df;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-        text-decoration: none;
+        background-color: #ffc107;
+        color: #111;
     }
 
-        .btn-editar:hover {
-            background: #2b160d;
-            color: #fff8df;
-        }
-
-    .btn-volver {
-        background: #fff3c4;
-        border: 1px solid #d8bd77;
-        color: #4a2c1a;
-        font-weight: 800;
-        border-radius: 10px;
-        padding: 10px 22px;
-        text-decoration: none;
+    .btn-eliminar {
+        background-color: #dc3545;
     }
 
-        .btn-volver:hover {
-            background: #f3d27a;
-            color: #2b160d;
+        .btn-volver:hover,
+        .btn-eliminar:hover {
+            color: white;
+            opacity: 0.9;
         }
+
+    .btn-editar:hover {
+        color: #111;
+        opacity: 0.9;
+    }
 
     @@media (max-width: 768px) {
-        .pedido-detalle-page {
-            padding: 20px;
-        }
-
-        .pedido-card-body {
-            padding: 22px;
-        }
-
-        .detalle-grid {
+        .pedido-detalle-grid {
             grid-template-columns: 1fr;
         }
 
-        .pedido-actions {
-            flex-direction: column-reverse;
-        }
-
-        .btn-editar,
-        .btn-volver {
+        .pedido-detalle-card {
             width: 100%;
-            text-align: center;
         }
     }
 </style>
 
-<div class="pedido-detalle-page">
+<h1>Detalles del pedido</h1>
+<p>Información registrada para este pedido.</p>
 
-    <div class="pedido-header">
-        <h1>Detalles del pedido</h1>
-        <p>Información registrada para este pedido.</p>
+<div class="pedido-detalle-card">
+    <div class="pedido-detalle-header">
+        <h3>Pedido #@Model.Id</h3>
+        <span>Microbeneficio San Gabriel</span>
     </div>
 
-    <div class="pedido-card">
-        <div class="pedido-card-header">
-            <h2>Pedido #@Model.Id</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="pedido-card-body">
-            <div class="detalle-grid">
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Cliente</span>
-                    <span class="detalle-value">@Model.ClienteNombre</span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Producto</span>
-                    <span class="detalle-value">@productoNombre</span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Cantidad</span>
-                    <span class="detalle-value">@Model.Cantidad</span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Fecha del pedido</span>
-                    <span class="detalle-value">@Model.FechaPedido.ToString("dd/MM/yyyy hh:mm tt")</span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Estado</span>
-                    <span class="estado-pill">@Model.Estado</span>
-                </div>
-
-                <div class="detalle-item full">
-                    <span class="detalle-label">Observación</span>
-                    <span class="detalle-value">@observacion</span>
-                </div>
-
+    <div class="pedido-detalle-body">
+        <div class="pedido-detalle-grid">
+            <div class="pedido-detalle-item">
+                <strong>Cliente</strong>
+                <span>@Model.ClienteNombre</span>
             </div>
 
+            <div class="pedido-detalle-item">
+                <strong>Producto</strong>
+                <span>@(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")</span>
+            </div>
+
+            <div class="pedido-detalle-item">
+                <strong>Cantidad</strong>
+                <span>@Model.Cantidad</span>
+            </div>
+
+            <div class="pedido-detalle-item">
+                <strong>Fecha del pedido</strong>
+                <span>@Model.FechaPedido.ToString("dd/MM/yyyy hh:mm tt")</span>
+            </div>
+
+            <div class="pedido-detalle-item">
+                <strong>Estado</strong>
+
+                @if (Model.Estado == "Pendiente")
+                {
+                    <span class="badge bg-warning text-dark">Pendiente</span>
+                }
+                else if (Model.Estado == "Completado")
+                {
+                    <span class="badge bg-success">Completado</span>
+                }
+                else if (Model.Estado == "Cancelado")
+                {
+                    <span class="badge bg-danger">Cancelado</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">@Model.Estado</span>
+                }
+            </div>
+        </div>
+
+        <div class="pedido-detalle-item pedido-observacion">
+            <strong>Observación</strong>
+            <span>
+                @(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación" : Model.Observacion)
+            </span>
+        </div>
+
+        <div class="pedido-detalle-acciones">
             @if (User.IsInRole("Administrador"))
             {
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-editar">Editar</a>
-            }
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn-editar">
+                    Editar
+                </a>
 
-            @if (User.IsInRole("Cliente") && Model.Estado == "Pendiente")
-            {
-                <a asp-action="EditCliente" asp-route-id="@Model.Id" class="btn-editar">Actualizar</a>
-                <a asp-action="Cancelar" asp-route-id="@Model.Id" class="btn btn-danger">Cancelar</a>
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver
+                </a>
             }
-            </div>
+            else if (User.IsInRole("Cliente"))
+            {
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver
+                </a>
+
+                @if (Model.Estado == "Pendiente")
+                {
+                    <a asp-action="Cancelar"
+                       asp-route-id="@Model.Id"
+                       class="btn-eliminar">
+                        Cancelar
+                    </a>
+                }
+            }
+            else
+            {
+                <a asp-action="Index"
+                   class="btn-volver">
+                    Volver
+                </a>
+            }
         </div>
     </div>
-
 </div>
