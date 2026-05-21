@@ -27,7 +27,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (User.IsInRole("Cliente"))
             {
                 var correoCliente = User.Identity?.Name;
-
                 pedidos = pedidos.Where(p => p.ClienteNombre == correoCliente);
             }
 
@@ -48,6 +47,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 pedido.ClienteNombre = User.Identity?.Name ?? pedido.ClienteNombre;
                 pedido.Estado = "Pendiente";
+                pedido.FechaPedido = DateTime.Now;
             }
 
             if (ModelState.IsValid)
@@ -61,15 +61,15 @@ namespace MicrobeneficioSanGabriel.Controllers
                     return View(pedido);
                 }
 
+                if (pedido.Cantidad > producto.Stock)
+                {
+                    ModelState.AddModelError("", "No hay suficiente stock disponible para realizar el pedido.");
+                    CargarProductos(pedido.ProductoId);
+                    return View(pedido);
+                }
+
                 if (pedido.Estado == "Completado")
                 {
-                    if (producto.Stock < pedido.Cantidad)
-                    {
-                        ModelState.AddModelError("", "No hay suficiente stock para completar el pedido.");
-                        CargarProductos(pedido.ProductoId);
-                        return View(pedido);
-                    }
-
                     producto.Stock -= pedido.Cantidad;
 
                     var movimiento = new MovimientoInventario
@@ -153,6 +153,135 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             CargarProductos(pedido.ProductoId);
             return View(pedido);
+        }
+
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> EditCliente(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null) return NotFound();
+
+            if (pedido.ClienteNombre != User.Identity?.Name)
+            {
+                return Forbid();
+            }
+
+            if (pedido.Estado != "Pendiente")
+            {
+                TempData["Error"] = "Solo puede modificar pedidos en estado Pendiente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            CargarProductos(pedido.ProductoId);
+            return View(pedido);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> EditCliente(int id, Pedido pedido)
+        {
+            var pedidoOriginal = await _context.Pedidos.FindAsync(id);
+
+            if (pedidoOriginal == null) return NotFound();
+
+            if (pedidoOriginal.ClienteNombre != User.Identity?.Name)
+            {
+                return Forbid();
+            }
+
+            if (pedidoOriginal.Estado != "Pendiente")
+            {
+                TempData["Error"] = "Solo puede modificar pedidos en estado Pendiente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var producto = await _context.Productos.FindAsync(pedido.ProductoId);
+
+            if (producto == null)
+            {
+                ModelState.AddModelError("", "El producto seleccionado no existe.");
+            }
+            else if (pedido.Cantidad > producto.Stock)
+            {
+                ModelState.AddModelError("", "No hay suficiente stock disponible para actualizar el pedido.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                pedidoOriginal.ProductoId = pedido.ProductoId;
+                pedidoOriginal.Cantidad = pedido.Cantidad;
+                pedidoOriginal.Observacion = pedido.Observacion;
+
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Pedido actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            pedido.ClienteNombre = pedidoOriginal.ClienteNombre;
+            pedido.Estado = pedidoOriginal.Estado;
+            pedido.FechaPedido = pedidoOriginal.FechaPedido;
+
+            CargarProductos(pedido.ProductoId);
+            return View(pedido);
+        }
+
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> Cancelar(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null) return NotFound();
+
+            if (pedido.ClienteNombre != User.Identity?.Name)
+            {
+                return Forbid();
+            }
+
+            if (pedido.Estado != "Pendiente")
+            {
+                TempData["Error"] = "Solo puede cancelar pedidos en estado Pendiente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(pedido);
+        }
+
+        [HttpPost, ActionName("Cancelar")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> CancelarConfirmado(int id)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+
+            if (pedido == null) return NotFound();
+
+            if (pedido.ClienteNombre != User.Identity?.Name)
+            {
+                return Forbid();
+            }
+
+            if (pedido.Estado != "Pendiente")
+            {
+                TempData["Error"] = "Solo puede cancelar pedidos en estado Pendiente.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            pedido.Estado = "Cancelado";
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Pedido cancelado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "Administrador")]
