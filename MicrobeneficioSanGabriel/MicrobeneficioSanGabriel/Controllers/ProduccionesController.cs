@@ -63,10 +63,15 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (produccion.ProductoId.HasValue)
+                produccion.FechaProduccion = DateTime.Now;
+
+                _context.Producciones.Add(produccion);
+                await _context.SaveChangesAsync();
+
+                // Solo aumenta stock si la producción nace como Completado.
+                if (produccion.Estado == "Completado" && produccion.ProductoId.HasValue)
                 {
-                    var producto = await _context.Productos
-                        .FindAsync(produccion.ProductoId.Value);
+                    var producto = await _context.Productos.FindAsync(produccion.ProductoId.Value);
 
                     if (producto != null)
                     {
@@ -83,19 +88,15 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                         _context.MovimientosInventario.Add(movimiento);
                         _context.Productos.Update(producto);
+
+                        await _context.SaveChangesAsync();
                     }
                 }
-
-                produccion.FechaProduccion = DateTime.Now;
-
-                _context.Producciones.Add(produccion);
-                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
 
             CargarCombos(produccion.LoteId, produccion.ProductoId);
-
             return View(produccion);
         }
 
@@ -123,10 +124,18 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Producciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, Produccion produccion)
         {
             if (id != produccion.Id)
+            {
+                return NotFound();
+            }
+
+            var produccionOriginal = await _context.Producciones
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (produccionOriginal == null)
             {
                 return NotFound();
             }
@@ -135,6 +144,31 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 try
                 {
+                    // Si la producción pasa a Completado por primera vez, se suma stock.
+                    if (produccionOriginal.Estado != "Completado" &&
+                        produccion.Estado == "Completado" &&
+                        produccion.ProductoId.HasValue)
+                    {
+                        var producto = await _context.Productos.FindAsync(produccion.ProductoId.Value);
+
+                        if (producto != null)
+                        {
+                            producto.Stock += (int)produccion.CantidadResultanteKg;
+
+                            var movimiento = new MovimientoInventario
+                            {
+                                ProductoId = producto.Id,
+                                TipoMovimiento = "Entrada",
+                                Cantidad = (int)produccion.CantidadResultanteKg,
+                                FechaMovimiento = DateTime.Now,
+                                Observacion = $"Entrada automática por producción #{produccion.Id}"
+                            };
+
+                            _context.MovimientosInventario.Add(movimiento);
+                            _context.Productos.Update(producto);
+                        }
+                    }
+
                     _context.Update(produccion);
                     await _context.SaveChangesAsync();
                 }
@@ -152,7 +186,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             CargarCombos(produccion.LoteId, produccion.ProductoId);
-
             return View(produccion);
         }
 

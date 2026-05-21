@@ -19,9 +19,12 @@
         <p>Gestión de productos registrados en el microbeneficio.</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-success">
-        + Nuevo Producto
-    </a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a asp-action="Create" class="btn btn-success">
+            + Nuevo Producto
+        </a>
+    }
 </div>
 
 <div class="admin-card">
@@ -69,7 +72,7 @@
                         else
                         {
                             <span class="badge bg-success">
-                                @item.Stock unidades
+                                @item.Stock kg
                             </span>
                         }
 

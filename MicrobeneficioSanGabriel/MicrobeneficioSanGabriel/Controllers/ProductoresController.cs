@@ -42,6 +42,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // GET: Productores/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             return View();
@@ -50,16 +51,17 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Productores/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Cedula,Telefono,Direccion,Finca,Activo,FechaRegistro")] Productor productor)
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,Descripcion,Activo,FechaRegistro")] Producto producto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(productor);
+                _context.Add(producto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(productor);
+            return View(producto);
         }
 
         // GET: Productores/Edit/5

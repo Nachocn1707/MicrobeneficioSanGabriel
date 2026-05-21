@@ -148,24 +148,73 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, Pedido pedido)
         {
-            if (id != pedido.Id) return NotFound();
+            if (id != pedido.Id)
+            {
+                return NotFound();
+            }
+
+            var pedidoOriginal = await _context.Pedidos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedidoOriginal == null)
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Si el pedido pasa a Completado por primera vez, se descuenta stock.
+                    if (pedidoOriginal.Estado != "Completado" && pedido.Estado == "Completado")
+                    {
+                        var producto = await _context.Productos.FindAsync(pedido.ProductoId);
+
+                        if (producto == null)
+                        {
+                            ModelState.AddModelError("", "El producto seleccionado no existe.");
+                            CargarProductos(pedido.ProductoId);
+                            return View(pedido);
+                        }
+
+                        if (pedido.Cantidad > producto.Stock)
+                        {
+                            ModelState.AddModelError("", "No hay suficiente stock disponible para completar el pedido.");
+                            CargarProductos(pedido.ProductoId);
+                            return View(pedido);
+                        }
+
+                        producto.Stock -= pedido.Cantidad;
+
+                        var movimiento = new MovimientoInventario
+                        {
+                            ProductoId = producto.Id,
+                            TipoMovimiento = "Salida",
+                            Cantidad = pedido.Cantidad,
+                            FechaMovimiento = DateTime.Now,
+                            Observacion = $"Salida por pedido completado del cliente {pedido.ClienteNombre}"
+                        };
+
+                        _context.MovimientosInventario.Add(movimiento);
+                        _context.Productos.Update(producto);
+                    }
+
                     _context.Update(pedido);
                     await _context.SaveChangesAsync();
 
                     TempData["Success"] = "Pedido actualizado correctamente.";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PedidoExists(pedido.Id)) return NotFound();
+                    if (!PedidoExists(pedido.Id))
+                    {
+                        return NotFound();
+                    }
+
                     throw;
                 }
-
-                return RedirectToAction(nameof(Index));
             }
 
             CargarProductos(pedido.ProductoId);
