@@ -219,13 +219,16 @@
 
             </div>
 
-            <div class="pedido-actions">
-                <a asp-action="Index" class="btn-volver">Volver a la lista</a>
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-editar">Editar</a>
+            }
 
-                @if (User.IsInRole("Administrador"))
-                {
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-editar">Editar</a>
-                }
+            @if (User.IsInRole("Cliente") && Model.Estado == "Pendiente")
+            {
+                <a asp-action="EditCliente" asp-route-id="@Model.Id" class="btn-editar">Actualizar</a>
+                <a asp-action="Cancelar" asp-route-id="@Model.Id" class="btn btn-danger">Cancelar</a>
+            }
             </div>
         </div>
     </div>
