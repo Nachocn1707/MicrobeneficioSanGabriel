@@ -94,35 +94,48 @@
                                        class="btn btn-warning btn-sm">
                                         Editar
                                     </a>
-                                }
 
-                                @if (User.IsInRole("Cliente") && item.Estado == "Pendiente")
-                                {
-                                    <a asp-action="EditCliente"
+                                    <a asp-action="Details"
                                        asp-route-id="@item.Id"
-                                       class="btn btn-warning btn-sm">
-                                        Actualizar
+                                       class="btn btn-info btn-sm">
+                                        Detalles
                                     </a>
 
-                                    <a asp-action="Cancelar"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
-                                        Cancelar
-                                    </a>
-                                }
-
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-info btn-sm text-white">
-                                    Detalles
-                                </a>
-
-                                @if (User.IsInRole("Administrador"))
-                                {
                                     <a asp-action="Delete"
                                        asp-route-id="@item.Id"
                                        class="btn btn-danger btn-sm">
                                         Eliminar
+                                    </a>
+                                }
+                                else if (User.IsInRole("Cliente"))
+                                {
+                                    @if (item.Estado != null && item.Estado.Trim() == "Pendiente")
+                                    {
+                                        <a asp-action="EditCliente"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm">
+                                            Actualizar
+                                        </a>
+
+                                        <a asp-action="Cancelar"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm">
+                                            Cancelar
+                                        </a>
+                                    }
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-info btn-sm">
+                                        Detalles
+                                    </a>
+                                }
+                                else if (User.IsInRole("Vendedor"))
+                                {
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-info btn-sm">
+                                        Detalles
                                     </a>
                                 }
                             </td>
