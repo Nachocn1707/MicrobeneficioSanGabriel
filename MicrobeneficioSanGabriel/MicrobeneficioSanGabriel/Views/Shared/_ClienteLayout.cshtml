@@ -37,29 +37,29 @@
                 border-bottom: 1px solid rgba(243, 210, 122, 0.28);
             }
 
-            .cliente-brand h4 {
-                color: #fff3c4;
-                font-weight: 900;
-                margin: 0;
-            }
+                .cliente-brand h4 {
+                    color: #fff3c4;
+                    font-weight: 900;
+                    margin: 0;
+                }
 
             .cliente-menu {
                 padding-top: 22px;
             }
 
-            .cliente-menu a {
-                display: block;
-                color: #fff8df;
-                text-decoration: none;
-                padding: 14px 24px;
-                border-left: 4px solid transparent;
-                font-weight: 600;
-            }
+                .cliente-menu a {
+                    display: block;
+                    color: #fff8df;
+                    text-decoration: none;
+                    padding: 14px 24px;
+                    border-left: 4px solid transparent;
+                    font-weight: 600;
+                }
 
-            .cliente-menu a:hover {
-                background: rgba(243, 210, 122, 0.22);
-                border-left-color: #f3d27a;
-            }
+                    .cliente-menu a:hover {
+                        background: rgba(243, 210, 122, 0.22);
+                        border-left-color: #f3d27a;
+                    }
 
             .cliente-main {
                 margin-left: 260px;
@@ -88,7 +88,14 @@
                 padding: 8px 14px;
                 font-weight: 800;
             }
+
+                .logout-btn:hover {
+                    background: #6b3a20;
+                    color: #fff8df;
+                }
     </style>
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <div class="cliente-wrapper">
@@ -134,6 +141,7 @@
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

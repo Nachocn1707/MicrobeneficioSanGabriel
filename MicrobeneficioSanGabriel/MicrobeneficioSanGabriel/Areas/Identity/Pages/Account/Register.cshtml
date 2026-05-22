@@ -57,6 +57,53 @@
         justify-content: center;
     }
 
+    .input-wrapper {
+        position: relative;
+    }
+
+        .input-wrapper .custom-input {
+            padding-right: 48px;
+        }
+
+    .password-field {
+        position: relative;
+    }
+
+        .password-field .custom-input {
+            padding-right: 52px !important;
+        }
+
+    .password-toggle {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        outline: none;
+        box-shadow: none;
+        color: #7a5230;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+        .password-toggle:hover {
+            color: #4a2c1a;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
     @@media (max-width: 900px) {
         .register-card {
             max-width: 520px;
@@ -104,6 +151,7 @@
 
                     <div class="input-wrapper">
                         <i class="fa-solid fa-envelope"></i>
+
                         <input asp-for="Input.Email"
                                id="email"
                                class="form-control custom-input"
@@ -117,13 +165,21 @@
                 <div class="form-group">
                     <label class="form-label" asp-for="Input.Password">Contraseña</label>
 
-                    <div class="input-wrapper">
+                    <div class="input-wrapper password-field">
                         <i class="fa-solid fa-lock"></i>
+
                         <input asp-for="Input.Password"
                                id="password"
                                class="form-control custom-input"
                                autocomplete="new-password"
                                placeholder="Mínimo 8 caracteres" />
+
+                        <button type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('password', 'passwordIcon')"
+                                aria-label="Mostrar u ocultar contraseña">
+                            <i id="passwordIcon" class="fa-solid fa-eye"></i>
+                        </button>
                     </div>
 
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
@@ -134,13 +190,21 @@
                         Confirmar contraseña
                     </label>
 
-                    <div class="input-wrapper">
+                    <div class="input-wrapper password-field">
                         <i class="fa-solid fa-shield-halved"></i>
+
                         <input asp-for="Input.ConfirmPassword"
                                id="confirmPassword"
                                class="form-control custom-input"
                                autocomplete="new-password"
                                placeholder="Repetí la contraseña" />
+
+                        <button type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('confirmPassword', 'confirmPasswordIcon')"
+                                aria-label="Mostrar u ocultar confirmación de contraseña">
+                            <i id="confirmPasswordIcon" class="fa-solid fa-eye"></i>
+                        </button>
                     </div>
 
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
@@ -206,4 +270,21 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 }

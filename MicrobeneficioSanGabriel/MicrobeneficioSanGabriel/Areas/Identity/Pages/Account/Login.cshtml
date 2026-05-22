@@ -5,6 +5,47 @@
     ViewData["Title"] = "Iniciar sesión";
 }
 
+<style>
+    .password-field {
+        position: relative;
+    }
+
+        .password-field .custom-input {
+            padding-right: 52px !important;
+        }
+
+    .password-toggle {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        outline: none;
+        box-shadow: none;
+        color: #7a5230;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+        .password-toggle:hover {
+            color: #4a2c1a;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+            box-shadow: none;
+        }
+</style>
+
 <div class="login-page">
 
     <section class="login-brand-panel">
@@ -36,13 +77,16 @@
 
             <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
 
-                <div asp-validation-summary="ModelOnly" class="text-danger validation-summary mb-3"></div>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger validation-summary mb-3">
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" asp-for="Input.Email">Correo</label>
 
                     <div class="input-wrapper">
                         <i class="fa-solid fa-envelope"></i>
+
                         <input asp-for="Input.Email"
                                class="form-control custom-input"
                                autocomplete="username"
@@ -55,24 +99,31 @@
                 <div class="form-group">
                     <label class="form-label" asp-for="Input.Password">Contraseña</label>
 
-                    <div class="input-wrapper">
+                    <div class="input-wrapper password-field">
                         <i class="fa-solid fa-lock"></i>
+
                         <input asp-for="Input.Password"
+                               id="loginPassword"
                                class="form-control custom-input"
                                autocomplete="current-password"
                                placeholder="Ingresá tu contraseña" />
+
+                        <button type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('loginPassword', 'loginPasswordIcon')"
+                                aria-label="Mostrar u ocultar contraseña">
+                            <i id="loginPasswordIcon" class="fa-solid fa-eye"></i>
+                        </button>
                     </div>
 
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
 
-                <div class="login-options">
-                    <div class="form-check">
-                        <input asp-for="Input.RememberMe" class="form-check-input" />
-                        <label class="form-check-label" asp-for="Input.RememberMe">
-                            Recordarme
-                        </label>
-                    </div>
+                <div class="form-check mb-3">
+                    <input asp-for="Input.RememberMe" class="form-check-input" />
+                    <label asp-for="Input.RememberMe" class="form-check-label">
+                        Recordarme
+                    </label>
                 </div>
 
                 <button type="submit" class="btn-login">
@@ -98,4 +149,21 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 }

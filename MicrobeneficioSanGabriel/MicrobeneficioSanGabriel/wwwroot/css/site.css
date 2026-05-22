@@ -332,3 +332,37 @@ input[type="submit"] {
                 color: #fff8df !important;
             }
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    .password-wrapper .input-icon {
+        position: absolute;
+        left: 15px;
+        color: #7a4a26;
+        font-size: 15px;
+        z-index: 2;
+    }
+
+.password-input {
+    padding-left: 45px !important;
+    padding-right: 48px !important;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: #7a4a26;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+    .password-toggle:hover {
+        color: #4b2413;
+    }
