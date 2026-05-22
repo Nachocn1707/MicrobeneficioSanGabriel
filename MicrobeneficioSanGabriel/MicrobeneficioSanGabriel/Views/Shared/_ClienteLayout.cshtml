@@ -9,128 +9,339 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+            :root {
+                --cafe-900: #2b160d;
+                --cafe-800: #3a1f12;
+                --cafe-700: #4a2c1a;
+                --cafe-600: #6f4528;
+                --cafe-500: #8a5a36;
+                --crema: #f8f1e3;
+                --crema-card: #fffdf7;
+                --amarillo-suave: #fff3c4;
+                --dorado: #e8bf68;
+                --dorado-suave: #f6d78c;
+                --texto: #25150d;
+                --muted: #7a6a5d;
+                --verde: #2f7d4f;
+            }
+
             body {
                 margin: 0;
-                background: #fff8df;
+                background: radial-gradient(circle at top right, rgba(246, 215, 140, 0.35), transparent 34%), linear-gradient(180deg, #fffaf0 0%, var(--crema) 100%);
                 font-family: "Segoe UI", Arial, sans-serif;
-                color: #2b160d;
+                color: var(--texto);
             }
 
             .cliente-wrapper {
                 display: flex;
                 min-height: 100vh;
+                background: transparent;
             }
 
             .cliente-sidebar {
                 width: 260px;
-                background: linear-gradient(180deg, #3a1f12, #7a5230);
+                min-height: 100vh;
+                background: linear-gradient(180deg, #2b160d 0%, #432516 50%, #6f4528 100%);
                 color: #fff8df;
                 position: fixed;
                 top: 0;
                 bottom: 0;
                 left: 0;
-                border-right: 4px solid #f3d27a;
+                border-right: 4px solid var(--dorado-suave);
+                box-shadow: 8px 0 28px rgba(43, 22, 13, 0.26);
+                z-index: 100;
             }
 
             .cliente-brand {
-                padding: 28px 24px;
-                border-bottom: 1px solid rgba(243, 210, 122, 0.28);
+                min-height: 112px;
+                padding: 24px 22px;
+                border-bottom: 1px solid rgba(246, 215, 140, 0.24);
+                display: flex;
+                align-items: center;
+                gap: 14px;
             }
 
-                .cliente-brand h4 {
-                    color: #fff3c4;
-                    font-weight: 900;
-                    margin: 0;
-                }
+            .cliente-brand-icon {
+                width: 46px;
+                height: 46px;
+                border-radius: 16px;
+                background: rgba(246, 215, 140, 0.18);
+                color: var(--dorado-suave);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                box-shadow: inset 0 0 0 1px rgba(246, 215, 140, 0.22);
+            }
+
+            .cliente-brand h4 {
+                color: #fff3c4;
+                font-weight: 900;
+                margin: 0;
+                line-height: 1.1;
+                font-size: 23px;
+            }
+
+            .cliente-brand span {
+                color: #fff8df;
+                font-size: 13px;
+                font-weight: 500;
+            }
 
             .cliente-menu {
-                padding-top: 22px;
+                padding: 18px 14px;
             }
 
                 .cliente-menu a {
-                    display: block;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
                     color: #fff8df;
                     text-decoration: none;
-                    padding: 14px 24px;
-                    border-left: 4px solid transparent;
-                    font-weight: 600;
+                    padding: 13px 14px;
+                    margin-bottom: 7px;
+                    border-radius: 13px;
+                    font-weight: 800;
+                    transition: 0.2s ease;
                 }
 
-                    .cliente-menu a:hover {
-                        background: rgba(243, 210, 122, 0.22);
-                        border-left-color: #f3d27a;
+                    .cliente-menu a i {
+                        width: 18px;
+                        color: var(--dorado-suave);
+                        text-align: center;
+                    }
+
+                    .cliente-menu a:hover,
+                    .cliente-menu a.active {
+                        background: rgba(246, 215, 140, 0.18);
+                        color: white;
+                        transform: translateX(3px);
                     }
 
             .cliente-main {
                 margin-left: 260px;
                 width: calc(100% - 260px);
+                min-height: 100vh;
             }
 
             .cliente-topbar {
-                height: 76px;
-                background: #fff3c4;
+                height: 78px;
+                background: rgba(255, 250, 240, 0.94);
                 border-bottom: 1px solid #ead8a2;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 padding: 0 32px;
+                position: sticky;
+                top: 0;
+                z-index: 90;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 24px rgba(74, 44, 26, 0.08);
             }
 
+                .cliente-topbar h5 {
+                    color: var(--cafe-900);
+                    font-weight: 900;
+                    margin: 0;
+                }
+
+                .cliente-topbar small {
+                    color: var(--muted);
+                    font-weight: 500;
+                }
+
             .cliente-content {
-                padding: 32px;
+                padding: 34px 32px;
+            }
+
+            .cliente-user-area {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                background: #fffdf7;
+                border: 1px solid #ead8a2;
+                border-radius: 999px;
+                padding: 7px 8px 7px 14px;
+                box-shadow: 0 8px 18px rgba(74, 44, 26, 0.08);
+            }
+
+            .cliente-user {
+                color: var(--cafe-900);
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 7px;
             }
 
             .logout-btn {
-                background: #4a2c1a;
-                border: 1px solid #4a2c1a;
+                background: var(--cafe-700);
+                border: 1px solid var(--cafe-700);
                 color: #fff8df;
-                border-radius: 8px;
+                border-radius: 999px;
                 padding: 8px 14px;
-                font-weight: 800;
+                font-weight: 900;
+                transition: 0.2s ease;
             }
 
                 .logout-btn:hover {
-                    background: #6b3a20;
+                    background: var(--cafe-900);
+                    border-color: var(--cafe-900);
                     color: #fff8df;
                 }
+
+            .cliente-card,
+            .card {
+                background: var(--crema-card) !important;
+                border: 1px solid #ead8a2 !important;
+                border-radius: 18px !important;
+                box-shadow: 0 14px 34px rgba(74, 44, 26, 0.10) !important;
+            }
+
+            .btn-primary,
+            .btn-success {
+                background: var(--cafe-700) !important;
+                border-color: var(--cafe-700) !important;
+                color: #fff8df !important;
+                font-weight: 900;
+                border-radius: 10px;
+            }
+
+                .btn-primary:hover,
+                .btn-success:hover {
+                    background: var(--cafe-900) !important;
+                    border-color: var(--cafe-900) !important;
+                }
+
+            @@media (max-width: 992px) {
+                .cliente-wrapper {
+                    display: block;
+                }
+
+                .cliente-sidebar {
+                    position: relative;
+                    width: 100%;
+                    min-height: auto;
+                    border-right: none;
+                    border-bottom: 4px solid var(--dorado-suave);
+                }
+
+                .cliente-menu {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 8px;
+                    padding: 14px;
+                }
+
+                    .cliente-menu a {
+                        margin-bottom: 0;
+                    }
+
+                .cliente-main {
+                    margin-left: 0;
+                    width: 100%;
+                }
+
+                .cliente-topbar {
+                    height: auto;
+                    padding: 18px 20px;
+                    flex-wrap: wrap;
+                    gap: 14px;
+                }
+
+                .cliente-user-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .cliente-content {
+                    padding: 24px 18px;
+                }
+            }
+
+            @@media (max-width: 576px) {
+                .cliente-menu {
+                    grid-template-columns: 1fr;
+                }
+
+                .cliente-brand {
+                    min-height: auto;
+                }
+
+                .logout-btn {
+                    width: auto;
+                }
+            }
     </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
+
 <body>
     <div class="cliente-wrapper">
 
         <aside class="cliente-sidebar">
             <div class="cliente-brand">
-                <h4>San Gabriel</h4>
-                <span>Portal cliente</span>
+                <div class="cliente-brand-icon">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+
+                <div>
+                    <h4>San Gabriel</h4>
+                    <span>Portal cliente</span>
+                </div>
             </div>
 
             <nav class="cliente-menu">
-                <a asp-controller="Home" asp-action="ClienteDashboard">Inicio</a>
-                <a asp-controller="Productos" asp-action="Index">Productos</a>
-                <a asp-controller="Pedidos" asp-action="Create">Realizar pedido</a>
-                <a asp-controller="Pedidos" asp-action="Index">Mis pedidos</a>
-                <a asp-controller="Trazabilidades" asp-action="Index">Trazabilidad</a>
+                <a asp-controller="Home" asp-action="ClienteDashboard">
+                    <i class="fa-solid fa-house"></i>
+                    Inicio
+                </a>
+
+                <a asp-controller="Productos" asp-action="Index">
+                    <i class="fa-solid fa-mug-hot"></i>
+                    Productos
+                </a>
+
+                <a asp-controller="Pedidos" asp-action="Create">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    Realizar pedido
+                </a>
+
+                <a asp-controller="Pedidos" asp-action="Index">
+                    <i class="fa-solid fa-box"></i>
+                    Mis pedidos
+                </a>
+
+                <a asp-controller="Trazabilidades" asp-action="Index">
+                    <i class="fa-solid fa-route"></i>
+                    Trazabilidad
+                </a>
             </nav>
         </aside>
 
         <main class="cliente-main">
             <header class="cliente-topbar">
                 <div>
-                    <h5 class="mb-0">@ViewData["Title"]</h5>
+                    <h5>@ViewData["Title"]</h5>
                     <small>Sistema de compras del microbeneficio</small>
                 </div>
 
-                <form asp-area="Identity"
-                      asp-page="/Account/Logout"
-                      asp-route-returnUrl="/Identity/Account/Login"
-                      method="post">
-                    <button type="submit" class="logout-btn">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Cerrar sesión
-                    </button>
-                </form>
+                <div class="cliente-user-area">
+                    <span class="cliente-user">
+                        <i class="fa-solid fa-user"></i>
+                        Cliente
+                    </span>
+
+                    <form asp-area="Identity"
+                          asp-page="/Account/Logout"
+                          asp-route-returnUrl="/Identity/Account/Login"
+                          method="post">
+                        <button type="submit" class="logout-btn">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Cerrar sesión
+                        </button>
+                    </form>
+                </div>
             </header>
 
             <section class="cliente-content">
@@ -141,6 +352,20 @@
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (() => {
+        const currentPath = window.location.pathname.toLowerCase();
+
+        document.querySelectorAll(".cliente-menu a").forEach(link => {
+        const linkPath = new URL(link.href).pathname.toLowerCase();
+
+        if (currentPath === linkPath || currentPath.startsWith(linkPath + "/")) {
+        link.classList.add("active");
+        }
+        });
+        })();
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
