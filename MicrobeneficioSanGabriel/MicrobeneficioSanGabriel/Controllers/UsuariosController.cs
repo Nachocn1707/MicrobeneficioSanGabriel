@@ -1,4 +1,6 @@
-﻿using MicrobeneficioSanGabriel.ViewModels;
+﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Services;
+using MicrobeneficioSanGabriel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +11,19 @@ namespace MicrobeneficioSanGabriel.Controllers
     [Authorize(Roles = "Administrador")]
     public class UsuariosController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public UsuariosController(
             UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context,
+            IEmailService emailService)
         {
+            _context = context;
+            _emailService = emailService;
             _userManager = userManager;
             _roleManager = roleManager;
         }

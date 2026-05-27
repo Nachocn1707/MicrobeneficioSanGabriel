@@ -36,6 +36,15 @@ main {
     max-width: 420px;
 }
 
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #f4eed7;
+}
+
 .brand-badge {
     width: 78px;
     height: 78px;

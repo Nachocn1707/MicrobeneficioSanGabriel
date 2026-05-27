@@ -15,6 +15,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.Password.RequireDigit = true;
