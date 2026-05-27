@@ -1,13 +1,13 @@
 ﻿@using System.Text.Json
 @using MicrobeneficioSanGabriel.Models
+@using MicrobeneficioSanGabriel.ViewModels
 
 @{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var ultimosPedidos = ViewBag.UltimosPedidos as List<Pedido>;
-    var ultimasFacturas = ViewBag.UltimasFacturas as List<Factura>;
-    var productosStockBajo = ViewBag.ProductosStockBajo as List<Producto>;
+    var alertasInventarioIA = ViewBag.AlertasInventarioIA as List<AlertaInventarioIAViewModel>;
 
     var nombresProductosJson = JsonSerializer.Serialize(ViewBag.NombresProductos);
     var stockProductosJson = JsonSerializer.Serialize(ViewBag.StockProductos);
@@ -94,11 +94,6 @@
         color: #4f98d4;
     }
 
-    .summary-card.red .summary-icon {
-        background: #fde7e4;
-        color: #d85d4c;
-    }
-
     .summary-card span {
         display: block;
         color: #6f6258;
@@ -138,12 +133,23 @@
         gap: 18px;
     }
 
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
     .dashboard-panel {
         background: #fffdf8;
         border: 1px solid #eadfce;
         border-radius: 16px;
         box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
         overflow: hidden;
+    }
+
+    .ia-principal-panel {
+        border: 3px solid #d9a44a;
+        box-shadow: 0 20px 46px rgba(217, 164, 74, 0.18);
     }
 
     .panel-header {
@@ -187,10 +193,6 @@
             border-bottom: 1px solid #f0e6d8;
             color: #2a1a12;
             font-weight: 650;
-        }
-
-        .dashboard-table tbody tr:last-child td {
-            border-bottom: none;
         }
 
     .status-badge {
@@ -256,10 +258,6 @@
         background: #d9a44a;
     }
 
-        .legend-dot.green {
-            background: #3f8f4d;
-        }
-
     .modules-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -305,6 +303,64 @@
         font-weight: 950 !important;
     }
 
+    .ia-alert-list {
+        padding: 0 20px 18px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .ia-alert {
+        border-radius: 14px;
+        padding: 14px;
+        border: 1px solid #eadfce;
+        background: #fffaf2;
+    }
+
+    .ia-alert-header {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 6px;
+        color: #2a1a12;
+        font-size: 13px;
+        font-weight: 950;
+    }
+
+    .ia-alert p {
+        margin: 0;
+        color: #4d3c31;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .ia-alert small {
+        display: block;
+        margin-top: 6px;
+        color: #7a6a5d;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .ia-alert-danger {
+        background: #fde7e4;
+        border-color: #f2b8b2;
+    }
+
+    .ia-alert-warning {
+        background: #fff1c7;
+        border-color: #e8c66f;
+    }
+
+    .ia-alert-info {
+        background: #e3f1fb;
+        border-color: #b9d8ee;
+    }
+
+    .ia-alert-success {
+        background: #e5f4e8;
+        border-color: #b9dfc0;
+    }
+
     @@media (max-width: 1200px) {
         .summary-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -340,6 +396,56 @@
 
         <div class="date-pill">
             @fechaActual
+        </div>
+    </div>
+
+    <div class="dashboard-panel ia-principal-panel">
+        <div class="panel-header">
+            <h2>
+                <i class="fa-solid fa-brain"></i>
+                Alertas inteligentes de inventario
+            </h2>
+        </div>
+
+        <div class="ia-alert-list">
+            @if (alertasInventarioIA != null && alertasInventarioIA.Any())
+            {
+                foreach (var alerta in alertasInventarioIA.Take(5))
+                {
+                    <div class="ia-alert ia-alert-@alerta.Color">
+                        <div class="ia-alert-header">
+                            <i class="fa-solid @alerta.Icono"></i>
+                            <span>@alerta.NivelRiesgo</span>
+                        </div>
+
+                        <p>@alerta.Mensaje</p>
+
+                        <small>@alerta.Recomendacion</small>
+
+                        @if (alerta.DiasParaAgotarse.HasValue)
+                        {
+                            <small>
+                                Días estimados para agotarse: @alerta.DiasParaAgotarse
+                            </small>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="ia-alert ia-alert-info">
+                    <div class="ia-alert-header">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>IA activa</span>
+                    </div>
+
+                    <p>El panel de alertas inteligentes ya está cargando correctamente.</p>
+
+                    <small>
+                        No hay alertas disponibles todavía. Probá bajando el stock de un producto por debajo del stock mínimo.
+                    </small>
+                </div>
+            }
         </div>
     </div>
 
@@ -526,8 +632,7 @@
 
     </div>
 
-    <div class="main-grid">
-
+    <div class="analytics-grid">
         <div class="dashboard-panel chart-panel">
             <div class="panel-header">
                 <h2>Ventas por producto</h2>
@@ -537,44 +642,6 @@
                 <canvas id="ventasChart"></canvas>
             </div>
         </div>
-
-        <div class="dashboard-panel">
-            <div class="panel-header">
-                <h2>Alertas de stock</h2>
-            </div>
-
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Stock</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (productosStockBajo != null && productosStockBajo.Any())
-                    {
-                        foreach (var producto in productosStockBajo)
-                        {
-                            <tr>
-                                <td>@producto.Nombre</td>
-                                <td>
-                                    <span class="status-badge status-warn">
-                                        @producto.Stock
-                                    </span>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="2">No hay alertas de stock.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
     </div>
 
 </div>

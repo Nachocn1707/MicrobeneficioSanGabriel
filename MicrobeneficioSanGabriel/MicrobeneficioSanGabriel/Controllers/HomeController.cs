@@ -1,5 +1,6 @@
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +14,18 @@ namespace MicrobeneficioSanGabriel.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<HomeController> _logger;
+        private readonly IAnalisisInventarioIAService _analisisInventarioIAService;
 
         public HomeController(
             ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
-            ILogger<HomeController> logger)
+            ILogger<HomeController> logger,
+            IAnalisisInventarioIAService analisisInventarioIAService)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _analisisInventarioIAService = analisisInventarioIAService;
         }
 
         public IActionResult Index()
@@ -97,6 +101,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                     Total = g.Sum(x => x.Total)
                 })
                 .ToListAsync();
+
+            ViewBag.AlertasInventarioIA = await _analisisInventarioIAService.GenerarAlertasAsync();
 
             return View();
         }

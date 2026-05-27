@@ -1,4 +1,5 @@
 using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
@@ -31,6 +32,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Home/AccessDenied";
 });
+
+builder.Services.AddScoped<IAnalisisInventarioIAService, AnalisisInventarioIAService>();
 
 var app = builder.Build();
 
