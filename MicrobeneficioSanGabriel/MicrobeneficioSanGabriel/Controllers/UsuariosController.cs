@@ -299,5 +299,17 @@ namespace MicrobeneficioSanGabriel.Controllers
                     .ToList()
             );
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<JsonResult> CheckEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            return Json(new
+            {
+                exists = user != null
+            });
+        }
     }
 }

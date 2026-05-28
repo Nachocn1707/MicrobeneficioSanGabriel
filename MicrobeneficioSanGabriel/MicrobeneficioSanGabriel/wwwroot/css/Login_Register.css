@@ -150,7 +150,7 @@ main {
     position: relative;
 }
 
-    .input-wrapper i {
+    .input-wrapper > i:first-child {
         position: absolute;
         left: 14px;
         top: 50%;
@@ -281,22 +281,132 @@ main {
         flex-direction: column;
         text-align: center;
     }
+}
 
-    .custom-swal-popup {
-        box-shadow: 0 10px 35px rgba(0,0,0,0.12);
-        border: 1px solid #eadfca;
+.custom-swal-popup {
+    box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+    border: 1px solid #eadfca;
+}
+
+.custom-swal-title {
+    color: #5c3317 !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+.custom-swal-button {
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+}
+
+.custom-register-popup {
+    border: 2px solid #e0c979;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+}
+
+.custom-register-button {
+    border-radius: 14px !important;
+    padding: 14px 30px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px;
+}
+
+.password-field {
+    position: relative;
+}
+
+    .password-field .custom-input {
+        padding-right: 52px !important;
     }
 
-    .custom-swal-title {
-        color: #5c3317 !important;
-        font-size: 28px !important;
-        font-weight: 700 !important;
+.password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    color: #7a5230;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+    .password-toggle:hover {
+        color: #4a2c1a;
     }
 
-    .custom-swal-button {
-        border-radius: 12px !important;
-        padding: 12px 24px !important;
-        font-weight: 600 !important;
-        font-size: 15px !important;
+    .password-toggle:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+.register-card {
+    max-width: 520px;
+}
+
+.register-card .login-card-header {
+    margin-bottom: 24px;
+}
+
+.register-card .user-icon {
+    background: #4a2c1a;
+    color: #fff3c4;
+}
+
+.validation-box {
+    background: #fff8df;
+    border: 1px solid #ead8a2;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin: 6px 0 20px;
+}
+
+.validation-box-title {
+    color: #2b160d;
+    font-weight: 900;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.rule-item {
+    color: #6f5b4a;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .rule-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .rule-item i {
+        color: #7a5230;
+        font-size: 13px;
+    }
+
+.register-links {
+    justify-content: center;
+}
+
+@media (max-width: 900px) {
+    .register-card {
+        max-width: 520px;
     }
 }
+
