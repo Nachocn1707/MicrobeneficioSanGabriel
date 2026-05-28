@@ -36,7 +36,47 @@ function validate() {
     }
 
 }
+function togglePassword(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
 
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+
+const form = document.querySelector("#registerForm");
+if (form) {
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        await Swal.fire({
+            icon: 'success',
+            title: 'Revisá tu correo',
+            html: `
+            <p style="
+                color:#666;
+                font-size:15px;
+                margin-top:10px;
+                line-height:1.6;">
+
+                Te enviamos un enlace para confirmar tu cuenta.
+            </p>
+            `,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#5c3317',
+            background: '#f8f5e9',
+            color: '#2d2d2d'
+        });
+        HTMLFormElement.prototype.submit.call(form);
+    });
+
+}
 function toggle(id, valid) {
 
     const element = document.getElementById(id);

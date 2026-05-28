@@ -4,20 +4,48 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<div class="login-container">
+    <div class="login-card text-center">
+        <div class="user-icon">
+            <i class="fa-solid fa-envelope-circle-check"></i>
+        </div>
+        <h2 class="mb-3">
+            Confirmá tu correo
+        </h2>
+        <p class="text-muted mb-4">
+            Te enviamos un enlace de confirmación a tu correo electrónico.
+        </p>
+        <a asp-page="./Login"
+           class="btn-login text-decoration-none d-inline-block">
 
+            VOLVER AL LOGIN
+        </a>
+
+        @if (TempData["RegistroExitoso"] != null)
+        {
+            <script>
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Revisá tu correo',
+                            html: `
+                            <p style="
+                                color:#666;
+                                font-size:15px;
+                                margin-top:10px;
+                                line-height:1.6;">
+
+                                Te enviamos un enlace para confirmar tu cuenta.
+
+                            </p>
+                            `,
+                            confirmButtonText: 'Entendido',
+                            confirmButtonColor: '#5c3317',
+                            background: '#f8f5e9',
+                            color: '#2d2d2d'
+                        });
+
+            </script>
+        }
+    </div>
+</div>

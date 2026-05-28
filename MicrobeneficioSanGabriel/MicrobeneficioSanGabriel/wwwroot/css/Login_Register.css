@@ -281,4 +281,22 @@ main {
         flex-direction: column;
         text-align: center;
     }
+
+    .custom-swal-popup {
+        box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+        border: 1px solid #eadfca;
+    }
+
+    .custom-swal-title {
+        color: #5c3317 !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+    }
+
+    .custom-swal-button {
+        border-radius: 12px !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        font-size: 15px !important;
+    }
 }

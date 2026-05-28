@@ -2,21 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
+using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
 {
@@ -28,7 +22,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -36,7 +30,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailService emailService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -44,7 +38,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         [BindProperty]
@@ -139,13 +133,18 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                         },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(
+                    await _emailService.SendEmailAsync(
                         Input.Email,
-                        "Confirmar cuenta",
-                        $"Por favor confirme su cuenta haciendo clic aquí: " +
-                        $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>confirmar cuenta</a>.");
+                        "Confirmación de cuenta",
+                        EmailTemplate.BaseTemplate(
+                        "Confirmación",
+                        "Gracias por registrarte. Confirmá tu correo.",
+                        "Confirmar correo",
+                        HtmlEncoder.Default.Encode(callbackUrl)
+                                                       ));
 
-                    return RedirectToPage("Login");
+                    TempData["CorreoConfirmacion"] = true;
+                    return RedirectToPage("./RegisterConfirmation");
                 }
 
                 bool emailDuplicadoMostrado = false;
@@ -195,4 +194,6 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }
+
+
 }

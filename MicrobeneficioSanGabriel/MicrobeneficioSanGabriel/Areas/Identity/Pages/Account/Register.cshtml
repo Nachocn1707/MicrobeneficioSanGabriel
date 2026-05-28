@@ -5,6 +5,8 @@
     ViewData["Title"] = "Registrarse";
 }
 
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
 <style>
     .register-card {
         max-width: 520px;
@@ -140,7 +142,7 @@
                 <p>Completá los datos para crear tu cuenta.</p>
             </div>
 
-            <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+            <form method="post" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl">
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger validation-summary mb-3">
@@ -251,7 +253,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-login">
+                <button type="submit"
+                        class="btn-login"
+                        id="btnRegister">
                     <i class="fa-solid fa-user-check"></i>
                     Registrarse
                 </button>
@@ -261,30 +265,11 @@
                         Volver al inicio de sesión
                     </a>
                 </div>
-
             </form>
         </div>
     </section>
-
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        function togglePassword(inputId, iconId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-    </script>
 }

@@ -1,0 +1,24 @@
+﻿@page
+@model ConfirmEmailModel
+
+@{
+    ViewData["Title"] = "Confirmar correo";
+}
+
+<div class="login-container">
+    <div class="login-card text-center">
+        <div class="user-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h2 class="mb-3">
+            Correo confirmado
+        </h2>
+        <p class="text-muted mb-4">
+            Tu correo electrónico fue confirmado correctamente.
+        </p>
+        <a asp-page="./Login"
+           class="btn-login text-decoration-none d-inline-block">
+            IR AL LOGIN
+        </a>
+    </div>
+</div>
