@@ -5,46 +5,428 @@
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
-            <h1 class="fw-bold text-danger">Cancelar pedido</h1>
+@section Styles {
+    <style>
+        .pedido-cancel-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
 
-            <p class="text-muted">
-                Confirme si desea cancelar este pedido. El registro no será eliminado, solo cambiará a estado Cancelado.
-            </p>
+        .pedido-cancel-header h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #b42318;
+        }
 
-            <dl class="row">
-                <dt class="col-sm-3">Producto</dt>
-                <dd class="col-sm-9">@Model.Producto?.Nombre</dd>
+        .pedido-cancel-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #dc3545;
+            margin: 12px 0;
+        }
 
-                <dt class="col-sm-3">Cantidad</dt>
-                <dd class="col-sm-9">@Model.Cantidad kg</dd>
+        .pedido-cancel-header p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
 
-                <dt class="col-sm-3">Fecha</dt>
-                <dd class="col-sm-9">@Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</dd>
-                
-                <dt class="col-sm-3">Teléfono</dt>
-                <dd class="col-sm-9">@Model.ClienteTelefono</dd>
-                
-                <dt class="col-sm-3">Estado actual</dt>
-                <dd class="col-sm-9">@Model.Estado</dd>
+        .pedido-cancel-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fde1df;
+            color: #b42318;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
 
-                <dt class="col-sm-3">Observación</dt>
-                <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación" : Model.Observacion)</dd>
-            </dl>
+        .pedido-cancel-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 0.38fr 0.62fr;
+            min-height: 520px;
+        }
+
+        .pedido-cancel-side {
+            background: linear-gradient(180deg, rgba(80, 19, 19, 0.90), rgba(45, 14, 14, 0.94)), url("/images/orders/order-detail-coffee.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 36px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .pedido-cancel-side-content {
+            max-width: 360px;
+        }
+
+        .pedido-cancel-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 26px;
+        }
+
+        .pedido-cancel-side h2 {
+            color: #fff3c4;
+            font-size: 2rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .pedido-cancel-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .pedido-cancel-side p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+
+        .pedido-cancel-info {
+            display: grid;
+            gap: 16px;
+        }
+
+        .pedido-cancel-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff8df;
+            font-weight: 800;
+        }
+
+            .pedido-cancel-info-item i {
+                color: #f3d27a;
+                width: 18px;
+            }
+
+        .pedido-cancel-body {
+            padding: 38px;
+        }
+
+        .pedido-cancel-warning {
+            background: #fde1df;
+            color: #b42318;
+            border: 1px solid #f5b5ae;
+            border-radius: 18px;
+            padding: 15px 18px;
+            font-weight: 750;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pedido-cancel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .pedido-cancel-item {
+            background: #fff8df;
+            border: 1px solid #ead8a2;
+            border-radius: 18px;
+            padding: 17px;
+            min-height: 90px;
+        }
+
+            .pedido-cancel-item.full {
+                grid-column: 1 / -1;
+            }
+
+        .pedido-cancel-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7a5230;
+            font-size: 0.78rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+
+        .pedido-cancel-value {
+            display: block;
+            color: #2b160d;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .estado-cancel-pendiente {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 7px 13px;
+            font-size: 0.82rem;
+            font-weight: 950;
+            background: #fff4d3;
+            color: #8a6500;
+        }
+
+        .pedido-cancel-actions {
+            border-top: 1px solid #ead8a2;
+            margin-top: 26px;
+            padding-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-pedido-cancel {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 20px;
+            font-weight: 950;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-pedido-cancel:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-cancel-volver {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+            .btn-cancel-volver:hover {
+                background: #e5e7eb;
+                color: #111827;
+            }
+
+        .btn-cancel-confirmar {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+            .btn-cancel-confirmar:hover {
+                background: #bb2d3b;
+                color: #ffffff;
+            }
+
+        @@media (max-width: 1100px) {
+            .pedido-cancel-card {
+                grid-template-columns: 1fr;
+            }
+
+            .pedido-cancel-side {
+                min-height: 300px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .pedido-cancel-body {
+                padding: 24px;
+            }
+
+            .pedido-cancel-side {
+                padding: 28px;
+            }
+
+            .pedido-cancel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pedido-cancel-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+}
+
+<div class="pedido-cancel-page">
+
+    <div class="pedido-cancel-header">
+        <span class="pedido-cancel-badge">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Confirmación requerida
+        </span>
+
+        <h1>Cancelar pedido</h1>
+        <div class="pedido-cancel-line"></div>
+
+        <p>
+            El registro no será eliminado, solo cambiará a estado Cancelado.
+        </p>
+    </div>
+
+    <div class="pedido-cancel-card">
+
+        <div class="pedido-cancel-side">
+            <div class="pedido-cancel-side-content">
+
+                <div class="pedido-cancel-icon">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+
+                <h2>Pedido #@Model.Id</h2>
+                <div class="pedido-cancel-side-line"></div>
+
+                <p>
+                    Revisá la información antes de confirmar la cancelación.
+                    Esta acción cambiará el estado del pedido.
+                </p>
+
+                <div class="pedido-cancel-info">
+                    <div class="pedido-cancel-info-item">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        Producto solicitado
+                    </div>
+
+                    <div class="pedido-cancel-info-item">
+                        <i class="fa-solid fa-weight-scale"></i>
+                        Cantidad registrada
+                    </div>
+
+                    <div class="pedido-cancel-info-item">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        Cambio a Cancelado
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="pedido-cancel-body">
+
+            <div class="pedido-cancel-warning">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>
+                    Confirme si desea cancelar este pedido. Esta acción no elimina el registro.
+                </span>
+            </div>
+
+            <div class="pedido-cancel-grid">
+
+                <div class="pedido-cancel-item">
+                    <span class="pedido-cancel-label">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        Producto
+                    </span>
+
+                    <span class="pedido-cancel-value">
+                        @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")
+                    </span>
+                </div>
+
+                <div class="pedido-cancel-item">
+                    <span class="pedido-cancel-label">
+                        <i class="fa-solid fa-weight-hanging"></i>
+                        Cantidad
+                    </span>
+
+                    <span class="pedido-cancel-value">
+                        @Model.Cantidad kg
+                    </span>
+                </div>
+
+                <div class="pedido-cancel-item">
+                    <span class="pedido-cancel-label">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Fecha
+                    </span>
+
+                    <span class="pedido-cancel-value">
+                        @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+
+                <div class="pedido-cancel-item">
+                    <span class="pedido-cancel-label">
+                        <i class="fa-solid fa-phone"></i>
+                        Teléfono
+                    </span>
+
+                    <span class="pedido-cancel-value">
+                        @(string.IsNullOrWhiteSpace(Model.ClienteTelefono)
+                            ? "Sin teléfono"
+                            : Model.ClienteTelefono)
+                    </span>
+                </div>
+
+                <div class="pedido-cancel-item">
+                    <span class="pedido-cancel-label">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Estado actual
+                    </span>
+
+                    <span class="estado-cancel-pendiente">
+                        @Model.Estado
+                    </span>
+                </div>
+
+                <div class="pedido-cancel-item full">
+                    <span class="pedido-cancel-label">
+                        <i class="fa-solid fa-comment-dots"></i>
+                        Observación
+                    </span>
+
+                    <span class="pedido-cancel-value">
+                        @(string.IsNullOrWhiteSpace(Model.Observacion)
+                            ? "Sin observación"
+                            : Model.Observacion)
+                    </span>
+                </div>
+
+            </div>
 
             <form asp-action="Cancelar" method="post">
                 <input type="hidden" asp-for="Id" />
 
-                <button type="submit" class="btn btn-danger">
-                    Confirmar cancelación
-                </button>
+                <div class="pedido-cancel-actions">
 
-                <a asp-action="Index" class="btn btn-secondary">
-                    Volver
-                </a>
+                    <a asp-action="Index"
+                           class="btn-pedido-cancel btn-cancel-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn-pedido-cancel btn-cancel-confirmar">
+                        <i class="fa-solid fa-ban"></i>
+                        Confirmar cancelación
+                    </button>
+
+                </div>
             </form>
+
         </div>
+
     </div>
+
 </div>

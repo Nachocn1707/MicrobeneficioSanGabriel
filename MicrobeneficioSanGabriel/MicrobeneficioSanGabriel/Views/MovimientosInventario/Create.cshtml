@@ -6,206 +6,449 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+    <style>
+        .movimiento-create-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
+
+        .movimiento-create-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .movimiento-create-title h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #2b160d;
+        }
+
+        .movimiento-create-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #d8b36a;
+            margin: 12px 0;
+        }
+
+        .movimiento-create-title p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .movimiento-create-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e2f4df;
+            color: #147a3d;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .movimiento-create-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 0.38fr 0.62fr;
+            min-height: 520px;
+        }
+
+        .movimiento-create-side {
+            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/dashboard/coffee-banner.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 36px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .movimiento-create-side-content {
+            max-width: 360px;
+        }
+
+        .movimiento-create-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 26px;
+        }
+
+        .movimiento-create-side h2 {
+            color: #fff3c4;
+            font-size: 2rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .movimiento-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .movimiento-create-side p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+
+        .movimiento-create-info {
+            display: grid;
+            gap: 16px;
+        }
+
+        .movimiento-create-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff8df;
+            font-weight: 800;
+        }
+
+            .movimiento-create-info-item i {
+                color: #f3d27a;
+                width: 18px;
+            }
+
+        .movimiento-create-form-container {
+            padding: 38px;
+        }
+
+        .movimiento-alert {
+            background: #dff6fd;
+            color: #0369a1;
+            border: 1px solid #bde8f7;
+            border-radius: 18px;
+            padding: 15px 18px;
+            font-weight: 750;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .movimiento-field label {
+            color: #2b160d;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .input-modern {
+            position: relative;
+        }
+
+            .input-modern i {
+                position: absolute;
+                left: 17px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #a1a8b3;
+                z-index: 2;
+            }
+
+            .input-modern .form-control,
+            .input-modern .form-select {
+                min-height: 56px;
+                border-radius: 18px;
+                border: 1px solid #d8dee8;
+                background: #fff;
+                padding-left: 48px;
+                font-weight: 700;
+                color: #2b160d;
+            }
+
+                .input-modern .form-control:focus,
+                .input-modern .form-select:focus {
+                    border-color: #d8b36a;
+                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
+                }
+
+        .textarea-modern i {
+            top: 25px;
+            transform: none;
+        }
+
+        .textarea-modern textarea.form-control {
+            min-height: 115px;
+            padding-top: 17px;
+            resize: vertical;
+        }
+
+        .movimiento-create-actions {
+            border-top: 1px solid #ead8a2;
+            margin-top: 26px;
+            padding-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-movimiento-create {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 20px;
+            font-weight: 950;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-movimiento-create:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-movimiento-volver {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+            .btn-movimiento-volver:hover {
+                background: #e5e7eb;
+                color: #111827;
+            }
+
+        .btn-movimiento-guardar {
+            background: #4a2c1a;
+            color: #fff8df;
+        }
+
+            .btn-movimiento-guardar:hover {
+                background: #7a5230;
+                color: #fff8df;
+            }
+
+        @@media (max-width: 1100px) {
+            .movimiento-create-card {
+                grid-template-columns: 1fr;
+            }
+
+            .movimiento-create-side {
+                min-height: 300px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .movimiento-create-header {
+                flex-direction: column;
+            }
+
+            .movimiento-create-form-container {
+                padding: 24px;
+            }
+
+            .movimiento-create-side {
+                padding: 28px;
+            }
+
+            .movimiento-create-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 }
 
-<div class="VistaCrear-page">
-    <div class="VistaCrear-top">
+<div class="movimiento-create-page">
 
-        <div class="VistaCrear-title">
-
-            <span class="VistaCrear-badge">
+    <div class="movimiento-create-header">
+        <div class="movimiento-create-title">
+            <span class="movimiento-create-badge">
+                <i class="fa-solid fa-boxes-stacked"></i>
                 Control de inventario
             </span>
 
             <h1>Nuevo movimiento</h1>
+            <div class="movimiento-create-line"></div>
 
             <p>
-                Registrá entradas y salidas de inventario
-                del Microbeneficio San Gabriel.
+                Registrá entradas y salidas de inventario del Microbeneficio San Gabriel.
             </p>
-
         </div>
-
     </div>
-    <div class="VistaCrear-card">
 
-        <div class="VistaCrear-side">
+    <div class="movimiento-create-card">
 
-            <div class="VistaCrear-side-content">
+        <div class="movimiento-create-side">
+            <div class="movimiento-create-side-content">
 
-                <div class="VistaCrear-icon">
+                <div class="movimiento-create-icon">
                     <i class="fa-solid fa-boxes-stacked"></i>
                 </div>
 
                 <h2>Inventario</h2>
+                <div class="movimiento-side-line"></div>
 
                 <p>
-                    Controlá los movimientos de productos,
-                    existencias y flujo de inventario del sistema.
+                    Controlá los movimientos de productos, existencias y flujo
+                    de inventario del sistema.
                 </p>
 
-                <div class="VistaCrear-info">
-
-                    <div class="VistaCrear-info-item">
+                <div class="movimiento-create-info">
+                    <div class="movimiento-create-info-item">
                         <i class="fa-solid fa-arrow-right-arrow-left"></i>
                         Entradas y salidas
                     </div>
 
-                    <div class="VistaCrear-info-item">
+                    <div class="movimiento-create-info-item">
                         <i class="fa-solid fa-warehouse"></i>
                         Gestión de stock
                     </div>
 
-                    <div class="VistaCrear-info-item">
+                    <div class="movimiento-create-info-item">
                         <i class="fa-solid fa-chart-line"></i>
                         Control operativo
                     </div>
-
                 </div>
 
             </div>
-
         </div>
-        <div class="VistaCrear-form-container">
 
-            <form asp-action="Create">
+        <div class="movimiento-create-form-container">
+
+            <form asp-action="Create" method="post">
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-4">
                 </div>
 
+                <div class="movimiento-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>
+                        Las entradas aumentan el stock y las salidas disminuyen el stock del producto.
+                    </span>
+                </div>
+
                 <div class="row g-4">
 
-                    <div class="col-md-6">
-
-                        <label asp-for="ProductoId"
-                               class="form-label">
+                    <div class="col-md-6 movimiento-field">
+                        <label asp-for="ProductoId" class="form-label">
                             Producto
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-box"></i>
 
                             <select asp-for="ProductoId"
                                     class="form-select"
                                     asp-items="ViewBag.ProductoId">
-
-                                <option value="">
-                                    Seleccione un producto
-                                </option>
-
+                                <option value="">Seleccione un producto</option>
                             </select>
-
                         </div>
 
                         <span asp-validation-for="ProductoId"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="TipoMovimiento"
-                               class="form-label">
+                    <div class="col-md-6 movimiento-field">
+                        <label asp-for="TipoMovimiento" class="form-label">
                             Tipo de movimiento
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-right-left"></i>
 
                             <select asp-for="TipoMovimiento"
                                     class="form-select">
-
-                                <option value="">
-                                    Seleccione una opción
-                                </option>
-
-                                <option value="Entrada">
-                                    Entrada
-                                </option>
-
-                                <option value="Salida">
-                                    Salida
-                                </option>
-
+                                <option value="">Seleccione una opción</option>
+                                <option value="Entrada">Entrada</option>
+                                <option value="Salida">Salida</option>
                             </select>
-
                         </div>
 
                         <span asp-validation-for="TipoMovimiento"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="Cantidad"
-                               class="form-label">
-                            Cantidad
+                    <div class="col-md-6 movimiento-field">
+                        <label asp-for="Cantidad" class="form-label">
+                            Cantidad en kg
                         </label>
 
                         <div class="input-modern">
-
-                            <i class="fa-solid fa-scale-balanced"></i>
+                            <i class="fa-solid fa-weight-scale"></i>
 
                             <input asp-for="Cantidad"
-                                   class="form-control" />
-
+                                   class="form-control"
+                                   min="1"
+                                   placeholder="Digite la cantidad en kg" />
                         </div>
 
                         <span asp-validation-for="Cantidad"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="Observacion"
-                               class="form-label">
+                    <div class="col-md-12 movimiento-field">
+                        <label asp-for="Observacion" class="form-label">
                             Observación
                         </label>
 
-                        <div class="input-modern">
-
+                        <div class="input-modern textarea-modern">
                             <i class="fa-solid fa-comment"></i>
 
-                            <input asp-for="Observacion"
-                                   class="form-control" />
-
+                            <textarea asp-for="Observacion"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Digite una observación del movimiento"></textarea>
                         </div>
 
                         <span asp-validation-for="Observacion"
                               class="text-danger">
                         </span>
-
                     </div>
 
                 </div>
-                <div class="VistaCrear-actions">
+
+                <div class="movimiento-create-actions">
 
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-movimiento-create btn-movimiento-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
                     <button type="submit"
-                            class="btn-crear">
-
+                            class="btn-movimiento-create btn-movimiento-guardar">
                         <i class="fa-solid fa-floppy-disk"></i>
-
                         Guardar movimiento
-
                     </button>
 
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
 
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
 @section Scripts {
     @{

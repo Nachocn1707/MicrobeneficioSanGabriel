@@ -1,95 +1,456 @@
 ﻿@model MicrobeneficioSanGabriel.Models.MovimientoInventario
 
 @{
-    ViewData["Title"] = "Detalle Movimiento";
+    ViewData["Title"] = "Detalle movimiento";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string tipoClase = Model.TipoMovimiento switch
+    {
+        "Entrada" => "movimiento-estado movimiento-entrada",
+        "Salida" => "movimiento-estado movimiento-salida",
+        _ => "movimiento-estado movimiento-neutral"
+    };
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+    <style>
+        .movimiento-detalle-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
+
+        .movimiento-detalle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .movimiento-detalle-title h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #2b160d;
+        }
+
+        .movimiento-detalle-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #d8b36a;
+            margin: 12px 0;
+        }
+
+        .movimiento-detalle-title p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .movimiento-status-top {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 18px;
+            padding: 14px 18px;
+            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.08);
+            min-width: 190px;
+            text-align: center;
+        }
+
+            .movimiento-status-top small {
+                display: block;
+                color: #7a6a5d;
+                font-weight: 800;
+                margin-bottom: 8px;
+            }
+
+        .movimiento-premium-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+        }
+
+        .movimiento-premium-header {
+            background: linear-gradient(135deg, #3a1f12, #7a5230);
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            border-top: 5px solid #f3d27a;
+        }
+
+            .movimiento-premium-header h2 {
+                margin: 0;
+                color: #fff3c4;
+                font-size: 1.8rem;
+                font-weight: 950;
+            }
+
+            .movimiento-premium-header span {
+                color: #fff8df;
+                font-weight: 700;
+                opacity: 0.92;
+            }
+
+        .movimiento-premium-body {
+            display: grid;
+            grid-template-columns: 1fr 0.45fr;
+            min-height: 420px;
+        }
+
+        .movimiento-info-panel {
+            padding: 30px;
+        }
+
+        .movimiento-side-panel {
+            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/dashboard/coffee-banner.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 30px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .movimiento-side-box {
+            width: 100%;
+            background: rgba(255, 253, 248, 0.11);
+            border: 1px solid rgba(255, 243, 196, 0.22);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .movimiento-side-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .movimiento-side-box h3 {
+            color: #fff3c4;
+            font-size: 1.45rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .movimiento-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .movimiento-side-box p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .movimiento-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .movimiento-detail-item {
+            background: #fff8df;
+            border: 1px solid #ead8a2;
+            border-radius: 18px;
+            padding: 17px;
+            min-height: 92px;
+        }
+
+            .movimiento-detail-item.full {
+                grid-column: 1 / -1;
+            }
+
+        .movimiento-detail-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7a5230;
+            font-size: 0.78rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+
+            .movimiento-detail-label i {
+                color: #a66b20;
+            }
+
+        .movimiento-detail-value {
+            display: block;
+            color: #2b160d;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .movimiento-cantidad {
+            color: #2b160d;
+            font-size: 1.15rem;
+            font-weight: 950;
+        }
+
+        .movimiento-actions {
+            border-top: 1px solid #ead8a2;
+            margin-top: 22px;
+            padding-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-movimiento {
+            border: none;
+            border-radius: 13px;
+            padding: 11px 18px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: 0.18s ease;
+        }
+
+            .btn-movimiento:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-movimiento-primary {
+            background: #4a2c1a;
+            color: #fff8df;
+        }
+
+            .btn-movimiento-primary:hover {
+                background: #7a5230;
+                color: #fff8df;
+            }
+
+        .btn-movimiento-warning {
+            background: #f3b23f;
+            color: #2b160d;
+        }
+
+            .btn-movimiento-warning:hover {
+                background: #e5a22e;
+                color: #2b160d;
+            }
+
+        .movimiento-estado {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 7px 13px;
+            font-size: 0.82rem;
+            font-weight: 950;
+            width: fit-content;
+        }
+
+        .movimiento-entrada {
+            background: #dff5e3;
+            color: #1e7d32;
+        }
+
+        .movimiento-salida {
+            background: #fde1df;
+            color: #b42318;
+        }
+
+        .movimiento-neutral {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        @@media (max-width: 1100px) {
+            .movimiento-premium-body {
+                grid-template-columns: 1fr;
+            }
+
+            .movimiento-side-panel {
+                min-height: 300px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .movimiento-detalle-header {
+                flex-direction: column;
+            }
+
+            .movimiento-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .movimiento-premium-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .movimiento-actions {
+                justify-content: flex-start;
+            }
+
+            .movimiento-detalle-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 }
 
-<div class="EstiloDetalle-detalle-page">
+<div class="movimiento-detalle-page">
 
-    <div class="EstiloDetalle-header">
-        <h1>Detalle Movimiento</h1>
-        <p>Información del movimiento de inventario.</p>
-    </div>
-
-    <div class="EstiloDetalle-card">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>@Model.Producto?.Nombre</h2>
-            <span>Microbeneficio San Gabriel</span>
+    <div class="movimiento-detalle-header">
+        <div class="movimiento-detalle-title">
+            <h1>Detalle movimiento</h1>
+            <div class="movimiento-detalle-line"></div>
+            <p>Información registrada para este movimiento de inventario.</p>
         </div>
 
-        <div class="EstiloDetalle-card-body">
+        <div class="movimiento-status-top">
+            <small>Tipo de movimiento</small>
+            <span class="@tipoClase">@Model.TipoMovimiento</span>
+        </div>
+    </div>
 
-            <div class="detalle-grid">
+    <div class="movimiento-premium-card">
 
-                <div class="detalle-item">
-                    <span class="detalle-label">Producto</span>
-                    <span class="detalle-value">
-                        @Model.Producto?.Nombre
-                    </span>
-                </div>
+        <div class="movimiento-premium-header">
+            <div>
+                <h2>@(Model.Producto != null ? Model.Producto.Nombre : "Movimiento de inventario")</h2>
+                <span>Microbeneficio San Gabriel</span>
+            </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Tipo Movimiento
-                    </span>
+            <span>
+                <i class="fa-solid fa-boxes-stacked"></i>
+                Control de inventario
+            </span>
+        </div>
 
-                    @if (Model.TipoMovimiento == "Entrada")
-                    {
-                        <span class="estado-activo">
-                            Entrada
+        <div class="movimiento-premium-body">
+
+            <div class="movimiento-info-panel">
+
+                <div class="movimiento-detail-grid">
+
+                    <div class="movimiento-detail-item">
+                        <span class="movimiento-detail-label">
+                            <i class="fa-solid fa-mug-hot"></i>
+                            Producto
                         </span>
-                    }
-                    else
-                    {
-                        <span class="estado-inactivo">
-                            Salida
+
+                        <span class="movimiento-detail-value">
+                            @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")
                         </span>
+                    </div>
+
+                    <div class="movimiento-detail-item">
+                        <span class="movimiento-detail-label">
+                            <i class="fa-solid fa-right-left"></i>
+                            Tipo movimiento
+                        </span>
+
+                        <span class="@tipoClase">
+                            @Model.TipoMovimiento
+                        </span>
+                    </div>
+
+                    <div class="movimiento-detail-item">
+                        <span class="movimiento-detail-label">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            Cantidad
+                        </span>
+
+                        <span class="movimiento-cantidad">
+                            @Model.Cantidad kg
+                        </span>
+                    </div>
+
+                    <div class="movimiento-detail-item">
+                        <span class="movimiento-detail-label">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Fecha
+                        </span>
+
+                        <span class="movimiento-detail-value">
+                            @Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    </div>
+
+                    <div class="movimiento-detail-item full">
+                        <span class="movimiento-detail-label">
+                            <i class="fa-solid fa-comment-dots"></i>
+                            Observación
+                        </span>
+
+                        <span class="movimiento-detail-value">
+                            @(string.IsNullOrWhiteSpace(Model.Observacion)
+                                ? "Sin observación"
+                                : Model.Observacion)
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="movimiento-actions">
+
+                    <a asp-action="Index"
+                           class="btn-movimiento btn-movimiento-primary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver a la lista
+                    </a>
+
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit"
+                               asp-route-id="@Model.Id"
+                               class="btn-movimiento btn-movimiento-warning">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Editar
+                        </a>
                     }
-                </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">Cantidad</span>
-                    <span class="detalle-value">
-                        @Model.Cantidad kg
-                    </span>
-                </div>
-
-                <div class="detalle-item full">
-                    <span class="detalle-label">Observación</span>
-                    <span class="detalle-value">
-                        @Model.Observacion
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Fecha</span>
-                    <span class="detalle-value">
-                        @Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")
-                    </span>
                 </div>
 
             </div>
 
-            <div class="EstiloDetalle-actions">
+            <div class="movimiento-side-panel">
+                <div class="movimiento-side-box">
+                    <div class="movimiento-side-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
 
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver a la lista
-                </a>
+                    <h3>Historial de inventario</h3>
+                    <div class="movimiento-side-line"></div>
 
-                <a asp-action="Edit"
-                   asp-route-id="@Model.Id"
-                   class="btn-editar">
-                    Editar
-                </a>
-
+                    <p>
+                        Este registro forma parte del control de entradas y salidas
+                        de productos del microbeneficio.
+                    </p>
+                </div>
             </div>
+
         </div>
+
     </div>
+
 </div>
