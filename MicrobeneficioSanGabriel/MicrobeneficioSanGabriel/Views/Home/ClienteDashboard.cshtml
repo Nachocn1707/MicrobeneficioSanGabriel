@@ -3,210 +3,331 @@
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
 }
 
-<style>
-    .cliente-dashboard {
-        display: grid;
-        gap: 18px;
-    }
+@section Styles {
+    <style>
+        .cliente-dashboard {
+            display: grid;
+            gap: 22px;
+        }
 
-    .cliente-hero {
-        min-height: 145px;
-        background: linear-gradient(90deg, rgba(255, 250, 242, 0.96) 0%, rgba(255, 250, 242, 0.86) 55%, rgba(255, 250, 242, 0.35) 100%), url("https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=80");
-        background-size: cover;
-        background-position: center;
-        border: 1px solid #eadfce;
-        border-radius: 16px;
-        box-shadow: 0 18px 42px rgba(58, 33, 20, 0.10);
-        padding: 28px;
-        display: flex;
-        align-items: center;
-    }
+        .cliente-hero {
+            min-height: 175px;
+            background: linear-gradient(90deg, rgba(255, 250, 242, 0.90) 0%, rgba(255, 250, 242, 0.72) 43%, rgba(255, 250, 242, 0.08) 100%), url("/images/dashboard/client-hero.jpg");
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #eadfce;
+            border-radius: 22px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.10);
+            padding: 34px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .cliente-hero::after {
+                content: "";
+                position: absolute;
+                right: 32px;
+                bottom: -40px;
+                width: 220px;
+                height: 220px;
+                border-radius: 50%;
+                background: rgba(243, 210, 122, 0.22);
+                filter: blur(3px);
+            }
+
+        .cliente-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 620px;
+        }
+
+        .cliente-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e2f4df;
+            color: #147a3d;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
 
         .cliente-hero h1 {
             margin: 0;
             color: #2a1a12;
-            font-size: 28px;
+            font-size: 36px;
             font-weight: 950;
+            letter-spacing: -0.5px;
+        }
+
+        .cliente-hero .title-line {
+            width: 76px;
+            height: 4px;
+            background: #d8b36a;
+            border-radius: 999px;
+            margin: 12px 0 14px;
         }
 
         .cliente-hero p {
-            margin: 5px 0 0;
-            color: #6f6258;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-    .cliente-modules {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .cliente-module {
-        background: #fffdf8;
-        border: 1px solid #eadfce;
-        border-radius: 15px;
-        padding: 18px;
-        min-height: 165px;
-        box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
-        text-decoration: none;
-        color: #2a1a12;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: 0.18s ease;
-    }
-
-        .cliente-module:hover {
-            color: #2a1a12;
-            transform: translateY(-3px);
-        }
-
-    .module-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 12px;
-        background: #fff2d5;
-        color: #a66b20;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 14px;
-        font-size: 17px;
-    }
-
-    .cliente-module h3 {
-        margin: 0 0 7px;
-        font-size: 18px;
-        font-weight: 950;
-        color: #2a1a12;
-    }
-
-    .cliente-module p {
-        margin: 0 0 14px;
-        color: #7a6a5d;
-        font-size: 12px;
-        font-weight: 650;
-        line-height: 1.35;
-    }
-
-    .module-button {
-        width: fit-content;
-        min-width: 108px;
-        background: #7a532d;
-        color: #fff7e8;
-        border-radius: 8px;
-        padding: 8px 12px;
-        font-size: 12px;
-        font-weight: 900;
-        text-align: center;
-    }
-
-    .quality-banner {
-        min-height: 105px;
-        background: linear-gradient(90deg, rgba(255, 250, 242, 0.98) 0%, rgba(255, 250, 242, 0.90) 58%, rgba(255, 250, 242, 0.20) 100%), url("https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80");
-        background-size: cover;
-        background-position: center;
-        border: 1px solid #eadfce;
-        border-radius: 16px;
-        box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
-        padding: 24px;
-        display: flex;
-        align-items: center;
-    }
-
-        .quality-banner h2 {
             margin: 0;
+            color: #5f5147;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .cliente-modules {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .cliente-module {
+            background: #fffdf8;
+            border: 1px solid #eadfce;
+            border-radius: 20px;
+            padding: 22px;
+            min-height: 180px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            text-decoration: none;
             color: #2a1a12;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: 0.18s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .cliente-module::after {
+                content: "";
+                position: absolute;
+                right: -32px;
+                bottom: -38px;
+                width: 110px;
+                height: 110px;
+                background: rgba(243, 210, 122, 0.22);
+                border-radius: 50%;
+            }
+
+            .cliente-module:hover {
+                color: #2a1a12;
+                transform: translateY(-4px);
+                box-shadow: 0 22px 50px rgba(58, 33, 20, 0.12);
+            }
+
+        .module-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .module-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: #fff2d5;
+            color: #a66b20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .cliente-module h3 {
+            margin: 0 0 8px;
             font-size: 20px;
             font-weight: 950;
+            color: #2a1a12;
         }
 
-        .quality-banner p {
-            margin: 5px 0 0;
-            color: #6f6258;
+        .cliente-module p {
+            margin: 0 0 16px;
+            color: #7a6a5d;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 650;
+            line-height: 1.45;
         }
 
-    @@media (max-width: 1200px) {
-        .cliente-modules {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .module-button {
+            position: relative;
+            z-index: 2;
+            width: fit-content;
+            min-width: 120px;
+            background: #7a532d;
+            color: #fff7e8;
+            border-radius: 10px;
+            padding: 9px 14px;
+            font-size: 12px;
+            font-weight: 900;
+            text-align: center;
         }
-    }
 
-    @@media (max-width: 768px) {
-        .cliente-modules {
-            grid-template-columns: 1fr;
+        .quality-banner {
+            min-height: 125px;
+            background: linear-gradient(90deg, rgba(255, 250, 242, 0.92) 0%, rgba(255, 250, 242, 0.70) 45%, rgba(255, 250, 242, 0.10) 100%), url("/images/dashboard/coffee-banner.jpg");
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #eadfce;
+            border-radius: 22px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
         }
 
-        .cliente-hero h1 {
-            font-size: 24px;
+            .quality-banner h2 {
+                margin: 0;
+                color: #2a1a12;
+                font-size: 24px;
+                font-weight: 950;
+            }
+
+            .quality-banner .title-line {
+                width: 70px;
+                height: 4px;
+                background: #d8b36a;
+                border-radius: 999px;
+                margin: 10px 0 12px;
+            }
+
+            .quality-banner p {
+                margin: 0;
+                color: #6f6258;
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+        .cliente-info-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
         }
-    }
-</style>
+
+        .info-item {
+            background: rgba(255, 253, 248, 0.86);
+            border: 1px solid #eadfce;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.06);
+        }
+
+        .info-item-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: #fff2d5;
+            color: #7a532d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #2a1a12;
+            font-weight: 950;
+            margin-bottom: 3px;
+        }
+
+        .info-item span {
+            color: #7a6a5d;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        @@media (max-width: 1200px) {
+            .cliente-modules {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .cliente-info-strip {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .cliente-modules {
+                grid-template-columns: 1fr;
+            }
+
+            .cliente-hero h1 {
+                font-size: 28px;
+            }
+
+            .quality-banner h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+}
 
 <div class="cliente-dashboard">
 
     <section class="cliente-hero">
-        <div>
+        <div class="cliente-hero-content">
+            <span class="cliente-pill">
+                <i class="fa-solid fa-mug-hot"></i>
+                Portal cliente
+            </span>
+
             <h1>¡Bienvenido!</h1>
-            <p>Portal cliente de Microbeneficio San Gabriel</p>
+            <div class="title-line"></div>
+
+            <p>
+                Consultá nuestros productos, realizá pedidos y revisá la trazabilidad
+                del café de Microbeneficio San Gabriel.
+            </p>
         </div>
     </section>
 
     <section class="cliente-modules">
 
         <a asp-controller="Productos" asp-action="Index" class="cliente-module">
-            <div>
+            <div class="module-content">
                 <div class="module-icon">
                     <i class="fa-solid fa-mug-hot"></i>
                 </div>
 
                 <h3>Productos</h3>
-                <p>Explora nuestro café disponible.</p>
+                <p>Explorá nuestro café disponible y revisá sus detalles.</p>
             </div>
 
             <span class="module-button">Ver productos</span>
         </a>
 
         <a asp-controller="Pedidos" asp-action="Create" class="cliente-module">
-            <div>
+            <div class="module-content">
                 <div class="module-icon">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
 
                 <h3>Realizar pedido</h3>
-                <p>Haz tu solicitud de compra fácilmente.</p>
+                <p>Creá una nueva solicitud de compra fácilmente.</p>
             </div>
 
             <span class="module-button">Hacer pedido</span>
         </a>
 
         <a asp-controller="Pedidos" asp-action="Index" class="cliente-module">
-            <div>
+            <div class="module-content">
                 <div class="module-icon">
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
 
                 <h3>Mis pedidos</h3>
-                <p>Consulta el estado de tus pedidos.</p>
+                <p>Consultá el historial y estado de tus pedidos.</p>
             </div>
 
             <span class="module-button">Ver mis pedidos</span>
-        </a>
-
-        <a asp-controller="Trazabilidades" asp-action="Index" class="cliente-module">
-            <div>
-                <div class="module-icon">
-                    <i class="fa-solid fa-route"></i>
-                </div>
-
-                <h3>Trazabilidad</h3>
-                <p>Conoce el origen y proceso de tu café.</p>
-            </div>
-
-            <span class="module-button">Ver trazabilidad</span>
         </a>
 
     </section>
@@ -214,7 +335,40 @@
     <section class="quality-banner">
         <div>
             <h2>Calidad que se siente en cada taza</h2>
+            <div class="title-line"></div>
             <p>Café de origen · Proceso artesanal · Compromiso con la calidad</p>
+        </div>
+    </section>
+
+    <section class="cliente-info-strip">
+        <div class="info-item">
+            <div class="info-item-icon">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
+            <div>
+                <strong>Origen controlado</strong>
+                <span>Seguimiento desde el lote hasta el producto final.</span>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-item-icon">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <div>
+                <strong>Pedidos organizados</strong>
+                <span>Consultá el estado de tus solicitudes en todo momento.</span>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <div class="info-item-icon">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div>
+                <strong>Calidad artesanal</strong>
+                <span>Gestión cuidadosa del café producido en el microbeneficio.</span>
+            </div>
         </div>
     </section>
 

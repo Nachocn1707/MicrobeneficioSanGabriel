@@ -11,140 +11,596 @@
     {
         Layout = "~/Views/Shared/_AdminLayout.cshtml";
     }
+
+    string ObtenerImagenProducto(string nombre)
+    {
+        var nombreProducto = (nombre ?? "").ToLower();
+
+        if (nombreProducto.Contains("premium"))
+        {
+            return "/images/products/cafe-premium.jpg";
+        }
+
+        if (nombreProducto.Contains("normal"))
+        {
+            return "/images/products/cafe-normal.jpg";
+        }
+
+        return "/images/products/default-coffee.jpg";
+    }
 }
 
-<div class="page-header">
-    <div>
-        <h1>Productos</h1>
-        <p>Gestión de productos registrados en el microbeneficio.</p>
-    </div>
+@section Styles {
+    <style>
+        .productos-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 10px;
+        }
 
-    @if (User.IsInRole("Administrador"))
-    {
-        <a asp-action="Create" class="btn btn-success">
-            + Nuevo Producto
-        </a>
-    }
-</div>
+        .productos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
 
-<div class="admin-card">
+            .productos-header h1 {
+                font-size: 2.35rem;
+                font-weight: 950;
+                margin: 0;
+                color: #2b160d;
+            }
 
-    <table id="tablaProductos" class="table table-admin align-middle">
+        .productos-title-line {
+            width: 76px;
+            height: 4px;
+            background: #d8b36a;
+            border-radius: 999px;
+            margin: 12px 0;
+        }
 
-        <thead class="table-dark">
-            <tr>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th width="220">Acciones</th>
-            </tr>
-        </thead>
+        .productos-header p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
 
-        <tbody>
+        .catalogo-hero {
+            min-height: 145px;
+            border: 1px solid #ead8a2;
+            border-radius: 24px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            background: linear-gradient(90deg, rgba(255, 250, 242, 0.94) 0%, rgba(255, 250, 242, 0.72) 46%, rgba(255, 250, 242, 0.12) 100%), url("/images/products/default-coffee.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .catalogo-hero-content {
+            max-width: 620px;
+        }
+
+        .catalogo-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e2f4df;
+            color: #147a3d;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .catalogo-hero h2 {
+            margin: 0;
+            color: #2b160d;
+            font-size: 2rem;
+            font-weight: 950;
+        }
+
+        .catalogo-hero p {
+            color: #5f5147;
+            font-weight: 700;
+            margin: 12px 0 0;
+            line-height: 1.5;
+        }
+
+        .productos-catalogo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .producto-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 24px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            overflow: hidden;
+            transition: 0.18s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+            .producto-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 24px 56px rgba(58, 33, 20, 0.13);
+            }
+
+        .producto-card-image {
+            height: 210px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+            .producto-card-image::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, transparent 46%, rgba(58, 31, 18, 0.62) 100%);
+            }
+
+        .producto-status-floating {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 2;
+        }
+
+        .producto-card-body {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .producto-category {
+            color: #7a5230;
+            font-size: 0.82rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 7px;
+        }
+
+        .producto-card h3 {
+            margin: 0 0 10px;
+            color: #2b160d;
+            font-size: 1.45rem;
+            font-weight: 950;
+        }
+
+        .producto-description {
+            color: #6f5b4a;
+            font-weight: 650;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .producto-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .producto-info-item {
+            background: #fff8df;
+            border: 1px solid #ead8a2;
+            border-radius: 16px;
+            padding: 13px;
+        }
+
+            .producto-info-item span {
+                display: block;
+                color: #7a5230;
+                font-size: 0.75rem;
+                font-weight: 950;
+                text-transform: uppercase;
+                margin-bottom: 5px;
+            }
+
+            .producto-info-item strong {
+                color: #2b160d;
+                font-size: 1rem;
+                font-weight: 950;
+            }
+
+        .producto-card-actions {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-producto-detalle {
+            background: #4a2c1a;
+            color: #fff8df;
+            border-radius: 13px;
+            padding: 11px 16px;
+            font-weight: 900;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-producto-detalle:hover {
+                background: #7a5230;
+                color: #fff8df;
+                transform: translateY(-1px);
+            }
+
+        .producto-stock-bajo {
+            background: #fde1df;
+            color: #b42318;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 950;
+        }
+
+        .producto-stock-ok {
+            background: #dff5e3;
+            color: #1e7d32;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 950;
+        }
+
+        .producto-activo {
+            background: #dff5e3;
+            color: #1e7d32;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 950;
+        }
+
+        .producto-inactivo {
+            background: #fde1df;
+            color: #b42318;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 950;
+        }
+
+        .admin-productos-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 24px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            padding: 18px;
+            overflow: hidden;
+        }
+
+            .admin-productos-card table thead th {
+                border-radius: 0;
+            }
+
+                .admin-productos-card table thead th:first-child {
+                    border-top-left-radius: 12px;
+                }
+
+                .admin-productos-card table thead th:last-child {
+                    border-top-right-radius: 12px;
+                }
+
+        .acciones-producto {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+
+            .acciones-producto .btn {
+                font-weight: 850;
+                border-radius: 10px;
+                padding: 8px 11px;
+            }
+
+        @@media (max-width: 1200px) {
+            .productos-catalogo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .productos-header {
+                flex-direction: column;
+            }
+
+            .productos-catalogo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .catalogo-hero h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+}
+
+@if (User.IsInRole("Cliente"))
+{
+    <div class="productos-page">
+
+        <div class="productos-header">
+            <div>
+                <h1>Productos</h1>
+                <div class="productos-title-line"></div>
+                <p>Explorá el catálogo de café disponible en el microbeneficio.</p>
+            </div>
+        </div>
+
+        <section class="catalogo-hero">
+            <div class="catalogo-hero-content">
+                <span class="catalogo-pill">
+                    <i class="fa-solid fa-mug-hot"></i>
+                    Catálogo San Gabriel
+                </span>
+
+                <h2>Café artesanal listo para disfrutar</h2>
+
+                <p>
+                    Revisá nuestros productos disponibles, su precio, stock y detalles
+                    antes de realizar tu pedido.
+                </p>
+            </div>
+        </section>
+
+        <section class="productos-catalogo-grid">
 
             @foreach (var item in Model)
             {
-                <tr>
+                var imagenProducto = ObtenerImagenProducto(item.Nombre);
 
-                    <td>
-                        <strong>@item.Nombre</strong>
-                    </td>
+                <article class="producto-card">
 
-                    <td>
-                        @item.Categoria
-                    </td>
+                    <div class="producto-card-image"
+                         style="background-image: url('@imagenProducto');">
 
-                    <td>
-                        ₡ @item.Precio.ToString("N2")
-                    </td>
+                        <div class="producto-status-floating">
+                            @if (item.Activo)
+                            {
+                                <span class="producto-activo">
+                                    Activo
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="producto-inactivo">
+                                    Inactivo
+                                </span>
+                            }
+                        </div>
+                    </div>
 
-                    <td>
+                    <div class="producto-card-body">
 
-                        @if (item.Stock <= item.StockMinimo)
-                        {
-                            <span class="badge bg-danger">
-                                Stock Bajo (@item.Stock)
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-success">
-                                @item.Stock kg
-                            </span>
-                        }
+                        <div class="producto-category">
+                            @item.Categoria
+                        </div>
 
-                    </td>
+                        <h3>@item.Nombre</h3>
 
-                    <td>
-                        @if (item.Activo)
-                        {
-                            <span class="badge bg-success">
-                                Activo
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactivo
-                            </span>
-                        }
-                    </td>
+                        <p class="producto-description">
+                            Café procesado por Microbeneficio San Gabriel, con control
+                            de calidad y seguimiento de inventario.
+                        </p>
 
-                    <td>
-                        @item.FechaRegistro.ToShortDateString()
-                    </td>
+                        <div class="producto-info-grid">
 
-                    <td>
+                            <div class="producto-info-item">
+                                <span>Precio</span>
+                                <strong>₡ @item.Precio.ToString("N2")</strong>
+                            </div>
 
-                        @if (User.IsInRole("Administrador"))
-                        {
-                        <a asp-action="Edit"
+                            <div class="producto-info-item">
+                                <span>Stock</span>
+
+                                @if (item.Stock <= item.StockMinimo)
+                                {
+                                    <strong>@item.Stock kg</strong>
+                                }
+                                else
+                                {
+                                    <strong>@item.Stock kg</strong>
+                                }
+                            </div>
+
+                        </div>
+
+                        <div class="producto-card-actions">
+
+                            @if (item.Stock <= item.StockMinimo)
+                            {
+                                <span class="producto-stock-bajo">
+                                    Stock bajo
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="producto-stock-ok">
+                                    Disponible
+                                </span>
+                            }
+
+                            <a asp-action="Details"
                                    asp-route-id="@item.Id"
-                                   class="btn btn-warning btn-sm">
-                                Editar
+                                   class="btn-producto-detalle">
+                                Detalles
+                                <i class="fa-solid fa-arrow-right"></i>
                             </a>
-                        }
 
-                        <a asp-action="Details"
-                               asp-route-id="@item.Id"
-                               class="btn btn-info btn-sm text-white">
-                            Detalles
-                        </a>
+                        </div>
 
-                        @if (User.IsInRole("Administrador"))
-                        {
-                        <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-danger btn-sm">
-                                Eliminar
-                            </a>
-                        }
+                    </div>
 
-                    </td>
-
-                </tr>
+                </article>
             }
 
-        </tbody>
+        </section>
 
-    </table>
+    </div>
+}
+else
+{
+    <div class="productos-page">
 
-</div>
+        <div class="productos-header">
+            <div>
+                <h1>Productos</h1>
+                <div class="productos-title-line"></div>
+                <p>Gestión de productos registrados en el microbeneficio.</p>
+            </div>
+
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Create" class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i>
+                    Nuevo Producto
+                </a>
+            }
+        </div>
+
+        <div class="admin-productos-card">
+
+            <table id="tablaProductos" class="table table-admin align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th width="270">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <strong>@item.Nombre</strong>
+                            </td>
+
+                            <td>
+                                @item.Categoria
+                            </td>
+
+                            <td>
+                                ₡ @item.Precio.ToString("N2")
+                            </td>
+
+                            <td>
+                                @if (item.Stock <= item.StockMinimo)
+                                {
+                                    <span class="badge bg-danger">
+                                        Stock Bajo (@item.Stock kg)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        @item.Stock kg
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.Activo)
+                                {
+                                    <span class="badge bg-success">
+                                        Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        Inactivo
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                @item.FechaRegistro.ToShortDateString()
+                            </td>
+
+                            <td>
+                                <div class="acciones-producto">
+
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-warning btn-sm">
+                                            Editar
+                                        </a>
+                                    }
+
+                                    <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm text-white">
+                                        Detalles
+                                    </a>
+
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-danger btn-sm">
+                                            Eliminar
+                                        </a>
+                                    }
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('#tablaProductos').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
-                },
-                pageLength: 5,
-                lengthMenu: [5, 10, 15, 20] ,
-                responsive: true
+    @if (!User.IsInRole("Cliente"))
+    {
+        <script>
+            $(document).ready(function () {
+                $('#tablaProductos').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
+                    },
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 15, 20],
+                    responsive: true
+                });
             });
-        });
-    </script>
+        </script>
+    }
 }

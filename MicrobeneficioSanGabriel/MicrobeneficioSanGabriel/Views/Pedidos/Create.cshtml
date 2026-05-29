@@ -14,78 +14,341 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+    <style>
+        .pedido-create-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
+
+        .pedido-create-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .pedido-create-title h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #2b160d;
+        }
+
+        .pedido-create-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #d8b36a;
+            margin: 12px 0;
+        }
+
+        .pedido-create-title p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .pedido-create-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e2f4df;
+            color: #147a3d;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .pedido-create-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 0.38fr 0.62fr;
+            min-height: 560px;
+        }
+
+        .pedido-create-side {
+            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/orders/order-detail-coffee.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 36px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .pedido-create-side-content {
+            max-width: 360px;
+        }
+
+        .pedido-create-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 26px;
+        }
+
+        .pedido-create-side h2 {
+            color: #fff3c4;
+            font-size: 2rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .pedido-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .pedido-create-side p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+
+        .pedido-create-info {
+            display: grid;
+            gap: 16px;
+        }
+
+        .pedido-create-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff8df;
+            font-weight: 800;
+        }
+
+            .pedido-create-info-item i {
+                color: #f3d27a;
+                width: 18px;
+            }
+
+        .pedido-create-form-container {
+            padding: 38px;
+        }
+
+        .pedido-alert {
+            background: #fff4d3;
+            color: #7a5230;
+            border: 1px solid #ead8a2;
+            border-radius: 18px;
+            padding: 15px 18px;
+            font-weight: 750;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .pedido-alert i {
+                color: #a66b20;
+            }
+
+        .pedido-field label {
+            color: #2b160d;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .input-modern {
+            position: relative;
+        }
+
+            .input-modern i {
+                position: absolute;
+                left: 17px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #a1a8b3;
+                z-index: 2;
+            }
+
+            .input-modern .form-control,
+            .input-modern .form-select {
+                min-height: 56px;
+                border-radius: 18px;
+                border: 1px solid #d8dee8;
+                background: #fff;
+                padding-left: 48px;
+                font-weight: 700;
+                color: #2b160d;
+            }
+
+                .input-modern .form-control:focus,
+                .input-modern .form-select:focus {
+                    border-color: #d8b36a;
+                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
+                }
+
+        .textarea-modern i {
+            top: 25px;
+            transform: none;
+        }
+
+        .textarea-modern textarea.form-control {
+            min-height: 115px;
+            padding-top: 17px;
+            resize: vertical;
+        }
+
+        .pedido-create-actions {
+            border-top: 1px solid #ead8a2;
+            margin-top: 26px;
+            padding-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-pedido-create {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 20px;
+            font-weight: 950;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-pedido-create:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-pedido-volver {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+            .btn-pedido-volver:hover {
+                background: #e5e7eb;
+                color: #111827;
+            }
+
+        .btn-pedido-guardar {
+            background: #4a2c1a;
+            color: #fff8df;
+        }
+
+            .btn-pedido-guardar:hover {
+                background: #7a5230;
+                color: #fff8df;
+            }
+
+        @@media (max-width: 1100px) {
+            .pedido-create-card {
+                grid-template-columns: 1fr;
+            }
+
+            .pedido-create-side {
+                min-height: 320px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .pedido-create-header {
+                flex-direction: column;
+            }
+
+            .pedido-create-form-container {
+                padding: 24px;
+            }
+
+            .pedido-create-side {
+                padding: 28px;
+            }
+
+            .pedido-create-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 }
 
-<div class="VistaCrear-page">
-    <div class="VistaCrear-top">
+<div class="pedido-create-page">
 
-        <div class="VistaCrear-title">
-
-            <span class="VistaCrear-badge">
+    <div class="pedido-create-header">
+        <div class="pedido-create-title">
+            <span class="pedido-create-badge">
+                <i class="fa-solid fa-cart-shopping"></i>
                 Gestión de pedidos
             </span>
 
             <h1>Nuevo pedido</h1>
+            <div class="pedido-create-line"></div>
 
             <p>
-                Registrá pedidos realizados por clientes
-                dentro del sistema del microbeneficio.
+                Registrá pedidos realizados por clientes dentro del sistema del microbeneficio.
             </p>
-
         </div>
-
     </div>
-    <div class="VistaCrear-card">
 
-        <div class="VistaCrear-side">
+    <div class="pedido-create-card">
 
-            <div class="VistaCrear-side-content">
+        <div class="pedido-create-side">
+            <div class="pedido-create-side-content">
 
-                <div class="VistaCrear-icon">
+                <div class="pedido-create-icon">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
 
                 <h2>Pedidos</h2>
+                <div class="pedido-side-line"></div>
 
                 <p>
-                    Gestioná pedidos, clientes y productos
-                    para mantener el control comercial.
+                    Gestioná clientes, productos y solicitudes para mantener
+                    un control comercial ordenado y profesional.
                 </p>
 
-                <div class="VistaCrear-info">
-
-                    <div class="VistaCrear-info-item">
+                <div class="pedido-create-info">
+                    <div class="pedido-create-info-item">
                         <i class="fa-solid fa-user-group"></i>
                         Gestión de clientes
                     </div>
 
-                    <div class="VistaCrear-info-item">
+                    <div class="pedido-create-info-item">
                         <i class="fa-solid fa-box"></i>
                         Selección de productos
                     </div>
 
-                    <div class="VistaCrear-info-item">
+                    <div class="pedido-create-info-item">
                         <i class="fa-solid fa-truck-fast"></i>
                         Seguimiento de pedidos
                     </div>
-
                 </div>
 
             </div>
-
         </div>
-        <div class="VistaCrear-form-container">
 
-            <form asp-action="Create"
-                  method="post">
+        <div class="pedido-create-form-container">
+
+            <form asp-action="Create" method="post">
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-4">
                 </div>
 
-                <input type="hidden"
-                       asp-for="ClienteCorreo" />
+                <input type="hidden" asp-for="ClienteCorreo" />
 
                 @if (User.IsInRole("Cliente"))
                 {
@@ -97,226 +360,178 @@
                            asp-for="FechaPedido"
                            value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 
-                    <div class="VistaCrear-alert">
-
+                    <div class="pedido-alert">
                         <i class="fa-solid fa-circle-info"></i>
-
-                        El pedido se registrará automáticamente
-                        en estado <strong>Pendiente</strong>.
-
+                        <span>
+                            El pedido se registrará automáticamente en estado
+                            <strong>Pendiente</strong>.
+                        </span>
                     </div>
                 }
 
                 <div class="row g-4">
-                    <div class="col-md-6">
 
-                        <label asp-for="ClienteNombre"
-                               class="form-label">
+                    <div class="col-md-6 pedido-field">
+                        <label asp-for="ClienteNombre" class="form-label">
                             Cliente
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-user"></i>
 
                             <input asp-for="ClienteNombre"
                                    class="form-control"
                                    placeholder="Digite el nombre completo del cliente" />
-
                         </div>
 
                         <span asp-validation-for="ClienteNombre"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="ClienteTelefono"
-                               class="form-label">
+                    <div class="col-md-6 pedido-field">
+                        <label asp-for="ClienteTelefono" class="form-label">
                             Teléfono
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-phone"></i>
 
                             <input asp-for="ClienteTelefono"
                                    class="form-control"
                                    placeholder="Digite el número de teléfono" />
-
                         </div>
 
                         <span asp-validation-for="ClienteTelefono"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="ProductoId"
-                               class="form-label">
+                    <div class="col-md-6 pedido-field">
+                        <label asp-for="ProductoId" class="form-label">
                             Producto
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-box"></i>
 
                             <select asp-for="ProductoId"
                                     class="form-select"
                                     asp-items="ViewBag.ProductoId">
                             </select>
-
                         </div>
 
                         <span asp-validation-for="ProductoId"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="Cantidad"
-                               class="form-label">
+                    <div class="col-md-6 pedido-field">
+                        <label asp-for="Cantidad" class="form-label">
                             Cantidad en kg
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-weight-scale"></i>
 
                             <input asp-for="Cantidad"
                                    class="form-control"
                                    min="1" />
-
                         </div>
 
                         <span asp-validation-for="Cantidad"
                               class="text-danger">
                         </span>
-
                     </div>
+
                     @if (!User.IsInRole("Cliente"))
                     {
-                        <div class="col-md-6">
-
-                            <label asp-for="FechaPedido"
-                                   class="form-label">
+                        <div class="col-md-6 pedido-field">
+                            <label asp-for="FechaPedido" class="form-label">
                                 Fecha del pedido
                             </label>
 
                             <div class="input-modern">
-
                                 <i class="fa-solid fa-calendar"></i>
 
                                 <input asp-for="FechaPedido"
                                        type="datetime-local"
                                        class="form-control" />
-
                             </div>
 
                             <span asp-validation-for="FechaPedido"
                                   class="text-danger">
                             </span>
-
                         </div>
-                        <div class="col-md-6">
 
-                            <label asp-for="Estado"
-                                   class="form-label">
+                        <div class="col-md-6 pedido-field">
+                            <label asp-for="Estado" class="form-label">
                                 Estado
                             </label>
 
                             <div class="input-modern">
-
                                 <i class="fa-solid fa-circle-info"></i>
 
                                 <select asp-for="Estado"
                                         class="form-select">
-
-                                    <option value="Pendiente">
-                                        Pendiente
-                                    </option>
-
-                                    <option value="En proceso">
-                                        En proceso
-                                    </option>
-
-                                    <option value="En camino">
-                                        En camino
-                                    </option>
-
-                                    <option value="Listo para retirar">
-                                        Listo para retirar
-                                    </option>
-
-                                    <option value="Completado">
-                                        Completado
-                                    </option>
-
-                                    <option value="Cancelado">
-                                        Cancelado
-                                    </option>
-
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En proceso">En proceso</option>
+                                    <option value="En camino">En camino</option>
+                                    <option value="Listo para retirar">Listo para retirar</option>
+                                    <option value="Completado">Completado</option>
+                                    <option value="Cancelado">Cancelado</option>
                                 </select>
-
                             </div>
 
                             <span asp-validation-for="Estado"
                                   class="text-danger">
                             </span>
-
                         </div>
                     }
 
-                    <div class="col-md-12">
-
-                        <label asp-for="Observacion"
-                               class="form-label">
+                    <div class="col-md-12 pedido-field">
+                        <label asp-for="Observacion" class="form-label">
                             Observación
                         </label>
 
                         <div class="input-modern textarea-modern">
-
                             <i class="fa-solid fa-comment"></i>
 
                             <textarea asp-for="Observacion"
                                       class="form-control"
                                       rows="5"
-                                      placeholder="Digite alguna observación del pedido">
-                            </textarea>
-
+                                      placeholder="Digite alguna observación del pedido"></textarea>
                         </div>
 
                         <span asp-validation-for="Observacion"
                               class="text-danger">
                         </span>
-
                     </div>
 
                 </div>
-                <div class="VistaCrear-actions">
+
+                <div class="pedido-create-actions">
 
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-pedido-create btn-pedido-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
                     <button type="submit"
-                            class="btn-crear">
-
+                            class="btn-pedido-create btn-pedido-guardar">
                         <i class="fa-solid fa-floppy-disk"></i>
-
                         Guardar pedido
-
                     </button>
 
                 </div>
 
             </form>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {

@@ -19,4 +19,10 @@
     <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\brand\" />
+    <Folder Include="wwwroot\images\auth\" />
+    <Folder Include="wwwroot\images\decor\" />
+  </ItemGroup>
+
 </Project>

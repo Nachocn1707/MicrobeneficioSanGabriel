@@ -11,28 +11,355 @@
     {
         Layout = "~/Views/Shared/_AdminLayout.cshtml";
     }
+
+    int totalPedidos = Model.Count();
+    int pedidosPendientes = Model.Count(p => p.Estado == "Pendiente");
+    int pedidosCompletados = Model.Count(p => p.Estado == "Completado");
+    int pedidosCancelados = Model.Count(p => p.Estado == "Cancelado");
 }
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold">Pedidos</h1>
-        <p class="text-muted">
-            Gestión de pedidos y solicitudes de clientes.
-        </p>
+
+@section Styles {
+    <style>
+        .pedidos-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 10px;
+        }
+
+        .pedidos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+            .pedidos-header h1 {
+                font-size: 2.35rem;
+                font-weight: 950;
+                margin: 0;
+                color: #2b160d;
+            }
+
+        .pedidos-title-line {
+            width: 76px;
+            height: 4px;
+            background: #d8b36a;
+            border-radius: 999px;
+            margin: 12px 0;
+        }
+
+        .pedidos-header p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .btn-nuevo-pedido {
+            background: #198754;
+            color: #fff;
+            border-radius: 13px;
+            padding: 11px 18px;
+            font-weight: 900;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 12px 28px rgba(25, 135, 84, 0.18);
+            transition: 0.18s ease;
+        }
+
+            .btn-nuevo-pedido:hover {
+                background: #157347;
+                color: #fff;
+                transform: translateY(-1px);
+            }
+
+        .pedidos-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .pedido-summary-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 16px 36px rgba(58, 33, 20, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .pedido-summary-card::after {
+                content: "";
+                position: absolute;
+                right: -32px;
+                bottom: -36px;
+                width: 110px;
+                height: 110px;
+                background: rgba(243, 210, 122, 0.22);
+                border-radius: 50%;
+            }
+
+        .pedido-summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: #fff2d5;
+            color: #a66b20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 13px;
+            font-size: 18px;
+        }
+
+        .pedido-summary-label {
+            color: #7a6a5d;
+            font-weight: 850;
+            font-size: 0.92rem;
+            margin-bottom: 4px;
+        }
+
+        .pedido-summary-value {
+            color: #2b160d;
+            font-size: 1.9rem;
+            font-weight: 950;
+            line-height: 1;
+        }
+
+        .pedidos-table-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 24px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            padding: 18px;
+            overflow: hidden;
+        }
+
+            .pedidos-table-card table {
+                margin-bottom: 0;
+            }
+
+                .pedidos-table-card table thead th {
+                    background: #1f2937 !important;
+                    color: #fff !important;
+                    border: none !important;
+                    padding: 15px 14px !important;
+                    font-weight: 900;
+                    vertical-align: middle;
+                }
+
+                    .pedidos-table-card table thead th:first-child {
+                        border-top-left-radius: 13px;
+                    }
+
+                    .pedidos-table-card table thead th:last-child {
+                        border-top-right-radius: 13px;
+                    }
+
+                .pedidos-table-card table tbody td {
+                    padding: 16px 14px !important;
+                    vertical-align: middle;
+                    border-bottom: 1px solid #ece2cf;
+                }
+
+                .pedidos-table-card table tbody tr:hover {
+                    background: rgba(243, 210, 122, 0.12);
+                }
+
+        .pedido-cliente {
+            font-weight: 900;
+            color: #2b160d;
+        }
+
+        .pedido-observacion {
+            max-width: 260px;
+            color: #5f5147;
+            font-weight: 650;
+            line-height: 1.35;
+        }
+
+        .pedido-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+
+            .pedido-actions .btn {
+                border-radius: 10px;
+                font-weight: 850;
+                padding: 8px 11px;
+                white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        .pedido-estado {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+        .pedido-estado-pendiente {
+            background: #fff4d3;
+            color: #8a6500;
+        }
+
+        .pedido-estado-proceso {
+            background: #dff6fd;
+            color: #0369a1;
+        }
+
+        .pedido-estado-camino {
+            background: #e9e0ff;
+            color: #5636a3;
+        }
+
+        .pedido-estado-retiro {
+            background: #e8edf3;
+            color: #495057;
+        }
+
+        .pedido-estado-completado {
+            background: #dff5e3;
+            color: #1e7d32;
+        }
+
+        .pedido-estado-cancelado {
+            background: #fde1df;
+            color: #b42318;
+        }
+
+        .pedido-estado-neutral {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 15px;
+            color: #2b160d;
+            font-weight: 700;
+        }
+
+            .dataTables_wrapper .dataTables_filter input,
+            .dataTables_wrapper .dataTables_length select {
+                border: 1px solid #d9c8ab;
+                border-radius: 10px;
+                padding: 7px 10px;
+                background: white;
+            }
+
+        .dataTables_wrapper .dataTables_info {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin-top: 14px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 14px;
+        }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                border-radius: 10px !important;
+            }
+
+        @@media (max-width: 1200px) {
+            .pedidos-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .pedido-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .pedidos-header {
+                flex-direction: column;
+            }
+
+            .pedidos-summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="pedidos-page">
+
+    <div class="pedidos-header">
+        <div>
+            <h1>Pedidos</h1>
+            <div class="pedidos-title-line"></div>
+
+            @if (User.IsInRole("Cliente"))
+            {
+                <p>Consultá tus pedidos, revisá su estado y gestioná solicitudes pendientes.</p>
+            }
+            else
+            {
+                <p>Gestión de pedidos y solicitudes de clientes.</p>
+            }
+        </div>
+
+        <a asp-action="Create" class="btn-nuevo-pedido">
+            <i class="fa-solid fa-plus"></i>
+            Nuevo Pedido
+        </a>
     </div>
 
-    <a asp-action="Create" class="btn btn-success">
-        + Nuevo Pedido
-    </a>
-</div>
+    <section class="pedidos-summary-grid">
 
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body">
+        <div class="pedido-summary-card">
+            <div class="pedido-summary-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div class="pedido-summary-label">Pedidos registrados</div>
+            <div class="pedido-summary-value">@totalPedidos</div>
+        </div>
+
+        <div class="pedido-summary-card">
+            <div class="pedido-summary-icon">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="pedido-summary-label">Pendientes</div>
+            <div class="pedido-summary-value">@pedidosPendientes</div>
+        </div>
+
+        <div class="pedido-summary-card">
+            <div class="pedido-summary-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="pedido-summary-label">Completados</div>
+            <div class="pedido-summary-value">@pedidosCompletados</div>
+        </div>
+
+        <div class="pedido-summary-card">
+            <div class="pedido-summary-icon">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <div class="pedido-summary-label">Cancelados</div>
+            <div class="pedido-summary-value">@pedidosCancelados</div>
+        </div>
+
+    </section>
+
+    <div class="pedidos-table-card">
 
         <div class="table-responsive">
 
             <table id="tablaPedidos" class="table align-middle">
 
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Cliente</th>
                         <th>Teléfono</th>
@@ -41,7 +368,7 @@
                         <th>Fecha</th>
                         <th>Estado</th>
                         <th>Observación</th>
-                        <th>Acciones</th>
+                        <th width="290">Acciones</th>
                     </tr>
                 </thead>
 
@@ -49,16 +376,33 @@
 
                     @foreach (var item in Model)
                     {
+                        string estadoClase = item.Estado switch
+                        {
+                            "Pendiente" => "pedido-estado pedido-estado-pendiente",
+                            "En proceso" => "pedido-estado pedido-estado-proceso",
+                            "En camino" => "pedido-estado pedido-estado-camino",
+                            "Listo para retirar" => "pedido-estado pedido-estado-retiro",
+                            "Completado" => "pedido-estado pedido-estado-completado",
+                            "Cancelado" => "pedido-estado pedido-estado-cancelado",
+                            _ => "pedido-estado pedido-estado-neutral"
+                        };
+
                         <tr>
 
-                            <td class="fw-semibold">
+                            <td class="pedido-cliente">
                                 @item.ClienteNombre
                             </td>
 
-                            <td>@item.ClienteTelefono</td>
+                            <td>
+                                @(string.IsNullOrWhiteSpace(item.ClienteTelefono)
+                                    ? "Sin teléfono"
+                                    : item.ClienteTelefono)
+                            </td>
 
                             <td>
-                                @item.Producto?.Nombre
+                                @(item.Producto != null
+                                    ? item.Producto.Nombre
+                                    : "Sin producto")
                             </td>
 
                             <td>
@@ -70,92 +414,80 @@
                             </td>
 
                             <td>
-                                @if (item.Estado == "Pendiente")
-                                {
-                                    <span class="badge bg-warning text-dark">Pendiente</span>
-                                }
-                                else if (item.Estado == "En proceso")
-                                {
-                                    <span class="badge bg-primary">En proceso</span>
-                                }
-                                else if (item.Estado == "En camino")
-                                {
-                                    <span class="badge bg-info text-dark">En camino</span>
-                                }
-                                else if (item.Estado == "Listo para retirar")
-                                {
-                                    <span class="badge bg-secondary">Listo para retirar</span>
-                                }
-                                else if (item.Estado == "Completado")
-                                {
-                                    <span class="badge bg-success">Completado</span>
-                                }
-                                else if (item.Estado == "Cancelado")
-                                {
-                                    <span class="badge bg-danger">Cancelado</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-dark">@item.Estado</span>
-                                }
+                                <span class="@estadoClase">
+                                    @item.Estado
+                                </span>
+                            </td>
+
+                            <td class="pedido-observacion">
+                                @(string.IsNullOrWhiteSpace(item.Observacion)
+                                    ? "Sin observación"
+                                    : item.Observacion)
                             </td>
 
                             <td>
-                                @item.Observacion
-                            </td>
+                                <div class="pedido-actions">
 
-                            <td>
-                                @if (User.IsInRole("Administrador"))
-                                {
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-warning btn-sm">
-                                        Editar
-                                    </a>
-
-                                    <a asp-action="Details"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-info btn-sm">
-                                        Detalles
-                                    </a>
-
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
-                                        Eliminar
-                                    </a>
-                                }
-                                else if (User.IsInRole("Cliente"))
-                                {
-                                    @if (item.Estado != null && item.Estado.Trim() == "Pendiente")
+                                    @if (User.IsInRole("Administrador"))
                                     {
-                                        <a asp-action="EditCliente"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-warning btn-sm">
-                                            Actualizar
+                                        <a asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            Editar
                                         </a>
 
-                                        <a asp-action="Cancelar"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-danger btn-sm">
-                                            Cancelar
+                                        <a asp-action="Details"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-info btn-sm text-white">
+                                            <i class="fa-solid fa-eye"></i>
+                                            Detalles
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Eliminar
+                                        </a>
+                                    }
+                                    else if (User.IsInRole("Cliente"))
+                                    {
+                                        @if (item.Estado != null && item.Estado.Trim() == "Pendiente")
+                                        {
+                                            <a asp-action="EditCliente"
+                                                   asp-route-id="@item.Id"
+                                                   class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                Actualizar
+                                            </a>
+
+                                            <a asp-action="Cancelar"
+                                                   asp-route-id="@item.Id"
+                                                   class="btn btn-danger btn-sm">
+                                                <i class="fa-solid fa-ban"></i>
+                                                Cancelar
+                                            </a>
+                                        }
+
+                                        <a asp-action="Details"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-info btn-sm text-white">
+                                            <i class="fa-solid fa-eye"></i>
+                                            Detalles
+                                        </a>
+                                    }
+                                    else if (User.IsInRole("Vendedor"))
+                                    {
+                                        <a asp-action="Details"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-info btn-sm text-white">
+                                            <i class="fa-solid fa-eye"></i>
+                                            Detalles
                                         </a>
                                     }
 
-                                    <a asp-action="Details"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-info btn-sm">
-                                        Detalles
-                                    </a>
-                                }
-                                else if (User.IsInRole("Vendedor"))
-                                {
-                                    <a asp-action="Details"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-info btn-sm">
-                                        Detalles
-                                    </a>
-                                }
+                                </div>
                             </td>
 
                         </tr>
@@ -168,6 +500,7 @@
         </div>
 
     </div>
+
 </div>
 
 @section Scripts {
@@ -178,7 +511,7 @@
                     url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
                 },
                 pageLength: 5,
-                lengthMenu: [5, 10, 15, 20] ,
+                lengthMenu: [5, 10, 15, 20],
                 responsive: true
             });
         });

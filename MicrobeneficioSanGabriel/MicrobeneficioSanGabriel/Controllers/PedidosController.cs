@@ -21,7 +21,6 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             var pedidos = _context.Pedidos
                 .Include(p => p.Producto)
-                .OrderByDescending(p => p.FechaPedido)
                 .AsQueryable();
 
             if (User.IsInRole("Cliente"))
@@ -34,7 +33,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                 );
             }
 
-            return View(await pedidos.ToListAsync());
+            return View(await pedidos
+                .OrderByDescending(p => p.FechaPedido)
+                .ToListAsync());
         }
 
         public IActionResult Create()
@@ -44,7 +45,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             var pedido = new Pedido
             {
                 FechaPedido = DateTime.Now,
-                Estado = "Pendiente"
+                Estado = "Pendiente",
+                Cantidad = 1
             };
 
             return View(pedido);
