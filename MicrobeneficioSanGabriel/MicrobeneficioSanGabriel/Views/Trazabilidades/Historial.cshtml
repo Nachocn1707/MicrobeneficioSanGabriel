@@ -1,263 +1,802 @@
 ﻿@model MicrobeneficioSanGabriel.ViewModels.TrazabilidadHistorialViewModel
 
 @{
-    ViewData["Title"] = "Historial del lote";
+    ViewData["Title"] = "Historial de trazabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var registros = Model.Trazabilidades
+        .OrderBy(t => t.FechaRegistro)
+        .ToList();
+
+    var lote = Model.Lote;
+    var productor = Model.Productor;
+
+    int totalRegistros = registros.Count;
+
+    int totalEtapas = registros
+        .Where(t => !string.IsNullOrWhiteSpace(t.Etapa))
+        .Select(t => t.Etapa)
+        .Distinct()
+        .Count();
+
+    string codigoLote = lote != null ? lote.CodigoLote : "Sin lote";
+
+    string nombreProductor = productor != null
+        ? productor.Nombre
+        : "Sin productor";
+
+    string finca = productor != null && !string.IsNullOrWhiteSpace(productor.Finca)
+        ? productor.Finca
+        : "Sin finca";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+    <style>
+        .historial-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
+
+        .historial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .historial-title h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #2b160d;
+        }
+
+        .historial-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #d8b36a;
+            margin: 12px 0;
+        }
+
+        .historial-title p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .historial-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff4d3;
+            color: #8a6500;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .historial-actions-top {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn-historial {
+            border: none;
+            border-radius: 14px;
+            padding: 11px 18px;
+            font-weight: 950;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-historial:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-historial-volver {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+            .btn-historial-volver:hover {
+                background: #e5e7eb;
+                color: #111827;
+            }
+
+        .btn-historial-nuevo {
+            background: #198754;
+            color: #ffffff;
+        }
+
+            .btn-historial-nuevo:hover {
+                background: #157347;
+                color: #ffffff;
+            }
+
+        .historial-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .historial-summary-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 16px 36px rgba(58, 33, 20, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .historial-summary-card::after {
+                content: "";
+                position: absolute;
+                right: -32px;
+                bottom: -36px;
+                width: 110px;
+                height: 110px;
+                background: rgba(243, 210, 122, 0.22);
+                border-radius: 50%;
+            }
+
+        .historial-summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: #fff2d5;
+            color: #a66b20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 13px;
+            font-size: 18px;
+        }
+
+        .historial-summary-label {
+            color: #7a6a5d;
+            font-weight: 850;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .historial-summary-value {
+            color: #2b160d;
+            font-size: 1.35rem;
+            font-weight: 950;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        .historial-main-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+        }
+
+        .historial-main-header {
+            background: linear-gradient(135deg, #3a1f12, #7a5230);
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            border-top: 5px solid #f3d27a;
+        }
+
+            .historial-main-header h2 {
+                margin: 0;
+                color: #fff3c4;
+                font-size: 1.8rem;
+                font-weight: 950;
+            }
+
+            .historial-main-header span {
+                color: #fff8df;
+                font-weight: 700;
+                opacity: 0.92;
+            }
+
+        .historial-body {
+            display: grid;
+            grid-template-columns: 0.35fr 0.65fr;
+            min-height: 520px;
+        }
+
+        .historial-side {
+            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/dashboard/client-hero.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 32px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .historial-side-box {
+            width: 100%;
+            background: rgba(255, 253, 248, 0.11);
+            border: 1px solid rgba(255, 243, 196, 0.22);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .historial-side-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .historial-side-box h3 {
+            color: #fff3c4;
+            font-size: 1.45rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .historial-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .historial-side-box p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 22px;
+        }
+
+        .historial-side-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .historial-side-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff8df;
+            font-weight: 800;
+        }
+
+            .historial-side-item i {
+                color: #f3d27a;
+                width: 18px;
+            }
+
+        .historial-timeline-panel {
+            padding: 32px;
+        }
+
+        .timeline-empty {
+            background: #fff8df;
+            border: 1px dashed #d8b36a;
+            border-radius: 22px;
+            padding: 28px;
+            text-align: center;
+            color: #6f5b4a;
+            font-weight: 800;
+        }
+
+        .timeline {
+            position: relative;
+            display: grid;
+            gap: 22px;
+            padding-left: 34px;
+        }
+
+            .timeline::before {
+                content: "";
+                position: absolute;
+                top: 8px;
+                bottom: 8px;
+                left: 10px;
+                width: 4px;
+                border-radius: 999px;
+                background: linear-gradient(180deg, #d8b36a, #7a5230);
+            }
+
+        .timeline-item {
+            position: relative;
+            background: #fff8df;
+            border: 1px solid #ead8a2;
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 14px 32px rgba(58, 33, 20, 0.07);
+        }
+
+        .timeline-point {
+            position: absolute;
+            left: -34px;
+            top: 22px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #f3d27a;
+            border: 5px solid #fffdf8;
+            box-shadow: 0 0 0 2px #d8b36a;
+        }
+
+        .timeline-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+            .timeline-top h3 {
+                margin: 0;
+                color: #2b160d;
+                font-size: 1.25rem;
+                font-weight: 950;
+            }
+
+        .timeline-date {
+            color: #6f5b4a;
+            font-weight: 800;
+            white-space: nowrap;
+            font-size: 0.92rem;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .timeline-info {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 16px;
+            padding: 13px;
+        }
+
+        .timeline-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7a5230;
+            font-size: 0.76rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+
+        .timeline-value {
+            color: #2b160d;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .timeline-observacion {
+            margin-top: 12px;
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 16px;
+            padding: 13px;
+            color: #2b160d;
+            font-weight: 750;
+            line-height: 1.45;
+        }
+
+        .trazabilidad-etapa {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 950;
+            width: fit-content;
+        }
+
+        .trazabilidad-etapa-recepcion {
+            background: #dff6fd;
+            color: #0369a1;
+        }
+
+        .trazabilidad-etapa-produccion {
+            background: #fff4d3;
+            color: #8a6500;
+        }
+
+        .trazabilidad-etapa-secado {
+            background: #e9e0ff;
+            color: #5636a3;
+        }
+
+        .trazabilidad-etapa-tostado {
+            background: #f7dfc7;
+            color: #7a3e12;
+        }
+
+        .trazabilidad-etapa-molido {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .trazabilidad-etapa-empaque {
+            background: #dff5e3;
+            color: #1e7d32;
+        }
+
+        .trazabilidad-etapa-neutral {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .timeline-actions {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+            .timeline-actions .btn {
+                border-radius: 10px;
+                font-weight: 850;
+                padding: 8px 11px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        @@media (max-width: 1200px) {
+            .historial-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .historial-body {
+                grid-template-columns: 1fr;
+            }
+
+            .historial-side {
+                min-height: 300px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .historial-header {
+                flex-direction: column;
+            }
+
+            .historial-actions-top {
+                justify-content: flex-start;
+            }
+
+            .historial-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .historial-main-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .timeline-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-top {
+                flex-direction: column;
+            }
+
+            .timeline-date {
+                white-space: normal;
+            }
+
+            .historial-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 }
 
-<div class="EstiloDetalle-detalle-page">
+<div class="historial-page">
 
-    <div class="EstiloDetalle-header">
-        <h1>
-            Historial del lote @Model.Lote?.CodigoLote
-        </h1>
+    <div class="historial-header">
 
-        <p>
-            Seguimiento completo desde el productor hasta la producción final.
-        </p>
-    </div>
+        <div class="historial-title">
+            <span class="historial-badge">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Historial del lote
+            </span>
 
-    <div class="EstiloDetalle-card">
+            <h1>Historial de trazabilidad</h1>
+            <div class="historial-line"></div>
 
-        <div class="EstiloDetalle-card-header">
-            <h2>Origen del café</h2>
-            <span>Microbeneficio San Gabriel</span>
+            <p>
+                Línea de tiempo del seguimiento registrado para el lote seleccionado.
+            </p>
         </div>
 
-        <div class="EstiloDetalle-card-body">
-            <div class="detalle-grid">
+        <div class="historial-actions-top">
+            <a asp-action="Index"
+                   class="btn-historial btn-historial-volver">
+                <i class="fa-solid fa-arrow-left"></i>
+                Volver
+            </a>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Productor
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Productor?.Nombre
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Cédula
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Productor?.Cedula
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Finca
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Productor?.Finca ?? "No registrada")
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Teléfono
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Productor?.Telefono
-                    </span>
-                </div>
-
-                <div class="detalle-item full">
-                    <span class="detalle-label">
-                        Dirección
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Productor?.Direccion
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="EstiloDetalle-card mt-4">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>Datos del lote</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloDetalle-card-body">
-
-            <div class="detalle-grid">
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Código
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Lote?.CodigoLote
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Peso recibido
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Lote?.PesoKg kg
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Fecha recepción
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Lote?.FechaRecepcion.ToString("dd/MM/yyyy")
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Estado
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Lote?.Estado
-                    </span>
-                </div>
-
-                <div class="detalle-item full">
-                    <span class="detalle-label">
-                        Observación
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Lote?.Observacion ?? "Sin observación")
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="EstiloDetalle-card mt-4">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>Procesos de producción asociados</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloDetalle-card-body">
-
-            @if (!Model.Producciones.Any())
+            @if (User.IsInRole("Administrador"))
             {
-                <p class="text-muted">
-                    No hay procesos de producción registrados para este lote.
-                </p>
-            }
-            else
-            {
-                <div class="table-responsive">
-
-                    <table class="table admin-table">
-
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Proceso</th>
-                                <th>Procesado</th>
-                                <th>Resultante</th>
-                                <th>Producto</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @foreach (var p in Model.Producciones)
-                            {
-                                <tr>
-                                    <td>@p.FechaProduccion.ToString("dd/MM/yyyy")</td>
-                                    <td>@p.TipoProceso</td>
-                                    <td>@p.CantidadProcesadaKg kg</td>
-                                    <td>@p.CantidadResultanteKg kg</td>
-                                    <td>@(p.Producto?.Nombre ?? "Sin producto")</td>
-                                    <td>@p.Estado</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="EstiloDetalle-card mt-4">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>Línea de trazabilidad</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloDetalle-card-body">
-
-            @if (!Model.Trazabilidades.Any())
-            {
-                <p class="text-muted">
-                    No hay registros de trazabilidad para este lote.
-                </p>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table admin-table">
-
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Etapa</th>
-                                <th>Producción</th>
-                                <th>Producto</th>
-                                <th>Responsable</th>
-                                <th>Observación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            @foreach (var t in Model.Trazabilidades)
-                            {
-                                <tr>
-                                    <td>@t.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td>@t.Etapa</td>
-                                    <td>#@t.ProduccionId - @t.Produccion?.TipoProceso</td>
-                                    <td>@(t.Produccion?.Producto?.Nombre ?? "Sin producto")</td>
-                                    <td>@(t.Responsable ?? "Sin responsable")</td>
-                                    <td>@(t.Observacion ?? "Sin observación") </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            <div class="EstiloDetalle-actions">
-
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver a la lista
+                <a asp-action="Create"
+                       class="btn-historial btn-historial-nuevo">
+                    <i class="fa-solid fa-plus"></i>
+                    Nuevo registro
                 </a>
+            }
+        </div>
+
+    </div>
+
+    <section class="historial-summary-grid">
+
+        <div class="historial-summary-card">
+            <div class="historial-summary-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="historial-summary-label">Lote</div>
+            <div class="historial-summary-value">@codigoLote</div>
+        </div>
+
+        <div class="historial-summary-card">
+            <div class="historial-summary-icon">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div class="historial-summary-label">Productor</div>
+            <div class="historial-summary-value">@nombreProductor</div>
+        </div>
+
+        <div class="historial-summary-card">
+            <div class="historial-summary-icon">
+                <i class="fa-solid fa-diagram-project"></i>
+            </div>
+            <div class="historial-summary-label">Etapas registradas</div>
+            <div class="historial-summary-value">@totalEtapas</div>
+        </div>
+
+        <div class="historial-summary-card">
+            <div class="historial-summary-icon">
+                <i class="fa-solid fa-route"></i>
+            </div>
+            <div class="historial-summary-label">Registros</div>
+            <div class="historial-summary-value">@totalRegistros</div>
+        </div>
+
+    </section>
+
+    <div class="historial-main-card">
+
+        <div class="historial-main-header">
+            <div>
+                <h2>@codigoLote</h2>
+                <span>Microbeneficio San Gabriel</span>
+            </div>
+
+            <span>
+                <i class="fa-solid fa-route"></i>
+                Trazabilidad completa
+            </span>
+        </div>
+
+        <div class="historial-body">
+
+            <div class="historial-side">
+                <div class="historial-side-box">
+
+                    <div class="historial-side-icon">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <h3>Origen y proceso</h3>
+                    <div class="historial-side-line"></div>
+
+                    <p>
+                        Este historial permite consultar el recorrido del café,
+                        sus etapas, responsables y observaciones registradas.
+                    </p>
+
+                    <div class="historial-side-list">
+
+                        <div class="historial-side-item">
+                            <i class="fa-solid fa-user-tie"></i>
+                            @nombreProductor
+                        </div>
+
+                        <div class="historial-side-item">
+                            <i class="fa-solid fa-mountain-sun"></i>
+                            @finca
+                        </div>
+
+                        <div class="historial-side-item">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            @(lote != null ? $"{lote.PesoKg} kg recibidos" : "Sin peso registrado")
+                        </div>
+
+                        <div class="historial-side-item">
+                            <i class="fa-solid fa-circle-info"></i>
+                            @(lote != null ? lote.Estado : "Sin estado")
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="historial-timeline-panel">
+
+                @if (!registros.Any())
+                {
+                    <div class="timeline-empty">
+                        <i class="fa-solid fa-circle-info"></i>
+                        No hay registros de trazabilidad para este lote.
+                    </div>
+                }
+                else
+                {
+                    <div class="timeline">
+
+                        @foreach (var item in registros)
+                        {
+                            string etapaClase = item.Etapa switch
+                            {
+                                "Recepción" => "trazabilidad-etapa trazabilidad-etapa-recepcion",
+                                "Producción" => "trazabilidad-etapa trazabilidad-etapa-produccion",
+                                "Secado" => "trazabilidad-etapa trazabilidad-etapa-secado",
+                                "Tostado" => "trazabilidad-etapa trazabilidad-etapa-tostado",
+                                "Molido" => "trazabilidad-etapa trazabilidad-etapa-molido",
+                                "Empaque" => "trazabilidad-etapa trazabilidad-etapa-empaque",
+                                _ => "trazabilidad-etapa trazabilidad-etapa-neutral"
+                            };
+
+                            <div class="timeline-item">
+
+                                <div class="timeline-point"></div>
+
+                                <div class="timeline-top">
+                                    <div>
+                                        <h3>
+                                            @(string.IsNullOrWhiteSpace(item.Etapa)
+                                                ? "Etapa sin nombre"
+                                                : item.Etapa)
+                                        </h3>
+                                    </div>
+
+                                    <div class="timeline-date">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                        @item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+                                    </div>
+                                </div>
+
+                                <span class="@etapaClase">
+                                    @(string.IsNullOrWhiteSpace(item.Etapa)
+                                        ? "Sin etapa"
+                                        : item.Etapa)
+                                </span>
+
+                                <div class="timeline-grid">
+
+                                    <div class="timeline-info">
+                                        <span class="timeline-label">
+                                            <i class="fa-solid fa-user-check"></i>
+                                            Responsable
+                                        </span>
+
+                                        <span class="timeline-value">
+                                            @(string.IsNullOrWhiteSpace(item.Responsable)
+                                                ? "Sin responsable"
+                                                : item.Responsable)
+                                        </span>
+                                    </div>
+
+                                    <div class="timeline-info">
+                                        <span class="timeline-label">
+                                            <i class="fa-solid fa-industry"></i>
+                                            Producción
+                                        </span>
+
+                                        <span class="timeline-value">
+                                            @(item.Produccion != null
+                                                ? item.Produccion.TipoProceso
+                                                : "Sin producción")
+                                        </span>
+                                    </div>
+
+                                    <div class="timeline-info">
+                                        <span class="timeline-label">
+                                            <i class="fa-solid fa-mug-hot"></i>
+                                            Producto resultante
+                                        </span>
+
+                                        <span class="timeline-value">
+                                            @(item.Produccion?.Producto?.Nombre ?? "Sin producto")
+                                        </span>
+                                    </div>
+
+                                    <div class="timeline-info">
+                                        <span class="timeline-label">
+                                            <i class="fa-solid fa-weight-scale"></i>
+                                            Resultado
+                                        </span>
+
+                                        <span class="timeline-value">
+                                            @(item.Produccion != null
+                                                ? $"{item.Produccion.CantidadResultanteKg} kg"
+                                                : "Sin resultado")
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="timeline-observacion">
+                                    <span class="timeline-label">
+                                        <i class="fa-solid fa-comment-dots"></i>
+                                        Observación
+                                    </span>
+
+                                    @(string.IsNullOrWhiteSpace(item.Observacion)
+                                        ? "Sin observación"
+                                        : item.Observacion)
+                                </div>
+
+                                <div class="timeline-actions">
+
+                                    <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm text-white">
+                                        <i class="fa-solid fa-eye"></i>
+                                        Detalles
+                                    </a>
+
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <a asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            Editar
+                                        </a>
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
 
             </div>
+
         </div>
+
     </div>
+
 </div>

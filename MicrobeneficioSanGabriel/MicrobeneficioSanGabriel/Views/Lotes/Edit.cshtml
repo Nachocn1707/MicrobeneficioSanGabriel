@@ -6,138 +6,479 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+    <style>
+        .lote-edit-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
+
+        .lote-edit-header h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #2b160d;
+        }
+
+        .lote-edit-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #d8b36a;
+            margin: 12px 0;
+        }
+
+        .lote-edit-header p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .lote-edit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #dff6fd;
+            color: #0369a1;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 900;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .lote-edit-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 0.36fr 0.64fr;
+            min-height: 560px;
+        }
+
+        .lote-edit-side {
+            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/dashboard/client-hero.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 36px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .lote-edit-side-content {
+            max-width: 360px;
+        }
+
+        .lote-edit-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 26px;
+        }
+
+        .lote-edit-side h2 {
+            color: #fff3c4;
+            font-size: 2rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .lote-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .lote-edit-side p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+
+        .lote-edit-info {
+            display: grid;
+            gap: 16px;
+        }
+
+        .lote-edit-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff8df;
+            font-weight: 800;
+        }
+
+            .lote-edit-info-item i {
+                color: #f3d27a;
+                width: 18px;
+            }
+
+        .lote-edit-form-container {
+            padding: 38px;
+        }
+
+        .lote-alert {
+            background: #dff6fd;
+            color: #0369a1;
+            border: 1px solid #bde8f7;
+            border-radius: 18px;
+            padding: 15px 18px;
+            font-weight: 750;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lote-field label {
+            color: #2b160d;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .input-modern {
+            position: relative;
+        }
+
+            .input-modern i {
+                position: absolute;
+                left: 17px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #a1a8b3;
+                z-index: 2;
+            }
+
+            .input-modern .form-control,
+            .input-modern .form-select {
+                min-height: 56px;
+                border-radius: 18px;
+                border: 1px solid #d8dee8;
+                background: #fff;
+                padding-left: 48px;
+                font-weight: 700;
+                color: #2b160d;
+            }
+
+                .input-modern .form-control:focus,
+                .input-modern .form-select:focus {
+                    border-color: #d8b36a;
+                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
+                }
+
+        .textarea-modern i {
+            top: 25px;
+            transform: none;
+        }
+
+        .textarea-modern textarea.form-control {
+            min-height: 115px;
+            padding-top: 17px;
+            resize: vertical;
+        }
+
+        .lote-edit-actions {
+            border-top: 1px solid #ead8a2;
+            margin-top: 26px;
+            padding-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-lote-edit {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 20px;
+            font-weight: 950;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-lote-edit:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-lote-volver {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+            .btn-lote-volver:hover {
+                background: #e5e7eb;
+                color: #111827;
+            }
+
+        .btn-lote-guardar {
+            background: #4a2c1a;
+            color: #fff8df;
+        }
+
+            .btn-lote-guardar:hover {
+                background: #7a5230;
+                color: #fff8df;
+            }
+
+        @@media (max-width: 1100px) {
+            .lote-edit-card {
+                grid-template-columns: 1fr;
+            }
+
+            .lote-edit-side {
+                min-height: 300px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .lote-edit-form-container {
+                padding: 24px;
+            }
+
+            .lote-edit-side {
+                padding: 28px;
+            }
+
+            .lote-edit-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 }
 
-<div class="EstiloEditar-edit-page">
+<div class="lote-edit-page">
 
-    <div class="EstiloEditar-header">
+    <div class="lote-edit-header">
+        <span class="lote-edit-badge">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Gestión de lotes
+        </span>
+
         <h1>Editar lote</h1>
-        <p>Actualizá los datos registrados del lote.</p>
+        <div class="lote-edit-line"></div>
+
+        <p>
+            Actualizá los datos registrados del lote seleccionado.
+        </p>
     </div>
-    <div class="EstiloEditar-card">
 
-        <div class="EstiloEditar-card-header">
-            <h2>@Model.CodigoLote</h2>
-            <span>Microbeneficio San Gabriel</span>
+    <div class="lote-edit-card">
+
+        <div class="lote-edit-side">
+            <div class="lote-edit-side-content">
+
+                <div class="lote-edit-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+
+                <h2>@Model.CodigoLote</h2>
+                <div class="lote-side-line"></div>
+
+                <p>
+                    Modificá la información del lote, productor, peso,
+                    fecha de recepción y estado del proceso.
+                </p>
+
+                <div class="lote-edit-info">
+                    <div class="lote-edit-info-item">
+                        <i class="fa-solid fa-user-tie"></i>
+                        Productor asociado
+                    </div>
+
+                    <div class="lote-edit-info-item">
+                        <i class="fa-solid fa-weight-scale"></i>
+                        Peso recibido
+                    </div>
+
+                    <div class="lote-edit-info-item">
+                        <i class="fa-solid fa-route"></i>
+                        Seguimiento del lote
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="EstiloEditar-card-body">
 
-            <form asp-action="Edit">
+        <div class="lote-edit-form-container">
+
+            <form asp-action="Edit" method="post">
 
                 <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
+                     class="text-danger mb-4">
                 </div>
 
                 <input type="hidden" asp-for="Id" />
 
-                <div class="row g-4">
-                    <div class="col-md-6">
+                <div class="lote-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>
+                        Verificá el estado del lote antes de guardar los cambios.
+                    </span>
+                </div>
 
-                        <label asp-for="CodigoLote"
-                               class="form-label">
+                <div class="row g-4">
+
+                    <div class="col-md-6 lote-field">
+                        <label asp-for="CodigoLote" class="form-label">
+                            Código del lote
                         </label>
 
-                        <input asp-for="CodigoLote"
-                               class="form-control" />
+                        <div class="input-modern">
+                            <i class="fa-solid fa-barcode"></i>
+
+                            <input asp-for="CodigoLote"
+                                   class="form-control"
+                                   placeholder="Ej: LOT-001" />
+                        </div>
 
                         <span asp-validation-for="CodigoLote"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="ProductorId"
-                               class="form-label">
+                    <div class="col-md-6 lote-field">
+                        <label asp-for="ProductorId" class="form-label">
+                            Productor
                         </label>
 
-                        <select asp-for="ProductorId"
-                                class="form-select"
-                                asp-items="ViewBag.ProductorId">
-                        </select>
+                        <div class="input-modern">
+                            <i class="fa-solid fa-user-tie"></i>
+
+                            <select asp-for="ProductorId"
+                                    class="form-select"
+                                    asp-items="ViewBag.ProductorId">
+                                <option value="">Seleccione un productor</option>
+                            </select>
+                        </div>
 
                         <span asp-validation-for="ProductorId"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="PesoKg"
-                               class="form-label">
+                    <div class="col-md-6 lote-field">
+                        <label asp-for="PesoKg" class="form-label">
+                            Peso recibido en kg
                         </label>
 
-                        <input asp-for="PesoKg"
-                               class="form-control" />
+                        <div class="input-modern">
+                            <i class="fa-solid fa-weight-scale"></i>
+
+                            <input asp-for="PesoKg"
+                                   class="form-control"
+                                   min="1"
+                                   placeholder="Ej: 150" />
+                        </div>
 
                         <span asp-validation-for="PesoKg"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="FechaRecepcion"
-                               class="form-label">
+                    <div class="col-md-6 lote-field">
+                        <label asp-for="FechaRecepcion" class="form-label">
+                            Fecha de recepción
                         </label>
 
-                        <input asp-for="FechaRecepcion"
-                               class="form-control" />
+                        <div class="input-modern">
+                            <i class="fa-solid fa-calendar"></i>
+
+                            <input asp-for="FechaRecepcion"
+                                   type="datetime-local"
+                                   class="form-control" />
+                        </div>
 
                         <span asp-validation-for="FechaRecepcion"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-md-6">
 
-                        <label asp-for="Estado"
-                               class="form-label">
+                    <div class="col-md-6 lote-field">
+                        <label asp-for="Estado" class="form-label">
+                            Estado
                         </label>
 
-                        <input asp-for="Estado"
-                               class="form-control" />
+                        <div class="input-modern">
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            <select asp-for="Estado"
+                                    class="form-select">
+                                <option value="">Seleccione un estado</option>
+                                <option value="Recibido">Recibido</option>
+                                <option value="En proceso">En proceso</option>
+                                <option value="Finalizado">Finalizado</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
 
                         <span asp-validation-for="Estado"
                               class="text-danger">
                         </span>
-
                     </div>
-                    <div class="col-12">
 
-                        <label asp-for="Observacion"
-                               class="form-label">
+                    <div class="col-md-12 lote-field">
+                        <label asp-for="Observacion" class="form-label">
+                            Observación
                         </label>
 
-                        <textarea asp-for="Observacion"
-                                  class="form-control"
-                                  rows="4">
-                        </textarea>
+                        <div class="input-modern textarea-modern">
+                            <i class="fa-solid fa-comment"></i>
+
+                            <textarea asp-for="Observacion"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Digite una observación del lote"></textarea>
+                        </div>
 
                         <span asp-validation-for="Observacion"
                               class="text-danger">
                         </span>
                     </div>
+
                 </div>
 
-                <div class="EstiloEditar-actions">
+                <div class="lote-edit-actions">
 
                     <a asp-action="Index"
-                       class="btn-volver">
+                           class="btn-lote-edit btn-lote-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver a la lista
                     </a>
 
                     <button type="submit"
-                            class="btn-guardar">
+                            class="btn-lote-edit btn-lote-guardar">
+                        <i class="fa-solid fa-floppy-disk"></i>
                         Guardar cambios
                     </button>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -7,6 +7,22 @@ namespace MicrobeneficioSanGabriel.ViewModels
     {
         public string Id { get; set; } = string.Empty;
 
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; } = string.Empty;
+
+        [Display(Name = "Apellidos")]
+        public string Apellidos { get; set; } = string.Empty;
+
+        [Display(Name = "Nombre completo")]
+        public string NombreCompleto
+        {
+            get
+            {
+                var nombreCompleto = $"{Nombre} {Apellidos}".Trim();
+                return string.IsNullOrWhiteSpace(nombreCompleto) ? Email : nombreCompleto;
+            }
+        }
+
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; } = string.Empty;
 
@@ -22,6 +38,14 @@ namespace MicrobeneficioSanGabriel.ViewModels
 
     public class UsuarioCrearViewModel
     {
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+        [Display(Name = "Apellidos")]
+        public string Apellidos { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
         [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
         [Display(Name = "Correo electrónico")]
@@ -39,8 +63,9 @@ namespace MicrobeneficioSanGabriel.ViewModels
         [Display(Name = "Confirmar contraseña")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "El teléfono es obligatorio.")]
         [Display(Name = "Teléfono")]
-        public string? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un rol.")]
         [Display(Name = "Rol")]
@@ -53,13 +78,22 @@ namespace MicrobeneficioSanGabriel.ViewModels
     {
         public string Id { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [Display(Name = "Nombre")]
+        public string Nombre { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+        [Display(Name = "Apellidos")]
+        public string Apellidos { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
         [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "El teléfono es obligatorio.")]
         [Display(Name = "Teléfono")]
-        public string? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un rol.")]
         [Display(Name = "Rol")]

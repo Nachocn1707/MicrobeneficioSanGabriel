@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using Microsoft.AspNetCore.Identity;
+using MicrobeneficioSanGabriel.ViewModels;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -11,10 +13,14 @@ namespace MicrobeneficioSanGabriel.Controllers
     public class PedidosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PedidosController(ApplicationDbContext context)
+        public PedidosController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -38,7 +44,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .ToListAsync());
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             CargarProductos();
 
@@ -49,8 +55,21 @@ namespace MicrobeneficioSanGabriel.Controllers
                 Cantidad = 1
             };
 
+            if (User.IsInRole("Cliente"))
+            {
+                var usuario = await _userManager.GetUserAsync(User);
+
+                if (usuario != null)
+                {
+                    pedido.ClienteNombre = usuario.NombreCompleto;
+                    pedido.ClienteCorreo = usuario.Email;
+                    pedido.ClienteTelefono = usuario.PhoneNumber;
+                }
+            }
+
             return View(pedido);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -58,11 +77,18 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (User.IsInRole("Cliente"))
             {
-                pedido.ClienteCorreo = User.Identity?.Name;
+                var usuario = await _userManager.GetUserAsync(User);
+
+                if (usuario != null)
+                {
+                    pedido.ClienteNombre = usuario.NombreCompleto;
+                    pedido.ClienteCorreo = usuario.Email;
+                    pedido.ClienteTelefono = usuario.PhoneNumber;
+                }
+
                 pedido.Estado = "Pendiente";
                 pedido.FechaPedido = DateTime.Now;
             }
-
             if (string.IsNullOrWhiteSpace(pedido.Estado))
             {
                 pedido.Estado = "Pendiente";
@@ -409,6 +435,78 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             return pedido.ClienteCorreo == correoCliente ||
                    (pedido.ClienteCorreo == null && pedido.ClienteNombre == correoCliente);
+        }
+
+        [Authorize(Roles = "Administrador,Vendedor")]
+        public async Task<IActionResult> CambiarEstado(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null) return NotFound();
+
+            return View(pedido);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Vendedor")]
+        public async Task<IActionResult> CambiarEstado(int id, string estado)
+        {
+            var pedido = await _context.Pedidos
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null) return NotFound();
+
+            var estadoAnterior = pedido.Estado;
+
+            if (string.IsNullOrWhiteSpace(estado))
+            {
+                ModelState.AddModelError("", "Debe seleccionar un estado.");
+                return View(pedido);
+            }
+
+            if (estadoAnterior != "Completado" && estado == "Completado")
+            {
+                var producto = await _context.Productos.FindAsync(pedido.ProductoId);
+
+                if (producto == null)
+                {
+                    ModelState.AddModelError("", "El producto seleccionado no existe.");
+                    return View(pedido);
+                }
+
+                if (pedido.Cantidad > producto.Stock)
+                {
+                    ModelState.AddModelError("", "No hay suficiente stock disponible para completar el pedido.");
+                    return View(pedido);
+                }
+
+                producto.Stock -= pedido.Cantidad;
+
+                var movimiento = new MovimientoInventario
+                {
+                    ProductoId = producto.Id,
+                    TipoMovimiento = "Salida",
+                    Cantidad = pedido.Cantidad,
+                    FechaMovimiento = DateTime.Now,
+                    Observacion = $"Salida por pedido completado del cliente {pedido.ClienteNombre}"
+                };
+
+                _context.MovimientosInventario.Add(movimiento);
+                _context.Productos.Update(producto);
+            }
+
+            pedido.Estado = estado;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Estado del pedido actualizado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

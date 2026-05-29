@@ -1,4 +1,14 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using MicrobeneficioSanGabriel.Models
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var usuarioActual = await UserManager.GetUserAsync(User);
+
+var nombreCliente = usuarioActual != null
+    ? usuarioActual.NombreCompleto
+    : "Cliente";
+
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
 
     string Active(string keyword)
@@ -87,10 +97,9 @@
                         <input type="text"
                                placeholder="Buscar módulo o registro..." />
                     </form>
-
                     <span class="sg-user-pill">
                         <i class="fa-solid fa-user"></i>
-                        Cliente
+                        @nombreCliente
                     </span>
 
                     <form asp-area="Identity"

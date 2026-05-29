@@ -1,4 +1,5 @@
 ﻿@page
+@using MicrobeneficioSanGabriel.Models;
 @model RegisterModel
 
 @{
@@ -41,6 +42,50 @@
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger validation-summary mb-3">
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Nombre"
+                           class="form-control"
+                           autocomplete="given-name"
+                           placeholder="Nombre" />
+
+                    <label asp-for="Input.Nombre">
+                        Nombre
+                    </label>
+
+                    <span asp-validation-for="Input.Nombre"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Apellidos"
+                           class="form-control"
+                           autocomplete="family-name"
+                           placeholder="Apellidos" />
+
+                    <label asp-for="Input.Apellidos">
+                        Apellidos
+                    </label>
+
+                    <span asp-validation-for="Input.Apellidos"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.PhoneNumber"
+                           class="form-control"
+                           autocomplete="tel"
+                           placeholder="Teléfono" />
+
+                    <label asp-for="Input.PhoneNumber">
+                        Teléfono
+                    </label>
+
+                    <span asp-validation-for="Input.PhoneNumber"
+                          class="text-danger">
+                    </span>
                 </div>
 
                 <div class="form-group">

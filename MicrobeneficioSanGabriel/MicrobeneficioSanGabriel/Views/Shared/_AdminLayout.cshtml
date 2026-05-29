@@ -42,89 +42,173 @@
             </div>
 
             <nav class="sg-sidebar-menu">
-                <a asp-controller="Home"
-                       asp-action="Dashboard"
-                       class="@Active("/home/dashboard")">
-                    <i class="fa-solid fa-chart-line"></i>
-                    Dashboard
-                </a>
 
-                <a asp-controller="Usuarios"
-                       asp-action="Index"
-                       class="@Active("/usuarios")">
-                    <i class="fa-solid fa-users"></i>
-                    Usuarios
-                </a>
+                @* ADMINISTRADOR: acceso completo *@
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-controller="Home"
+                           asp-action="Dashboard"
+                           class="@Active("/home/dashboard")">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Dashboard
+                    </a>
 
-                <a asp-controller="Productores"
-                       asp-action="Index"
-                       class="@Active("/productores")">
-                    <i class="fa-solid fa-user-tie"></i>
-                    Productores
-                </a>
+                    <a asp-controller="Usuarios"
+                           asp-action="Index"
+                           class="@Active("/usuarios")">
+                        <i class="fa-solid fa-users"></i>
+                        Usuarios
+                    </a>
 
-                <a asp-controller="Productos"
-                       asp-action="Index"
-                       class="@Active("/productos")">
-                    <i class="fa-solid fa-mug-hot"></i>
-                    Productos
-                </a>
+                    <a asp-controller="Productores"
+                           asp-action="Index"
+                           class="@Active("/productores")">
+                        <i class="fa-solid fa-user-tie"></i>
+                        Productores
+                    </a>
 
-                <a asp-controller="MovimientosInventario"
-                       asp-action="Index"
-                       class="@Active("/movimientosinventario")">
-                    <i class="fa-solid fa-boxes-stacked"></i>
-                    Inventario
-                </a>
+                    <a asp-controller="Productos"
+                           asp-action="Index"
+                           class="@Active("/productos")">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        Productos
+                    </a>
 
-                <a asp-controller="Lotes"
-                       asp-action="Index"
-                       class="@Active("/lotes")">
-                    <i class="fa-solid fa-layer-group"></i>
-                    Lotes
-                </a>
+                    <a asp-controller="MovimientosInventario"
+                           asp-action="Index"
+                           class="@Active("/movimientosinventario")">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        Inventario
+                    </a>
 
-                <a asp-controller="Producciones"
-                       asp-action="Index"
-                       class="@Active("/producciones")">
-                    <i class="fa-solid fa-industry"></i>
-                    Producción
-                </a>
+                    <a asp-controller="Lotes"
+                           asp-action="Index"
+                           class="@Active("/lotes")">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Lotes
+                    </a>
 
-                <a asp-controller="Trazabilidades"
-                       asp-action="Index"
-                       class="@Active("/trazabilidades")">
-                    <i class="fa-solid fa-route"></i>
-                    Trazabilidad
-                </a>
+                    <a asp-controller="Producciones"
+                           asp-action="Index"
+                           class="@Active("/producciones")">
+                        <i class="fa-solid fa-industry"></i>
+                        Producción
+                    </a>
 
-                <a asp-controller="Pedidos"
-                       asp-action="Index"
-                       class="@Active("/pedidos")">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    Pedidos
-                </a>
+                    <a asp-controller="Trazabilidades"
+                           asp-action="Index"
+                           class="@Active("/trazabilidades")">
+                        <i class="fa-solid fa-route"></i>
+                        Trazabilidad
+                    </a>
 
-                <a asp-controller="Facturas"
-                       asp-action="Index"
-                       class="@Active("/facturas")">
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                    Facturación
-                </a>
+                    <a asp-controller="Pedidos"
+                           asp-action="Index"
+                           class="@Active("/pedidos")">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        Pedidos
+                    </a>
 
-                <a asp-controller="RegistrosFinancieros"
-                       asp-action="Index"
-                       class="@Active("/registrosfinancieros")">
-                    <i class="fa-solid fa-coins"></i>
-                    Contabilidad
-                </a>
+                    <a asp-controller="Facturas"
+                           asp-action="Index"
+                           class="@Active("/facturas")">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        Facturación
+                    </a>
 
-                <a asp-controller="Reportes"
-                       asp-action="Index"
-                       class="@Active("/reportes")">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    Reportes
-                </a>
+                    <a asp-controller="RegistrosFinancieros"
+                           asp-action="Index"
+                           class="@Active("/registrosfinancieros")">
+                        <i class="fa-solid fa-coins"></i>
+                        Contabilidad
+                    </a>
+
+                    <a asp-controller="Reportes"
+                           asp-action="Index"
+                           class="@Active("/reportes")">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Reportes
+                    </a>
+                }
+
+                @* VENDEDOR: módulos comerciales *@
+                @if (User.IsInRole("Vendedor"))
+                {
+                    <a asp-controller="Home"
+                           asp-action="Dashboard"
+                           class="@Active("/home/dashboard")">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Dashboard
+                    </a>
+
+                    <a asp-controller="Productos"
+                           asp-action="Index"
+                           class="@Active("/productos")">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        Productos
+                    </a>
+
+                    <a asp-controller="Pedidos"
+                           asp-action="Index"
+                           class="@Active("/pedidos")">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        Pedidos
+                    </a>
+
+                    <a asp-controller="Facturas"
+                           asp-action="Index"
+                           class="@Active("/facturas")">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        Facturación
+                    </a>
+
+                    <a asp-controller="Reportes"
+                           asp-action="Index"
+                           class="@Active("/reportes")">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Reportes
+                    </a>
+                }
+
+                @* OPERADOR: módulos operativos *@
+                @if (User.IsInRole("Operador"))
+                {
+                    <a asp-controller="Home"
+                           asp-action="Dashboard"
+                           class="@Active("/home/dashboard")">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Dashboard
+                    </a>
+
+                    <a asp-controller="Productores"
+                           asp-action="Index"
+                           class="@Active("/productores")">
+                        <i class="fa-solid fa-user-tie"></i>
+                        Productores
+                    </a>
+
+                    <a asp-controller="Lotes"
+                           asp-action="Index"
+                           class="@Active("/lotes")">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Lotes
+                    </a>
+
+                    <a asp-controller="Producciones"
+                           asp-action="Index"
+                           class="@Active("/producciones")">
+                        <i class="fa-solid fa-industry"></i>
+                        Producción
+                    </a>
+
+                    <a asp-controller="Trazabilidades"
+                           asp-action="Index"
+                           class="@Active("/trazabilidades")">
+                        <i class="fa-solid fa-route"></i>
+                        Trazabilidad
+                    </a>
+                }
+
             </nav>
         </aside>
 

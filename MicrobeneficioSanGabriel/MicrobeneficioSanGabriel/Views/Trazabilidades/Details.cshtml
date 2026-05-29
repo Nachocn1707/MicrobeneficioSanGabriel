@@ -1,246 +1,178 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Trazabilidad
 
 @{
-    ViewData["Title"] = "Detalle de trazabilidad";
+    ViewData["Title"] = "Editar trazabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloDetalle-detalle-page">
+<div class="EstiloEditar-edit-page">
 
-    <div class="EstiloDetalle-header">
-        <h1>Detalle de trazabilidad</h1>
-        <p>
-            Información detallada del seguimiento del lote seleccionado.
-        </p>
+    <div class="EstiloEditar-header">
+        <h1>Editar trazabilidad</h1>
+        <p>Actualizá la información registrada del seguimiento del lote.</p>
     </div>
 
-    <div class="EstiloDetalle-card">
+    <div class="EstiloEditar-card">
 
-        <div class="EstiloDetalle-card-header">
-            <h2>Información del lote</h2>
+        <div class="EstiloEditar-card-header">
+            <h2>
+                @(Model.Lote != null ? Model.Lote.CodigoLote : $"Registro #{Model.Id}")
+            </h2>
             <span>Microbeneficio San Gabriel</span>
         </div>
 
-        <div class="EstiloDetalle-card-body">
-            <div class="detalle-grid">
+        <div class="EstiloEditar-card-body">
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Código de lote
-                    </span>
+            <form asp-action="Edit" method="post">
 
-                    <span class="detalle-value">
-                        @Model.Lote?.CodigoLote
-                    </span>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
                 </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Productor
-                    </span>
+                <input type="hidden" asp-for="Id" />
 
-                    <span class="detalle-value">
-                        @(Model.Lote?.Productor?.Nombre ?? "Sin productor")
-                    </span>
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="LoteId" class="form-label">
+                            Lote
+                        </label>
+
+                        <select asp-for="LoteId"
+                                class="form-select"
+                                asp-items="ViewBag.LoteId">
+                            <option value="">Seleccione un lote</option>
+                        </select>
+
+                        <span asp-validation-for="LoteId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="ProduccionId" class="form-label">
+                            Producción asociada
+                        </label>
+
+                        <select asp-for="ProduccionId"
+                                class="form-select"
+                                asp-items="ViewBag.ProduccionId">
+                            <option value="">Seleccione una producción</option>
+                        </select>
+
+                        <span asp-validation-for="ProduccionId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Etapa" class="form-label">
+                            Etapa
+                        </label>
+
+                        <select asp-for="Etapa"
+                                class="form-select">
+                            <option value="">Seleccione una etapa</option>
+                            <option value="Recepción">Recepción</option>
+                            <option value="Producción">Producción</option>
+                            <option value="Secado">Secado</option>
+                            <option value="Tostado">Tostado</option>
+                            <option value="Molido">Molido</option>
+                            <option value="Empaque">Empaque</option>
+                        </select>
+
+                        <span asp-validation-for="Etapa"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="FechaRegistro" class="form-label">
+                            Fecha de registro
+                        </label>
+
+                        <input asp-for="FechaRegistro"
+                               type="datetime-local"
+                               class="form-control" />
+
+                        <span asp-validation-for="FechaRegistro"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Responsable" class="form-label">
+                            Responsable
+                        </label>
+
+                        <input asp-for="Responsable"
+                               class="form-control"
+                               placeholder="Nombre del responsable" />
+
+                        <span asp-validation-for="Responsable"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Observacion" class="form-label">
+                            Observación
+                        </label>
+
+                        <textarea asp-for="Observacion"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Detalle adicional del seguimiento"></textarea>
+
+                        <span asp-validation-for="Observacion"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
                 </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Fecha de recepción
-                    </span>
+                <div class="EstiloEditar-actions">
 
-                    <span class="detalle-value">
-                        @Model.Lote?.FechaRecepcion.ToString("dd/MM/yyyy")
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Peso recibido
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Lote?.PesoKg kg
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Estado del lote
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Lote?.Estado
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Finca
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Lote?.Productor?.Finca ?? "No registrada")
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="EstiloDetalle-card mt-4">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>Información de producción</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloDetalle-card-body">
-
-            <div class="detalle-grid">
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Proceso
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Produccion?.TipoProceso
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Fecha de producción
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Produccion?.FechaProduccion.ToString("dd/MM/yyyy")
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Estado
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Produccion?.Estado
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Cantidad procesada
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Produccion?.CantidadProcesadaKg kg
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Cantidad resultante
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Produccion?.CantidadResultanteKg kg
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Producto resultante
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Produccion?.Producto?.Nombre ?? "Sin producto")
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="EstiloDetalle-card mt-4">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>Registro de trazabilidad</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloDetalle-card-body">
-
-            <div class="detalle-grid">
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Etapa
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Etapa
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Fecha de registro
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Responsable
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Responsable ?? "Sin responsable")
-                    </span>
-                </div>
-
-                <div class="detalle-item full">
-                    <span class="detalle-label">
-                        Observación
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Observacion ?? "Sin observación")
-                    </span>
-                </div>
-
-            </div>
-
-            <div class="EstiloDetalle-actions">
-
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver a la lista
-                </a>
-
-                <a asp-action="Historial"
-                   asp-route-loteId="@Model.LoteId"
-                   class="btn-volver">
-                    Ver historial
-                </a>
-
-                @if (User.IsInRole("Administrador"))
-                {
-                    <a asp-action="Edit"
-                       asp-route-id="@Model.Id"
-                       class="btn-editar">
-                        Editar
+                    <a asp-action="Index"
+                           class="btn-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver a la lista
                     </a>
-                }
 
-            </div>
+                    <button type="submit"
+                            class="btn-guardar">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Guardar cambios
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
+
     </div>
+
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

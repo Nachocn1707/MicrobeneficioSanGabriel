@@ -8,5 +8,6 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public Productor? Productor { get; set; }
         public List<Produccion> Producciones { get; set; } = new();
         public List<Trazabilidad> Trazabilidades { get; set; } = new();
+
     }
 }

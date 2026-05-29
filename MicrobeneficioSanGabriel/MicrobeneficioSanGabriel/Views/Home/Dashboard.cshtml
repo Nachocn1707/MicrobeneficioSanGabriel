@@ -9,9 +9,13 @@
     var ultimosPedidos = ViewBag.UltimosPedidos as List<Pedido>;
     var alertasInventarioIA = ViewBag.AlertasInventarioIA as List<AlertaInventarioIAViewModel>;
 
-    var nombresProductosJson = JsonSerializer.Serialize(ViewBag.NombresProductos);
-    var stockProductosJson = JsonSerializer.Serialize(ViewBag.StockProductos);
-    var ventasProductosJson = JsonSerializer.Serialize(ViewBag.VentasProductos);
+    object nombresProductosData = ViewBag.NombresProductos ?? new List<string>();
+    object stockProductosData = ViewBag.StockProductos ?? new List<int>();
+    object ventasProductosData = ViewBag.VentasProductos ?? new List<object>();
+
+    var nombresProductosJson = JsonSerializer.Serialize<object>(nombresProductosData);
+    var stockProductosJson = JsonSerializer.Serialize<object>(stockProductosData);
+    var ventasProductosJson = JsonSerializer.Serialize<object>(ventasProductosData);
 
     var fechaActual = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy");
 }

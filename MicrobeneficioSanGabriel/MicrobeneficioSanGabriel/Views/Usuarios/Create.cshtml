@@ -7,22 +7,61 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/VistaCrear.css" />
+
+    <style>
+        .password-input-wrapper {
+            position: relative;
+        }
+
+            .password-input-wrapper .form-control {
+                padding-right: 52px;
+            }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #9ca3af;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .password-toggle-btn:hover {
+                color: #7a5230;
+            }
+    </style>
 }
 
 <div class="VistaCrear-page">
+
     <div class="VistaCrear-top">
+
         <div class="VistaCrear-title">
+
             <span class="VistaCrear-badge">
-                Administración
+                Gestión de usuarios
             </span>
 
             <h1>Registrar usuario</h1>
+
             <p>
-                Creá una nueva cuenta para acceder al sistema administrativo.
+                Creá nuevas cuentas y asigná roles dentro del sistema.
             </p>
+
         </div>
 
     </div>
+
     <div class="VistaCrear-card">
 
         <div class="VistaCrear-side">
@@ -33,27 +72,28 @@
                     <i class="fa-solid fa-user-plus"></i>
                 </div>
 
-                <h2>Nuevo acceso</h2>
+                <h2>Usuarios</h2>
 
                 <p>
-                    Registrá usuarios con acceso seguro al sistema del
-                    Microbeneficio San Gabriel.
+                    Administrá accesos, roles y datos de contacto
+                    para el Microbeneficio San Gabriel.
                 </p>
+
                 <div class="VistaCrear-info">
 
                     <div class="VistaCrear-info-item">
                         <i class="fa-solid fa-shield-halved"></i>
-                        Seguridad avanzada
+                        Asignación de roles
                     </div>
 
                     <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-user-lock"></i>
-                        Control de roles
+                        <i class="fa-solid fa-envelope"></i>
+                        Acceso por correo
                     </div>
 
                     <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-database"></i>
-                        Gestión centralizada
+                        <i class="fa-solid fa-lock"></i>
+                        Seguridad de cuenta
                     </div>
 
                 </div>
@@ -61,6 +101,7 @@
             </div>
 
         </div>
+
         <div class="VistaCrear-form-container">
 
             <form asp-action="Create" method="post">
@@ -73,18 +114,60 @@
 
                     <div class="col-md-6">
 
-                        <label asp-for="Email"
+                        <label asp-for="Nombre"
                                class="form-label">
+                            Nombre
                         </label>
 
                         <div class="input-modern">
+                            <i class="fa-solid fa-user"></i>
 
+                            <input asp-for="Nombre"
+                                   class="form-control"
+                                   placeholder="Nombre del usuario" />
+                        </div>
+
+                        <span asp-validation-for="Nombre"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Apellidos"
+                               class="form-label">
+                            Apellidos
+                        </label>
+
+                        <div class="input-modern">
+                            <i class="fa-solid fa-user-tag"></i>
+
+                            <input asp-for="Apellidos"
+                                   class="form-control"
+                                   placeholder="Apellidos del usuario" />
+                        </div>
+
+                        <span asp-validation-for="Apellidos"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Email"
+                               class="form-label">
+                            Correo electrónico
+                        </label>
+
+                        <div class="input-modern">
                             <i class="fa-solid fa-envelope"></i>
 
                             <input asp-for="Email"
                                    class="form-control"
-                                   placeholder="usuario@correo.com" />
-
+                                   autocomplete="username"
+                                   placeholder="correo@ejemplo.com" />
                         </div>
 
                         <span asp-validation-for="Email"
@@ -92,20 +175,20 @@
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="PhoneNumber"
                                class="form-label">
+                            Teléfono
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-phone"></i>
 
                             <input asp-for="PhoneNumber"
                                    class="form-control"
                                    placeholder="8888-8888" />
-
                         </div>
 
                         <span asp-validation-for="PhoneNumber"
@@ -113,10 +196,12 @@
                         </span>
 
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-12">
 
                         <label asp-for="Rol"
                                class="form-label">
+                            Rol
                         </label>
 
                         <div class="input-modern">
@@ -125,13 +210,8 @@
                             <select asp-for="Rol"
                                     asp-items="Model.Roles"
                                     class="form-select">
-
-                                <option value="">
-                                    Seleccione un rol
-                                </option>
-
+                                <option value="">Seleccione un rol</option>
                             </select>
-
                         </div>
 
                         <span asp-validation-for="Rol"
@@ -139,19 +219,29 @@
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="Password"
                                class="form-label">
+                            Contraseña
                         </label>
 
-                        <div class="input-modern">
-
+                        <div class="input-modern password-input-wrapper">
                             <i class="fa-solid fa-lock"></i>
 
                             <input asp-for="Password"
-                                   class="form-control" />
+                                   id="usuarioPassword"
+                                   class="form-control"
+                                   autocomplete="new-password"
+                                   placeholder="Digite una contraseña" />
 
+                            <button type="button"
+                                    class="password-toggle-btn"
+                                    onclick="toggleUsuarioPassword('usuarioPassword', 'usuarioPasswordIcon')"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                <i id="usuarioPasswordIcon" class="fa-solid fa-eye"></i>
+                            </button>
                         </div>
 
                         <span asp-validation-for="Password"
@@ -159,47 +249,86 @@
                         </span>
 
                     </div>
-                    <div class="col-12">
+
+                    <div class="col-md-6">
 
                         <label asp-for="ConfirmPassword"
                                class="form-label">
+                            Confirmar contraseña
                         </label>
 
-                        <div class="input-modern">
-
+                        <div class="input-modern password-input-wrapper">
                             <i class="fa-solid fa-lock"></i>
 
                             <input asp-for="ConfirmPassword"
-                                   class="form-control" />
+                                   id="usuarioConfirmPassword"
+                                   class="form-control"
+                                   autocomplete="new-password"
+                                   placeholder="Confirme la contraseña" />
 
+                            <button type="button"
+                                    class="password-toggle-btn"
+                                    onclick="toggleUsuarioPassword('usuarioConfirmPassword', 'usuarioConfirmPasswordIcon')"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                <i id="usuarioConfirmPasswordIcon" class="fa-solid fa-eye"></i>
+                            </button>
                         </div>
 
                         <span asp-validation-for="ConfirmPassword"
                               class="text-danger">
                         </span>
+
                     </div>
+
                 </div>
+
                 <div class="VistaCrear-actions">
 
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-cancelar">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
                     <button type="submit"
                             class="btn-crear">
-
-                        <i class="fa-solid fa-user-plus"></i>
-
+                        <i class="fa-solid fa-floppy-disk"></i>
                         Registrar usuario
-
                     </button>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function toggleUsuarioPassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (!input || !icon) {
+                return;
+            }
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 }

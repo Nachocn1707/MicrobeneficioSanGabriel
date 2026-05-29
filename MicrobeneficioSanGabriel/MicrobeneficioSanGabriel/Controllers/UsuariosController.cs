@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -13,11 +14,11 @@ namespace MicrobeneficioSanGabriel.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailService _emailService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public UsuariosController(
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context,
             IEmailService emailService)
@@ -40,6 +41,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 lista.Add(new UsuarioListadoViewModel
                 {
                     Id = usuario.Id,
+                    Nombre = usuario.Nombre,
+                    Apellidos = usuario.Apellidos,
                     Email = usuario.Email ?? "",
                     UserName = usuario.UserName ?? "",
                     PhoneNumber = usuario.PhoneNumber,
@@ -69,6 +72,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             var model = new UsuarioListadoViewModel
             {
                 Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Apellidos = usuario.Apellidos,
                 Email = usuario.Email ?? "",
                 UserName = usuario.UserName ?? "",
                 PhoneNumber = usuario.PhoneNumber,
@@ -107,8 +112,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return View(model);
             }
 
-            var usuario = new IdentityUser
+            var usuario = new ApplicationUser
             {
+                Nombre = model.Nombre,
+                Apellidos = model.Apellidos,
                 UserName = model.Email,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
@@ -155,8 +162,10 @@ namespace MicrobeneficioSanGabriel.Controllers
             var model = new UsuarioEditarViewModel
             {
                 Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Apellidos = usuario.Apellidos,
                 Email = usuario.Email ?? "",
-                PhoneNumber = usuario.PhoneNumber,
+                PhoneNumber = usuario.PhoneNumber ?? "",
                 Rol = rolesUsuario.FirstOrDefault() ?? "",
                 Roles = await ObtenerRolesAsync()
             };
@@ -195,6 +204,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return View(model);
             }
 
+            usuario.Nombre = model.Nombre;
+            usuario.Apellidos = model.Apellidos;
             usuario.Email = model.Email;
             usuario.UserName = model.Email;
             usuario.PhoneNumber = model.PhoneNumber;
@@ -242,6 +253,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             var model = new UsuarioListadoViewModel
             {
                 Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Apellidos = usuario.Apellidos,
                 Email = usuario.Email ?? "",
                 UserName = usuario.UserName ?? "",
                 PhoneNumber = usuario.PhoneNumber,

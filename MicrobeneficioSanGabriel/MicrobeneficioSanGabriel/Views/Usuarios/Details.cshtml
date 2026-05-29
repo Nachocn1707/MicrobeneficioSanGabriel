@@ -3,10 +3,57 @@
 @{
     ViewData["Title"] = "Detalle de usuario";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string rolClase = Model.Rol switch
+    {
+        "Administrador" => "usuario-rol usuario-rol-admin",
+        "Cliente" => "usuario-rol usuario-rol-cliente",
+        "Vendedor" => "usuario-rol usuario-rol-vendedor",
+        "Operador" => "usuario-rol usuario-rol-operador",
+        _ => "usuario-rol usuario-rol-otro"
+    };
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+
+    <style>
+        .usuario-rol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 950;
+            width: fit-content;
+        }
+
+        .usuario-rol-admin {
+            background: #e9e0ff;
+            color: #5636a3;
+        }
+
+        .usuario-rol-cliente {
+            background: #dff5e3;
+            color: #1e7d32;
+        }
+
+        .usuario-rol-vendedor {
+            background: #fff4d3;
+            color: #8a6500;
+        }
+
+        .usuario-rol-operador {
+            background: #dff6fd;
+            color: #0369a1;
+        }
+
+        .usuario-rol-otro {
+            background: #e9ecef;
+            color: #495057;
+        }
+    </style>
 }
 
 <div class="EstiloDetalle-detalle-page">
@@ -19,7 +66,7 @@
     <div class="EstiloDetalle-card">
 
         <div class="EstiloDetalle-card-header">
-            <h2>@Model.UserName</h2>
+            <h2>@Model.NombreCompleto</h2>
             <span>Microbeneficio San Gabriel</span>
         </div>
 
@@ -28,29 +75,70 @@
             <div class="detalle-grid">
 
                 <div class="detalle-item">
-                    <span class="detalle-label">Correo</span>
-                    <span class="detalle-value">@Model.Email</span>
-                </div>
+                    <span class="detalle-label">
+                        Nombre
+                    </span>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">Usuario</span>
-                    <span class="detalle-value">@Model.UserName</span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">Teléfono</span>
                     <span class="detalle-value">
-                        @(Model.PhoneNumber ?? "Sin teléfono")
+                        @(string.IsNullOrWhiteSpace(Model.Nombre)
+                            ? "Sin nombre"
+                            : Model.Nombre)
                     </span>
                 </div>
 
                 <div class="detalle-item">
-                    <span class="detalle-label">Rol</span>
+                    <span class="detalle-label">
+                        Apellidos
+                    </span>
 
                     <span class="detalle-value">
-                        <span class="estado-activo">
-                            @Model.Rol
-                        </span>
+                        @(string.IsNullOrWhiteSpace(Model.Apellidos)
+                            ? "Sin apellidos"
+                            : Model.Apellidos)
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Correo electrónico
+                    </span>
+
+                    <span class="detalle-value">
+                        @Model.Email
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Usuario
+                    </span>
+
+                    <span class="detalle-value">
+                        @(string.IsNullOrWhiteSpace(Model.UserName)
+                            ? "Sin usuario"
+                            : Model.UserName)
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Teléfono
+                    </span>
+
+                    <span class="detalle-value">
+                        @(string.IsNullOrWhiteSpace(Model.PhoneNumber)
+                            ? "Sin teléfono"
+                            : Model.PhoneNumber)
+                    </span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label">
+                        Rol
+                    </span>
+
+                    <span class="@rolClase">
+                        @Model.Rol
                     </span>
                 </div>
 
@@ -59,16 +147,22 @@
             <div class="EstiloDetalle-actions">
 
                 <a asp-action="Index"
-                   class="btn-volver">
+                       class="btn-volver">
+                    <i class="fa-solid fa-arrow-left"></i>
                     Volver a la lista
                 </a>
 
                 <a asp-action="Edit"
-                   asp-route-id="@Model.Id"
-                   class="btn-editar">
+                       asp-route-id="@Model.Id"
+                       class="btn-editar">
+                    <i class="fa-solid fa-pen-to-square"></i>
                     Editar
                 </a>
+
             </div>
+
         </div>
+
     </div>
+
 </div>

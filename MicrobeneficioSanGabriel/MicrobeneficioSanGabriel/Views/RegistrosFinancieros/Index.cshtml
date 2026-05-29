@@ -3,149 +3,614 @@
 @{
     ViewData["Title"] = "Contabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    decimal totalIngresos = 0;
+    decimal totalGastos = 0;
+    decimal balance = 0;
+
+    if (ViewBag.TotalIngresos != null)
+    {
+        totalIngresos = Convert.ToDecimal(ViewBag.TotalIngresos);
+    }
+
+    if (ViewBag.TotalGastos != null)
+    {
+        totalGastos = Convert.ToDecimal(ViewBag.TotalGastos);
+    }
+
+    if (ViewBag.Balance != null)
+    {
+        balance = Convert.ToDecimal(ViewBag.Balance);
+    }
+
+    string fechaInicio = ViewBag.FechaInicio != null ? Convert.ToString(ViewBag.FechaInicio) : "";
+    string fechaFin = ViewBag.FechaFin != null ? Convert.ToString(ViewBag.FechaFin) : "";
+    string tipoFiltro = ViewBag.Tipo != null ? Convert.ToString(ViewBag.Tipo) : "";
+
+    int totalRegistros = Model.Count();
+    int totalIngresosCantidad = Model.Count(r => r.Tipo == "Ingreso");
+    int totalGastosCantidad = Model.Count(r => r.Tipo == "Gasto");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="admin-title">Contabilidad</h1>
-        <p class="admin-subtitle">Control de ingresos, gastos y balance financiero del microbeneficio.</p>
-        <div class="d-flex gap-2">
+@section Styles {
+    <style>
+        .finanzas-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 10px;
+        }
+
+        .finanzas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+            .finanzas-header h1 {
+                font-size: 2.35rem;
+                font-weight: 950;
+                margin: 0;
+                color: #2b160d;
+            }
+
+        .finanzas-title-line {
+            width: 76px;
+            height: 4px;
+            background: #d8b36a;
+            border-radius: 999px;
+            margin: 12px 0;
+        }
+
+        .finanzas-header p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .finanzas-header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn-finanzas {
+            border: none;
+            border-radius: 13px;
+            padding: 11px 18px;
+            font-weight: 900;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.18s ease;
+        }
+
+            .btn-finanzas:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-finanzas-excel {
+            background: #198754;
+            color: #fff;
+            box-shadow: 0 12px 28px rgba(25, 135, 84, 0.18);
+        }
+
+            .btn-finanzas-excel:hover {
+                background: #157347;
+                color: #fff;
+            }
+
+        .btn-finanzas-nuevo {
+            background: #4a2c1a;
+            color: #fff8df;
+            box-shadow: 0 12px 28px rgba(74, 44, 26, 0.18);
+        }
+
+            .btn-finanzas-nuevo:hover {
+                background: #7a5230;
+                color: #fff8df;
+            }
+
+        .finanzas-alert {
+            border: none;
+            border-radius: 18px;
+            padding: 15px 18px;
+            font-weight: 750;
+            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.08);
+        }
+
+        .finanzas-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .finanzas-summary-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 16px 36px rgba(58, 33, 20, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .finanzas-summary-card::after {
+                content: "";
+                position: absolute;
+                right: -32px;
+                bottom: -36px;
+                width: 110px;
+                height: 110px;
+                background: rgba(243, 210, 122, 0.22);
+                border-radius: 50%;
+            }
+
+        .finanzas-summary-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: #fff2d5;
+            color: #a66b20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 13px;
+            font-size: 18px;
+        }
+
+        .finanzas-summary-label {
+            color: #7a6a5d;
+            font-weight: 850;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .finanzas-summary-value {
+            color: #2b160d;
+            font-size: 1.45rem;
+            font-weight: 950;
+            line-height: 1.15;
+        }
+
+            .finanzas-summary-value.success {
+                color: #1e7d32;
+            }
+
+            .finanzas-summary-value.danger {
+                color: #b42318;
+            }
+
+        .finanzas-filter-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 24px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            padding: 22px;
+        }
+
+            .finanzas-filter-card label {
+                color: #2b160d;
+                font-weight: 900;
+                margin-bottom: 8px;
+            }
+
+            .finanzas-filter-card .form-control,
+            .finanzas-filter-card .form-select {
+                min-height: 48px;
+                border-radius: 14px;
+                border: 1px solid #d8dee8;
+                font-weight: 700;
+            }
+
+                .finanzas-filter-card .form-control:focus,
+                .finanzas-filter-card .form-select:focus {
+                    border-color: #d8b36a;
+                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
+                }
+
+        .finanzas-table-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 24px;
+            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
+            padding: 18px;
+            overflow: hidden;
+        }
+
+            .finanzas-table-card table {
+                margin-bottom: 0;
+            }
+
+                .finanzas-table-card table thead th {
+                    background: #1f2937 !important;
+                    color: #fff !important;
+                    border: none !important;
+                    padding: 15px 14px !important;
+                    font-weight: 900;
+                    vertical-align: middle;
+                }
+
+                    .finanzas-table-card table thead th:first-child {
+                        border-top-left-radius: 13px;
+                    }
+
+                    .finanzas-table-card table thead th:last-child {
+                        border-top-right-radius: 13px;
+                    }
+
+                .finanzas-table-card table tbody td {
+                    padding: 16px 14px !important;
+                    vertical-align: middle;
+                    border-bottom: 1px solid #ece2cf;
+                }
+
+                .finanzas-table-card table tbody tr:hover {
+                    background: rgba(243, 210, 122, 0.12);
+                }
+
+        .finanzas-categoria {
+            font-weight: 850;
+            color: #2b160d;
+        }
+
+        .finanzas-descripcion,
+        .finanzas-observacion {
+            color: #5f5147;
+            font-weight: 650;
+            line-height: 1.35;
+            max-width: 280px;
+        }
+
+        .finanzas-monto {
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+            .finanzas-monto.ingreso {
+                color: #1e7d32;
+            }
+
+            .finanzas-monto.gasto {
+                color: #b42318;
+            }
+
+        .finanzas-tipo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.8rem;
+            font-weight: 950;
+            white-space: nowrap;
+        }
+
+        .finanzas-tipo-ingreso {
+            background: #dff5e3;
+            color: #1e7d32;
+        }
+
+        .finanzas-tipo-gasto {
+            background: #fde1df;
+            color: #b42318;
+        }
+
+        .finanzas-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+            .finanzas-actions .btn {
+                border-radius: 10px;
+                font-weight: 850;
+                padding: 8px 11px;
+                white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 15px;
+            color: #2b160d;
+            font-weight: 700;
+        }
+
+            .dataTables_wrapper .dataTables_filter input,
+            .dataTables_wrapper .dataTables_length select {
+                border: 1px solid #d9c8ab;
+                border-radius: 10px;
+                padding: 7px 10px;
+                background: white;
+            }
+
+        .dataTables_wrapper .dataTables_info {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin-top: 14px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 14px;
+        }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                border-radius: 10px !important;
+            }
+
+        @@media (max-width: 1200px) {
+            .finanzas-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .finanzas-header {
+                flex-direction: column;
+            }
+
+            .finanzas-header-actions {
+                justify-content: flex-start;
+            }
+
+            .finanzas-summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<div class="finanzas-page">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show finanzas-alert">
+            <i class="fa-solid fa-circle-check me-2"></i>
+            @TempData["Success"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <div class="finanzas-header">
+        <div>
+            <h1>Contabilidad</h1>
+            <div class="finanzas-title-line"></div>
+            <p>
+                Control de ingresos, gastos y balance financiero del microbeneficio.
+            </p>
+        </div>
+
+        <div class="finanzas-header-actions">
             <a asp-action="ExportarExcel"
-                   asp-route-fechaInicio="@ViewBag.FechaInicio"
-                   asp-route-fechaFin="@ViewBag.FechaFin"
-                   asp-route-tipo="@ViewBag.Tipo"
-                   class="btn btn-success">
+                   asp-route-fechaInicio="@fechaInicio"
+                   asp-route-fechaFin="@fechaFin"
+                   asp-route-tipo="@tipoFiltro"
+                   class="btn-finanzas btn-finanzas-excel">
+                <i class="fa-solid fa-file-excel"></i>
                 Exportar a Excel
             </a>
-            <a asp-action="Create" class="btn btn-admin-primary">
-                + Nuevo registro
+
+            <a asp-action="Create" class="btn-finanzas btn-finanzas-nuevo">
+                <i class="fa-solid fa-plus"></i>
+                Nuevo registro
             </a>
         </div>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="admin-card">
-            <h5 class="fw-bold">Ingresos</h5>
-            <h2 class="text-success">₡ @ViewBag.TotalIngresos.ToString("N2")</h2>
-        </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="admin-card">
-            <h5 class="fw-bold">Gastos</h5>
-            <h2 class="text-danger">₡ @ViewBag.TotalGastos.ToString("N2")</h2>
+    <section class="finanzas-summary-grid">
+
+        <div class="finanzas-summary-card">
+            <div class="finanzas-summary-icon">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="finanzas-summary-label">Registros</div>
+            <div class="finanzas-summary-value">@totalRegistros</div>
         </div>
+
+        <div class="finanzas-summary-card">
+            <div class="finanzas-summary-icon">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <div class="finanzas-summary-label">Ingresos (@totalIngresosCantidad)</div>
+            <div class="finanzas-summary-value success">₡ @totalIngresos.ToString("N2")</div>
+        </div>
+
+        <div class="finanzas-summary-card">
+            <div class="finanzas-summary-icon">
+                <i class="fa-solid fa-arrow-trend-down"></i>
+            </div>
+            <div class="finanzas-summary-label">Gastos (@totalGastosCantidad)</div>
+            <div class="finanzas-summary-value danger">₡ @totalGastos.ToString("N2")</div>
+        </div>
+
+        <div class="finanzas-summary-card">
+            <div class="finanzas-summary-icon">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div class="finanzas-summary-label">Balance</div>
+            <div class="finanzas-summary-value @(balance >= 0 ? "success" : "danger")">
+                ₡ @balance.ToString("N2")
+            </div>
+        </div>
+
+    </section>
+
+    <div class="finanzas-filter-card">
+        <form asp-action="Index" method="get" class="row g-3 align-items-end">
+
+            <div class="col-md-3">
+                <label class="form-label">Fecha inicio</label>
+                <input type="date"
+                       name="fechaInicio"
+                       value="@fechaInicio"
+                       class="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Fecha fin</label>
+                <input type="date"
+                       name="fechaFin"
+                       value="@fechaFin"
+                       class="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Tipo</label>
+                <select name="tipo" class="form-select">
+                    <option value="">Todos</option>
+
+                    @if (tipoFiltro == "Ingreso")
+                    {
+                        <option value="Ingreso" selected>Ingreso</option>
+                    }
+                    else
+                    {
+                        <option value="Ingreso">Ingreso</option>
+                    }
+
+                    @if (tipoFiltro == "Gasto")
+                    {
+                        <option value="Gasto" selected>Gasto</option>
+                    }
+                    else
+                    {
+                        <option value="Gasto">Gasto</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa-solid fa-filter"></i>
+                    Filtrar
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary w-100">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Limpiar
+                </a>
+            </div>
+
+        </form>
     </div>
 
-    <div class="col-md-4">
-        <div class="admin-card">
-            <h5 class="fw-bold">Balance</h5>
-            <h2 class="@(ViewBag.Balance >= 0 ? "text-success" : "text-danger")">
-                ₡ @ViewBag.Balance.ToString("N2")
-            </h2>
-        </div>
-    </div>
-</div>
+    <div class="finanzas-table-card">
 
-<div class="admin-card mb-4">
-    <form asp-action="Index" method="get" class="row g-3 align-items-end">
-        <div class="col-md-3">
-            <label class="form-label fw-semibold">Fecha inicio</label>
-            <input type="date" name="fechaInicio" value="@ViewBag.FechaInicio" class="form-control" />
-        </div>
+        <div class="table-responsive">
 
-        <div class="col-md-3">
-            <label class="form-label fw-semibold">Fecha fin</label>
-            <input type="date" name="fechaFin" value="@ViewBag.FechaFin" class="form-control" />
-        </div>
+            <table id="tablaContabilidad" class="table align-middle">
 
-        <div class="col-md-3">
-            <label class="form-label fw-semibold">Tipo</label>
-            <select name="tipo" class="form-select">
-                <option value="">Todos</option>
-                <option value="Ingreso" selected="@(ViewBag.Tipo == "Ingreso")">Ingreso</option>
-                <option value="Gasto" selected="@(ViewBag.Tipo == "Gasto")">Gasto</option>
-            </select>
-        </div>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th>Monto</th>
+                        <th>Observación</th>
+                        <th class="text-end" width="280">Acciones</th>
+                    </tr>
+                </thead>
 
-        <div class="col-md-3 d-flex gap-2">
-            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
-            <a asp-action="Index" class="btn btn-secondary w-100">Limpiar</a>
-        </div>
-    </form>
-</div>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        bool esIngreso = item.Tipo == "Ingreso";
 
-<div class="admin-card">
-    <div class="table-responsive">
-        <table id="tablaContabilidad" class="table admin-table align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Fecha</th>
-                    <th>Tipo</th>
-                    <th>Categoría</th>
-                    <th>Descripción</th>
-                    <th>Monto</th>
-                    <th>Observación</th>
-                    <th class="text-end">Acciones</th>
-                </tr>
-            </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                                <td>
-                                    @if (item.Tipo == "Ingreso")
-                                    {
-                                        <span class="badge bg-success">Ingreso</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">Gasto</span>
-                                    }
+                        string tipoClase = esIngreso
+                            ? "finanzas-tipo finanzas-tipo-ingreso"
+                            : "finanzas-tipo finanzas-tipo-gasto";
 
-                                </td>
+                        string montoClase = esIngreso
+                            ? "finanzas-monto ingreso"
+                            : "finanzas-monto gasto";
 
-                                <td>@(item.Categoria ?? "Sin categoría")</td>
-                                <td>@item.Descripcion</td>
-                                <td>₡ @item.Monto.ToString("N2")</td>
-                                <td>@(item.Observacion ?? "Sin observación")</td>
-                                <td class="text-end">
+                        <tr>
+                            <td>
+                                @item.Fecha.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>
+                                <span class="@tipoClase">
+                                    @item.Tipo
+                                </span>
+                            </td>
+
+                            <td class="finanzas-categoria">
+                                @(string.IsNullOrWhiteSpace(item.Categoria)
+                                    ? "Sin categoría"
+                                    : item.Categoria)
+                            </td>
+
+                            <td class="finanzas-descripcion">
+                                @(string.IsNullOrWhiteSpace(item.Descripcion)
+                                    ? "Sin descripción"
+                                    : item.Descripcion)
+                            </td>
+
+                            <td class="@montoClase">
+                                ₡ @item.Monto.ToString("N2")
+                            </td>
+
+                            <td class="finanzas-observacion">
+                                @(string.IsNullOrWhiteSpace(item.Observacion)
+                                    ? "Sin observación"
+                                    : item.Observacion)
+                            </td>
+
+                            <td>
+                                <div class="finanzas-actions">
 
                                     @if (User.IsInRole("Administrador"))
                                     {
                                         <a asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-warning btn-sm">
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                             Editar
                                         </a>
                                     }
 
                                     <a asp-action="Details"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-info btn-sm">
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm text-white">
+                                        <i class="fa-solid fa-eye"></i>
                                         Detalles
                                     </a>
 
                                     @if (User.IsInRole("Administrador"))
                                     {
                                         <a asp-action="Delete"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-danger btn-sm">
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i>
                                             Eliminar
                                         </a>
                                     }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-        </table>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
+
 </div>
 
 @section Scripts {
@@ -156,7 +621,7 @@
                     url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
                 },
                 pageLength: 5,
-                lengthMenu: [5, 10, 15, 20] ,
+                lengthMenu: [5, 10, 15, 20],
                 responsive: true
             });
         });

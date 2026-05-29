@@ -13,8 +13,11 @@
 
 <h1 class="fw-bold">Reportes</h1>
 
-<p class="text-muted mb-4">Resumen general de información operativa y administrativa.</p>
-<form method="get" class="row g-3 mb-4">
+<p class="text-muted mb-4">
+    Resumen general de información operativa y administrativa.
+</p>
+
+<form method="get" asp-action="Index" class="row g-3 mb-4">
 
     <div class="col-md-3">
         <label class="form-label fw-bold">
@@ -38,27 +41,34 @@
                class="form-control" />
     </div>
 
-    <div class="col-md-3 d-flex align-items-end">
+    <div class="col-md-2 d-flex align-items-end">
         <button type="submit"
                 class="btn btn-primary w-100">
-            Filtrar reportes
+            <i class="fa-solid fa-filter"></i>
+            Filtrar
         </button>
     </div>
 
-    <div class="col-md-3 d-flex align-items-end">
+    <div class="col-md-2 d-flex align-items-end">
+        <a asp-action="Index"
+               class="btn btn-secondary w-100">
+            <i class="fa-solid fa-rotate-left"></i>
+            Limpiar
+        </a>
+    </div>
 
+    <div class="col-md-2 d-flex align-items-end">
         <a asp-action="ExportarExcel"
                asp-route-fechaInicio="@ViewBag.FechaInicio"
                asp-route-fechaFin="@ViewBag.FechaFin"
                class="btn btn-success w-100">
-
-            Exportar Excel
-
+            <i class="fa-solid fa-file-excel"></i>
+            Excel
         </a>
-
     </div>
 
 </form>
+
 <div class="row g-4 mb-4">
 
     <div class="col-md-3">
@@ -96,6 +106,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Ventas totales</h5>
+
             <h2 class="text-success fw-bold">
                 ₡ @totalVentas.ToString("N2")
             </h2>
@@ -105,6 +116,7 @@
     <div class="col-md-6">
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Stock total disponible</h5>
+
             <h2 class="fw-bold">
                 @totalStock unidades
             </h2>
@@ -114,6 +126,7 @@
     <div class="col-md-4">
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Pedidos pendientes</h5>
+
             <h2 class="text-warning fw-bold">
                 @pedidosPendientes
             </h2>
@@ -123,6 +136,7 @@
     <div class="col-md-4">
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Facturas pendientes</h5>
+
             <h2 class="text-danger fw-bold">
                 @facturasPendientes
             </h2>
@@ -132,6 +146,7 @@
     <div class="col-md-4">
         <div class="card border-0 shadow-sm rounded-4 p-4">
             <h5 class="fw-bold">Productos con stock bajo</h5>
+
             <h2 class="text-danger fw-bold">
                 @productosStockBajo
             </h2>
@@ -144,13 +159,18 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm border-0 rounded-4 p-4">
-            <h4 class="mb-4 fw-bold">Ventas totales</h4>
+
+            <h4 class="mb-4 fw-bold">
+                Ventas totales
+            </h4>
 
             <div class="progress" style="height: 35px;">
                 <div class="progress-bar bg-success"
                      role="progressbar"
                      style="width: 100%;">
+
                     ₡ @totalVentas.ToString("N2")
+
                 </div>
             </div>
 

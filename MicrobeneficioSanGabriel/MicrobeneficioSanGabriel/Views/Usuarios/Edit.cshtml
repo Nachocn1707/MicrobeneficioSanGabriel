@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-
 @section Styles {
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
@@ -14,7 +13,7 @@
 
     <div class="EstiloEditar-header">
         <h1>Editar usuario</h1>
-        <p>Actualizar información básica y rol del usuario.</p>
+        <p>Actualizá la información básica y el rol del usuario.</p>
     </div>
 
     <div class="EstiloEditar-card">
@@ -23,6 +22,7 @@
             <h2>@Model.Email</h2>
             <span>Microbeneficio San Gabriel</span>
         </div>
+
         <div class="EstiloEditar-card-body">
 
             <form asp-action="Edit" method="post">
@@ -34,37 +34,81 @@
                 <input type="hidden" asp-for="Id" />
 
                 <div class="row g-4">
+
                     <div class="col-md-6">
+
+                        <label asp-for="Nombre"
+                               class="form-label">
+                            Nombre
+                        </label>
+
+                        <input asp-for="Nombre"
+                               class="form-control"
+                               placeholder="Nombre del usuario" />
+
+                        <span asp-validation-for="Nombre"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Apellidos"
+                               class="form-label">
+                            Apellidos
+                        </label>
+
+                        <input asp-for="Apellidos"
+                               class="form-control"
+                               placeholder="Apellidos del usuario" />
+
+                        <span asp-validation-for="Apellidos"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
                         <label asp-for="Email"
                                class="form-label">
+                            Correo
                         </label>
 
                         <input asp-for="Email"
-                               class="form-control" />
+                               class="form-control"
+                               autocomplete="username"
+                               placeholder="correo@ejemplo.com" />
 
                         <span asp-validation-for="Email"
                               class="text-danger">
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="PhoneNumber"
                                class="form-label">
+                            Teléfono
                         </label>
 
                         <input asp-for="PhoneNumber"
-                               class="form-control" />
+                               class="form-control"
+                               placeholder="8888-8888" />
 
                         <span asp-validation-for="PhoneNumber"
                               class="text-danger">
                         </span>
 
                     </div>
+
                     <div class="col-12">
 
                         <label asp-for="Rol"
                                class="form-label">
+                            Rol
                         </label>
 
                         <select asp-for="Rol"
@@ -80,25 +124,33 @@
                         <span asp-validation-for="Rol"
                               class="text-danger">
                         </span>
+
                     </div>
+
                 </div>
 
                 <div class="EstiloEditar-actions">
 
                     <a asp-action="Index"
-                       class="btn-volver">
+                           class="btn-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver a la lista
                     </a>
 
                     <button type="submit"
                             class="btn-guardar">
+                        <i class="fa-solid fa-floppy-disk"></i>
                         Guardar cambios
                     </button>
 
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {

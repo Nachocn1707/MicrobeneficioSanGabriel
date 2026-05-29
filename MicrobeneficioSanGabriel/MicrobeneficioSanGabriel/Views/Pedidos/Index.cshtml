@@ -311,10 +311,14 @@
             }
         </div>
 
-        <a asp-action="Create" class="btn-nuevo-pedido">
-            <i class="fa-solid fa-plus"></i>
-            Nuevo Pedido
-        </a>
+        @if (User.IsInRole("Administrador") || User.IsInRole("Cliente"))
+        {
+            <a asp-action="Create" class="btn-nuevo-pedido">
+                <i class="fa-solid fa-plus"></i>
+                Nuevo Pedido
+            </a>
+        }
+
     </div>
 
     <section class="pedidos-summary-grid">
@@ -479,11 +483,11 @@
                                     }
                                     else if (User.IsInRole("Vendedor"))
                                     {
-                                        <a asp-action="Details"
+                                        <a asp-action="CambiarEstado"
                                                asp-route-id="@item.Id"
-                                               class="btn btn-info btn-sm text-white">
-                                            <i class="fa-solid fa-eye"></i>
-                                            Detalles
+                                               class="btn btn-warning btn-sm">
+                                            <i class="fa-solid fa-rotate"></i>
+                                            Cambiar estado
                                         </a>
                                     }
 

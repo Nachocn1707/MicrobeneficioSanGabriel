@@ -2,24 +2,27 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Encodings.Web;
+
 
 
 namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
 {
     public class ForgotPasswordModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
 
-        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailService emailService)
+        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
             _userManager = userManager;
             _emailService = emailService;

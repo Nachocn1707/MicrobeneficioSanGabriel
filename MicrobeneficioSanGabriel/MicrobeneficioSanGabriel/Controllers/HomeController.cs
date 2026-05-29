@@ -7,18 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
+
 namespace MicrobeneficioSanGabriel.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly IAnalisisInventarioIAService _analisisInventarioIAService;
 
         public HomeController(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<HomeController> logger,
             IAnalisisInventarioIAService analisisInventarioIAService)
         {

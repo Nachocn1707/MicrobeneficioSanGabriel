@@ -241,7 +241,7 @@
                 <div class="VistaCrear-actions">
 
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-cancelar">
                         Volver
                     </a>
 
@@ -262,5 +262,7 @@
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

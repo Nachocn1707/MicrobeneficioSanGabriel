@@ -1,4 +1,5 @@
 using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,6 @@ using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -17,7 +17,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequireDigit = true;
@@ -40,7 +40,6 @@ builder.Services.AddScoped<IAnalisisInventarioIAService, AnalisisInventarioIASer
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();

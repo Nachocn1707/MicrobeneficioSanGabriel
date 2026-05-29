@@ -3,10 +3,32 @@
 @{
     ViewData["Title"] = "Detalle financiero";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    bool esIngreso = Model.Tipo == "Ingreso";
+
+    string estadoClase = esIngreso
+        ? "estado-activo"
+        : "estado-inactivo";
+
+    string montoClase = esIngreso
+        ? "detalle-monto-ingreso"
+        : "detalle-monto-gasto";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+
+    <style>
+        .detalle-monto-ingreso {
+            color: #1e7d32;
+            font-weight: 950;
+        }
+
+        .detalle-monto-gasto {
+            color: #b42318;
+            font-weight: 950;
+        }
+    </style>
 }
 
 <div class="EstiloDetalle-detalle-page">
@@ -24,6 +46,7 @@
         </div>
 
         <div class="EstiloDetalle-card-body">
+
             <div class="detalle-grid">
 
                 <div class="detalle-item">
@@ -41,18 +64,9 @@
                         Tipo
                     </span>
 
-                    @if (Model.Tipo == "Ingreso")
-                    {
-                        <span class="estado-activo">
-                            Ingreso
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="estado-inactivo">
-                            Gasto
-                        </span>
-                    }
+                    <span class="@estadoClase">
+                        @Model.Tipo
+                    </span>
                 </div>
 
                 <div class="detalle-item">
@@ -61,7 +75,9 @@
                     </span>
 
                     <span class="detalle-value">
-                        @(Model.Categoria ?? "Sin categoría")
+                        @(string.IsNullOrWhiteSpace(Model.Categoria)
+                            ? "Sin categoría"
+                            : Model.Categoria)
                     </span>
                 </div>
 
@@ -70,7 +86,7 @@
                         Monto
                     </span>
 
-                    <span class="detalle-value">
+                    <span class="@montoClase">
                         ₡ @Model.Monto.ToString("N2")
                     </span>
                 </div>
@@ -81,7 +97,9 @@
                     </span>
 
                     <span class="detalle-value">
-                        @Model.Descripcion
+                        @(string.IsNullOrWhiteSpace(Model.Descripcion)
+                            ? "Sin descripción"
+                            : Model.Descripcion)
                     </span>
                 </div>
 
@@ -91,27 +109,36 @@
                     </span>
 
                     <span class="detalle-value">
-                        @(Model.Observacion ?? "Sin observación")
+                        @(string.IsNullOrWhiteSpace(Model.Observacion)
+                            ? "Sin observación"
+                            : Model.Observacion)
                     </span>
                 </div>
 
             </div>
+
             <div class="EstiloDetalle-actions">
 
                 <a asp-action="Index"
-                   class="btn-volver">
+                       class="btn-volver">
+                    <i class="fa-solid fa-arrow-left"></i>
                     Volver a la lista
                 </a>
 
                 @if (User.IsInRole("Administrador"))
                 {
                     <a asp-action="Edit"
-                       asp-route-id="@Model.Id"
-                       class="btn-editar">
+                           asp-route-id="@Model.Id"
+                           class="btn-editar">
+                        <i class="fa-solid fa-pen-to-square"></i>
                         Editar
                     </a>
                 }
+
             </div>
+
         </div>
+
     </div>
+
 </div>

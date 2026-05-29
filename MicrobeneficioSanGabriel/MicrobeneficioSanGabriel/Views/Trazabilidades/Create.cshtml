@@ -1,7 +1,7 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Trazabilidad
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nueva trazabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -22,13 +22,13 @@
             <h1>Nueva trazabilidad</h1>
 
             <p>
-                Registrá el seguimiento y control de los lotes
-                dentro del proceso de producción.
+                Registrá el seguimiento y control de los lotes dentro del proceso de producción.
             </p>
 
         </div>
 
     </div>
+
     <div class="VistaCrear-card">
 
         <div class="VistaCrear-side">
@@ -42,14 +42,14 @@
                 <h2>Seguimiento</h2>
 
                 <p>
-                    Controlá las etapas, responsables y registros
-                    de producción para mantener la trazabilidad.
+                    Controlá las etapas, responsables y registros de producción
+                    para mantener la trazabilidad completa del café.
                 </p>
 
                 <div class="VistaCrear-info">
 
                     <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-box"></i>
+                        <i class="fa-solid fa-layer-group"></i>
                         Seguimiento de lotes
                     </div>
 
@@ -68,9 +68,10 @@
             </div>
 
         </div>
+
         <div class="VistaCrear-form-container">
 
-            <form asp-action="Create">
+            <form asp-action="Create" method="post">
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-4">
@@ -82,15 +83,17 @@
 
                         <label asp-for="LoteId"
                                class="form-label">
+                            Lote
                         </label>
 
                         <div class="input-modern">
 
-                            <i class="fa-solid fa-box"></i>
+                            <i class="fa-solid fa-layer-group"></i>
 
                             <select asp-for="LoteId"
                                     class="form-select"
                                     asp-items="ViewBag.LoteId">
+                                <option value="">Seleccione un lote</option>
                             </select>
 
                         </div>
@@ -100,10 +103,12 @@
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="ProduccionId"
                                class="form-label">
+                            Producción asociada
                         </label>
 
                         <div class="input-modern">
@@ -113,6 +118,7 @@
                             <select asp-for="ProduccionId"
                                     class="form-select"
                                     asp-items="ViewBag.ProduccionId">
+                                <option value="">Seleccione una producción</option>
                             </select>
 
                         </div>
@@ -122,18 +128,28 @@
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="Etapa"
                                class="form-label">
+                            Etapa
                         </label>
 
                         <div class="input-modern">
 
                             <i class="fa-solid fa-diagram-project"></i>
 
-                            <input asp-for="Etapa"
-                                   class="form-control" />
+                            <select asp-for="Etapa"
+                                    class="form-select">
+                                <option value="">Seleccione una etapa</option>
+                                <option value="Recepción">Recepción</option>
+                                <option value="Producción">Producción</option>
+                                <option value="Secado">Secado</option>
+                                <option value="Tostado">Tostado</option>
+                                <option value="Molido">Molido</option>
+                                <option value="Empaque">Empaque</option>
+                            </select>
 
                         </div>
 
@@ -142,17 +158,20 @@
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="FechaRegistro"
                                class="form-label">
+                            Fecha de registro
                         </label>
 
                         <div class="input-modern">
 
-                            <i class="fa-solid fa-calendar"></i>
+                            <i class="fa-solid fa-calendar-days"></i>
 
                             <input asp-for="FechaRegistro"
+                                   type="datetime-local"
                                    class="form-control" />
 
                         </div>
@@ -162,18 +181,21 @@
                         </span>
 
                     </div>
+
                     <div class="col-md-6">
 
                         <label asp-for="Responsable"
                                class="form-label">
+                            Responsable
                         </label>
 
                         <div class="input-modern">
 
-                            <i class="fa-solid fa-user"></i>
+                            <i class="fa-solid fa-user-check"></i>
 
                             <input asp-for="Responsable"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="Nombre del responsable" />
 
                         </div>
 
@@ -182,18 +204,22 @@
                         </span>
 
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-12">
 
                         <label asp-for="Observacion"
                                class="form-label">
+                            Observación
                         </label>
 
                         <div class="input-modern">
 
                             <i class="fa-solid fa-comment"></i>
 
-                            <input asp-for="Observacion"
-                                   class="form-control" />
+                            <textarea asp-for="Observacion"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Detalle adicional del seguimiento"></textarea>
 
                         </div>
 
@@ -204,10 +230,12 @@
                     </div>
 
                 </div>
+
                 <div class="VistaCrear-actions">
 
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-cancelar">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
@@ -215,17 +243,22 @@
                             class="btn-crear">
 
                         <i class="fa-solid fa-floppy-disk"></i>
-
                         Registrar trazabilidad
 
                     </button>
 
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

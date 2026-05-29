@@ -1,118 +1,490 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Lote
 
 @{
-    ViewData["Title"] = "Detalles de los lotes";
+    ViewData["Title"] = "Detalle del lote";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string estadoClase = Model.Estado switch
+    {
+        "Recibido" => "lote-estado lote-estado-recibido",
+        "En proceso" => "lote-estado lote-estado-proceso",
+        "Finalizado" => "lote-estado lote-estado-finalizado",
+        "Cancelado" => "lote-estado lote-estado-cancelado",
+        _ => "lote-estado lote-estado-neutral"
+    };
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+    <style>
+        .lote-detalle-page {
+            display: grid;
+            gap: 24px;
+            padding-top: 14px;
+        }
+
+        .lote-detalle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .lote-detalle-title h1 {
+            font-size: 2.4rem;
+            font-weight: 950;
+            margin: 0;
+            color: #2b160d;
+        }
+
+        .lote-detalle-line {
+            width: 78px;
+            height: 4px;
+            border-radius: 999px;
+            background: #d8b36a;
+            margin: 12px 0;
+        }
+
+        .lote-detalle-title p {
+            color: #6f5b4a;
+            font-weight: 650;
+            margin: 0;
+        }
+
+        .lote-status-top {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 18px;
+            padding: 14px 18px;
+            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.08);
+            min-width: 190px;
+            text-align: center;
+        }
+
+            .lote-status-top small {
+                display: block;
+                color: #7a6a5d;
+                font-weight: 800;
+                margin-bottom: 8px;
+            }
+
+        .lote-premium-card {
+            background: #fffdf8;
+            border: 1px solid #ead8a2;
+            border-radius: 28px;
+            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            overflow: hidden;
+        }
+
+        .lote-premium-header {
+            background: linear-gradient(135deg, #3a1f12, #7a5230);
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            border-top: 5px solid #f3d27a;
+        }
+
+            .lote-premium-header h2 {
+                margin: 0;
+                color: #fff3c4;
+                font-size: 1.8rem;
+                font-weight: 950;
+            }
+
+            .lote-premium-header span {
+                color: #fff8df;
+                font-weight: 700;
+                opacity: 0.92;
+            }
+
+        .lote-premium-body {
+            display: grid;
+            grid-template-columns: 1fr 0.45fr;
+            min-height: 420px;
+        }
+
+        .lote-info-panel {
+            padding: 30px;
+        }
+
+        .lote-side-panel {
+            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/dashboard/client-hero.jpg");
+            background-size: cover;
+            background-position: center;
+            padding: 30px;
+            color: #fff8df;
+            display: flex;
+            align-items: center;
+        }
+
+        .lote-side-box {
+            width: 100%;
+            background: rgba(255, 253, 248, 0.11);
+            border: 1px solid rgba(255, 243, 196, 0.22);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .lote-side-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        .lote-side-box h3 {
+            color: #fff3c4;
+            font-size: 1.45rem;
+            font-weight: 950;
+            margin: 0;
+        }
+
+        .lote-side-line {
+            width: 70px;
+            height: 4px;
+            border-radius: 999px;
+            background: #f3d27a;
+            margin: 14px 0 18px;
+        }
+
+        .lote-side-box p {
+            color: #fff8df;
+            opacity: 0.95;
+            font-weight: 650;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .lote-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .lote-detail-item {
+            background: #fff8df;
+            border: 1px solid #ead8a2;
+            border-radius: 18px;
+            padding: 17px;
+            min-height: 92px;
+        }
+
+            .lote-detail-item.full {
+                grid-column: 1 / -1;
+            }
+
+        .lote-detail-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7a5230;
+            font-size: 0.78rem;
+            font-weight: 950;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+
+            .lote-detail-label i {
+                color: #a66b20;
+            }
+
+        .lote-detail-value {
+            display: block;
+            color: #2b160d;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .lote-kg {
+            color: #2b160d;
+            font-size: 1.15rem;
+            font-weight: 950;
+        }
+
+        .lote-actions {
+            border-top: 1px solid #ead8a2;
+            margin-top: 22px;
+            padding-top: 22px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-lote {
+            border: none;
+            border-radius: 13px;
+            padding: 11px 18px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: 0.18s ease;
+        }
+
+            .btn-lote:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-lote-primary {
+            background: #4a2c1a;
+            color: #fff8df;
+        }
+
+            .btn-lote-primary:hover {
+                background: #7a5230;
+                color: #fff8df;
+            }
+
+        .btn-lote-warning {
+            background: #f3b23f;
+            color: #2b160d;
+        }
+
+            .btn-lote-warning:hover {
+                background: #e5a22e;
+                color: #2b160d;
+            }
+
+        .lote-estado {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 7px 13px;
+            font-size: 0.82rem;
+            font-weight: 950;
+            width: fit-content;
+        }
+
+        .lote-estado-recibido {
+            background: #dff6fd;
+            color: #0369a1;
+        }
+
+        .lote-estado-proceso {
+            background: #fff4d3;
+            color: #8a6500;
+        }
+
+        .lote-estado-finalizado {
+            background: #dff5e3;
+            color: #1e7d32;
+        }
+
+        .lote-estado-cancelado {
+            background: #fde1df;
+            color: #b42318;
+        }
+
+        .lote-estado-neutral {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        @@media (max-width: 1100px) {
+            .lote-premium-body {
+                grid-template-columns: 1fr;
+            }
+
+            .lote-side-panel {
+                min-height: 300px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .lote-detalle-header {
+                flex-direction: column;
+            }
+
+            .lote-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lote-premium-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .lote-actions {
+                justify-content: flex-start;
+            }
+
+            .lote-detalle-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 }
 
-<div class="EstiloDetalle-detalle-page">
+<div class="lote-detalle-page">
 
-    <div class="EstiloDetalle-header">
-        <h1>Detalle del lote</h1>
-        <p>Información registrada del lote en el microbeneficio.</p>
-    </div>
-
-    <div class="EstiloDetalle-card">
-
-        <div class="EstiloDetalle-card-header">
-            <h2>@Model.CodigoLote</h2>
-            <span>Microbeneficio San Gabriel</span>
+    <div class="lote-detalle-header">
+        <div class="lote-detalle-title">
+            <h1>Detalle del lote</h1>
+            <div class="lote-detalle-line"></div>
+            <p>Información registrada del lote en el microbeneficio.</p>
         </div>
 
-        <div class="EstiloDetalle-card-body">
+        <div class="lote-status-top">
+            <small>Estado actual</small>
+            <span class="@estadoClase">@Model.Estado</span>
+        </div>
+    </div>
 
-            <div class="detalle-grid">
+    <div class="lote-premium-card">
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Código de lote
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.CodigoLote
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Productor
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.Productor?.Cedula
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Peso
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.PesoKg kg
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Fecha de recepción
-                    </span>
-
-                    <span class="detalle-value">
-                        @Model.FechaRecepcion.ToString("dd/MM/yyyy")
-                    </span>
-                </div>
-
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Estado
-                    </span>
-
-                    @if (Model.Estado == "Activo")
-                    {
-                        <span class="estado-activo">
-                            @Model.Estado
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="estado-inactivo">
-                            @Model.Estado
-                        </span>
-                    }
-                </div>
-
-                <div class="detalle-item full">
-                    <span class="detalle-label">
-                        Observación
-                    </span>
-
-                    <span class="detalle-value">
-                        @(Model.Observacion ?? "Sin observación")
-                    </span>
-                </div>
+        <div class="lote-premium-header">
+            <div>
+                <h2>@Model.CodigoLote</h2>
+                <span>Microbeneficio San Gabriel</span>
             </div>
 
-            <div class="EstiloDetalle-actions">
+            <span>
+                <i class="fa-solid fa-layer-group"></i>
+                Control de lotes
+            </span>
+        </div>
 
-                <a asp-action="Index"
-                   class="btn-volver">
-                    Volver a la lista
-                </a>
+        <div class="lote-premium-body">
 
-                @if (User.IsInRole("Administrador"))
-                {
-                    <a asp-action="Edit"
-                       asp-route-id="@Model?.Id"
-                       class="btn-editar">
-                        Editar
+            <div class="lote-info-panel">
+
+                <div class="lote-detail-grid">
+
+                    <div class="lote-detail-item">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Código de lote
+                        </span>
+
+                        <span class="lote-detail-value">
+                            @Model.CodigoLote
+                        </span>
+                    </div>
+
+                    <div class="lote-detail-item">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-user-tie"></i>
+                            Productor
+                        </span>
+
+                        <span class="lote-detail-value">
+                            @(Model.Productor != null ? Model.Productor.Nombre : "Sin productor")
+                        </span>
+                    </div>
+
+                    <div class="lote-detail-item">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-id-card"></i>
+                            Cédula productor
+                        </span>
+
+                        <span class="lote-detail-value">
+                            @(Model.Productor != null ? Model.Productor.Cedula : "Sin cédula")
+                        </span>
+                    </div>
+
+                    <div class="lote-detail-item">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            Peso
+                        </span>
+
+                        <span class="lote-kg">
+                            @Model.PesoKg kg
+                        </span>
+                    </div>
+
+                    <div class="lote-detail-item">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Fecha de recepción
+                        </span>
+
+                        <span class="lote-detail-value">
+                            @Model.FechaRecepcion.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    </div>
+
+                    <div class="lote-detail-item">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-circle-info"></i>
+                            Estado
+                        </span>
+
+                        <span class="@estadoClase">
+                            @Model.Estado
+                        </span>
+                    </div>
+
+                    <div class="lote-detail-item full">
+                        <span class="lote-detail-label">
+                            <i class="fa-solid fa-comment-dots"></i>
+                            Observación
+                        </span>
+
+                        <span class="lote-detail-value">
+                            @(string.IsNullOrWhiteSpace(Model.Observacion)
+                                ? "Sin observación"
+                                : Model.Observacion)
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="lote-actions">
+
+                    <a asp-action="Index"
+                           class="btn-lote btn-lote-primary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver a la lista
                     </a>
-                }
+
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit"
+                               asp-route-id="@Model.Id"
+                               class="btn-lote btn-lote-warning">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Editar
+                        </a>
+                    }
+
+                </div>
+
             </div>
+
+            <div class="lote-side-panel">
+                <div class="lote-side-box">
+                    <div class="lote-side-icon">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <h3>Recepción de café</h3>
+                    <div class="lote-side-line"></div>
+
+                    <p>
+                        Este registro representa el café recibido de un productor
+                        y permite dar seguimiento al proceso productivo.
+                    </p>
+                </div>
+            </div>
+
         </div>
+
     </div>
+
 </div>

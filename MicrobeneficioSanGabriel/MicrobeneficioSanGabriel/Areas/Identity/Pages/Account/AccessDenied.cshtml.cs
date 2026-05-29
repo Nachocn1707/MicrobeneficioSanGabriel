@@ -3,6 +3,7 @@
 #nullable disable
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
 {

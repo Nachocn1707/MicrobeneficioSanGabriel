@@ -1,7 +1,7 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Productor
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuevo productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -10,6 +10,7 @@
 }
 
 <div class="VistaCrear-page">
+
     <div class="VistaCrear-top">
 
         <div class="VistaCrear-title">
@@ -24,11 +25,15 @@
                 Registrá productores y mantené el control
                 de la trazabilidad del café.
             </p>
+
         </div>
+
     </div>
 
     <div class="VistaCrear-card">
+
         <div class="VistaCrear-side">
+
             <div class="VistaCrear-side-content">
 
                 <div class="VistaCrear-icon">
@@ -43,6 +48,7 @@
                 </p>
 
                 <div class="VistaCrear-info">
+
                     <div class="VistaCrear-info-item">
                         <i class="fa-solid fa-user-group"></i>
                         Gestión de productores
@@ -63,13 +69,16 @@
             </div>
 
         </div>
+
         <div class="VistaCrear-form-container">
 
-            <form asp-action="Create">
+            <form asp-action="Create" method="post">
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-4">
                 </div>
+
+                <input type="hidden" asp-for="FechaRegistro" />
 
                 <div class="row g-4">
 
@@ -77,6 +86,7 @@
 
                         <label asp-for="Nombre"
                                class="form-label">
+                            Nombre
                         </label>
 
                         <div class="input-modern">
@@ -84,7 +94,8 @@
                             <i class="fa-solid fa-user"></i>
 
                             <input asp-for="Nombre"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="Nombre completo del productor" />
 
                         </div>
 
@@ -98,6 +109,7 @@
 
                         <label asp-for="Cedula"
                                class="form-label">
+                            Cédula
                         </label>
 
                         <div class="input-modern">
@@ -105,7 +117,8 @@
                             <i class="fa-solid fa-id-card"></i>
 
                             <input asp-for="Cedula"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="Número de cédula" />
 
                         </div>
 
@@ -119,6 +132,7 @@
 
                         <label asp-for="Telefono"
                                class="form-label">
+                            Teléfono
                         </label>
 
                         <div class="input-modern">
@@ -126,7 +140,8 @@
                             <i class="fa-solid fa-phone"></i>
 
                             <input asp-for="Telefono"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="8888-8888" />
 
                         </div>
 
@@ -138,29 +153,9 @@
 
                     <div class="col-md-6">
 
-                        <label asp-for="Direccion"
-                               class="form-label">
-                        </label>
-
-                        <div class="input-modern">
-
-                            <i class="fa-solid fa-location-dot"></i>
-
-                            <input asp-for="Direccion"
-                                   class="form-control" />
-
-                        </div>
-
-                        <span asp-validation-for="Direccion"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
                         <label asp-for="Finca"
                                class="form-label">
+                            Finca
                         </label>
 
                         <div class="input-modern">
@@ -168,7 +163,8 @@
                             <i class="fa-solid fa-mountain"></i>
 
                             <input asp-for="Finca"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="Nombre de la finca" />
 
                         </div>
 
@@ -178,43 +174,52 @@
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12">
 
-                        <label asp-for="FechaRegistro"
+                        <label asp-for="Direccion"
                                class="form-label">
+                            Dirección
                         </label>
 
                         <div class="input-modern">
 
-                            <i class="fa-solid fa-calendar"></i>
+                            <i class="fa-solid fa-location-dot"></i>
 
-                            <input asp-for="FechaRegistro"
-                                   class="form-control" />
+                            <input asp-for="Direccion"
+                                   class="form-control"
+                                   placeholder="Dirección o ubicación de la finca" />
 
                         </div>
 
-                        <span asp-validation-for="FechaRegistro"
+                        <span asp-validation-for="Direccion"
                               class="text-danger">
                         </span>
 
                     </div>
+
                     <div class="col-12">
-                        <div class="VistaCrear-checkbox">
 
-                            <label class="form-check-label">
+                        <div class="form-check form-switch mt-2">
 
-                                <input class="form-check-input"
-                                       asp-for="Activo" />
+                            <input class="form-check-input"
+                                   asp-for="Activo" />
 
-                                @Html.DisplayNameFor(model => model.Activo)
-
+                            <label class="form-check-label"
+                                   asp-for="Activo">
+                                Productor activo
                             </label>
+
                         </div>
+
                     </div>
+
                 </div>
+
                 <div class="VistaCrear-actions">
+
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-cancelar">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
@@ -222,15 +227,22 @@
                             class="btn-crear">
 
                         <i class="fa-solid fa-floppy-disk"></i>
-
                         Registrar productor
+
                     </button>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
