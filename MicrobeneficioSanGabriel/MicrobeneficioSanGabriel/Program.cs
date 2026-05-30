@@ -37,6 +37,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<IAnalisisInventarioIAService, AnalisisInventarioIAService>();
+builder.Services.AddScoped<IAlertasSistemaService, AlertasSistemaService>();
 
 var app = builder.Build();
 
