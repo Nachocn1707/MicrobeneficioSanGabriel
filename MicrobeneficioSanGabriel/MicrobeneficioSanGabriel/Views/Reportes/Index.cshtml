@@ -3,12 +3,12 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     decimal totalVentas = ViewBag.TotalVentas ?? 0;
-    int totalStock = ViewBag.TotalStock ?? 0;
+    decimal totalStock = ViewBag.TotalStock ?? 0;
     int pedidosPendientes = ViewBag.PedidosPendientes ?? 0;
     int facturasPendientes = ViewBag.FacturasPendientes ?? 0;
     int productosStockBajo = ViewBag.ProductosStockBajo ?? 0;
 
-    int stockPorcentaje = totalStock > 100 ? 100 : totalStock;
+    int stockPorcentaje = totalStock > 100 ? 100 : (int)totalStock;
 }
 
 <h1 class="fw-bold">Reportes</h1>
@@ -51,7 +51,7 @@
 
     <div class="col-md-2 d-flex align-items-end">
         <a asp-action="Index"
-               class="btn btn-secondary w-100">
+           class="btn btn-secondary w-100">
             <i class="fa-solid fa-rotate-left"></i>
             Limpiar
         </a>
@@ -59,11 +59,21 @@
 
     <div class="col-md-2 d-flex align-items-end">
         <a asp-action="ExportarExcel"
-               asp-route-fechaInicio="@ViewBag.FechaInicio"
-               asp-route-fechaFin="@ViewBag.FechaFin"
-               class="btn btn-success w-100">
+           asp-route-fechaInicio="@ViewBag.FechaInicio"
+           asp-route-fechaFin="@ViewBag.FechaFin"
+           class="btn btn-success w-100">
             <i class="fa-solid fa-file-excel"></i>
             Excel
+        </a>
+    </div>
+
+    <div class="col-md-12 d-flex justify-content-end">
+        <a asp-action="AnalisisIA"
+           asp-route-fechaInicio="@ViewBag.FechaInicio"
+           asp-route-fechaFin="@ViewBag.FechaFin"
+           class="btn btn-dark">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Generar análisis con IA
         </a>
     </div>
 

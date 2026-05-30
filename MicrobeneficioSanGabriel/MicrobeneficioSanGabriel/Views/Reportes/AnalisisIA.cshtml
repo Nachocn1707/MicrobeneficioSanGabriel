@@ -1,5 +1,321 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model MicrobeneficioSanGabriel.ViewModels.ReporteIAViewModel
+
 @{
+    ViewData["Title"] = "Análisis con IA";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
+<style>
+    .ia-report-page {
+        display: grid;
+        gap: 22px;
+    }
+
+    .ia-report-header h1 {
+        color: #2b160d;
+        font-size: 34px;
+        font-weight: 950;
+        margin: 0;
+    }
+
+    .ia-report-header p {
+        color: #7a6a5d;
+        font-weight: 600;
+        margin: 6px 0 0;
+    }
+
+    .ia-card {
+        background: #fffdf8;
+        border: 1px solid #ead8a2;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 18px 42px rgba(74, 44, 26, 0.10);
+    }
+
+        .ia-card h2 {
+            color: #2b160d;
+            font-size: 20px;
+            font-weight: 950;
+            margin-bottom: 14px;
+        }
+
+    .ia-summary {
+        border-left: 6px solid #d9a44a;
+        background: #fff8df;
+    }
+
+        .ia-summary p {
+            color: #3a2114;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+    .ia-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .ia-metric strong {
+        display: block;
+        color: #2b160d;
+        font-size: 28px;
+        font-weight: 950;
+    }
+
+    .ia-metric span {
+        color: #7a6a5d;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .ia-two-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .ia-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .ia-list-item {
+        border: 1px solid #ead8a2;
+        border-radius: 14px;
+        padding: 14px;
+        background: #fffaf2;
+    }
+
+        .ia-list-item strong {
+            color: #2b160d;
+            font-weight: 950;
+        }
+
+        .ia-list-item span {
+            display: block;
+            color: #7a6a5d;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+    .ia-recommendation {
+        border-radius: 14px;
+        padding: 15px;
+        border: 1px solid #ead8a2;
+        background: #fffaf2;
+        display: flex;
+        gap: 12px;
+    }
+
+        .ia-recommendation i {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: #4a2c1a;
+            color: #fff3c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ia-recommendation h3 {
+            margin: 0;
+            color: #2b160d;
+            font-size: 15px;
+            font-weight: 950;
+        }
+
+        .ia-recommendation p {
+            margin: 4px 0 0;
+            color: #4d3c31;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+    .ia-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-ia-primary {
+        background: #4a2c1a;
+        color: #fff8df;
+        border: 1px solid #4a2c1a;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    .btn-ia-secondary {
+        background: #fff3c4;
+        color: #4a2c1a;
+        border: 1px solid #d9a44a;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    @@media (max-width: 1000px) {
+        .ia-grid,
+        .ia-two-columns {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="ia-report-page">
+
+    <div class="ia-report-header">
+        <h1>Análisis con IA</h1>
+        <p>Resumen automático basado en ventas, pedidos, facturación e inventario.</p>
+    </div>
+
+    <div class="ia-actions">
+        <a asp-action="Index" class="btn-ia-secondary">
+            Volver a reportes
+        </a>
+
+        <a asp-action="AnalisisIA" class="btn-ia-primary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Regenerar análisis
+        </a>
+    </div>
+
+    <div class="ia-card ia-summary">
+        <h2>Resumen ejecutivo</h2>
+        <p>@Model.ResumenEjecutivo</p>
+    </div>
+
+    <div class="ia-grid">
+
+        <div class="ia-card ia-metric">
+            <span>Ventas totales</span>
+            <strong>₡ @Model.VentasTotales.ToString("N2")</strong>
+        </div>
+
+        <div class="ia-card ia-metric">
+            <span>Pedidos</span>
+            <strong>@Model.TotalPedidos</strong>
+        </div>
+
+        <div class="ia-card ia-metric">
+            <span>Facturas</span>
+            <strong>@Model.TotalFacturas</strong>
+        </div>
+
+        <div class="ia-card ia-metric">
+            <span>Stock total</span>
+            <strong>@Model.StockTotal</strong>
+        </div>
+
+    </div>
+
+    <div class="ia-two-columns">
+
+        <div class="ia-card">
+            <h2>Productos más vendidos</h2>
+
+            <div class="ia-list">
+                @if (Model.ProductosMasVendidos.Any())
+                {
+                    foreach (var producto in Model.ProductosMasVendidos)
+                    {
+                        <div class="ia-list-item">
+                            <strong>@producto.Producto</strong>
+                            <span>Cantidad vendida: @producto.Cantidad</span>
+                            <span>Total generado: ₡ @producto.TotalVentas.ToString("N2")</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ia-list-item">
+                        <strong>Sin datos</strong>
+                        <span>No hay productos vendidos para analizar.</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="ia-card">
+            <h2>Clientes frecuentes</h2>
+
+            <div class="ia-list">
+                @if (Model.ClientesFrecuentes.Any())
+                {
+                    foreach (var cliente in Model.ClientesFrecuentes)
+                    {
+                        <div class="ia-list-item">
+                            <strong>@cliente.Cliente</strong>
+                            <span>Pedidos realizados: @cliente.Pedidos</span>
+                            <span>Total comprado: ₡ @cliente.TotalComprado.ToString("N2")</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ia-list-item">
+                        <strong>Sin datos</strong>
+                        <span>No hay clientes frecuentes para analizar.</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="ia-two-columns">
+
+        <div class="ia-card">
+            <h2>Estado de pedidos</h2>
+
+            <div class="ia-list">
+                @if (Model.EstadosPedidos.Any())
+                {
+                    foreach (var estado in Model.EstadosPedidos)
+                    {
+                        <div class="ia-list-item">
+                            <strong>@estado.Estado</strong>
+                            <span>@estado.Cantidad pedido(s)</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ia-list-item">
+                        <strong>Sin datos</strong>
+                        <span>No hay pedidos registrados.</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="ia-card">
+            <h2>Recomendaciones administrativas</h2>
+
+            <div class="ia-list">
+                @foreach (var recomendacion in Model.Recomendaciones)
+                {
+                    <div class="ia-recommendation">
+                        <i class="fa-solid @recomendacion.Icono"></i>
+
+                        <div>
+                            <h3>@recomendacion.Titulo</h3>
+                            <p>@recomendacion.Mensaje</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+
+</div>

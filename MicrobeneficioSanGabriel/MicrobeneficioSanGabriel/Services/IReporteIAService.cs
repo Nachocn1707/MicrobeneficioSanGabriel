@@ -1,6 +1,9 @@
-﻿namespace MicrobeneficioSanGabriel.Services
+﻿using MicrobeneficioSanGabriel.ViewModels;
+
+namespace MicrobeneficioSanGabriel.Services
 {
-    public class IReporteIAService
+    public interface IReporteIAService
     {
+        Task<ReporteIAViewModel> GenerarAnalisisAsync(DateTime? fechaInicio = null, DateTime? fechaFin = null);
     }
 }

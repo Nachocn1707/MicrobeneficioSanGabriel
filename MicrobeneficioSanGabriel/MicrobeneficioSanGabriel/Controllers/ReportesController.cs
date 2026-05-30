@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Services;
 using ClosedXML.Excel;
 using System.IO;
 
@@ -11,10 +12,14 @@ namespace MicrobeneficioSanGabriel.Controllers
     public class ReportesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IReporteIAService _reporteIAService;
 
-        public ReportesController(ApplicationDbContext context)
+        public ReportesController(
+            ApplicationDbContext context,
+            IReporteIAService reporteIAService)
         {
             _context = context;
+            _reporteIAService = reporteIAService;
         }
 
         public async Task<IActionResult> Index(DateTime? fechaInicio, DateTime? fechaFin)
@@ -45,19 +50,33 @@ namespace MicrobeneficioSanGabriel.Controllers
             ViewBag.TotalPedidos = await pedidosQuery.CountAsync();
             ViewBag.TotalFacturas = await facturasQuery.CountAsync();
 
-            ViewBag.TotalVentas = await facturasQuery.SumAsync(f => f.Total);
-            ViewBag.TotalStock = await _context.Productos.SumAsync(p => p.Stock);
+            ViewBag.TotalVentas = await facturasQuery
+                .Where(f => f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .SumAsync(f => (decimal?)f.Total) ?? 0;
 
-            ViewBag.PedidosPendientes = await pedidosQuery.CountAsync(p => p.Estado == "Pendiente");
-            ViewBag.FacturasPendientes = await facturasQuery.CountAsync(f => f.EstadoPago == "Pendiente");
+            ViewBag.TotalStock = await _context.Productos
+                .SumAsync(p => (decimal?)p.Stock) ?? 0;
 
-            ViewBag.ProductosStockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
+            ViewBag.PedidosPendientes = await pedidosQuery
+                .CountAsync(p => p.Estado == "Pendiente" || p.Estado == "En proceso");
+
+            ViewBag.FacturasPendientes = await facturasQuery
+                .CountAsync(f => f.EstadoPago == "Pendiente");
+
+            ViewBag.ProductosStockBajo = await _context.Productos
+                .CountAsync(p => p.Stock <= p.StockMinimo);
 
             ViewBag.Productos = await _context.Productos
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
 
             return View();
+        }
+
+        public async Task<IActionResult> AnalisisIA(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            var analisis = await _reporteIAService.GenerarAnalisisAsync(fechaInicio, fechaFin);
+            return View(analisis);
         }
 
         public IActionResult ExportarExcel(DateTime? fechaInicio, DateTime? fechaFin)
@@ -81,7 +100,10 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var totalPedidos = pedidosQuery.Count();
             var totalFacturas = facturasQuery.Count();
-            var totalVentas = facturasQuery.Sum(f => f.Total);
+
+            var totalVentas = facturasQuery
+                .Where(f => f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .Sum(f => (decimal?)f.Total) ?? 0;
 
             using (var workbook = new XLWorkbook())
             {
@@ -95,7 +117,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         ? $"Periodo: {fechaInicio?.ToString("dd/MM/yyyy") ?? "Inicio"} - {fechaFin?.ToString("dd/MM/yyyy") ?? "Actual"}"
                         : "Periodo: General";
 
-                worksheet.Cell(4, 1).Value = $"Fecha de generación: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                worksheet.Cell(4, 1).Value = $"Fecha de generacion: {DateTime.Now:dd/MM/yyyy HH:mm}";
 
                 worksheet.Cell(6, 1).Value = "Indicador";
                 worksheet.Cell(6, 2).Value = "Valor";
@@ -116,7 +138,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 worksheet.Cell(11, 2).Value = totalVentas;
 
                 worksheet.Cell(12, 1).Value = "Stock total disponible";
-                worksheet.Cell(12, 2).Value = _context.Productos.Sum(p => p.Stock);
+                worksheet.Cell(12, 2).Value = _context.Productos.Sum(p => (decimal?)p.Stock) ?? 0;
 
                 worksheet.Cell(13, 1).Value = "Productos con stock bajo";
                 worksheet.Cell(13, 2).Value = _context.Productos.Count(p => p.Stock <= p.StockMinimo);
@@ -129,7 +151,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 worksheet.Range("A6:B6").Style.Fill.BackgroundColor = XLColor.DarkBlue;
                 worksheet.Range("A6:B6").Style.Font.FontColor = XLColor.White;
 
-                worksheet.Cell(11, 2).Style.NumberFormat.Format = "₡ #,##0.00";
+                worksheet.Cell(11, 2).Style.NumberFormat.Format = "CRC #,##0.00";
 
                 worksheet.Columns().AdjustToContents();
 
