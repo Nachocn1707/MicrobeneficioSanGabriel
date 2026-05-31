@@ -29,9 +29,8 @@ var nombreCliente = usuarioActual != null
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
-
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -66,12 +65,6 @@ var nombreCliente = usuarioActual != null
                     Productos
                 </a>
 
-                <a asp-controller="Pedidos"
-                       asp-action="Create"
-                       class="@Active("/pedidos/create")">
-                    <i class="fa-solid fa-cart-plus"></i>
-                    Realizar pedido
-                </a>
 
                 <a asp-controller="Pedidos"
                        asp-action="Index"
@@ -92,11 +85,6 @@ var nombreCliente = usuarioActual != null
                 </div>
 
                 <div class="sg-topbar-actions">
-                    <form class="sg-search d-none d-md-block">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text"
-                               placeholder="Buscar módulo o registro..." />
-                    </form>
                     <span class="sg-user-pill">
                         <i class="fa-solid fa-user"></i>
                         @nombreCliente
@@ -121,7 +109,10 @@ var nombreCliente = usuarioActual != null
         </main>
     </div>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

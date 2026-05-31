@@ -311,12 +311,20 @@
             }
         </div>
 
-        @if (User.IsInRole("Administrador") || User.IsInRole("Cliente"))
+        @if (User.IsInRole("Administrador"))
         {
             <a asp-action="Create" class="btn-nuevo-pedido">
                 <i class="fa-solid fa-plus"></i>
                 Nuevo Pedido
             </a>
+        }
+        else
+        {
+            <a asp-controller="Productos" asp-action="Index"
+            class="btn-nuevo-pedido">
+                <i class="fa-solid fa-mug-hot"></i>
+                Nuevo Pedido
+            </a> 
         }
 
     </div>
@@ -419,7 +427,7 @@
 
                             <td>
                                 <span class="@estadoClase">
-                                    @item.Estado
+                                    [@item.Estado]
                                 </span>
                             </td>
 
@@ -490,21 +498,14 @@
                                             Cambiar estado
                                         </a>
                                     }
-
                                 </div>
                             </td>
-
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

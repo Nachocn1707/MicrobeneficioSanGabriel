@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
 using Microsoft.AspNetCore.Identity;
-using MicrobeneficioSanGabriel.ViewModels;
+
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -31,11 +31,14 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (User.IsInRole("Cliente"))
             {
-                var correoCliente = User.Identity?.Name;
+                var usuario = await _userManager.GetUserAsync(User);
+
+                var correo = usuario?.Email;
+                var nombre = usuario?.NombreCompleto;
 
                 pedidos = pedidos.Where(p =>
-                    p.ClienteCorreo == correoCliente ||
-                    (p.ClienteCorreo == null && p.ClienteNombre == correoCliente)
+                    p.ClienteCorreo == correo ||
+                    p.ClienteNombre == nombre
                 );
             }
 
