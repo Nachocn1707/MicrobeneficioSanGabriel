@@ -20,6 +20,7 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<RegistroFinanciero> RegistrosFinancieros { get; set; }
+        public DbSet<MetodoPago> MetodosPago { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -47,32 +47,28 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .ToListAsync());
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? productoId)
         {
-            CargarProductos();
-
             var pedido = new Pedido
             {
-                FechaPedido = DateTime.Now,
+                Cantidad = 1,
                 Estado = "Pendiente",
-                Cantidad = 1
+                FechaPedido = DateTime.Now
             };
 
-            if (User.IsInRole("Cliente"))
+            if (productoId.HasValue)
             {
-                var usuario = await _userManager.GetUserAsync(User);
+                var producto = await _context.Productos
+                    .FindAsync(productoId.Value);
 
-                if (usuario != null)
+                if (producto != null)
                 {
-                    pedido.ClienteNombre = usuario.NombreCompleto;
-                    pedido.ClienteCorreo = usuario.Email;
-                    pedido.ClienteTelefono = usuario.PhoneNumber;
+                    pedido.ProductoId = producto.Id;
+                    ViewBag.ProductoNombre = producto.Nombre;
                 }
             }
-
             return View(pedido);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

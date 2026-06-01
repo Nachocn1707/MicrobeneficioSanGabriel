@@ -469,7 +469,7 @@
 
                 <div class="producto-actions">
 
-                    <a asp-action="Index"
+                    <a asp-controller="Productos" asp-action="Index"
                            class="btn-producto btn-producto-primary">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver a la lista
@@ -488,17 +488,15 @@
                     @if (User.IsInRole("Cliente") && Model.Activo && Model.Stock > 0)
                     {
                         <a asp-controller="Pedidos"
-                               asp-action="Create"
-                               class="btn-producto btn-producto-success">
+                           asp-action="Create"
+                           asp-route-productoId="@Model.Id"
+                           class="btn-producto btn-producto-success">
                             <i class="fa-solid fa-cart-plus"></i>
                             Realizar pedido
                         </a>
                     }
-
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>

@@ -312,6 +312,33 @@
                 padding: 8px 11px;
             }
 
+        .btn-producto {
+            border: none;
+            border-radius: 13px;
+            padding: 11px 18px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: 0.18s ease;
+        }
+
+            .btn-producto:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-producto-success {
+            background: #198754;
+            margin-left: 70px;
+            color: #ffffff;
+        }
+
+            .btn-producto-success:hover {
+                background: #157347;
+                color: #ffffff;
+            }
+
         @@media (max-width: 1200px) {
             .productos-catalogo-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -438,6 +465,14 @@
                                     Disponible
                                 </span>
                             }
+
+                            <a asp-controller="Pedidos"
+                               asp-action="Create"
+                               asp-route-productoId="@item.Id"
+                               class="btn-producto btn-producto-success">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                Realizar pedido
+                            </a>
 
                             <a asp-action="Details"
                                    asp-route-id="@item.Id"

@@ -313,10 +313,10 @@
 
         @if (User.IsInRole("Administrador"))
         {
-            <a asp-action="Create" class="btn-nuevo-pedido">
-                <i class="fa-solid fa-plus"></i>
-                Nuevo Pedido
-            </a>
+         //   <a asp-action="Create" class="btn-nuevo-pedido">
+          //      <i class="fa-solid fa-plus"></i>
+            //    Nuevo Pedido
+          //  </a>
         }
         else
         {
@@ -427,7 +427,7 @@
 
                             <td>
                                 <span class="@estadoClase">
-                                    [@item.Estado]
+                                    @item.Estado
                                 </span>
                             </td>
 

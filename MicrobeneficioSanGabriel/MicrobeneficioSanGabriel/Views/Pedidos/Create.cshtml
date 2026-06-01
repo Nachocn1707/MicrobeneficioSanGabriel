@@ -168,6 +168,22 @@
             margin-bottom: 8px;
         }
 
+        .readonly-product {
+            min-height: 56px;
+            border-radius: 18px;
+            border: 1px solid #d8dee8;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding-left: 48px;
+            font-weight: 700;
+            color: #a1a8b3;
+        }
+
+            .readonly-product i {
+                left: 17px;
+            }
+
         .input-modern {
             position: relative;
         }
@@ -181,8 +197,7 @@
                 z-index: 2;
             }
 
-            .input-modern .form-control,
-            .input-modern .form-select {
+            .input-modern .form-control, .input-modern .form-select {
                 min-height: 56px;
                 border-radius: 18px;
                 border: 1px solid #d8dee8;
@@ -190,10 +205,10 @@
                 padding-left: 48px;
                 font-weight: 700;
                 color: #2b160d;
+
             }
 
-                .input-modern .form-control:focus,
-                .input-modern .form-select:focus {
+                .input-modern .form-control:focus, .input-modern .form-select:focus {
                     border-color: #d8b36a;
                     box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
                 }
@@ -412,13 +427,12 @@
                             Producto
                         </label>
 
-                        <div class="input-modern">
+                        <div class="input-modern readonly-product">
                             <i class="fa-solid fa-box"></i>
-
-                            <select asp-for="ProductoId"
-                                    class="form-select"
-                                    asp-items="ViewBag.ProductoId">
-                            </select>
+                            <span>
+                                @ViewBag.ProductoNombre
+                            </span>
+                            <input type="hidden" asp-for="ProductoId" />
                         </div>
 
                         <span asp-validation-for="ProductoId"
@@ -512,10 +526,10 @@
 
                 <div class="pedido-create-actions">
 
-                    <a asp-action="Index"
-                           class="btn-pedido-create btn-pedido-volver">
+                    <a asp-controller="Productos" asp-action="Index"
+                       class="btn-pedido-create btn-pedido-volver">
                         <i class="fa-solid fa-arrow-left"></i>
-                        Volver
+                        Volver a la lista
                     </a>
 
                     <button type="submit"
@@ -523,15 +537,10 @@
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar pedido
                     </button>
-
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
