@@ -294,6 +294,13 @@
     </style>
 }
 
+@if (TempData["Debug"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["Debug"]
+    </div>
+}
+
 <div class="pedidos-page">
 
     <div class="pedidos-header">
@@ -313,18 +320,18 @@
 
         @if (User.IsInRole("Administrador"))
         {
-         //   <a asp-action="Create" class="btn-nuevo-pedido">
-          //      <i class="fa-solid fa-plus"></i>
+            //   <a asp-action="Create" class="btn-nuevo-pedido">
+            //      <i class="fa-solid fa-plus"></i>
             //    Nuevo Pedido
-          //  </a>
+            //  </a>
         }
         else
         {
             <a asp-controller="Productos" asp-action="Index"
-            class="btn-nuevo-pedido">
+               class="btn-nuevo-pedido">
                 <i class="fa-solid fa-mug-hot"></i>
                 Nuevo Pedido
-            </a> 
+            </a>
         }
 
     </div>
@@ -380,6 +387,7 @@
                         <th>Fecha</th>
                         <th>Estado</th>
                         <th>Observación</th>
+                        <th>Estado Pago</th>
                         <th width="290">Acciones</th>
                     </tr>
                 </thead>
@@ -438,62 +446,89 @@
                             </td>
 
                             <td>
+                                @if (item.EstadoPago == "Pagado")
+                                {
+                                    <span class="badge bg-success">
+                                        Pagado
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Pendiente de pago
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
                                 <div class="pedido-actions">
 
                                     @if (User.IsInRole("Administrador"))
                                     {
                                         <a asp-action="Edit"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-warning btn-sm">
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                             Editar
                                         </a>
 
                                         <a asp-action="Details"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-info btn-sm text-white">
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm text-white">
                                             <i class="fa-solid fa-eye"></i>
                                             Detalles
                                         </a>
 
                                         <a asp-action="Delete"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-danger btn-sm">
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm">
                                             <i class="fa-solid fa-trash"></i>
                                             Eliminar
                                         </a>
+
+                                        @if (item.EstadoPago?.Trim() == "Pendiente de pago")
+                                        {
+                                            <a href="#"
+                                               class="btn btn-success btn-sm btn-confirmar-pago"
+                                               data-id="@item.Id">
+                                                <i class="fa-solid fa-money-bill-wave"></i>
+                                                Confirmar Pago
+                                            </a>
+                                        }
+
                                     }
                                     else if (User.IsInRole("Cliente"))
                                     {
                                         @if (item.Estado != null && item.Estado.Trim() == "Pendiente")
                                         {
                                             <a asp-action="EditCliente"
-                                                   asp-route-id="@item.Id"
-                                                   class="btn btn-warning btn-sm">
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-warning btn-sm">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                                 Actualizar
                                             </a>
 
                                             <a asp-action="Cancelar"
-                                                   asp-route-id="@item.Id"
-                                                   class="btn btn-danger btn-sm">
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-danger btn-sm">
                                                 <i class="fa-solid fa-ban"></i>
                                                 Cancelar
                                             </a>
                                         }
 
                                         <a asp-action="Details"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-info btn-sm text-white">
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-info btn-sm text-white">
                                             <i class="fa-solid fa-eye"></i>
                                             Detalles
                                         </a>
+
                                     }
                                     else if (User.IsInRole("Vendedor"))
                                     {
                                         <a asp-action="CambiarEstado"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-warning btn-sm">
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm">
                                             <i class="fa-solid fa-rotate"></i>
                                             Cambiar estado
                                         </a>
@@ -518,6 +553,36 @@
                 pageLength: 5,
                 lengthMenu: [5, 10, 15, 20],
                 responsive: true
+            });
+        });
+
+
+            document.querySelectorAll(".btn-confirmar-pago")
+        .forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                const id =
+                    this.dataset.id;
+
+                Swal.fire({
+                    title: '¿Confirmar pago?',
+                    text: 'El pedido será marcado como pagado.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, confirmar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#198754'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href =
+                            '/Pedidos/ConfirmarPago/' + id;
+                    }
+                });
             });
         });
     </script>

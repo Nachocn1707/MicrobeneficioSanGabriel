@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Models;
+using MicrobeneficioSanGabriel.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MicrobeneficioSanGabriel.Data;
-using MicrobeneficioSanGabriel.Models;
-using Microsoft.AspNetCore.Identity;
 
 
 namespace MicrobeneficioSanGabriel.Controllers
@@ -37,8 +38,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 var nombre = usuario?.NombreCompleto;
 
                 pedidos = pedidos.Where(p =>
-                    p.ClienteCorreo == correo ||
-                    p.ClienteNombre == nombre
+                    p.ClienteCorreo == correo 
                 );
             }
 
@@ -128,11 +128,15 @@ namespace MicrobeneficioSanGabriel.Controllers
                     _context.Productos.Update(producto);
                 }
 
+                pedido.Estado = "Pendiente";
+                pedido.EstadoPago = "Pendiente";
+                pedido.MetodoPago = "Sin definir";
+
                 _context.Pedidos.Add(pedido);
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Pedido creado correctamente.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Pago),
+                    new { id = pedido.Id });
             }
 
             CargarProductos(pedido.ProductoId);
@@ -227,6 +231,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                         _context.Productos.Update(producto);
                     }
 
+                    pedido.ClienteCorreo = pedidoOriginal.ClienteCorreo;
+                    pedido.MetodoPago = pedidoOriginal.MetodoPago;
+                    pedido.EstadoPago = pedidoOriginal.EstadoPago;
                     _context.Update(pedido);
                     await _context.SaveChangesAsync();
 
@@ -430,10 +437,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         private bool PedidoPerteneceAlCliente(Pedido pedido)
         {
-            var correoCliente = User.Identity?.Name;
-
-            return pedido.ClienteCorreo == correoCliente ||
-                   (pedido.ClienteCorreo == null && pedido.ClienteNombre == correoCliente);
+            return pedido.ClienteCorreo == User.Identity?.Name;
         }
 
         [Authorize(Roles = "Administrador,Vendedor")]
@@ -501,10 +505,87 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             pedido.Estado = estado;
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Pago(int id)
+        {
+            var pedido = await _context.Pedidos
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Total = pedido.Producto?.Precio * pedido.Cantidad;
+            return View(pedido);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Pago(
+         int pedidoId,
+         string metodoPago,
+         string? numeroTarjeta,
+         string? fechaVencimiento,
+         string? numeroSecreto)
+        {
+            var pedido = await _context.Pedidos
+                .FirstOrDefaultAsync(p => p.Id == pedidoId);
+
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+            if (metodoPago == "Tarjeta")
+            {
+                var tarjetaLimpia = numeroTarjeta?.Replace(" ", "") ?? "";
+                if (tarjetaLimpia.Length != 16)
+                {
+                    TempData["Error"] = "La tarjeta debe contener 16 dígitos.";
+                    return RedirectToAction(nameof(Pago),
+                        new { id = pedidoId });
+                }
+                if (string.IsNullOrWhiteSpace(fechaVencimiento))
+                {
+                    TempData["Error"] = "Debe ingresar la fecha de vencimiento.";
+                    return RedirectToAction(nameof(Pago),
+                        new { id = pedidoId });
+                }
+                if (string.IsNullOrWhiteSpace(numeroSecreto) ||
+                    numeroSecreto.Length != 3)
+                {
+                    TempData["Error"] =
+                        "El CVV debe contener 3 dígitos.";
+                    return RedirectToAction(nameof(Pago),
+                        new { id = pedidoId });
+                }
+            }
+            Console.WriteLine($"Metodo: {metodoPago}");
+            pedido.MetodoPago = metodoPago;
+            pedido.EstadoPago = metodoPago == "Tarjeta"
+                ? "Pagado"
+                : "Pendiente de pago";
 
             await _context.SaveChangesAsync();
+            TempData["Success"] =
+                "Pago registrado correctamente.";
+            return RedirectToAction(nameof(Details), new { id = pedido.Id });
+        }
 
-            TempData["Success"] = "Estado del pedido actualizado correctamente.";
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> ConfirmarPago(int id)
+        {
+            var pedido = await _context.Pedidos
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+            pedido.EstadoPago = "Pagado";
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Pago confirmado correctamente.";
             return RedirectToAction(nameof(Index));
         }
     }

@@ -1,0 +1,178 @@
+﻿@model MicrobeneficioSanGabriel.Models.Pedido
+
+@{
+    var total = ViewBag.Total;
+}
+
+<link rel="stylesheet" href="~/css/pago.css" asp-append-version="true" />
+
+<div class="payment-page">
+
+    <div class="payment-card">
+
+        <div class="payment-header">
+            <h2>Confirmar compra</h2>
+            <p>Revisá los datos antes de completar el pedido.</p>
+        </div>
+
+        <div class="payment-summary">
+
+            <h4>Resumen del pedido</h4>
+
+            <div class="summary-row">
+                <span>Producto</span>
+                <strong>@Model.Producto?.Nombre</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Cantidad</span>
+                <strong>@Model.Cantidad kg</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Precio por kg</span>
+                <strong>₡@Model.Producto?.Precio.ToString("N2")</strong>
+            </div>
+
+            <div class="summary-row total-row">
+                <span>Total</span>
+                <strong>₡@Convert.ToDecimal(total).ToString("N2")</strong>
+            </div>
+
+        </div>
+
+        <form asp-action="Pago" method="post">
+
+            <input type="hidden"
+                   name="pedidoId"
+                   value="@Model.Id" />
+
+            <div class="customer-info">
+                <input type="text"
+                       id="nombreCompleto"
+                       name="nombreCompleto"
+                       class="form-control"
+                       maxlength="50"
+                       placeholder="Nombre completo" />
+
+                <select class="form-select" name="provincia">
+
+                    <option value="">--Seleccione la provincia--</option>
+                    <option>San José</option>
+                    <option>Alajuela</option>
+                    <option>Cartago</option>
+                    <option>Heredia</option>
+                    <option>Guanacaste</option>
+                    <option>Puntarenas</option>
+                    <option>Limón</option>
+
+                </select>
+            </div>
+
+            <div class="payment-methods">
+
+                <h4>Forma de pago</h4>
+
+                <label class="payment-option">
+                    <input type="radio"
+                           name="metodoPago"
+                           value="Tarjeta"
+                           checked />
+
+                    <span>Tarjeta</span>
+
+                </label>
+                <label class="payment-option">
+                    <input type="radio"
+                           name="metodoPago"
+                           value="Efectivo" />
+                    <span>Pago en efectivo en el establecimiento</span>
+                </label>
+
+            </div>
+
+            <div id="cardSection">
+
+                <div class="card-input-wrapper">
+
+                    <label>Número de tarjeta</label>
+
+                    <div class="card-input-wrapper">
+                        <input type="text"
+                               id="numeroTarjeta"
+                               name="numeroTarjeta"
+                               class="form-control"
+                               maxlength="19"
+                               placeholder="0000 0000 0000 0000"
+                               required />
+
+                        <img id="cardLogo"
+                             class="card-logo"
+                             src=""
+                             alt="logo tarjeta" />
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Fecha vencimiento</label>
+                            <input type="text"
+                                   id="fechaVencimiento"
+                                   name="fechaVencimiento"
+                                   class="form-control payment-small"
+                                   placeholder="MM/AA"
+                                   maxlength="5"
+                                   required />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>CVV</label>
+                            <input type="password"
+                                   id="numeroSecreto"
+                                   name="numeroSecreto"
+                                   maxlength="3"
+                                   inputmode="numeric"
+                                   class="form-control payment-small"
+                                   placeholder=" 123"
+                                   required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cashSection" style="display:none;">
+
+                <div class="cash-message">
+                    El pago se realizará al retirar el pedido en el establecimiento.
+                </div>
+            </div>
+
+            <div class="paymente-actions">
+
+            <button type="submit" class="btn-pay">
+                Confirmar compra
+            </button>
+
+            <a asp-controller="Productos" asp-action="Index"
+                   class="btn-cancel"> No deseo continuar </a>
+            </div>
+        </form>
+    </div>
+
+    <div id="loadingOverlay">
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <h4 id="loadingTitle">
+                Procesando compra...
+            </h4>
+
+            <p id="loadingMessage">
+                Por favor espere.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/Pago.js" asp-append-version="true"></script>

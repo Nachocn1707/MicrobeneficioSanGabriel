@@ -38,5 +38,9 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Display(Name = "Observación")]
         public string? Observacion { get; set; }
+
+        public string MetodoPago { get; set; } = string.Empty;
+
+        public string EstadoPago { get; set; } = string.Empty;
     }
 }

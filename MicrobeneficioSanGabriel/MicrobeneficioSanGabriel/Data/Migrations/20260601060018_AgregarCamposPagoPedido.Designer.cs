@@ -4,6 +4,7 @@ using MicrobeneficioSanGabriel.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MicrobeneficioSanGabriel.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260601060018_AgregarCamposPagoPedido")]
+    partial class AgregarCamposPagoPedido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,6 +171,33 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.HasIndex("ProductorId");
 
                     b.ToTable("Lotes");
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.MetodoPago", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+
+                    b.Property<string>("Alias")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tipo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ultimos4Digitos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("MetodosPago");
                 });
 
             modelBuilder.Entity("MicrobeneficioSanGabriel.Models.MovimientoInventario", b =>
@@ -612,6 +642,15 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Navigation("Productor");
                 });
 
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.MetodoPago", b =>
+                {
+                    b.HasOne("MicrobeneficioSanGabriel.Models.ApplicationUser", "Usuario")
+                        .WithMany("MetodosPago")
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("MicrobeneficioSanGabriel.Models.MovimientoInventario", b =>
                 {
                     b.HasOne("MicrobeneficioSanGabriel.Models.Producto", "Producto")
@@ -719,6 +758,11 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("MetodosPago");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,8 +8,6 @@ namespace MicrobeneficioSanGabriel.Models
 
         public string Apellidos { get; set; } = string.Empty;
 
-        public virtual ICollection<MetodoPago> MetodosPago { get; set; } = new List<MetodoPago>();
-
         public string NombreCompleto
         {
             get
