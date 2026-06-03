@@ -2,6 +2,22 @@
 
 @{
     ViewData["Title"] = "Productos";
+    <div class="sg-visual-hero sg-hero-productos">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-mug-hot"></i>
+                Catálogo del café
+            </span>
+
+            <h1>Productos</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Administrá productos, precios, categorías, stock disponible y estado comercial.
+            </p>
+        </div>
+    </div>
+
 
     if (User.IsInRole("Cliente"))
     {
@@ -367,9 +383,9 @@
 
         <div class="productos-header">
             <div>
-                <h1>Productos</h1>
+                <h1></h1>
                 <div class="productos-title-line"></div>
-                <p>Explorá el catálogo de café disponible en el microbeneficio.</p>
+                <p></p>
             </div>
         </div>
 
@@ -498,9 +514,9 @@ else
 
         <div class="productos-header">
             <div>
-                <h1>Productos</h1>
+                <h1></h1>
                 <div class="productos-title-line"></div>
-                <p>Gestión de productos registrados en el microbeneficio.</p>
+                <p></p>
             </div>
 
             @if (User.IsInRole("Administrador"))

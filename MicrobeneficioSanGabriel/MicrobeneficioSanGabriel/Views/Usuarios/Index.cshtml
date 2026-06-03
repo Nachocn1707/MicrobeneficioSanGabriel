@@ -2,6 +2,23 @@
 
 @{
     ViewData["Title"] = "Usuarios";
+
+    <div class="sg-visual-hero">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-users"></i>
+            Administración de acceso
+        </span>
+
+        <h1>Usuarios del sistema</h1>
+        <div class="sg-visual-line"></div>
+
+        <p>
+            Gestioná cuentas, roles y accesos de los usuarios del sistema.
+        </p>
+    </div>
+</div>
+
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalUsuarios = Model.Count();
@@ -316,10 +333,9 @@
 
     <div class="usuarios-header">
         <div>
-            <h1>Usuarios</h1>
+            <h1></h1>
             <div class="usuarios-title-line"></div>
             <p>
-                Administración de usuarios registrados en el sistema.
             </p>
         </div>
 

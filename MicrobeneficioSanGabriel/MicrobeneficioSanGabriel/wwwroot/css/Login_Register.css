@@ -410,3 +410,246 @@ main {
     }
 }
 
+/* ================================
+   LOGIN CON IMAGEN DE FONDO
+   Solo visual, no toca lógica
+================================ */
+
+.sg-login-bg {
+    min-height: 100vh;
+    background-image: linear-gradient( 90deg, rgba(58, 33, 20, 0.70) 0%, rgba(58, 33, 20, 0.66) 42%, rgba(255, 248, 223, 0.72) 42%, rgba(255, 248, 223, 0.84) 100% ), url("/images/visual/login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+    /* Hace que el contenedor no tape la imagen */
+    .sg-login-bg .login-page {
+        min-height: 100vh;
+        background: transparent !important;
+    }
+
+    /* Panel izquierdo con imagen visible y overlay café */
+    .sg-login-bg .login-brand-panel {
+        background: linear-gradient( rgba(58, 33, 20, 0.78), rgba(58, 33, 20, 0.78) ) !important;
+        backdrop-filter: blur(1px);
+    }
+
+    /* Panel derecho translúcido para que se vea el fondo */
+    .sg-login-bg .login-form-panel {
+        background: linear-gradient( rgba(255, 248, 223, 0.72), rgba(255, 248, 223, 0.84) ) !important;
+        backdrop-filter: blur(3px);
+    }
+
+    /* Tarjeta más premium sobre el fondo */
+    .sg-login-bg .login-card {
+        background: rgba(255, 253, 248, 0.92) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(216, 179, 106, 0.75) !important;
+        box-shadow: 0 24px 70px rgba(58, 33, 20, 0.18) !important;
+    }
+
+    /* Mejora el panel de marca para que no se vea plano */
+    .sg-login-bg .brand-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .sg-login-bg .login-brand-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient( rgba(58, 33, 20, 0.45), rgba(58, 33, 20, 0.65) ), url("/images/visual/login-bg.jpg");
+        background-size: cover;
+        background-position: center left;
+        opacity: 0.65;
+        z-index: 1;
+    }
+
+    .sg-login-bg .login-brand-panel {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Register usando el mismo fondo premium del login */
+
+    .sg-login-bg .register-card {
+        max-height: 88vh;
+        overflow-y: auto;
+        padding-right: 34px;
+    }
+
+        .sg-login-bg .register-card::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sg-login-bg .register-card::-webkit-scrollbar-thumb {
+            background: rgba(122, 82, 48, 0.35);
+            border-radius: 999px;
+        }
+
+.register-security-box {
+    background: rgba(255, 248, 223, 0.76);
+    border: 1px solid rgba(216, 179, 106, 0.55);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+}
+
+    .register-security-box h3 {
+        color: #2b160d;
+        font-size: 0.98rem;
+        font-weight: 950;
+        margin-bottom: 10px;
+    }
+
+    .register-security-box ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .register-security-box li {
+        color: #6b4a35;
+        font-size: 0.88rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+        .register-security-box li::marker {
+            color: #8a5a35;
+        }
+
+.sg-login-bg {
+    min-height: 100vh;
+    background-image: linear-gradient( 90deg, rgba(58, 33, 20, 0.70) 0%, rgba(58, 33, 20, 0.66) 42%, rgba(255, 248, 223, 0.72) 42%, rgba(255, 248, 223, 0.84) 100% ), url("/images/visual/login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+    .sg-login-bg .login-page {
+        min-height: 100vh;
+        background: transparent !important;
+    }
+
+    .sg-login-bg .login-brand-panel {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient( rgba(58, 33, 20, 0.76), rgba(58, 33, 20, 0.76) ) !important;
+    }
+
+        .sg-login-bg .login-brand-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient( rgba(58, 33, 20, 0.40), rgba(58, 33, 20, 0.62) ), url("/images/visual/login-bg.jpg");
+            background-size: cover;
+            background-position: center left;
+            opacity: 0.65;
+            z-index: 1;
+        }
+
+    .sg-login-bg .brand-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .sg-login-bg .login-form-panel {
+        background: linear-gradient( rgba(255, 248, 223, 0.72), rgba(255, 248, 223, 0.86) ) !important;
+        backdrop-filter: blur(3px);
+    }
+
+    .sg-login-bg .login-card {
+        background: rgba(255, 253, 248, 0.92) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(216, 179, 106, 0.75) !important;
+        box-shadow: 0 24px 70px rgba(58, 33, 20, 0.18) !important;
+    }
+
+/* =====================================================
+   PARCHE DEFINITIVO - FONDO REGISTER / LOGIN
+===================================================== */
+
+.sg-login-bg {
+    min-height: 100vh !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(58, 33, 20, 0.40) 0%,
+            rgba(58, 33, 20, 0.32) 42%,
+            rgba(255, 248, 223, 0.45) 42%,
+            rgba(255, 248, 223, 0.68) 100%
+        ),
+        url("/images/visual/login-bg.jpg") center / cover no-repeat !important;
+}
+
+.sg-login-bg > .login-page {
+    min-height: 100vh !important;
+    background: transparent !important;
+}
+
+.sg-login-bg .login-brand-panel {
+    background:
+        linear-gradient(
+            rgba(58, 33, 20, 0.70),
+            rgba(58, 33, 20, 0.70)
+        ),
+        url("/images/visual/login-bg.jpg") center left / cover no-repeat !important;
+}
+
+.sg-login-bg .login-brand-panel::before,
+.sg-login-bg .login-brand-panel::after {
+    display: none !important;
+}
+
+.sg-login-bg .login-form-panel {
+    background:
+        linear-gradient(
+            rgba(255, 248, 223, 0.70),
+            rgba(255, 248, 223, 0.86)
+        ),
+        url("/images/visual/login-bg.jpg") center right / cover no-repeat !important;
+}
+
+.sg-login-bg .login-card {
+    background: rgba(255, 253, 248, 0.92) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(216, 179, 106, 0.75) !important;
+    border-top: 6px solid #f3d27a !important;
+    box-shadow: 0 24px 70px rgba(58, 33, 20, 0.18) !important;
+}
+
+/* =====================================================
+   PARCHE DEFINITIVO - FONDO REGISTER / LOGIN
+===================================================== */
+
+.sg-login-bg {
+    min-height: 100vh !important;
+    background: linear-gradient( 90deg, rgba(58, 33, 20, 0.40) 0%, rgba(58, 33, 20, 0.32) 42%, rgba(255, 248, 223, 0.45) 42%, rgba(255, 248, 223, 0.68) 100% ), url("/images/visual/login-bg.jpg") center / cover no-repeat !important;
+}
+
+    .sg-login-bg > .login-page {
+        min-height: 100vh !important;
+        background: transparent !important;
+    }
+
+    .sg-login-bg .login-brand-panel {
+        background: linear-gradient( rgba(58, 33, 20, 0.70), rgba(58, 33, 20, 0.70) ), url("/images/visual/login-bg.jpg") center left / cover no-repeat !important;
+    }
+
+        .sg-login-bg .login-brand-panel::before,
+        .sg-login-bg .login-brand-panel::after {
+            display: none !important;
+        }
+
+    .sg-login-bg .login-form-panel {
+        background: linear-gradient( rgba(255, 248, 223, 0.70), rgba(255, 248, 223, 0.86) ), url("/images/visual/login-bg.jpg") center right / cover no-repeat !important;
+    }
+
+    .sg-login-bg .login-card {
+        background: rgba(255, 253, 248, 0.92) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(216, 179, 106, 0.75) !important;
+        border-top: 6px solid #f3d27a !important;
+        box-shadow: 0 24px 70px rgba(58, 33, 20, 0.18) !important;
+    }

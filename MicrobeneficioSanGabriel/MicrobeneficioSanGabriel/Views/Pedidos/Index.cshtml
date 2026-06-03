@@ -2,6 +2,22 @@
 
 @{
     ViewData["Title"] = "Pedidos";
+    <div class="sg-visual-hero sg-hero-pedidos">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-cart-shopping"></i>
+                Gestión comercial
+            </span>
+
+            <h1>Pedidos</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Consultá solicitudes de clientes, estados de pedidos y seguimiento comercial.
+            </p>
+        </div>
+    </div>
+
 
     if (User.IsInRole("Cliente"))
     {
@@ -305,16 +321,16 @@
 
     <div class="pedidos-header">
         <div>
-            <h1>Pedidos</h1>
+            <h1></h1>
             <div class="pedidos-title-line"></div>
 
             @if (User.IsInRole("Cliente"))
             {
-                <p>Consultá tus pedidos, revisá su estado y gestioná solicitudes pendientes.</p>
+                <p></p>
             }
             else
             {
-                <p>Gestión de pedidos y solicitudes de clientes.</p>
+                <p></p>
             }
         </div>
 

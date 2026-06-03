@@ -2,6 +2,21 @@
 
 @{
     ViewData["Title"] = "Facturación";
+    <div class="sg-visual-hero sg-hero-facturacion">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                Gestión de facturas
+            </span>
+
+            <h1>Facturación</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Consultá facturas emitidas, estados de pago, montos y registros asociados a pedidos.
+            </p>
+        </div>
+    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalFacturas = Model.Count();
@@ -286,11 +301,10 @@
 
     <div class="facturas-header">
         <div>
-            <h1>Facturación</h1>
+            <h1></h1>
             <div class="facturas-title-line"></div>
             <p>
-                Gestión de facturas, pagos, anulaciones e impresión de comprobantes del microbeneficio.
-            </p>
+              </p>
         </div>
 
         <a asp-action="Create" class="btn-nueva-factura">

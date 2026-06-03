@@ -29,13 +29,14 @@ var nombreCliente = usuarioActual != null
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/visual-backgrounds.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
-<body>
+<body class="sg-coffee-bg">
     <div class="sg-client-wrapper">
 
         <aside class="sg-client-sidebar">

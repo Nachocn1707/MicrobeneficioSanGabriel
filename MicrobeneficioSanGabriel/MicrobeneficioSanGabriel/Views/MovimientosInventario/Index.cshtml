@@ -2,6 +2,21 @@
 
 @{
     ViewData["Title"] = "Inventario";
+    <div class="sg-visual-hero sg-hero-inventario">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                Control de inventario
+            </span>
+
+            <h1>Inventario del microbeneficio</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Consultá entradas, salidas, movimientos y disponibilidad de productos.
+            </p>
+        </div>
+    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalMovimientos = Model.Count();
@@ -272,10 +287,9 @@
 
     <div class="inventario-header">
         <div>
-            <h1>Inventario</h1>
+            <h1></h1>
             <div class="inventario-title-line"></div>
             <p>
-                Historial de entradas y salidas de productos del microbeneficio.
             </p>
         </div>
 

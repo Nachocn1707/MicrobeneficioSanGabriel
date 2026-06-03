@@ -1,5 +1,4 @@
 ﻿@page
-@using MicrobeneficioSanGabriel.Models;
 @model LoginModel
 
 @{
@@ -8,107 +7,149 @@
 
 <link rel="stylesheet" href="~/css/Login_Register.css" />
 
-<div class="login-page"> 
+<div class="sg-login-bg">
 
-    <section class="login-brand-panel">
-        <div class="brand-content">
-            <div class="brand-badge">
-                <i class="fa-solid fa-mug-hot"></i>
-            </div>
+    <div class="login-page">
 
-            <h1>San Gabriel</h1>
-            <p>Microbeneficio cafetalero</p>
-
-            <div class="brand-line"></div>
-
-            <span>Sistema de gestión administrativa</span>
-        </div>
-    </section>
-
-    <section class="login-form-panel">
-        <div class="login-card">
-
-            <div class="login-card-header">
-                <div class="user-icon">
-                    <i class="fa-solid fa-user"></i>
+        <section class="login-brand-panel">
+            <div class="brand-content">
+                <div class="brand-badge">
+                    <i class="fa-solid fa-mug-hot"></i>
                 </div>
 
-                <h2>Bienvenido</h2>
-                <p>Ingresá tus credenciales para continuar.</p>
+                <h1>San Gabriel</h1>
+                <p>Microbeneficio cafetalero</p>
+
+                <div class="brand-line"></div>
+
+                <span>Sistema de gestión administrativa</span>
             </div>
+        </section>
 
-            <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+        <section class="login-form-panel">
+            <div class="login-card">
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger validation-summary mb-3">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" asp-for="Input.Email">Correo</label>
-
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-envelope"></i>
-
-                        <input asp-for="Input.Email"
-                               class="form-control custom-input"
-                               autocomplete="username"
-                               placeholder="correo@ejemplo.com" />
+                <div class="login-card-header">
+                    <div class="user-icon">
+                        <i class="fa-solid fa-user"></i>
                     </div>
 
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <h2>Bienvenido</h2>
+                    <p>Ingresá tus credenciales para continuar.</p>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" asp-for="Input.Password">Contraseña</label>
+                <form method="post"
+                      asp-route-returnUrl="@Model.ReturnUrl">
 
-                    <div class="input-wrapper password-field">
-                        <i class="fa-solid fa-lock"></i>
-
-                        <input asp-for="Input.Password"
-                               id="loginPassword"
-                               class="form-control custom-input"
-                               autocomplete="current-password"
-                               placeholder="Ingresá tu contraseña" />
-
-                        <button type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('loginPassword', 'loginPasswordIcon')"
-                                aria-label="Mostrar u ocultar contraseña">
-                            <i id="loginPasswordIcon" class="fa-solid fa-eye"></i>
-                        </button>
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger validation-summary mb-3">
                     </div>
 
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label"
+                               asp-for="Input.Email">
+                            Correo
+                        </label>
 
-                <div class="form-check mb-3">
-                    <input asp-for="Input.RememberMe" class="form-check-input" />
-                    <label asp-for="Input.RememberMe" class="form-check-label">
-                        Recordarme
-                    </label>
-                </div>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope"></i>
 
-                <button type="submit" class="btn-login">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Iniciar sesión
-                </button>
+                            <input asp-for="Input.Email"
+                                   class="form-control custom-input"
+                                   autocomplete="username"
+                                   placeholder="correo@ejemplo.com" />
+                        </div>
 
-                <div class="links">
-                    <a asp-page="./ForgotPassword">
-                        ¿Olvidó su contraseña?
-                    </a>
+                        <span asp-validation-for="Input.Email"
+                              class="text-danger">
+                        </span>
+                    </div>
 
-                    <a asp-page="./Register">
-                        Registrarse
-                    </a>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label"
+                               asp-for="Input.Password">
+                            Contraseña
+                        </label>
 
-            </form>
-        </div>
-    </section>
+                        <div class="input-wrapper password-field">
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input asp-for="Input.Password"
+                                   id="loginPassword"
+                                   class="form-control custom-input"
+                                   autocomplete="current-password"
+                                   placeholder="Ingresá tu contraseña" />
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('loginPassword', 'loginPasswordIcon')"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                <i id="loginPasswordIcon"
+                                       class="fa-solid fa-eye">
+                                </i>
+                            </button>
+                        </div>
+
+                        <span asp-validation-for="Input.Password"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input asp-for="Input.RememberMe"
+                               class="form-check-input" />
+
+                        <label asp-for="Input.RememberMe"
+                               class="form-check-label">
+                            Recordarme
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                            class="btn-login">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Iniciar sesión
+                    </button>
+
+                    <div class="links">
+                        <a asp-page="./ForgotPassword">
+                            ¿Olvidó su contraseña?
+                        </a>
+
+                        <a asp-page="./Register">
+                            Registrarse
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+    </div>
+
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (!input || !icon) {
+                return;
+            }
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 }

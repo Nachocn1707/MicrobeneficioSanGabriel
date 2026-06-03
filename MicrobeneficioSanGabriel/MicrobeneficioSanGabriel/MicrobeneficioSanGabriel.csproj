@@ -21,8 +21,11 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\brand\" />
-    <Folder Include="wwwroot\images\auth\" />
     <Folder Include="wwwroot\images\decor\" />
+    <Folder Include="wwwroot\img\login\" />
+    <Folder Include="wwwroot\img\dashboard\" />
+    <Folder Include="wwwroot\img\modules\" />
+    <Folder Include="wwwroot\img\shared\" />
   </ItemGroup>
 
 </Project>

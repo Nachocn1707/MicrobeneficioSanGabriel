@@ -4,6 +4,21 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+    <div class="sg-visual-hero sg-hero-dashboard">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-chart-line"></i>
+                Panel administrativo
+            </span>
+
+            <h1>Dashboard general</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Visualizá indicadores principales, alertas, pedidos recientes y estado general del microbeneficio.
+            </p>
+        </div>
+    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var ultimosPedidos = ViewBag.UltimosPedidos as List<Pedido>;

@@ -2,6 +2,21 @@
 
 @{
     ViewData["Title"] = "Trazabilidad";
+    <div class="sg-visual-hero sg-hero-trazabilidad">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-route"></i>
+                Seguimiento del café
+            </span>
+
+            <h1>Trazabilidad del proceso</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Revisá el recorrido del café desde el lote recibido hasta las etapas de producción.
+            </p>
+        </div>
+    </div>
 
     if (User.IsInRole("Cliente"))
     {
@@ -354,10 +369,9 @@
 
     <div class="trazabilidad-header">
         <div>
-            <h1>Trazabilidad</h1>
+            <h1></h1>
             <div class="trazabilidad-title-line"></div>
             <p>
-                Seguimiento completo del café desde el productor hasta la producción.
             </p>
         </div>
 

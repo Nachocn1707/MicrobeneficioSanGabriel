@@ -2,6 +2,23 @@
 
 @{
     ViewData["Title"] = "Lotes";
+
+    <div class="sg-visual-hero sg-hero-lotes">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-layer-group"></i>
+                Recepción de café
+            </span>
+
+            <h1>Lotes recibidos</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Visualizá el origen, peso, productor y estado de cada lote registrado.
+            </p>
+        </div>
+    </div>
+
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalLotes = Model.Count();
@@ -333,10 +350,9 @@
 
     <div class="lotes-header">
         <div>
-            <h1>Lotes</h1>
+            <h1></h1>
             <div class="lotes-title-line"></div>
             <p>
-                Gestión de lotes de café recibidos en el microbeneficio.
             </p>
         </div>
 

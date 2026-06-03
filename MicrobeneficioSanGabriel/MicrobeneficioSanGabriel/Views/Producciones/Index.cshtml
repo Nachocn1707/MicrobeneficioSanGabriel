@@ -2,6 +2,23 @@
 
 @{
     ViewData["Title"] = "Producción";
+
+    <div class="sg-visual-hero sg-hero-produccion">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-industry"></i>
+                Proceso productivo
+            </span>
+
+            <h1>Producción del café</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Controlá procesos, cantidades procesadas, resultados y estados de producción.
+            </p>
+        </div>
+    </div>
+
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalProducciones = Model.Count();
@@ -284,10 +301,8 @@
 
     <div class="produccion-header">
         <div>
-            <h1>Producción</h1>
+            <h1></h1>
             <div class="produccion-title-line"></div>
-            <p>
-                Gestión de procesos de producción del microbeneficio.
             </p>
         </div>
 

@@ -6,8 +6,50 @@
     ViewData["Title"] = "Registrarse";
 }
 
-<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-<link rel="stylesheet" href="~/css/Login_Register.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<link rel="stylesheet" href="~/css/Login_Register.css" asp-append-version="true" />
+
+<style>
+    body {
+        background-image: linear-gradient( 90deg, rgba(58, 33, 20, 0.25) 0%, rgba(58, 33, 20, 0.18) 42%, rgba(255, 248, 223, 0.45) 42%, rgba(255, 248, 223, 0.72) 100% ), url("/images/visual/login-bg.jpg") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }
+
+    .login-page {
+        background: transparent !important;
+    }
+
+    .login-brand-panel {
+        background-image: linear-gradient( rgba(58, 33, 20, 0.68), rgba(58, 33, 20, 0.68) ), url("/images/visual/login-bg.jpg") !important;
+        background-size: cover !important;
+        background-position: center left !important;
+        background-repeat: no-repeat !important;
+    }
+
+        .login-brand-panel::before,
+        .login-brand-panel::after {
+            display: none !important;
+            content: none !important;
+        }
+
+    .login-form-panel {
+        background-image: linear-gradient( rgba(255, 248, 223, 0.68), rgba(255, 248, 223, 0.84) ), url("/images/visual/login-bg.jpg") !important;
+        background-size: cover !important;
+        background-position: center right !important;
+        background-repeat: no-repeat !important;
+    }
+
+    .login-card {
+        background: rgba(255, 253, 248, 0.92) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(216, 179, 106, 0.75) !important;
+        border-top: 6px solid #f3d27a !important;
+        box-shadow: 0 24px 70px rgba(58, 33, 20, 0.18) !important;
+    }
+</style>
 
 <div class="login-page">
 

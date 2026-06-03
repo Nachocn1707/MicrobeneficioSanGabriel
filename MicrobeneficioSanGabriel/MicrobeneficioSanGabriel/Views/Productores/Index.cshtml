@@ -2,6 +2,21 @@
 
 @{
     ViewData["Title"] = "Productores";
+    <div class="sg-visual-hero sg-hero-productores">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-user-tie"></i>
+                Gestión cafetalera
+            </span>
+
+            <h1>Productores registrados</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Administrá la información de productores, fincas, contacto y estado de registro.
+            </p>
+        </div>
+    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalProductores = Model.Count();
@@ -298,10 +313,9 @@
 
     <div class="productores-header">
         <div>
-            <h1>Productores</h1>
+            <h1></h1>
             <div class="productores-title-line"></div>
             <p>
-                Gestión de productores registrados en el microbeneficio.
             </p>
         </div>
 

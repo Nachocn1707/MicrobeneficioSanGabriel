@@ -1,0 +1,207 @@
+﻿/* ================================
+   VISUAL BACKGROUNDS - SAN GABRIEL
+   Solo estilos visuales, no lógica
+================================ */
+
+.sg-bg-page {
+    position: relative;
+    min-height: calc(100vh - 76px);
+}
+
+    .sg-bg-page::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient( rgba(255, 248, 223, 0.86), rgba(255, 248, 223, 0.90) ), url("/images/visual/coffee-banner.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        z-index: -2;
+    }
+
+    .sg-bg-page::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(216, 179, 106, 0.28), transparent 34%), radial-gradient(circle at bottom left, rgba(75, 39, 23, 0.16), transparent 28%);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+/* Hero visual para index/dashboard */
+.sg-visual-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    border: 1px solid rgba(216, 179, 106, 0.55);
+    min-height: 220px;
+    padding: 34px;
+    margin-bottom: 26px;
+    box-shadow: 0 18px 48px rgba(58, 33, 20, 0.12);
+    background-image: linear-gradient( 90deg, rgba(58, 33, 20, 0.82), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.35) ), url("/images/visual/coffee-banner.jpg");
+    background-size: cover;
+    background-position: center;
+    color: #fff8df;
+    display: flex;
+    align-items: center;
+}
+
+.sg-visual-hero-content {
+    max-width: 680px;
+    position: relative;
+    z-index: 2;
+}
+
+.sg-visual-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(243, 210, 122, 0.18);
+    border: 1px solid rgba(243, 210, 122, 0.42);
+    color: #fff3c4;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 950;
+    margin-bottom: 14px;
+    backdrop-filter: blur(4px);
+}
+
+.sg-visual-hero h1 {
+    color: #fff3c4;
+    font-size: clamp(2rem, 3vw, 3.3rem);
+    font-weight: 950;
+    margin: 0;
+    line-height: 1.05;
+}
+
+.sg-visual-line {
+    width: 82px;
+    height: 5px;
+    border-radius: 999px;
+    background: #f3d27a;
+    margin: 16px 0;
+}
+
+.sg-visual-hero p {
+    color: #fff8df;
+    font-size: 1rem;
+    font-weight: 750;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Variantes por módulo */
+.sg-hero-dashboard {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.82), rgba(58, 33, 20, 0.42), rgba(255, 248, 223, 0.28)), url("/images/visual/coffee-banner.jpg");
+}
+
+.sg-hero-productos {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.82), rgba(58, 33, 20, 0.45), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-beans.jpg");
+}
+
+.sg-hero-pedidos {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.46), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-sack.jpg");
+}
+
+.sg-hero-produccion {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.46), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-process.jpg");
+}
+
+.sg-hero-lotes,
+.sg-hero-trazabilidad {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.46), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-farm.jpg");
+}
+
+/* Tarjetas sobre fondo visual */
+.sg-visual-card {
+    background: rgba(255, 253, 248, 0.92) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(234, 216, 162, 0.75) !important;
+    box-shadow: 0 18px 46px rgba(58, 33, 20, 0.10) !important;
+}
+
+/* Login visual compatible sin tocar lógica */
+.sg-login-bg {
+    min-height: 100vh;
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.78) 0%, rgba(58, 33, 20, 0.72) 42%, rgba(255, 248, 223, 0.78) 42%, rgba(255, 248, 223, 0.88) 100%), url("/images/visual/login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+@media (max-width: 768px) {
+    .sg-visual-hero {
+        min-height: 190px;
+        padding: 24px;
+    }
+
+        .sg-visual-hero h1 {
+            font-size: 2rem;
+        }
+}
+
+
+.admin-card,
+.card,
+.pedidos-table-card,
+.EstiloDetalle-card,
+.EstiloEditar-card,
+.VistaCrear-card {
+    background: rgba(255, 253, 248, 0.93) !important;
+    backdrop-filter: blur(8px);
+}
+
+.sg-hero-dashboard {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/dashboard.jpg");
+}
+
+.sg-hero-usuarios {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/usuarios.jpg");
+}
+
+.sg-hero-productores {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/productores.jpg");
+}
+
+.sg-hero-productos {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/productos.jpg");
+}
+
+.sg-hero-inventario {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/inventario.jpg");
+}
+
+.sg-hero-lotes {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/lotes.jpg");
+}
+
+.sg-hero-produccion {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/produccion.jpg");
+}
+
+.sg-hero-trazabilidad {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/trazabilidad.jpg");
+}
+
+.sg-hero-pedidos {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/pedidos.jpg");
+}
+
+.sg-hero-facturacion {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/facturacion.jpg");
+}
+
+.sg-hero-contabilidad {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/contabilidad.jpg");
+}
+
+.sg-hero-reportes {
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.48), rgba(255, 248, 223, 0.25)), url("/images/visual/reportes.jpg");
+}
+
+.sg-login-bg {
+    min-height: 100vh;
+    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.78) 0%, rgba(58, 33, 20, 0.72) 42%, rgba(255, 248, 223, 0.78) 42%, rgba(255, 248, 223, 0.88) 100%), url("/images/visual/login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+}

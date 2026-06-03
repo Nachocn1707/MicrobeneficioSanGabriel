@@ -1,5 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Reportes";
+    <div class="sg-visual-hero sg-hero-reportes">
+        <div class="sg-visual-hero-content">
+            <span class="sg-visual-badge">
+                <i class="fa-solid fa-chart-pie"></i>
+                Análisis del sistema
+            </span>
+
+            <h1>Reportes administrativos</h1>
+            <div class="sg-visual-line"></div>
+
+            <p>
+                Consultá métricas, filtros por fecha, ventas, stock y datos generales para la toma de decisiones.
+            </p>
+        </div>
+    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     decimal totalVentas = ViewBag.TotalVentas ?? 0;
@@ -11,10 +26,9 @@
     int stockPorcentaje = totalStock > 100 ? 100 : (int)totalStock;
 }
 
-<h1 class="fw-bold">Reportes</h1>
+<h1 class="fw-bold"></h1>
 
 <p class="text-muted mb-4">
-    Resumen general de información operativa y administrativa.
 </p>
 
 <form method="get" asp-action="Index" class="row g-3 mb-4">
