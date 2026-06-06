@@ -69,15 +69,31 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<IActionResult> Create(
-            [Bind("Id,CodigoLote,ProductorId,PesoKg,FechaRecepcion,Estado,Observacion")]
-            Lote lote)
+        [Bind("Id,ProductorId,PesoKg,FechaRecepcion,Estado,Observacion")]
+        Lote lote)
         {
             if (ModelState.IsValid)
             {
+                var añoActual = DateTime.Now.Year;
+                var ultimoLote = await _context.Lotes
+                    .Where(l => l.CodigoLote.StartsWith($"LOT-{añoActual}-"))
+                    .OrderByDescending(l => l.CodigoLote)
+                    .FirstOrDefaultAsync();
+                int consecutivo = 1;
+                if (ultimoLote != null)
+                {
+                    var partes = ultimoLote.CodigoLote.Split('-');
+                    if (partes.Length == 3)
+                    {
+                        consecutivo = int.Parse(partes[2]) + 1;
+                    }
+                }
+                lote.CodigoLote =
+                    $"LOT-{añoActual}-{consecutivo:D4}";
                 _context.Add(lote);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProductorId"] = new SelectList(
@@ -90,6 +106,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "NombreCompleto",
                 lote.ProductorId
             );
+
             return View(lote);
         }
         // =========================

@@ -152,13 +152,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
-            var trazabilidad = await _context.Trazabilidades.FindAsync(id);
-
+            var trazabilidad = await _context.Trazabilidades.Include(t => t.Lote).FirstOrDefaultAsync(t => t.Id == id);
             if (trazabilidad == null)
             {
                 return NotFound();
             }
 
+            ViewBag.CodigoLote = trazabilidad.Lote?.CodigoLote;
             CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
             return View(trazabilidad);
         }

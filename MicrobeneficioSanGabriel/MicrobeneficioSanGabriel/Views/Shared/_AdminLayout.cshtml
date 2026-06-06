@@ -1,5 +1,7 @@
 ﻿@using System.Text.Json
 @using MicrobeneficioSanGabriel.ViewModels
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 @inject MicrobeneficioSanGabriel.Services.IAlertasSistemaService AlertasSistemaService
 
 @{
@@ -33,7 +35,14 @@
             tiempo = a.Tiempo
         })
     );
+
+    var usuarioActual = await UserManager.GetUserAsync(User);
+
+    var nombreCliente = usuarioActual != null
+        ? usuarioActual.NombreCompleto
+        : "Cliente";
 }
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -303,6 +312,21 @@
                 border-left-color: #3f8f4d;
             }
 
+            .user-info {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .user-name {
+                font-weight: 700;
+                color: black;
+            }
+
+            .user-role {
+                font-size: .85rem;
+                opacity: .8;
+            }
+
             @@keyframes toastIn {
                 from {
                     opacity: 0;
@@ -432,10 +456,6 @@
 
             <header class="sg-topbar">
                 <div class="sg-topbar-title">
-                    <button type="button" class="sg-menu-button">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-
                     <div>
                         <h5>@ViewData["Title"]</h5>
                         <small>Sistema de gestión administrativa</small>
@@ -499,9 +519,14 @@
 
                     <div class="sg-user-pill">
                         <i class="fa-solid fa-user"></i>
+                        <div class="user-info">
+                            <div class="user-name">
+                                @usuarioActual?.NombreCompleto
+                            </div>
 
-                        <div>
-                            <strong>@NombreRol()</strong>
+                            <div class="user-role">
+                                @NombreRol()
+                            </div>
                         </div>
                     </div>
 
@@ -531,6 +556,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/Validaciones.js"></script>
 
     <script>
         (() => {

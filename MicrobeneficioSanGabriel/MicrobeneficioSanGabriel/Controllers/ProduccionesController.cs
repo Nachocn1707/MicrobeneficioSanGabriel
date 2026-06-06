@@ -217,14 +217,25 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produccion = await _context.Producciones.FindAsync(id);
-
-            if (produccion != null)
+            try
             {
-                _context.Producciones.Remove(produccion);
-            }
+                var produccion = await _context.Producciones.FindAsync(id);
 
-            await _context.SaveChangesAsync();
+                if (produccion != null)
+                {
+                    _context.Producciones.Remove(produccion);
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] =
+                   "La lista de producción se ha eliminado correctamente.";
+
+            }
+            catch
+            {
+                TempData["Error"] =
+                    "No se puede eliminar la produccón porque tiene información relacionada con trazabilidad.";
+            }
 
             return RedirectToAction(nameof(Index));
         }

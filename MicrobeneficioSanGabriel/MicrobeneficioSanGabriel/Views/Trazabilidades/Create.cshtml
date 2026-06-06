@@ -213,14 +213,12 @@
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-comment"></i>
 
-                            <textarea asp-for="Observacion"
-                                      class="form-control"
-                                      rows="4"
-                                      placeholder="Detalle adicional del seguimiento"></textarea>
-
+                            <input asp-for="Observacion"
+                                   maxlength="40"    
+                                   class="form-control"
+                                   placeholder="Detalle adicional del seguimiento" />
                         </div>
 
                         <span asp-validation-for="Observacion"

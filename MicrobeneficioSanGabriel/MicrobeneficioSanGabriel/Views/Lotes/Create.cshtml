@@ -77,26 +77,8 @@
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-md-6">
-
-                        <label asp-for="CodigoLote"
-                               class="form-label">
-                            Código del lote
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-barcode"></i>
-
-                            <input asp-for="CodigoLote"
-                                   class="form-control"
-                                   placeholder="Ej: LOT-001" />
-
-                        </div>
-
-                        <span asp-validation-for="CodigoLote"
-                              class="text-danger">
-                        </span>
-
+                    <div class="alert alert-info">
+                        El código del lote será generado automáticamente por el sistema.
                     </div>
                     <div class="col-md-6">
 
@@ -220,6 +202,7 @@
                             <i class="fa-solid fa-comment"></i>
 
                             <input asp-for="Observacion"
+                                   maxlength="40"
                                    class="form-control"
                                    placeholder="Detalle adicional del lote" />
 
@@ -234,8 +217,10 @@
                 </div>
                 <div class="VistaCrear-actions">
 
-                    <a asp-action="Index"
-                       class="btn-cancelar">
+                    <a asp-controller="Productores"
+                       asp-action="Index"
+                       class="btn btn-link">
+                        <i class="fa-solid fa-plus"></i>
                         Volver
                     </a>
 
@@ -243,9 +228,7 @@
                             class="btn-crear">
 
                         <i class="fa-solid fa-floppy-disk"></i>
-
                         Guardar lote
-
                     </button>
 
                 </div>

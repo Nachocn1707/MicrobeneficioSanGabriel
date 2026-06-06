@@ -54,9 +54,11 @@
                             Categoría
                         </label>
 
-                        <input asp-for="Categoria"
-                               class="form-control"
-                               placeholder="Ej: Café Molido" />
+                        <select asp-for="Categoria" class="form-select">
+                            <option value="">-- Seleccione una categoría -- </option>
+                            <option value="Caturra"> Caturra</option>
+                            <option value="Catuaí">Catuaí</option>
+                        </select>
 
                         <span asp-validation-for="Categoria"
                               class="text-danger">
@@ -127,10 +129,9 @@
                             Descripción
                         </label>
 
-                        <textarea asp-for="Descripcion"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Descripción breve del producto"></textarea>
+                        <input asp-for="Descripcion"
+                               class="form-control"
+                               placeholder="Descripcion del producto" />
 
                         <span asp-validation-for="Descripcion"
                               class="text-danger">
