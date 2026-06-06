@@ -54,8 +54,21 @@ namespace MicrobeneficioSanGabriel.Controllers
         // =========================
         // CREAR
         // =========================
-        public IActionResult Create()
+        public IActionResult Create(int? productorId)
         {
+            if (productorId != null)
+            {
+                var productor = _context.Productores
+                    .FirstOrDefault(p => p.Id == productorId);
+                if (productor == null)
+                {
+                    return NotFound();
+                }
+
+                ViewBag.NombreProductor = $"{productor.Nombre} - {productor.Cedula}";
+                return View(new Lote{ProductorId = productor.Id});
+            }
+
             ViewData["ProductorId"] = new SelectList(
                 _context.Productores.Select(p => new
                 {
@@ -65,9 +78,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "Id",
                 "NombreCompleto"
             );
+
             return View();
         }
-        [HttpPost]
+
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Create(
@@ -148,6 +162,15 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
+
+            var loteOriginal = await _context.Lotes.AsNoTracking() .FirstOrDefaultAsync(l => l.Id == lote.Id);
+
+            if(loteOriginal == null)
+            {
+                return NotFound();
+            }
+            lote.CodigoLote = loteOriginal.CodigoLote;
+
             if (ModelState.IsValid)
             {
                 try

@@ -7,7 +7,6 @@ namespace MicrobeneficioSanGabriel.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El código del lote es obligatorio")]
         [Display(Name = "Código")]
         public string CodigoLote { get; set; } = string.Empty;
 

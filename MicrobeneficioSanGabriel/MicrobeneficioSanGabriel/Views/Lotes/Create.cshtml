@@ -82,25 +82,18 @@
                     </div>
                     <div class="col-md-6">
 
-                        <label asp-for="ProductorId"
-                               class="form-label">
+                        <label class="form-label">
                             Productor
                         </label>
 
                         <div class="input-modern">
-
                             <i class="fa-solid fa-user"></i>
 
-                            <select asp-for="ProductorId"
-                                    class="form-select"
-                                    asp-items="ViewBag.ProductorId">
+                            <input value="@ViewBag.NombreProductor"
+                                   class="form-control"
+                                   readonly />
 
-                                <option value="">
-                                    Seleccione un productor
-                                </option>
-
-                            </select>
-
+                            <input asp-for="ProductorId" type="hidden" />
                         </div>
 
                         <span asp-validation-for="ProductorId"
@@ -143,6 +136,7 @@
 
                             <input asp-for="FechaRecepcion"
                                    type="datetime-local"
+                                   value="@Model.FechaRecepcion.ToString("yyyy-MM-ddTHH:mm")"
                                    class="form-control" />
 
                         </div>
@@ -219,14 +213,13 @@
 
                     <a asp-controller="Productores"
                        asp-action="Index"
-                       class="btn btn-link">
-                        <i class="fa-solid fa-plus"></i>
+                       class="btn-cancelar">
+                        <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
                     <button type="submit"
-                            class="btn-crear">
-
+                            class="btn-pedido-create btn-pedido-volver">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar lote
                     </button>

@@ -335,21 +335,18 @@
                 <div class="row g-4">
 
                     <div class="col-md-6 lote-field">
-                        <label asp-for="CodigoLote" class="form-label">
-                            Código del lote
+
+                        <label class="form-label">
+                            Código de lote
                         </label>
 
                         <div class="input-modern">
                             <i class="fa-solid fa-barcode"></i>
-
-                            <input asp-for="CodigoLote"
+                            <input value="@Model.CodigoLote"
                                    class="form-control"
-                                   placeholder="Ej: LOT-001" />
+                                   readonly />
+                            <input asp-for="CodigoLote" type="hidden" />
                         </div>
-
-                        <span asp-validation-for="CodigoLote"
-                              class="text-danger">
-                        </span>
                     </div>
 
                     <div class="col-md-6 lote-field">
