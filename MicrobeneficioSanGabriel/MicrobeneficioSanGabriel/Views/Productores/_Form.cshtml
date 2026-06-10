@@ -50,8 +50,8 @@
         <span asp-validation-for="Distrito" class="text-danger"></span>
     </div>
     <div class="col-12">
-        <label asp-for="DireccionExacta" class="form-label"></label>
+        <label asp-for="DireccionExacta" class="form-label" ></label>
         <textarea asp-for="DireccionExacta" class="form-control" rows="3" placeholder="Señas exactas y puntos de referencia"></textarea>
-        <span asp-validation-for="DireccionExacta" class="text-danger"></span>
+        <span asp-validation-for="DireccionExacta" class="text-danger" maxlength="100"></span>
     </div>
 </div>

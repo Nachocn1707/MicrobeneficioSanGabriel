@@ -108,9 +108,14 @@
                         <div class="input-modern">
                             <i class="fa-solid fa-tags"></i>
 
-                            <input asp-for="Categoria"
-                                   class="form-control"
-                                   placeholder="Venta, mantenimiento, transporte..." />
+                            <select asp-for="Categoria" class="form-select">
+                                <option value="">Seleccione la categoria</option>
+                                <option value="Ingreso">Venta</option>
+                                <option value="Gasto">Mantenimiento</option>
+                                <option value="Gasto">Transporte</option>
+                                <option value="Gasto">Nómina</option>
+                            </select>
+
                         </div>
 
                         <span asp-validation-for="Categoria" class="text-danger"></span>

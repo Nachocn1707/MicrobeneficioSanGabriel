@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
     soloNumeros("Telefono", 8);
     soloLetras("Finca", 11)
     soloNumeros("Precio", 5)
-
+    soloLetras("Canton", 12)
+    soloLetras("Distrito", 12)
+    
     //Inventario
     soloNumeros("Cantidad", 5)
 
