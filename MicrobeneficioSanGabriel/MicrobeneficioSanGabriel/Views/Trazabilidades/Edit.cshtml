@@ -39,16 +39,19 @@
 
                     <div class="col-md-6">
 
-                        <label class="form-label">
+                        <label asp-for="LoteId" class="form-label">
                             Lote
                         </label>
 
-                        <input value="@ViewBag.CodigoLote"
-                               class="form-control"
-                               readonly />
+                        <select asp-for="LoteId"
+                                class="form-select"
+                                asp-items="ViewBag.LoteId">
+                            <option value="">Seleccione un lote</option>
+                        </select>
 
-                        <input asp-for="LoteId"
-                               type="hidden" />
+                        <span asp-validation-for="LoteId"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -131,10 +134,10 @@
                             Observación
                         </label>
 
-                        <input asp-for="Observacion"
-                               maxlength="40"
-                               class="form-control"
-                               placeholder="Detalle adicional del seguimiento" />
+                        <textarea asp-for="Observacion"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Detalle adicional del seguimiento"></textarea>
 
                         <span asp-validation-for="Observacion"
                               class="text-danger">

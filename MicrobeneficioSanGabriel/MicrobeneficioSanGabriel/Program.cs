@@ -68,6 +68,11 @@ app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
+    // Aplica automáticamente las migraciones pendientes antes de crear roles y usuarios.
+    // Esto incluye las mejoras de productores, fincas, lotes y auditoría.
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync();
+
     await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
 

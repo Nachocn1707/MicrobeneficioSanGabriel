@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using MicrobeneficioSanGabriel.Services;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -61,6 +62,12 @@ namespace MicrobeneficioSanGabriel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Produccion produccion)
         {
+            if (produccion.CantidadResultanteKg > produccion.CantidadProcesadaKg)
+            {
+                ModelState.AddModelError(nameof(Produccion.CantidadResultanteKg),
+                    "La cantidad resultante no puede superar la cantidad procesada.");
+            }
+
             if (ModelState.IsValid)
             {
                 produccion.FechaProduccion = DateTime.Now;
@@ -93,6 +100,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                     }
                 }
 
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Producciones", "Crear", produccion.Id,
+                    $"Se registró la producción #{produccion.Id} para el lote {produccion.LoteId}.");
+                TempData["Success"] = "Producción registrada correctamente.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -140,6 +151,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            if (produccion.CantidadResultanteKg > produccion.CantidadProcesadaKg)
+            {
+                ModelState.AddModelError(nameof(Produccion.CantidadResultanteKg),
+                    "La cantidad resultante no puede superar la cantidad procesada.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -171,6 +188,10 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                     _context.Update(produccion);
                     await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Producciones", "Editar", produccion.Id,
+                        $"Se actualizó la producción #{produccion.Id}.");
+                    TempData["Success"] = "Producción actualizada correctamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -217,24 +238,62 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                var produccion = await _context.Producciones.FindAsync(id);
+                var produccion = await _context.Producciones
+                    .Include(p => p.Producto)
+                    .FirstOrDefaultAsync(p => p.Id == id);
 
-                if (produccion != null)
+                if (produccion == null)
                 {
-                    _context.Producciones.Remove(produccion);
+                    return NotFound();
                 }
 
-                await _context.SaveChangesAsync();
-                TempData["Success"] =
-                   "La lista de producción se ha eliminado correctamente.";
+                // Si la producción completada aumentó el inventario, se revierte ese movimiento.
+                if (produccion.Estado == "Completado" && produccion.Producto != null)
+                {
+                    var cantidadARevertir = (int)produccion.CantidadResultanteKg;
 
+                    if (produccion.Producto.Stock < cantidadARevertir)
+                    {
+                        TempData["Error"] =
+                            "No se puede eliminar la producción porque parte de su inventario ya fue utilizado.";
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    produccion.Producto.Stock -= cantidadARevertir;
+
+                    var movimientos = await _context.MovimientosInventario
+                        .Where(m => m.ProductoId == produccion.ProductoId &&
+                                    m.TipoMovimiento == "Entrada" &&
+                                    m.Observacion == $"Entrada automática por producción #{produccion.Id}")
+                        .ToListAsync();
+
+                    _context.MovimientosInventario.RemoveRange(movimientos);
+                }
+
+                var trazabilidades = await _context.Trazabilidades
+                    .Where(t => t.ProduccionId == id)
+                    .ToListAsync();
+
+                _context.Trazabilidades.RemoveRange(trazabilidades);
+                _context.Producciones.Remove(produccion);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Producciones", "Eliminar", id,
+                    $"Se eliminó la producción #{id}.");
+                TempData["Success"] = "Producción eliminada correctamente.";
             }
-            catch
+            catch (DbUpdateException)
             {
+                await transaction.RollbackAsync();
                 TempData["Error"] =
-                    "No se puede eliminar la produccón porque tiene información relacionada con trazabilidad.";
+                    "No fue posible eliminar la producción porque todavía tiene información relacionada.";
             }
 
             return RedirectToAction(nameof(Index));

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Factura>
+@model IEnumerable<MicrobeneficioSanGabriel.Models.Factura>
 
 @{
     ViewData["Title"] = "Facturación";
@@ -20,7 +20,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     int totalFacturas = Model.Count();
-    int facturasPagadas = Model.Count(f => f.EstadoPago == "Pagado");
+    int facturasPagadas = Model.Count(f => f.EstadoPago == "Pago completado" || f.EstadoPago == "Pagado");
     int facturasPendientes = Model.Count(f => f.EstadoPago == "Pendiente");
     int facturasAnuladas = Model.Count(f => f.EstadoPago == "Anulada");
     decimal totalFacturado = Model.Where(f => f.EstadoPago != "Anulada").Sum(f => f.Total);
@@ -383,6 +383,7 @@
                     {
                         string estadoClase = item.EstadoPago switch
                         {
+                            "Pago completado" => "factura-estado factura-estado-pagado",
                             "Pagado" => "factura-estado factura-estado-pagado",
                             "Pendiente" => "factura-estado factura-estado-pendiente",
                             "Anulada" => "factura-estado factura-estado-anulada",

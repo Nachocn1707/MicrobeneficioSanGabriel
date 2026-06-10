@@ -1,762 +1,259 @@
-﻿@using System.Text.Json
+@using System.Text.Json
 @using MicrobeneficioSanGabriel.Models
 @using MicrobeneficioSanGabriel.ViewModels
-
 @{
     ViewData["Title"] = "Dashboard";
-    <div class="sg-visual-hero sg-hero-dashboard">
-        <div class="sg-visual-hero-content">
-            <span class="sg-visual-badge">
-                <i class="fa-solid fa-chart-line"></i>
-                Panel administrativo
-            </span>
-
-            <h1>Dashboard general</h1>
-            <div class="sg-visual-line"></div>
-
-            <p>
-                Visualizá indicadores principales, alertas, pedidos recientes y estado general del microbeneficio.
-            </p>
-        </div>
-    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    var ultimosPedidos = ViewBag.UltimosPedidos as List<Pedido>;
-    var alertasInventarioIA = ViewBag.AlertasInventarioIA as List<AlertaInventarioIAViewModel>;
+    var pedidos = ViewBag.UltimosPedidos as List<Pedido> ?? new List<Pedido>();
+    var lotes = ViewBag.UltimosLotes as List<Lote> ?? new List<Lote>();
+    var facturas = ViewBag.UltimasFacturas as List<Factura> ?? new List<Factura>();
+    var productosBajos = ViewBag.ProductosStockBajo as List<Producto> ?? new List<Producto>();
+    var alertas = ViewBag.AlertasInventarioIA as List<AlertaInventarioIAViewModel> ?? new List<AlertaInventarioIAViewModel>();
 
-    object nombresProductosData = ViewBag.NombresProductos ?? new List<string>();
-    object stockProductosData = ViewBag.StockProductos ?? new List<int>();
-    object ventasProductosData = ViewBag.VentasProductos ?? new List<object>();
+    var nombresProductos = JsonSerializer.Serialize(ViewBag.NombresProductos ?? new List<string>());
+    var stockProductos = JsonSerializer.Serialize(ViewBag.StockProductos ?? new List<int>());
+    var procesos = JsonSerializer.Serialize(ViewBag.ProcesosPorTipo ?? new List<object>());
+    var ventasProductos = JsonSerializer.Serialize(ViewBag.VentasProductos ?? new List<object>());
 
-    var nombresProductosJson = JsonSerializer.Serialize<object>(nombresProductosData);
-    var stockProductosJson = JsonSerializer.Serialize<object>(stockProductosData);
-    var ventasProductosJson = JsonSerializer.Serialize<object>(ventasProductosData);
-
-    var fechaActual = DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy");
+    var totalUsuarios = Convert.ToInt32(ViewBag.TotalUsuarios ?? 0);
+    var productoresActivos = Convert.ToInt32(ViewBag.ProductoresActivos ?? 0);
+    var totalFincas = Convert.ToInt32(ViewBag.TotalFincas ?? 0);
+    var totalProductos = Convert.ToInt32(ViewBag.TotalProductos ?? 0);
+    var totalStockKg = Convert.ToInt32(ViewBag.TotalStockKg ?? 0);
+    var lotesActivos = Convert.ToInt32(ViewBag.LotesActivos ?? 0);
+    var totalLotes = Convert.ToInt32(ViewBag.TotalLotes ?? 0);
+    var produccionesEnProceso = Convert.ToInt32(ViewBag.ProduccionesEnProceso ?? 0);
+    var totalPedidos = Convert.ToInt32(ViewBag.TotalPedidos ?? 0);
+    var totalFacturas = Convert.ToInt32(ViewBag.TotalFacturas ?? 0);
+    var stockBajo = Convert.ToInt32(ViewBag.StockBajo ?? 0);
+    var totalVentas = Convert.ToDecimal(ViewBag.TotalVentas ?? 0m);
+    var totalKg = Convert.ToDouble(ViewBag.TotalKgRecibidos ?? 0d);
 }
 
-<style>
-    .dashboard-page {
-        display: grid;
-        gap: 22px;
-    }
-
-    .dashboard-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 18px;
-    }
-
-    .dashboard-title h1 {
-        margin: 0;
-        color: #2a1a12;
-        font-size: 24px;
-        font-weight: 950;
-    }
-
-    .dashboard-title p {
-        margin: 4px 0 0;
-        color: #8b7a6c;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .date-pill {
-        background: #fffaf2;
-        border: 1px solid #eadfce;
-        border-radius: 10px;
-        padding: 10px 14px;
-        color: #2a1a12;
-        font-size: 13px;
-        font-weight: 900;
-        box-shadow: 0 10px 24px rgba(58, 33, 20, 0.07);
-        white-space: nowrap;
-    }
-
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .summary-card {
-        background: #fffdf8;
-        border: 1px solid #eadfce;
-        border-radius: 15px;
-        padding: 18px;
-        min-height: 132px;
-        box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .summary-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 11px;
-        background: #fff2d5;
-        color: #bd812c;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-
-    .summary-card.green .summary-icon {
-        background: #e5f4e8;
-        color: #3f8f4d;
-    }
-
-    .summary-card.blue .summary-icon {
-        background: #e3f1fb;
-        color: #4f98d4;
-    }
-
-    .summary-card span {
-        display: block;
-        color: #6f6258;
-        font-size: 12px;
-        font-weight: 900;
-        margin-bottom: 3px;
-    }
-
-    .summary-card strong {
-        display: block;
-        color: #2a1a12;
-        font-size: 28px;
-        line-height: 1;
-        font-weight: 950;
-    }
-
-    .summary-card small {
-        display: block;
-        margin-top: 8px;
-        color: #b58a45;
-        font-size: 11px;
-        font-weight: 800;
-    }
-
-    .sparkline {
-        position: absolute;
-        right: 12px;
-        bottom: 10px;
-        width: 120px;
-        height: 44px;
-        opacity: 0.75;
-    }
-
-    .main-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 300px;
-        gap: 18px;
-    }
-
-    .analytics-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .dashboard-panel {
-        background: #fffdf8;
-        border: 1px solid #eadfce;
-        border-radius: 16px;
-        box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
-        overflow: hidden;
-    }
-
-    .ia-principal-panel {
-        border: 3px solid #d9a44a;
-        box-shadow: 0 20px 46px rgba(217, 164, 74, 0.18);
-    }
-
-    .panel-header {
-        padding: 18px 20px 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-        .panel-header h2 {
-            margin: 0;
-            color: #2a1a12;
-            font-size: 17px;
-            font-weight: 950;
-        }
-
-    .panel-link {
-        color: #7a532d;
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: 900;
-    }
-
-    .dashboard-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-    }
-
-        .dashboard-table thead th {
-            color: #8b7a6c;
-            background: transparent;
-            padding: 12px 20px;
-            font-size: 11px;
-            font-weight: 950;
-            border-bottom: 1px solid #eee2d1;
-        }
-
-        .dashboard-table tbody td {
-            padding: 12px 20px;
-            border-bottom: 1px solid #f0e6d8;
-            color: #2a1a12;
-            font-weight: 650;
-        }
-
-    .status-badge {
-        border-radius: 999px;
-        padding: 5px 9px;
-        font-size: 10px;
-        font-weight: 950;
-        display: inline-block;
-    }
-
-    .status-ok {
-        background: #dff2e3;
-        color: #2f7d4f;
-    }
-
-    .status-warn {
-        background: #fff1c7;
-        color: #9a6b13;
-    }
-
-    .status-info {
-        background: #dceefb;
-        color: #2f80a7;
-    }
-
-    .chart-panel {
-        padding-bottom: 18px;
-    }
-
-    .stock-chart-wrap {
-        height: 210px;
-        padding: 4px 20px 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .stock-legend {
-        display: grid;
-        gap: 9px;
-        padding: 4px 24px 0;
-    }
-
-    .legend-item {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        color: #6f6258;
-        font-size: 12px;
-        font-weight: 800;
-    }
-
-    .legend-name {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .legend-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #d9a44a;
-    }
-
-    .modules-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .module-card {
-        background: #fffdf8;
-        border: 1px solid #eadfce;
-        border-radius: 16px;
-        padding: 18px;
-        box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
-    }
-
-        .module-card h3 {
-            margin: 0 0 8px;
-            color: #2a1a12;
-            font-size: 18px;
-            font-weight: 950;
-        }
-
-        .module-card p {
-            min-height: 42px;
-            margin: 0 0 14px;
-            color: #7a6a5d;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-    .module-number {
-        color: #7a532d;
-        font-size: 28px;
-        font-weight: 950;
-        margin-bottom: 12px;
-    }
-
-    .module-card .btn {
-        width: 100%;
-        background: #3a2114 !important;
-        border-color: #3a2114 !important;
-        color: #fffaf2 !important;
-        border-radius: 9px !important;
-        font-weight: 950 !important;
-    }
-
-    .ia-alert-list {
-        padding: 0 20px 18px;
-        display: grid;
-        gap: 12px;
-    }
-
-    .ia-alert {
-        border-radius: 14px;
-        padding: 14px;
-        border: 1px solid #eadfce;
-        background: #fffaf2;
-    }
-
-    .ia-alert-header {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 6px;
-        color: #2a1a12;
-        font-size: 13px;
-        font-weight: 950;
-    }
-
-    .ia-alert p {
-        margin: 0;
-        color: #4d3c31;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .ia-alert small {
-        display: block;
-        margin-top: 6px;
-        color: #7a6a5d;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .ia-alert-danger {
-        background: #fde7e4;
-        border-color: #f2b8b2;
-    }
-
-    .ia-alert-warning {
-        background: #fff1c7;
-        border-color: #e8c66f;
-    }
-
-    .ia-alert-info {
-        background: #e3f1fb;
-        border-color: #b9d8ee;
-    }
-
-    .ia-alert-success {
-        background: #e5f4e8;
-        border-color: #b9dfc0;
-    }
-
-    @@media (max-width: 1200px) {
-        .summary-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .main-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .modules-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @@media (max-width: 768px) {
-        .dashboard-head {
-            flex-direction: column;
-        }
-
-        .summary-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
-<div class="dashboard-page">
-
-    <div class="dashboard-head">
-        <div class="dashboard-title">
-            <h1>Resumen general</h1>
-            <p>Bienvenido de vuelta, Administrador</p>
-        </div>
-
-        <div class="date-pill">
-            @fechaActual
-        </div>
-    </div>
-
-    <div class="dashboard-panel ia-principal-panel">
-        <div class="panel-header">
-            <h2>
-                <i class="fa-solid fa-brain"></i>
-                Alertas inteligentes de inventario
-            </h2>
-        </div>
-
-        <div class="ia-alert-list">
-            @if (alertasInventarioIA != null && alertasInventarioIA.Any())
-            {
-                foreach (var alerta in alertasInventarioIA.Take(5))
+<div class="rc-admin-dashboard">
+    <section class="rc-admin-hero">
+        <div>
+            <span class="rc-kicker"><i class="fa-solid fa-bolt"></i> Centro de mando · Cosecha @DateTime.Now.Year</span>
+            <h2>Control total del café, desde el origen hasta la venta.</h2>
+            <p>
+                Una vista ejecutiva para supervisar productores, fincas, lotes, producción, inventario,
+                trazabilidad, pedidos, facturación y resultados comerciales sin perder el contexto del negocio.
+            </p>
+            <div class="rc-admin-hero-actions">
+                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
                 {
-                    <div class="ia-alert ia-alert-@alerta.Color">
-                        <div class="ia-alert-header">
-                            <i class="fa-solid @alerta.Icono"></i>
-                            <span>@alerta.NivelRiesgo</span>
-                        </div>
-
-                        <p>@alerta.Mensaje</p>
-
-                        <small>@alerta.Recomendacion</small>
-
-                        @if (alerta.DiasParaAgotarse.HasValue)
-                        {
-                            <small>
-                                Días estimados para agotarse: @alerta.DiasParaAgotarse
-                            </small>
-                        }
-                    </div>
+                    <a asp-controller="Lotes" asp-action="Create" class="rc-button rc-button-primary"><i class="fa-solid fa-plus"></i> Registrar lote</a>
+                    <a asp-controller="Producciones" asp-action="Create" class="rc-button rc-button-ghost"><i class="fa-solid fa-industry"></i> Nueva producción</a>
                 }
-            }
-            else
+                @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+                {
+                    <a asp-controller="Reportes" asp-action="Index" class="rc-button rc-button-ghost"><i class="fa-solid fa-chart-line"></i> Abrir reportes</a>
+                }
+            </div>
+        </div>
+
+        <div class="rc-admin-mini-grid">
+            <article class="rc-admin-mini-card"><i class="fa-solid fa-people-group"></i><strong>@productoresActivos</strong><span>Productores activos</span></article>
+            <article class="rc-admin-mini-card"><i class="fa-solid fa-mountain-sun"></i><strong>@totalFincas</strong><span>Fincas activas</span></article>
+            <article class="rc-admin-mini-card"><i class="fa-solid fa-layer-group"></i><strong>@lotesActivos</strong><span>Lotes activos</span></article>
+            <article class="rc-admin-mini-card"><i class="fa-solid fa-coins"></i><strong>₡@totalVentas.ToString("N0")</strong><span>Ventas acumuladas</span></article>
+        </div>
+    </section>
+
+    <section class="rc-dashboard-kpis">
+        <article class="rc-dashboard-kpi"><i class="fa-solid fa-mug-hot"></i><strong>@totalProductos</strong><span>Productos registrados</span></article>
+        <article class="rc-dashboard-kpi"><i class="fa-solid fa-boxes-stacked"></i><strong>@totalStockKg kg</strong><span>Stock disponible</span></article>
+        <article class="rc-dashboard-kpi"><i class="fa-solid fa-cart-shopping"></i><strong>@totalPedidos</strong><span>Pedidos registrados</span></article>
+        <article class="rc-dashboard-kpi"><i class="fa-solid fa-file-invoice-dollar"></i><strong>@totalFacturas</strong><span>Facturas emitidas</span></article>
+    </section>
+
+    <section class="rc-dashboard-grid">
+        <article class="rc-dashboard-panel">
+            <div class="rc-panel-head">
+                <div><h3>Inventario por producto</h3><p>Existencias disponibles para comercialización.</p></div>
+                <span class="rc-status-tag">@stockBajo alertas</span>
+            </div>
+            <div class="rc-chart-box"><canvas id="rcStockChart"></canvas></div>
+        </article>
+
+        <article class="rc-dashboard-panel">
+            <div class="rc-panel-head">
+                <div><h3>Pedidos recientes</h3><p>Últimos movimientos comerciales.</p></div>
+                <a asp-controller="Pedidos" asp-action="Index" class="btn btn-sm btn-outline-dark">Ver todos</a>
+            </div>
+            <div class="rc-activity-list">
+                @if (!pedidos.Any())
+                {
+                    <div class="text-muted py-4 text-center">No hay pedidos registrados.</div>
+                }
+                else
+                {
+                    foreach (var pedido in pedidos.Take(5))
+                    {
+                        <article class="rc-activity-item">
+                            <span class="rc-activity-icon"><i class="fa-solid fa-bag-shopping"></i></span>
+                            <span><strong>@pedido.ClienteNombre</strong><small>@(pedido.Producto?.Nombre ?? "Producto") · @pedido.Cantidad kg</small></span>
+                            <span class="rc-status-tag">@pedido.Estado</span>
+                        </article>
+                    }
+                }
+            </div>
+        </article>
+    </section>
+
+    <section class="rc-dashboard-grid">
+        <article class="rc-dashboard-panel">
+            <div class="rc-panel-head">
+                <div><h3>Procesos de producción</h3><p>Distribución de registros por tipo de proceso.</p></div>
+                <span class="rc-status-tag">@produccionesEnProceso en proceso</span>
+            </div>
+            <div class="rc-chart-box"><canvas id="rcProcessChart"></canvas></div>
+        </article>
+
+        <article class="rc-dashboard-panel">
+            <div class="rc-panel-head">
+                <div><h3>Lotes recientes</h3><p>Origen, peso y estado de las recepciones.</p></div>
+                <a asp-controller="Lotes" asp-action="Index" class="btn btn-sm btn-outline-dark">Ver lotes</a>
+            </div>
+            <div class="rc-activity-list">
+                @if (!lotes.Any())
+                {
+                    <div class="text-muted py-4 text-center">No hay lotes registrados.</div>
+                }
+                else
+                {
+                    foreach (var lote in lotes.Take(5))
+                    {
+                        <article class="rc-activity-item">
+                            <span class="rc-activity-icon"><i class="fa-solid fa-layer-group"></i></span>
+                            <span><strong>@(string.IsNullOrWhiteSpace(lote.CodigoLote) ? $"Lote {lote.Id}" : lote.CodigoLote)</strong><small>@(lote.Finca?.Nombre ?? lote.Productor?.Nombre ?? "Sin origen") · @lote.PesoKg.ToString("N0") kg</small></span>
+                            <span class="rc-status-tag">@lote.Estado</span>
+                        </article>
+                    }
+                }
+            </div>
+        </article>
+    </section>
+
+    <section class="rc-dashboard-grid">
+        <article class="rc-dashboard-panel">
+            <div class="rc-panel-head">
+                <div><h3>Ventas por producto</h3><p>Participación de los productos en la facturación.</p></div>
+                <span class="rc-status-tag">₡@totalVentas.ToString("N0")</span>
+            </div>
+            <div class="rc-chart-box"><canvas id="rcSalesChart"></canvas></div>
+        </article>
+
+        <article class="rc-dashboard-panel">
+            <div class="rc-panel-head">
+                <div><h3>Atención requerida</h3><p>Stock bajo y recomendaciones operativas.</p></div>
+                <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+            </div>
+            <div class="rc-activity-list">
+                @if (productosBajos.Any())
+                {
+                    foreach (var producto in productosBajos)
+                    {
+                        <article class="rc-activity-item">
+                            <span class="rc-activity-icon"><i class="fa-solid fa-box-open"></i></span>
+                            <span><strong>@producto.Nombre</strong><small>Stock actual: @producto.Stock kg · Mínimo: @producto.StockMinimo kg</small></span>
+                            <a asp-controller="Productos" asp-action="Edit" asp-route-id="@producto.Id" class="btn btn-sm btn-outline-dark">Revisar</a>
+                        </article>
+                    }
+                }
+                else if (alertas.Any())
+                {
+                    foreach (var alerta in alertas.Take(5))
+                    {
+                        <article class="rc-activity-item">
+                            <span class="rc-activity-icon"><i class="fa-solid @alerta.Icono"></i></span>
+                            <span><strong>@(string.IsNullOrWhiteSpace(alerta.ProductoNombre) ? alerta.NivelRiesgo : alerta.ProductoNombre)</strong><small>@alerta.Mensaje</small></span>
+                            <span class="rc-status-tag">IA</span>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted py-4 text-center">No hay alertas operativas pendientes.</div>
+                }
+            </div>
+        </article>
+    </section>
+
+    <section>
+        <div class="rc-module-heading">
+            <div><span class="rc-section-label">Módulos del sistema</span><h3>Accesos rápidos</h3></div>
+            <span class="text-muted">@totalUsuarios usuario(s) con acceso</span>
+        </div>
+        <div class="rc-module-grid mt-3">
+            @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
             {
-                <div class="ia-alert ia-alert-info">
-                    <div class="ia-alert-header">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>IA activa</span>
-                    </div>
-
-                    <p>El panel de alertas inteligentes ya está cargando correctamente.</p>
-
-                    <small>
-                        No hay alertas disponibles todavía. Probá bajando el stock de un producto por debajo del stock mínimo.
-                    </small>
-                </div>
+                <a asp-controller="Productores" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/productores.jpg')"><i class="fa-solid fa-people-group"></i><strong>Productores</strong><small>Origen y contactos</small></a>
+                <a asp-controller="Fincas" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/coffee-farm.jpg')"><i class="fa-solid fa-mountain-sun"></i><strong>Fincas</strong><small>Propiedades y ubicación</small></a>
+                <a asp-controller="Productos" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/productos.jpg')"><i class="fa-solid fa-mug-hot"></i><strong>Productos</strong><small>Catálogo y precios</small></a>
+                <a asp-controller="MovimientosInventario" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/inventario.jpg')"><i class="fa-solid fa-boxes-stacked"></i><strong>Inventario</strong><small>Entradas, salidas y stock</small></a>
+                <a asp-controller="Lotes" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/lotes.jpg')"><i class="fa-solid fa-layer-group"></i><strong>Lotes</strong><small>Recepción y control</small></a>
+                <a asp-controller="Producciones" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/produccion.jpg')"><i class="fa-solid fa-industry"></i><strong>Producción</strong><small>Procesos y rendimiento</small></a>
+                <a asp-controller="Trazabilidades" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/trazabilidad.jpg')"><i class="fa-solid fa-route"></i><strong>Trazabilidad</strong><small>Etapas y responsables</small></a>
+            }
+            @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+            {
+                <a asp-controller="Pedidos" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/pedidos.jpg')"><i class="fa-solid fa-cart-shopping"></i><strong>Pedidos</strong><small>Gestión comercial</small></a>
+                <a asp-controller="Facturas" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/facturacion.jpg')"><i class="fa-solid fa-file-invoice-dollar"></i><strong>Facturación</strong><small>Documentos y cobros</small></a>
+                <a asp-controller="Reportes" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/reportes.jpg')"><i class="fa-solid fa-chart-column"></i><strong>Reportes</strong><small>Indicadores y exportación</small></a>
+            }
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-controller="Usuarios" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/usuarios.jpg')"><i class="fa-solid fa-users-gear"></i><strong>Usuarios</strong><small>Roles y permisos</small></a>
+                <a asp-controller="RegistrosFinancieros" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/contabilidad.jpg')"><i class="fa-solid fa-coins"></i><strong>Contabilidad</strong><small>Ingresos y egresos</small></a>
+                <a asp-controller="Auditorias" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/dashboard.jpg')"><i class="fa-solid fa-clock-rotate-left"></i><strong>Auditoría</strong><small>Actividad del sistema</small></a>
             }
         </div>
-    </div>
-
-    <div class="summary-grid">
-
-        <div class="summary-card">
-            <div class="summary-icon">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
-            <span>Pedidos registrados</span>
-            <strong>@ViewBag.TotalPedidos</strong>
-            <small>Ver pedidos</small>
-
-            <svg class="sparkline" viewBox="0 0 120 44" preserveAspectRatio="none">
-                <path d="M2 34 C18 28, 28 36, 42 30 S66 18, 80 22 S100 31, 118 10"
-                      fill="none" stroke="#d9a44a" stroke-width="3" />
-            </svg>
-        </div>
-
-        <div class="summary-card">
-            <div class="summary-icon">
-                <i class="fa-solid fa-file-invoice-dollar"></i>
-            </div>
-            <span>Facturas emitidas</span>
-            <strong>@ViewBag.TotalFacturas</strong>
-            <small>Ver facturas</small>
-
-            <svg class="sparkline" viewBox="0 0 120 44" preserveAspectRatio="none">
-                <path d="M2 32 C18 34, 28 27, 42 30 S65 35, 78 24 S96 13, 118 19"
-                      fill="none" stroke="#d9a44a" stroke-width="3" />
-            </svg>
-        </div>
-
-        <div class="summary-card green">
-            <div class="summary-icon">
-                <i class="fa-solid fa-mug-hot"></i>
-            </div>
-            <span>Productos activos</span>
-            <strong>@ViewBag.TotalProductos</strong>
-            <small>Ver productos</small>
-
-            <svg class="sparkline" viewBox="0 0 120 44" preserveAspectRatio="none">
-                <path d="M2 33 C18 31, 32 35, 45 29 S67 19, 82 21 S100 12, 118 8"
-                      fill="none" stroke="#78b884" stroke-width="3" />
-            </svg>
-        </div>
-
-        <div class="summary-card blue">
-            <div class="summary-icon">
-                <i class="fa-solid fa-boxes-stacked"></i>
-            </div>
-            <span>Productos con stock bajo</span>
-            <strong>@ViewBag.StockBajo</strong>
-            <small>Ver inventario</small>
-
-            <svg class="sparkline" viewBox="0 0 120 44" preserveAspectRatio="none">
-                <path d="M2 35 C20 29, 32 33, 46 26 S67 15, 80 20 S96 30, 118 12"
-                      fill="none" stroke="#7bb6e8" stroke-width="3" />
-            </svg>
-        </div>
-
-    </div>
-
-    <div class="main-grid">
-
-        <div class="dashboard-panel">
-            <div class="panel-header">
-                <h2>Pedidos recientes</h2>
-                <a asp-controller="Pedidos" asp-action="Index" class="panel-link">
-                    Ver todos los pedidos
-                </a>
-            </div>
-
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Fecha</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @if (ultimosPedidos != null && ultimosPedidos.Any())
-                    {
-                        foreach (var pedido in ultimosPedidos)
-                        {
-                            <tr>
-                                <td>@pedido.ClienteNombre</td>
-                                <td>@pedido.Producto?.Nombre</td>
-                                <td>@pedido.Cantidad kg</td>
-                                <td>@pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>
-                                    @if (pedido.Estado == "Completado")
-                                    {
-                                        <span class="status-badge status-ok">Completado</span>
-                                    }
-                                    else if (pedido.Estado == "Pendiente")
-                                    {
-                                        <span class="status-badge status-warn">Pendiente</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="status-badge status-info">@pedido.Estado</span>
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-controller="Pedidos"
-                                       asp-action="Details"
-                                       asp-route-id="@pedido.Id"
-                                       class="panel-link">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6">No hay pedidos registrados.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <div class="dashboard-panel chart-panel">
-            <div class="panel-header">
-                <h2>Stock por producto</h2>
-            </div>
-
-            <div class="stock-chart-wrap">
-                <canvas id="stockChart"></canvas>
-            </div>
-
-            <div class="stock-legend" id="stockLegend"></div>
-        </div>
-
-    </div>
-
-    <div class="modules-grid">
-
-        <div class="module-card">
-            <h3>Pedidos</h3>
-            <p>Gestión de pedidos realizados por clientes.</p>
-            <div class="module-number">@ViewBag.TotalPedidos</div>
-
-            <a asp-controller="Pedidos"
-               asp-action="Index"
-               class="btn btn-success">
-                Ir al módulo
-            </a>
-        </div>
-
-        <div class="module-card">
-            <h3>Facturación</h3>
-            <p>Administración de facturas y pagos.</p>
-            <div class="module-number">@ViewBag.TotalFacturas</div>
-
-            <a asp-controller="Facturas"
-               asp-action="Index"
-               class="btn btn-success">
-                Ir al módulo
-            </a>
-        </div>
-
-        <div class="module-card">
-            <h3>Ventas totales</h3>
-            <p>Total acumulado de ventas realizadas.</p>
-            <div class="module-number">
-                ₡ @ViewBag.TotalVentas.ToString("N2")
-            </div>
-
-            <a asp-controller="Reportes"
-               asp-action="Index"
-               class="btn btn-success">
-                Ver reportes
-            </a>
-        </div>
-
-    </div>
-
-    <div class="analytics-grid">
-        <div class="dashboard-panel chart-panel">
-            <div class="panel-header">
-                <h2>Ventas por producto</h2>
-            </div>
-
-            <div class="stock-chart-wrap">
-                <canvas id="ventasChart"></canvas>
-            </div>
-        </div>
-    </div>
-
+    </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
-    const productos = @Html.Raw(nombresProductosJson);
-    const stockProductos = @Html.Raw(stockProductosJson);
-    const ventasProductos = @Html.Raw(ventasProductosJson);
+(() => {
+    const labels = @Html.Raw(nombresProductos);
+    const stocks = @Html.Raw(stockProductos);
+    const processData = @Html.Raw(procesos);
+    const salesData = @Html.Raw(ventasProductos);
+    const textColor = '#6f625c';
+    const gridColor = 'rgba(75,52,42,.08)';
 
-    const stockColors = [
-    "#d9a44a",
-    "#3f8f4d",
-    "#8a5a36",
-    "#7bb6e8",
-    "#f5dfb0",
-    "#6f4528"
-    ];
-
-    const stockCtx = document.getElementById("stockChart");
-
-    new Chart(stockCtx, {
-    type: "doughnut",
-    data: {
-    labels: productos,
-    datasets: [{
-    data: stockProductos,
-    backgroundColor: stockColors,
-    borderColor: "#fffdf8",
-    borderWidth: 4
-    }]
-    },
-    options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: "68%",
-    plugins: {
-    legend: {
-    display: false
-    }
-    }
-    }
-    });
-
-    const stockLegend = document.getElementById("stockLegend");
-
-    if (stockLegend && productos && productos.length) {
-    stockLegend.innerHTML = productos.slice(0, 4).map((producto, index) => `
-    <div class="legend-item">
-    <span class="legend-name">
-    <span class="legend-dot" style="background:${stockColors[index % stockColors.length]}"></span>
-    ${producto}
-    </span>
-    <strong>${stockProductos[index] ?? 0} kg</strong>
-    </div>
-    `).join("");
+    const stockCanvas = document.getElementById('rcStockChart');
+    if (stockCanvas) {
+        new Chart(stockCanvas, {
+            type: 'bar',
+            data: { labels, datasets: [{ data: stocks, backgroundColor: ['#f26430','#ff9c5c','#bd3d17','#f5b068','#78351d','#d9602e'], borderRadius: 3, borderSkipped: false }] },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false},ticks:{color:textColor}},y:{beginAtZero:true,grid:{color:gridColor},ticks:{color:textColor}}} }
+        });
     }
 
-    const ventasCtx = document.getElementById("ventasChart");
+    const processCanvas = document.getElementById('rcProcessChart');
+    if (processCanvas) {
+        const pLabels = processData.map(x => x.Tipo ?? x.tipo ?? 'Proceso');
+        const pValues = processData.map(x => x.Cantidad ?? x.cantidad ?? 0);
+        new Chart(processCanvas, {
+            type:'doughnut',
+            data:{labels:pLabels,datasets:[{data:pValues,backgroundColor:['#f26430','#ffad36','#4f6d47','#88391f','#c98555','#2e2928'],borderWidth:0}]},
+            options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:textColor,usePointStyle:true,boxWidth:10}}}}
+        });
+    }
 
-    new Chart(ventasCtx, {
-    type: "doughnut",
-    data: {
-    labels: ventasProductos.map(v => v.Producto),
-    datasets: [{
-    label: "Ventas por producto",
-    data: ventasProductos.map(v => v.Total),
-    backgroundColor: [
-    "#3f8f4d",
-    "#d9a44a",
-    "#6f4528",
-    "#7bb6e8",
-    "#f5dfb0"
-    ],
-    borderColor: "#fffdf8",
-    borderWidth: 4
-    }]
-    },
-    options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: "68%",
-    plugins: {
-    legend: {
-    position: "bottom",
-    labels: {
-    boxWidth: 10,
-    color: "#6f6258",
-    font: {
-    size: 11,
-    weight: "bold"
+    const salesCanvas = document.getElementById('rcSalesChart');
+    if (salesCanvas) {
+        const sLabels = salesData.map(x => x.Producto ?? x.producto ?? 'Producto');
+        const sValues = salesData.map(x => x.Total ?? x.total ?? 0);
+        new Chart(salesCanvas, {
+            type:'line',
+            data:{labels:sLabels,datasets:[{data:sValues,borderColor:'#f26430',backgroundColor:'rgba(242,100,48,.12)',fill:true,tension:.35,pointBackgroundColor:'#f26430',pointRadius:4}]},
+            options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:textColor}},y:{beginAtZero:true,grid:{color:gridColor},ticks:{color:textColor}}}}
+        });
     }
-    }
-    }
-    }
-    }
-    });
+})();
 </script>
+}

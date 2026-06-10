@@ -95,6 +95,106 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.AuditoriaRegistro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Accion")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Detalle")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Modulo")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<int?>("RegistroId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UsuarioNombre")
+                        .IsRequired()
+                        .HasMaxLength(180)
+                        .HasColumnType("nvarchar(180)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Fecha");
+
+                    b.HasIndex("Modulo");
+
+                    b.ToTable("Auditorias");
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Finca", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Canton")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("DireccionExacta")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Distrito")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ProductorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Provincia")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductorId");
+
+                    b.ToTable("Fincas");
+                });
+
             modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Factura", b =>
                 {
                     b.Property<int>("Id")
@@ -145,7 +245,8 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     b.Property<string>("CodigoLote")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -154,8 +255,13 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Property<DateTime>("FechaRecepcion")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("FincaId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.Property<string>("Observacion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<double>("PesoKg")
                         .HasColumnType("float");
@@ -164,6 +270,11 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CodigoLote")
+                        .IsUnique();
+
+                    b.HasIndex("FincaId");
 
                     b.HasIndex("ProductorId");
 
@@ -349,15 +460,34 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Property<bool>("Activo")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Canton")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
                     b.Property<string>("Cedula")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<string>("Correo")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("DireccionExacta")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Distrito")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
@@ -371,12 +501,23 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Provincia")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Telefono")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Cedula")
+                        .IsUnique();
+
+                    b.HasIndex("Correo")
+                        .IsUnique()
+                        .HasFilter("[Correo] IS NOT NULL");
 
                     b.ToTable("Productores");
                 });
@@ -601,13 +742,32 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Navigation("Pedido");
                 });
 
-            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Lote", b =>
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Finca", b =>
                 {
                     b.HasOne("MicrobeneficioSanGabriel.Models.Productor", "Productor")
-                        .WithMany()
+                        .WithMany("Fincas")
                         .HasForeignKey("ProductorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Productor");
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Lote", b =>
+                {
+                    b.HasOne("MicrobeneficioSanGabriel.Models.Finca", "Finca")
+                        .WithMany("Lotes")
+                        .HasForeignKey("FincaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MicrobeneficioSanGabriel.Models.Productor", "Productor")
+                        .WithMany("Lotes")
+                        .HasForeignKey("ProductorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Finca");
 
                     b.Navigation("Productor");
                 });
@@ -719,6 +879,18 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Finca", b =>
+                {
+                    b.Navigation("Lotes");
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Productor", b =>
+                {
+                    b.Navigation("Fincas");
+
+                    b.Navigation("Lotes");
                 });
 #pragma warning restore 612, 618
         }

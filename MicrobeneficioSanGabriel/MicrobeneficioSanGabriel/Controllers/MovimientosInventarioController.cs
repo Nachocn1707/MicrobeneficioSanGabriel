@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using MicrobeneficioSanGabriel.Services;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -33,69 +31,64 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (id == null) return NotFound();
 
-            var movimientoInventario = await _context.MovimientosInventario
+            var movimiento = await _context.MovimientosInventario
                 .Include(m => m.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movimientoInventario == null) return NotFound();
-
-            return View(movimientoInventario);
+            return movimiento == null ? NotFound() : View(movimiento);
         }
 
         public IActionResult Create()
         {
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre");
-            return View();
+            CargarProductos();
+            return View(new MovimientoInventario { FechaMovimiento = DateTime.Now });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProductoId,TipoMovimiento,Cantidad,Observacion,FechaMovimiento")] MovimientoInventario movimientoInventario)
+        public async Task<IActionResult> Create(
+            [Bind("ProductoId,TipoMovimiento,Cantidad,Observacion")]
+            MovimientoInventario movimiento)
         {
-            if (ModelState.IsValid)
+            var producto = await _context.Productos.FindAsync(movimiento.ProductoId);
+            if (producto == null)
             {
-                var producto = await _context.Productos.FindAsync(movimientoInventario.ProductoId);
+                ModelState.AddModelError(nameof(MovimientoInventario.ProductoId),
+                    "El producto seleccionado no existe.");
+            }
 
-                if (producto == null)
-                {
-                    ModelState.AddModelError("", "El producto seleccionado no existe.");
-                    ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", movimientoInventario.ProductoId);
-                    return View(movimientoInventario);
-                }
+            if (!EsTipoValido(movimiento.TipoMovimiento))
+            {
+                ModelState.AddModelError(nameof(MovimientoInventario.TipoMovimiento),
+                    "Debe seleccionar Entrada o Salida.");
+            }
 
-                if (movimientoInventario.TipoMovimiento == "Entrada")
-                {
-                    producto.Stock += movimientoInventario.Cantidad;
-                }
-                else if (movimientoInventario.TipoMovimiento == "Salida")
-                {
-                    if (producto.Stock < movimientoInventario.Cantidad)
-                    {
-                        ModelState.AddModelError("", "No hay suficiente stock para realizar la salida.");
-                        ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", movimientoInventario.ProductoId);
-                        return View(movimientoInventario);
-                    }
+            if (producto != null && movimiento.TipoMovimiento == "Salida" &&
+                producto.Stock < movimiento.Cantidad)
+            {
+                ModelState.AddModelError(nameof(MovimientoInventario.Cantidad),
+                    $"No hay suficiente stock. Disponible: {producto.Stock} kg.");
+            }
 
-                    producto.Stock -= movimientoInventario.Cantidad;
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Debe seleccionar un tipo de movimiento válido.");
-                    ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", movimientoInventario.ProductoId);
-                    return View(movimientoInventario);
-                }
+            if (ModelState.IsValid && producto != null)
+            {
+                movimiento.FechaMovimiento = DateTime.Now;
+                movimiento.Observacion = movimiento.Observacion?.Trim();
 
-                movimientoInventario.FechaMovimiento = DateTime.Now;
+                AplicarMovimiento(producto, movimiento.TipoMovimiento, movimiento.Cantidad);
+                _context.MovimientosInventario.Add(movimiento);
 
-                _context.Add(movimientoInventario);
-                _context.Update(producto);
                 await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Inventario", "Crear", movimiento.Id,
+                    $"Se registró una {movimiento.TipoMovimiento.ToLower()} de {movimiento.Cantidad} kg para {producto.Nombre}.");
 
+                TempData["Success"] = "Movimiento de inventario registrado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", movimientoInventario.ProductoId);
-            return View(movimientoInventario);
+            CargarProductos(movimiento.ProductoId);
+            return View(movimiento);
         }
 
         [Authorize(Roles = "Administrador")]
@@ -103,41 +96,99 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (id == null) return NotFound();
 
-            var movimientoInventario = await _context.MovimientosInventario.FindAsync(id);
+            var movimiento = await _context.MovimientosInventario.FindAsync(id);
+            if (movimiento == null) return NotFound();
 
-            if (movimientoInventario == null) return NotFound();
-
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", movimientoInventario.ProductoId);
-            return View(movimientoInventario);
+            CargarProductos(movimiento.ProductoId);
+            return View(movimiento);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductoId,TipoMovimiento,Cantidad,Observacion,FechaMovimiento")] MovimientoInventario movimientoInventario)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,ProductoId,TipoMovimiento,Cantidad,Observacion,FechaMovimiento")]
+            MovimientoInventario movimiento)
         {
-            if (id != movimientoInventario.Id) return NotFound();
+            if (id != movimiento.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            var original = await _context.MovimientosInventario
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (original == null) return NotFound();
+
+            if (!EsTipoValido(movimiento.TipoMovimiento))
             {
-                try
-                {
-                    _context.Update(movimientoInventario);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovimientoInventarioExists(movimientoInventario.Id))
-                        return NotFound();
-
-                    throw;
-                }
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(MovimientoInventario.TipoMovimiento),
+                    "Debe seleccionar Entrada o Salida.");
             }
 
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "Id", "Nombre", movimientoInventario.ProductoId);
-            return View(movimientoInventario);
+            var productoOriginal = await _context.Productos.FindAsync(original.ProductoId);
+            var productoNuevo = original.ProductoId == movimiento.ProductoId
+                ? productoOriginal
+                : await _context.Productos.FindAsync(movimiento.ProductoId);
+
+            if (productoOriginal == null || productoNuevo == null)
+            {
+                ModelState.AddModelError(nameof(MovimientoInventario.ProductoId),
+                    "No fue posible encontrar el producto relacionado.");
+            }
+
+            if (ModelState.IsValid && productoOriginal != null && productoNuevo != null)
+            {
+                await using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    // Primero se revierte el efecto del movimiento original.
+                    if (!PuedeRevertir(productoOriginal, original.TipoMovimiento, original.Cantidad))
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "No se puede editar este movimiento porque parte del stock generado ya fue utilizado.");
+                    }
+                    else
+                    {
+                        RevertirMovimiento(productoOriginal, original.TipoMovimiento, original.Cantidad);
+
+                        if (movimiento.TipoMovimiento == "Salida" && productoNuevo.Stock < movimiento.Cantidad)
+                        {
+                            ModelState.AddModelError(nameof(MovimientoInventario.Cantidad),
+                                $"No hay suficiente stock. Disponible después de revertir: {productoNuevo.Stock} kg.");
+                        }
+                        else
+                        {
+                            AplicarMovimiento(productoNuevo, movimiento.TipoMovimiento, movimiento.Cantidad);
+                            movimiento.FechaMovimiento = original.FechaMovimiento;
+                            movimiento.Observacion = movimiento.Observacion?.Trim();
+
+                            _context.MovimientosInventario.Update(movimiento);
+                            await _context.SaveChangesAsync();
+                            await transaction.CommitAsync();
+
+                            await AuditoriaHelper.RegistrarAsync(
+                                _context, User, "Inventario", "Editar", movimiento.Id,
+                                $"Se actualizó el movimiento #{movimiento.Id}.");
+
+                            TempData["Success"] = "Movimiento actualizado y stock recalculado correctamente.";
+                            return RedirectToAction(nameof(Index));
+                        }
+                    }
+
+                    await transaction.RollbackAsync();
+                    _context.ChangeTracker.Clear();
+                }
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync();
+                    _context.ChangeTracker.Clear();
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible actualizar el movimiento. Inténtelo nuevamente.");
+                }
+            }
+
+            CargarProductos(movimiento.ProductoId);
+            return View(movimiento);
         }
 
         [Authorize(Roles = "Administrador")]
@@ -145,13 +196,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (id == null) return NotFound();
 
-            var movimientoInventario = await _context.MovimientosInventario
+            var movimiento = await _context.MovimientosInventario
                 .Include(m => m.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movimientoInventario == null) return NotFound();
-
-            return View(movimientoInventario);
+            return movimiento == null ? NotFound() : View(movimiento);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -159,20 +208,70 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movimientoInventario = await _context.MovimientosInventario.FindAsync(id);
+            var movimiento = await _context.MovimientosInventario
+                .Include(m => m.Producto)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movimientoInventario != null)
+            if (movimiento == null) return NotFound();
+            if (movimiento.Producto == null)
             {
-                _context.MovimientosInventario.Remove(movimientoInventario);
+                TempData["Error"] = "El movimiento no tiene un producto válido asociado.";
+                return RedirectToAction(nameof(Index));
             }
 
-            await _context.SaveChangesAsync();
+            if (!PuedeRevertir(movimiento.Producto, movimiento.TipoMovimiento, movimiento.Cantidad))
+            {
+                TempData["Error"] =
+                    "No se puede eliminar este movimiento porque parte del stock de entrada ya fue utilizado.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                RevertirMovimiento(movimiento.Producto, movimiento.TipoMovimiento, movimiento.Cantidad);
+                _context.MovimientosInventario.Remove(movimiento);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Inventario", "Eliminar", id,
+                    $"Se eliminó y revirtió el movimiento #{id}.");
+
+                TempData["Success"] = "Movimiento eliminado y stock revertido correctamente.";
+            }
+            catch (DbUpdateException)
+            {
+                await transaction.RollbackAsync();
+                TempData["Error"] = "No fue posible eliminar el movimiento de inventario.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MovimientoInventarioExists(int id)
+        private void CargarProductos(int? seleccionado = null)
         {
-            return _context.MovimientosInventario.Any(e => e.Id == id);
+            ViewData["ProductoId"] = new SelectList(
+                _context.Productos.OrderBy(p => p.Nombre),
+                "Id", "Nombre", seleccionado);
+        }
+
+        private static bool EsTipoValido(string tipo) =>
+            tipo == "Entrada" || tipo == "Salida";
+
+        private static void AplicarMovimiento(Producto producto, string tipo, int cantidad)
+        {
+            if (tipo == "Entrada") producto.Stock += cantidad;
+            else producto.Stock -= cantidad;
+        }
+
+        private static bool PuedeRevertir(Producto producto, string tipo, int cantidad) =>
+            tipo != "Entrada" || producto.Stock >= cantidad;
+
+        private static void RevertirMovimiento(Producto producto, string tipo, int cantidad)
+        {
+            if (tipo == "Entrada") producto.Stock -= cantidad;
+            else producto.Stock += cantidad;
         }
     }
 }

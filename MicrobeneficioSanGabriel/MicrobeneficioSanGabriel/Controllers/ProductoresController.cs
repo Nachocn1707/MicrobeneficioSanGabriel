@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
-using Microsoft.AspNetCore.Authorization;
+using MicrobeneficioSanGabriel.Services;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -16,148 +17,229 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context = context;
         }
 
-        // GET: Productores
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Productores.ToListAsync());
+            var productores = await _context.Productores
+                .Include(p => p.Fincas)
+                .Include(p => p.Lotes)
+                .OrderByDescending(p => p.FechaRegistro)
+                .ToListAsync();
+
+            return View(productores);
         }
 
-        // GET: Productores/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var productor = await _context.Productores
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(p => p.Fincas)
+                .Include(p => p.Lotes)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (productor == null)
-            {
-                return NotFound();
-            }
-
-            return View(productor);
+            return productor == null ? NotFound() : View(productor);
         }
 
-        // GET: Productores/Create
-        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
-            return View();
+            return View(new Productor
+            {
+                Activo = true,
+                FechaRegistro = DateTime.Now
+            });
         }
 
-        // POST: Productores/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Cedula,Telefono,Direccion,Finca,Activo,FechaRegistro")] Productor productor)
+        public async Task<IActionResult> Create(
+            [Bind("Nombre,Cedula,Telefono,Correo,Provincia,Canton,Distrito,DireccionExacta,Activo")]
+            Productor productor)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(productor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            Normalizar(productor);
+            await ValidarDuplicadosAsync(productor);
 
-            return View(productor);
-        }
-        // GET: Productores/Edit/5
-        [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var productor = await _context.Productores.FindAsync(id);
-            if (productor == null)
-            {
-                return NotFound();
-            }
-            return View(productor);
-        }
-        // POST: Productores/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cedula,Telefono,Direccion,Finca,Activo,FechaRegistro")] Productor productor)
-        {
-            if (id != productor.Id)
-            {
-                return NotFound();
-            }
             if (ModelState.IsValid)
             {
                 try
                 {
+                    productor.FechaRegistro = DateTime.Now;
+                    productor.Direccion = ConstruirDireccion(productor);
+
+                    _context.Productores.Add(productor);
+                    await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Productores", "Crear", productor.Id,
+                        $"Se registró al productor {productor.Nombre}.");
+
+                    TempData["Success"] = "Productor registrado correctamente. Ahora puede asociarle una o más fincas.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible registrar el productor. Verifique que la cédula y el correo no estén duplicados.");
+                }
+            }
+
+            return View(productor);
+        }
+
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var productor = await _context.Productores.FindAsync(id);
+            return productor == null ? NotFound() : View(productor);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,Nombre,Cedula,Telefono,Correo,Provincia,Canton,Distrito,DireccionExacta,Activo")]
+            Productor productor)
+        {
+            if (id != productor.Id) return NotFound();
+
+            var original = await _context.Productores
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (original == null) return NotFound();
+
+            Normalizar(productor);
+            await ValidarDuplicadosAsync(productor, id);
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    productor.FechaRegistro = original.FechaRegistro;
+                    productor.Finca = original.Finca;
+                    productor.Direccion = ConstruirDireccion(productor);
+
                     _context.Update(productor);
                     await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Productores", "Editar", productor.Id,
+                        $"Se actualizó al productor {productor.Nombre}.");
+
+                    TempData["Success"] = "Productor actualizado correctamente.";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductorExists(productor.Id))
-                    {
-                        return NotFound();
-                    }
+                    if (!ProductorExists(productor.Id)) return NotFound();
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible actualizar el productor. Verifique la información ingresada.");
+                }
             }
+
             return View(productor);
         }
-        // GET: Productores/Delete/5
+
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var productor = await _context.Productores
-                .FirstOrDefaultAsync(m => m.Id == id);
+            if (id == null) return NotFound();
 
-            if (productor == null)
-            {
-                return NotFound();
-            }
-            return View(productor);
+            var productor = await _context.Productores
+                .Include(p => p.Fincas)
+                .Include(p => p.Lotes)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return productor == null ? NotFound() : View(productor);
         }
-        // POST: Productores/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var productor = await _context.Productores.FindAsync(id);
+            var productor = await _context.Productores
+                .Include(p => p.Fincas)
+                .Include(p => p.Lotes)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (productor == null)
-            {
-                return NotFound();
-            }
+            if (productor == null) return NotFound();
 
-            bool tieneLotes = await _context.Lotes
-                .AnyAsync(l => l.ProductorId == id);
-            if (tieneLotes)
+            var cantidadLotes = productor.Lotes.Count;
+            if (cantidadLotes > 0)
             {
                 TempData["Error"] =
-                    "No se puede eliminar el productor porque tiene lotes asociados.";
-
+                    $"No se puede eliminar el productor porque posee {cantidadLotes} lote(s) asociado(s). Elimine o reasigne esos lotes primero.";
                 return RedirectToAction(nameof(Index));
             }
+
+            var cantidadFincas = productor.Fincas.Count;
+            if (cantidadFincas > 0)
+            {
+                TempData["Error"] =
+                    $"No se puede eliminar el productor porque posee {cantidadFincas} finca(s) registrada(s). Elimine las fincas primero o desactive el productor.";
+                return RedirectToAction(nameof(Index));
+            }
+
             _context.Productores.Remove(productor);
-
             await _context.SaveChangesAsync();
+            await AuditoriaHelper.RegistrarAsync(
+                _context, User, "Productores", "Eliminar", id,
+                $"Se eliminó al productor {productor.Nombre}.");
 
-            TempData["Success"] =
-                "Productor eliminado correctamente.";
-
+            TempData["Success"] = "Productor eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
-        private bool ProductorExists(int id)
+
+        private async Task ValidarDuplicadosAsync(Productor productor, int? excluirId = null)
         {
-            return _context.Productores.Any(e => e.Id == id);
+            var cedulaDuplicada = await _context.Productores.AnyAsync(p =>
+                p.Cedula == productor.Cedula && (!excluirId.HasValue || p.Id != excluirId));
+
+            if (cedulaDuplicada)
+            {
+                ModelState.AddModelError(nameof(Productor.Cedula),
+                    "Ya existe un productor registrado con esta cédula.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(productor.Correo))
+            {
+                var correoNormalizado = productor.Correo.ToLower();
+                var correoDuplicado = await _context.Productores.AnyAsync(p =>
+                    p.Correo != null && p.Correo.ToLower() == correoNormalizado &&
+                    (!excluirId.HasValue || p.Id != excluirId));
+
+                if (correoDuplicado)
+                {
+                    ModelState.AddModelError(nameof(Productor.Correo),
+                        "Ya existe un productor registrado con este correo electrónico.");
+                }
+            }
         }
+
+        private static void Normalizar(Productor productor)
+        {
+            productor.Nombre = productor.Nombre?.Trim() ?? string.Empty;
+            productor.Cedula = new string((productor.Cedula ?? string.Empty).Where(char.IsDigit).ToArray());
+            productor.Telefono = new string((productor.Telefono ?? string.Empty).Where(char.IsDigit).ToArray());
+            productor.Correo = string.IsNullOrWhiteSpace(productor.Correo)
+                ? null
+                : productor.Correo.Trim().ToLowerInvariant();
+            productor.Provincia = productor.Provincia?.Trim() ?? string.Empty;
+            productor.Canton = productor.Canton?.Trim() ?? string.Empty;
+            productor.Distrito = productor.Distrito?.Trim() ?? string.Empty;
+            productor.DireccionExacta = productor.DireccionExacta?.Trim() ?? string.Empty;
+        }
+
+        private static string ConstruirDireccion(Productor productor)
+        {
+            return $"{productor.Provincia}, {productor.Canton}, {productor.Distrito}. {productor.DireccionExacta}";
+        }
+
+        private bool ProductorExists(int id) => _context.Productores.Any(e => e.Id == id);
     }
 }

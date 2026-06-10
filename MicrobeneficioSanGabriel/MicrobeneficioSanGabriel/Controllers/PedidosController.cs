@@ -1,4 +1,4 @@
-﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MicrobeneficioSanGabriel.Services;
+using System.Globalization;
 
 
 namespace MicrobeneficioSanGabriel.Controllers
@@ -82,12 +84,21 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     pedido.ClienteNombre = usuario.NombreCompleto;
                     pedido.ClienteCorreo = usuario.Email;
-                    pedido.ClienteTelefono = usuario.PhoneNumber;
+                    pedido.ClienteTelefono = usuario.PhoneNumber ?? string.Empty;
+                    ModelState.Remove(nameof(Pedido.ClienteNombre));
+                    ModelState.Remove(nameof(Pedido.ClienteCorreo));
+                    ModelState.Remove(nameof(Pedido.ClienteTelefono));
                 }
 
                 pedido.Estado = "Pendiente";
                 pedido.FechaPedido = DateTime.Now;
             }
+            pedido.ClienteNombre = pedido.ClienteNombre?.Trim() ?? string.Empty;
+            pedido.ClienteCorreo = string.IsNullOrWhiteSpace(pedido.ClienteCorreo)
+                ? null
+                : pedido.ClienteCorreo.Trim().ToLowerInvariant();
+            pedido.ClienteTelefono = new string((pedido.ClienteTelefono ?? string.Empty).Where(char.IsDigit).ToArray());
+
             if (string.IsNullOrWhiteSpace(pedido.Estado))
             {
                 pedido.Estado = "Pendiente";
@@ -134,6 +145,9 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                 _context.Pedidos.Add(pedido);
                 await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Crear", pedido.Id,
+                    $"Se registró el pedido #{pedido.Id} para {pedido.ClienteNombre}.");
+                TempData["Success"] = "Pedido registrado correctamente. Complete la información de pago.";
 
                 return RedirectToAction(nameof(Pago),
                     new { id = pedido.Id });
@@ -233,9 +247,19 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                     pedido.ClienteCorreo = pedidoOriginal.ClienteCorreo;
                     pedido.MetodoPago = pedidoOriginal.MetodoPago;
-                    pedido.EstadoPago = pedidoOriginal.EstadoPago;
+
+                    // El estado de pago se sincroniza automáticamente según el estado del pedido.
+                    pedido.EstadoPago = ObtenerEstadoPagoAutomatico(
+                        pedido.Estado,
+                        pedidoOriginal.EstadoPago,
+                        pedido.MetodoPago);
+
+                    await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
+
                     _context.Update(pedido);
                     await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Editar", pedido.Id,
+                        $"Se actualizó el pedido #{pedido.Id}.");
 
                     TempData["Success"] = "Pedido actualizado correctamente.";
                     return RedirectToAction(nameof(Index));
@@ -414,6 +438,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Eliminar", id,
+                $"Se eliminó el pedido #{id}.");
             TempData["Success"] = "Pedido eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
@@ -505,6 +531,21 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             pedido.Estado = estado;
+            pedido.EstadoPago = ObtenerEstadoPagoAutomatico(
+                pedido.Estado,
+                pedido.EstadoPago,
+                pedido.MetodoPago);
+
+            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
+
+            await _context.SaveChangesAsync();
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Cambiar estado", pedido.Id,
+                $"El pedido cambió de {estadoAnterior} a {estado}. Estado de pago: {pedido.EstadoPago}.");
+
+            TempData["Success"] = estado == "Completado"
+                ? "Pedido completado y pago marcado automáticamente como completado."
+                : "Estado del pedido actualizado correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -540,38 +581,143 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
             if (metodoPago == "Tarjeta")
             {
-                var tarjetaLimpia = numeroTarjeta?.Replace(" ", "") ?? "";
+                var tarjetaLimpia = new string((numeroTarjeta ?? string.Empty)
+                    .Where(char.IsDigit)
+                    .ToArray());
+
                 if (tarjetaLimpia.Length != 16)
                 {
-                    TempData["Error"] = "La tarjeta debe contener 16 dígitos.";
-                    return RedirectToAction(nameof(Pago),
-                        new { id = pedidoId });
+                    TempData["Error"] = "La tarjeta debe contener exactamente 16 dígitos.";
+                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
                 }
-                if (string.IsNullOrWhiteSpace(fechaVencimiento))
+
+                if (string.IsNullOrWhiteSpace(fechaVencimiento) ||
+                    !DateTime.TryParseExact(
+                        fechaVencimiento.Trim(),
+                        "MM/yy",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out var fechaTarjeta))
                 {
-                    TempData["Error"] = "Debe ingresar la fecha de vencimiento.";
-                    return RedirectToAction(nameof(Pago),
-                        new { id = pedidoId });
+                    TempData["Error"] = "Ingrese la fecha de vencimiento en formato MM/AA.";
+                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
                 }
+
+                var ultimoDiaVigencia = new DateTime(
+                    fechaTarjeta.Year,
+                    fechaTarjeta.Month,
+                    DateTime.DaysInMonth(fechaTarjeta.Year, fechaTarjeta.Month));
+
+                if (ultimoDiaVigencia < DateTime.Today)
+                {
+                    TempData["Error"] = "La tarjeta indicada está vencida.";
+                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
+                }
+
                 if (string.IsNullOrWhiteSpace(numeroSecreto) ||
-                    numeroSecreto.Length != 3)
+                    numeroSecreto.Length != 3 ||
+                    !numeroSecreto.All(char.IsDigit))
                 {
-                    TempData["Error"] =
-                        "El CVV debe contener 3 dígitos.";
-                    return RedirectToAction(nameof(Pago),
-                        new { id = pedidoId });
+                    TempData["Error"] = "El CVV debe contener exactamente 3 dígitos.";
+                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
                 }
             }
-            Console.WriteLine($"Metodo: {metodoPago}");
             pedido.MetodoPago = metodoPago;
             pedido.EstadoPago = metodoPago == "Tarjeta"
-                ? "Pagado"
+                ? "Pago completado"
                 : "Pendiente de pago";
 
+            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
             await _context.SaveChangesAsync();
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Registrar pago", pedido.Id,
+                $"Método: {metodoPago}. Estado: {pedido.EstadoPago}.");
             TempData["Success"] =
                 "Pago registrado correctamente.";
             return RedirectToAction(nameof(Details), new { id = pedido.Id });
+        }
+
+        private async Task SincronizarEstadoPagoFacturasAsync(int pedidoId, string estadoPago)
+        {
+            var facturas = await _context.Facturas
+                .Where(f => f.PedidoId == pedidoId && f.EstadoPago != "Anulada")
+                .ToListAsync();
+
+            foreach (var factura in facturas)
+            {
+                factura.EstadoPago = estadoPago;
+            }
+        }
+
+        private string ObtenerEstadoPagoAutomatico(string? estadoPedido, string? estadoPagoActual, string? metodoPago)
+        {
+            var estadoNormalizado = (estadoPedido ?? string.Empty).Trim().ToLowerInvariant();
+            var metodoNormalizado = (metodoPago ?? string.Empty).Trim().ToLowerInvariant();
+
+            if (estadoNormalizado == "completado")
+            {
+                return "Pago completado";
+            }
+
+            if (estadoNormalizado == "cancelado")
+            {
+                return "Pendiente";
+            }
+
+            if (metodoNormalizado == "tarjeta")
+            {
+                return "Pago completado";
+            }
+
+            if (string.IsNullOrWhiteSpace(metodoPago) || metodoNormalizado == "sin definir")
+            {
+                return "Pendiente";
+            }
+
+            return "Pendiente de pago";
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Vendedor")]
+        public async Task<IActionResult> CambiarEstadoPago(int id, string estadoPago)
+        {
+            var estadosPermitidos = new[]
+            {
+                "Pendiente",
+                "Pendiente de pago",
+                "Pago completado"
+            };
+
+            if (!estadosPermitidos.Contains(estadoPago))
+            {
+                TempData["Error"] = "El estado de pago seleccionado no es válido.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var pedido = await _context.Pedidos
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            var estadoAnterior = pedido.EstadoPago;
+            pedido.EstadoPago = estadoPago;
+
+            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
+            await _context.SaveChangesAsync();
+
+            await AuditoriaHelper.RegistrarAsync(
+                _context,
+                User,
+                "Pedidos",
+                "Cambiar estado de pago",
+                pedido.Id,
+                $"El estado de pago cambió de {estadoAnterior} a {estadoPago}.");
+
+            TempData["Success"] = $"El estado de pago del pedido #{pedido.Id} se actualizó a {estadoPago}.";
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "Administrador")]
@@ -583,8 +729,11 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 return NotFound();
             }
-            pedido.EstadoPago = "Pagado";
+            pedido.EstadoPago = "Pago completado";
+            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
             await _context.SaveChangesAsync();
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Confirmar pago", pedido.Id,
+                "El pago se marcó como completado.");
             TempData["Success"] = "Pago confirmado correctamente.";
             return RedirectToAction(nameof(Index));
         }

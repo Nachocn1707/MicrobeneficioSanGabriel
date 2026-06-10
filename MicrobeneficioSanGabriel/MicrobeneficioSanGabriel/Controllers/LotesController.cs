@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
-using Microsoft.AspNetCore.Authorization;
+using MicrobeneficioSanGabriel.Services;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -17,244 +18,275 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context = context;
         }
 
-        // =========================
-        // LISTADO
-        // =========================
         public async Task<IActionResult> Index()
         {
-            var lotes = _context.Lotes
+            var lotes = await _context.Lotes
                 .Include(l => l.Productor)
-                .OrderByDescending(l => l.FechaRecepcion);
+                .Include(l => l.Finca)
+                .OrderByDescending(l => l.FechaRecepcion)
+                .ToListAsync();
 
-            return View(await lotes.ToListAsync());
+            return View(lotes);
         }
 
-        // =========================
-        // DETALLES
-        // =========================
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var lote = await _context.Lotes
                 .Include(l => l.Productor)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(l => l.Finca)
+                .FirstOrDefaultAsync(l => l.Id == id);
 
-            if (lote == null)
-            {
-                return NotFound();
-            }
-
-            return View(lote);
+            return lote == null ? NotFound() : View(lote);
         }
 
-        // =========================
-        // CREAR
-        // =========================
-        public IActionResult Create(int? productorId)
+        public IActionResult Create()
         {
-            if (productorId != null)
+            CargarFincas();
+            return View(new Lote
             {
-                var productor = _context.Productores
-                    .FirstOrDefault(p => p.Id == productorId);
-                if (productor == null)
-                {
-                    return NotFound();
-                }
-
-                ViewBag.NombreProductor = $"{productor.Nombre} - {productor.Cedula}";
-                return View(new Lote{ProductorId = productor.Id});
-            }
-
-            ViewData["ProductorId"] = new SelectList(
-                _context.Productores.Select(p => new
-                {
-                    p.Id,
-                    NombreCompleto = p.Nombre + " - " + p.Cedula
-                }),
-                "Id",
-                "NombreCompleto"
-            );
-
-            return View();
+                FechaRecepcion = DateTime.Now,
+                Estado = "Recibido"
+            });
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-        [Bind("Id,ProductorId,PesoKg,FechaRecepcion,Estado,Observacion")]
-        Lote lote)
+            [Bind("FincaId,PesoKg,FechaRecepcion,Estado,Observacion")]
+            Lote lote)
         {
+            var finca = lote.FincaId.HasValue
+                ? await _context.Fincas.Include(f => f.Productor)
+                    .FirstOrDefaultAsync(f => f.Id == lote.FincaId.Value && f.Activa)
+                : null;
+
+            if (finca == null)
+            {
+                ModelState.AddModelError(nameof(Lote.FincaId), "Seleccione una finca activa y válida.");
+            }
+            else
+            {
+                lote.ProductorId = finca.ProductorId;
+            }
+
             if (ModelState.IsValid)
             {
-                var añoActual = DateTime.Now.Year;
-                var ultimoLote = await _context.Lotes
-                    .Where(l => l.CodigoLote.StartsWith($"LOT-{añoActual}-"))
-                    .OrderByDescending(l => l.CodigoLote)
-                    .FirstOrDefaultAsync();
-                int consecutivo = 1;
-                if (ultimoLote != null)
+                await using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    var partes = ultimoLote.CodigoLote.Split('-');
-                    if (partes.Length == 3)
-                    {
-                        consecutivo = int.Parse(partes[2]) + 1;
-                    }
-                }
-                lote.CodigoLote =
-                    $"LOT-{añoActual}-{consecutivo:D4}";
-                _context.Add(lote);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProductorId"] = new SelectList(
-                _context.Productores.Select(p => new
-                {
-                    p.Id,
-                    NombreCompleto = p.Nombre + " - " + p.Cedula
-                }),
-                "Id",
-                "NombreCompleto",
-                lote.ProductorId
-            );
+                    lote.CodigoLote = $"TEMP-{Guid.NewGuid():N}";
+                    lote.Observacion = string.IsNullOrWhiteSpace(lote.Observacion)
+                        ? null
+                        : lote.Observacion.Trim();
 
+                    _context.Lotes.Add(lote);
+                    await _context.SaveChangesAsync();
+
+                    lote.CodigoLote = $"SG-{lote.FechaRecepcion:yyyy}-{lote.Id:D5}";
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Lotes", "Crear", lote.Id,
+                        $"Se registró el lote {lote.CodigoLote} para la finca {finca!.Nombre}.");
+
+                    TempData["Success"] = $"Lote {lote.CodigoLote} registrado correctamente.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync();
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible registrar el lote. Revise la información e inténtelo nuevamente.");
+                }
+            }
+
+            CargarFincas(lote.FincaId);
             return View(lote);
         }
-        // =========================
-        // EDITAR
-        // =========================
+
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+
             var lote = await _context.Lotes.FindAsync(id);
-            if (lote == null)
-            {
-                return NotFound();
-            }
-            ViewData["ProductorId"] = new SelectList(
-                _context.Productores.Select(p => new
-                {
-                    p.Id,
-                    NombreCompleto = p.Nombre + " - " + p.Cedula
-                }),
-                "Id",
-                "NombreCompleto",
-                lote.ProductorId
-            );
+            if (lote == null) return NotFound();
+
+            CargarFincas(lote.FincaId);
             return View(lote);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(
             int id,
-            [Bind("Id,CodigoLote,ProductorId,PesoKg,FechaRecepcion,Estado,Observacion")]
+            [Bind("Id,FincaId,PesoKg,FechaRecepcion,Estado,Observacion")]
             Lote lote)
         {
-            if (id != lote.Id)
-            {
-                return NotFound();
-            }
+            if (id != lote.Id) return NotFound();
 
-            var loteOriginal = await _context.Lotes.AsNoTracking() .FirstOrDefaultAsync(l => l.Id == lote.Id);
+            var original = await _context.Lotes.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
+            if (original == null) return NotFound();
 
-            if(loteOriginal == null)
+            var finca = lote.FincaId.HasValue
+                ? await _context.Fincas.FirstOrDefaultAsync(f => f.Id == lote.FincaId.Value)
+                : null;
+
+            if (finca == null)
             {
-                return NotFound();
+                ModelState.AddModelError(nameof(Lote.FincaId), "Seleccione una finca válida.");
             }
-            lote.CodigoLote = loteOriginal.CodigoLote;
+            else
+            {
+                lote.ProductorId = finca.ProductorId;
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    lote.CodigoLote = original.CodigoLote;
+                    lote.Observacion = string.IsNullOrWhiteSpace(lote.Observacion)
+                        ? null
+                        : lote.Observacion.Trim();
+
                     _context.Update(lote);
                     await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Lotes", "Editar", lote.Id,
+                        $"Se actualizó el lote {lote.CodigoLote}.");
+
+                    TempData["Success"] = $"Lote {lote.CodigoLote} actualizado correctamente.";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LoteExists(lote.Id))
-                    {
-                        return NotFound();
-                    }
+                    if (!LoteExists(lote.Id)) return NotFound();
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProductorId"] = new SelectList(
-                _context.Productores.Select(p => new
+                catch (DbUpdateException)
                 {
-                    p.Id,
-                    NombreCompleto = p.Nombre + " - " + p.Cedula
-                }),
-                "Id",
-                "NombreCompleto",
-                lote.ProductorId
-            );
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible actualizar el lote. Verifique sus relaciones.");
+                }
+            }
+
+            CargarFincas(lote.FincaId);
             return View(lote);
         }
-        // =========================
-        // ELIMINAR
-        // =========================
+
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var lote = await _context.Lotes
                 .Include(l => l.Productor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (lote == null)
-            {
-                return NotFound();
-            }
+                .Include(l => l.Finca)
+                .FirstOrDefaultAsync(l => l.Id == id);
 
-            return View(lote);
+            return lote == null ? NotFound() : View(lote);
         }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
                 var lote = await _context.Lotes.FindAsync(id);
+                if (lote == null) return NotFound();
 
-                if (lote == null)
+                var producciones = await _context.Producciones
+                    .Include(p => p.Producto)
+                    .Where(p => p.LoteId == id)
+                    .ToListAsync();
+
+                var cantidadesPorProducto = producciones
+                    .Where(p => p.Estado == "Completado" && p.ProductoId.HasValue)
+                    .GroupBy(p => p.ProductoId!.Value)
+                    .ToDictionary(g => g.Key, g => g.Sum(p => (int)p.CantidadResultanteKg));
+
+                foreach (var item in cantidadesPorProducto)
                 {
-                    return NotFound();
+                    var producto = producciones.First(p => p.ProductoId == item.Key).Producto;
+                    if (producto == null || producto.Stock < item.Value)
+                    {
+                        TempData["Error"] =
+                            "No se puede eliminar el lote porque parte del inventario generado por sus producciones ya fue utilizado.";
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
 
+                foreach (var item in cantidadesPorProducto)
+                {
+                    var producto = producciones.First(p => p.ProductoId == item.Key).Producto!;
+                    producto.Stock -= item.Value;
+                }
+
+                var idsProducciones = producciones.Select(p => p.Id).ToList();
+                var trazabilidades = await _context.Trazabilidades
+                    .Where(t => t.LoteId == id || idsProducciones.Contains(t.ProduccionId))
+                    .ToListAsync();
+
+                var referencias = producciones
+                    .Select(p => $"Entrada automática por producción #{p.Id}")
+                    .ToList();
+
+                var movimientos = referencias.Count == 0
+                    ? new List<MovimientoInventario>()
+                    : await _context.MovimientosInventario
+                        .Where(m => m.TipoMovimiento == "Entrada" &&
+                                    m.Observacion != null && referencias.Contains(m.Observacion))
+                        .ToListAsync();
+
+                var codigo = lote.CodigoLote;
+                _context.Trazabilidades.RemoveRange(trazabilidades);
+                _context.MovimientosInventario.RemoveRange(movimientos);
+                _context.Producciones.RemoveRange(producciones);
                 _context.Lotes.Remove(lote);
 
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-                TempData["Success"] =
-                    "Lote eliminado correctamente.";
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Lotes", "Eliminar", id,
+                    $"Se eliminó el lote {codigo} y sus registros dependientes.");
+
+                TempData["Success"] = $"Lote {codigo} eliminado correctamente.";
             }
-            catch
+            catch (DbUpdateException)
             {
+                await transaction.RollbackAsync();
                 TempData["Error"] =
-                    "No se puede eliminar el lote porque tiene información relacionada con producción.";
+                    "No fue posible eliminar el lote porque todavía tiene información relacionada.";
             }
+
             return RedirectToAction(nameof(Index));
         }
-        // =========================
-        // VALIDACIÓN
-        // =========================
-        private bool LoteExists(int id)
+
+        private void CargarFincas(int? seleccionada = null)
         {
-            return _context.Lotes.Any(e => e.Id == id);
+            var fincas = _context.Fincas
+                .Where(f => f.Activa && f.Productor != null && f.Productor.Activo)
+                .OrderBy(f => f.Productor!.Nombre)
+                .ThenBy(f => f.Nombre)
+                .Select(f => new
+                {
+                    f.Id,
+                    Texto = f.Productor!.Nombre + " — " + f.Nombre + " (" + f.Distrito + ", " + f.Canton + ")"
+                });
+
+            ViewBag.FincaId = new SelectList(fincas, "Id", "Texto", seleccionada);
         }
+
+        private bool LoteExists(int id) => _context.Lotes.Any(e => e.Id == id);
     }
 }

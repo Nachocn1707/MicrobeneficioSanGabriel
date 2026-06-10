@@ -1,16 +1,23 @@
-﻿@using System.Text.Json
-@using MicrobeneficioSanGabriel.ViewModels
+@using System.Text.Json
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<ApplicationUser> UserManager
+@using MicrobeneficioSanGabriel.Models
+@using MicrobeneficioSanGabriel.ViewModels
 @inject MicrobeneficioSanGabriel.Services.IAlertasSistemaService AlertasSistemaService
+@inject UserManager<ApplicationUser> UserManager
 
 @{
-    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var currentPath = Context.Request.Path.Value?.ToLowerInvariant() ?? "";
 
-    string Active(string keyword)
+    string Active(params string[] keywords)
     {
-        return currentPath.Contains(keyword.ToLower()) ? "active" : "";
+        return keywords.Any(keyword => currentPath.Contains(keyword.ToLowerInvariant())) ? "active" : "";
     }
+
+
+    var operacionActiva = Active("productores", "fincas", "productos", "movimientosinventario", "lotes", "producciones", "trazabilidades") == "active";
+    var comercialActiva = Active("pedidos", "facturas") == "active";
+    var administracionActiva = Active("usuarios", "registrosfinancieros", "auditorias") == "active";
 
     string NombreRol()
     {
@@ -21,9 +28,21 @@
         return "Usuario";
     }
 
-    var alertasSistema = User.Identity != null && User.Identity.IsAuthenticated
+    var alertasSistema = User.Identity?.IsAuthenticated == true
         ? await AlertasSistemaService.ObtenerAlertasAsync(User)
         : new List<AlertaSistemaViewModel>();
+
+    var usuarioActual = User.Identity?.IsAuthenticated == true
+        ? await UserManager.GetUserAsync(User)
+        : null;
+
+    var nombreUsuarioActual = usuarioActual?.NombreCompleto
+        ?? User.Identity?.Name
+        ?? "Usuario";
+
+    var usuarioStorageId = usuarioActual?.Id
+        ?? User.FindFirstValue(ClaimTypes.NameIdentifier)
+        ?? "anonimo";
 
     var alertasToastJson = JsonSerializer.Serialize(
         alertasSistema.Take(5).Select(a => new
@@ -35,21 +54,13 @@
             tiempo = a.Tiempo
         })
     );
-
-    var usuarioActual = await UserManager.GetUserAsync(User);
-
-    var nombreCliente = usuarioActual != null
-        ? usuarioActual.NombreCompleto
-        : "Cliente";
 }
-
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>@ViewData["Title"] - Microbeneficio San Gabriel</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -60,743 +71,268 @@
     <link rel="stylesheet" href="~/css/VistaDetalles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/VistaEditar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/VistaCrear.css" asp-append-version="true" />
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
 
     @RenderSection("Styles", required: false)
-
-    <style>
-            .notification-wrap {
-                position: relative;
-            }
-
-            .notification-button {
-                position: relative;
-                width: 42px;
-                height: 42px;
-                border: 1px solid #ead8a2;
-                border-radius: 999px;
-                background: #fffdf2;
-                color: #4a2c1a;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                box-shadow: 0 8px 18px rgba(74, 44, 26, 0.08);
-            }
-
-                .notification-button:hover {
-                    background: #fff3c4;
-                }
-
-            .notification-count {
-                position: absolute;
-                top: -5px;
-                right: -4px;
-                min-width: 18px;
-                height: 18px;
-                padding: 0 5px;
-                border-radius: 999px;
-                background: #f05b5b;
-                color: white;
-                font-size: 11px;
-                font-weight: 900;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .notification-panel {
-                position: absolute;
-                top: calc(100% + 10px);
-                right: 0;
-                width: 360px;
-                max-height: 430px;
-                overflow-y: auto;
-                background: #fffdf8;
-                border: 1px solid #ead8a2;
-                border-radius: 16px;
-                box-shadow: 0 18px 40px rgba(74, 44, 26, 0.22);
-                padding: 12px;
-                z-index: 2000;
-            }
-
-            .notification-panel-header {
-                padding: 4px 6px 10px;
-                border-bottom: 1px solid #ead8a2;
-                margin-bottom: 10px;
-            }
-
-                .notification-panel-header strong {
-                    display: block;
-                    color: #2b160d;
-                    font-size: 14px;
-                    font-weight: 900;
-                }
-
-                .notification-panel-header span {
-                    color: #7a6a5d;
-                    font-size: 12px;
-                    font-weight: 700;
-                }
-
-            .notification-item {
-                position: relative;
-                border-radius: 12px;
-                padding: 12px 36px 12px 12px;
-                margin-bottom: 8px;
-                border: 1px solid #ead8a2;
-                background: #fff8df;
-            }
-
-            .notification-link {
-                display: block;
-                color: inherit;
-                text-decoration: none;
-            }
-
-            .notification-title {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                color: #2b160d;
-                font-size: 13px;
-                font-weight: 900;
-                margin-bottom: 4px;
-            }
-
-            .notification-item strong {
-                display: block;
-                color: #7a5230;
-                font-size: 12px;
-                font-weight: 900;
-                margin-bottom: 4px;
-            }
-
-            .notification-item p {
-                margin: 0;
-                color: #2b160d;
-                font-size: 12px;
-                font-weight: 700;
-                line-height: 1.35;
-            }
-
-            .notification-time {
-                display: block;
-                margin-top: 7px;
-                color: #7a6a5d;
-                font-size: 11px;
-                font-weight: 700;
-            }
-
-            .notification-close {
-                position: absolute;
-                top: 9px;
-                right: 9px;
-                width: 23px;
-                height: 23px;
-                border: none;
-                border-radius: 50%;
-                background: rgba(74, 44, 26, 0.12);
-                color: #4a2c1a;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 12px;
-                cursor: pointer;
-                z-index: 5;
-            }
-
-                .notification-close:hover {
-                    background: #4a2c1a;
-                    color: #fff8df;
-                }
-
-            .notification-info {
-                background: #e3f1fb;
-                border-color: #b9d8ee;
-            }
-
-            .notification-warning {
-                background: #fff1c7;
-                border-color: #e8c66f;
-            }
-
-            .notification-danger {
-                background: #fde7e4;
-                border-color: #f2b8b2;
-            }
-
-            .notification-success {
-                background: #e5f4e8;
-                border-color: #b9dfc0;
-            }
-
-            .notification-empty {
-                padding: 16px;
-                color: #7a6a5d;
-                font-size: 13px;
-                font-weight: 700;
-                text-align: center;
-            }
-
-            .alert-toast-area {
-                position: fixed;
-                right: 24px;
-                bottom: 24px;
-                width: 360px;
-                max-width: calc(100vw - 40px);
-                display: grid;
-                gap: 10px;
-                z-index: 3000;
-            }
-
-            .alert-toast {
-                position: relative;
-                background: #fffdf8;
-                border: 1px solid #ead8a2;
-                border-left: 5px solid #d9a44a;
-                border-radius: 14px;
-                padding: 14px 38px 14px 14px;
-                box-shadow: 0 16px 36px rgba(74, 44, 26, 0.20);
-                animation: toastIn 0.25s ease;
-            }
-
-                .alert-toast strong {
-                    display: block;
-                    color: #2b160d;
-                    font-size: 14px;
-                    font-weight: 900;
-                    margin-bottom: 4px;
-                }
-
-                .alert-toast p {
-                    margin: 0;
-                    color: #4d3c31;
-                    font-size: 12px;
-                    font-weight: 700;
-                }
-
-                .alert-toast small {
-                    display: block;
-                    margin-top: 6px;
-                    color: #7a6a5d;
-                    font-size: 11px;
-                    font-weight: 700;
-                }
-
-            .alert-toast-close {
-                position: absolute;
-                top: 8px;
-                right: 8px;
-                border: none;
-                background: transparent;
-                color: #4a2c1a;
-                cursor: pointer;
-            }
-
-            .alert-toast-info {
-                border-left-color: #4f98d4;
-            }
-
-            .alert-toast-warning {
-                border-left-color: #d9a44a;
-            }
-
-            .alert-toast-danger {
-                border-left-color: #d85d4c;
-            }
-
-            .alert-toast-success {
-                border-left-color: #3f8f4d;
-            }
-
-            .user-info {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .user-name {
-                font-weight: 700;
-                color: black;
-            }
-
-            .user-role {
-                font-size: .85rem;
-                opacity: .8;
-            }
-
-            @@keyframes toastIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(12px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            @@media (max-width: 768px) {
-                .notification-panel {
-                    right: -80px;
-                    width: 320px;
-                }
-
-                .alert-toast-area {
-                    right: 14px;
-                    bottom: 14px;
-                }
-            }
-    </style>
+    <link rel="stylesheet" href="~/css/demo-admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
 </head>
+<body class="demo-body rc-admin-body">
+    <div class="demo-app-shell">
+        <header class="demo-header">
+            <a asp-controller="Home" asp-action="Dashboard" class="demo-brand">
+                <span class="demo-brand-logo"><i class="fa-solid fa-seedling"></i></span>
+                <span class="demo-brand-copy">
+                    <strong>San Gabriel</strong>
+                    <small>Coffee Lab</small>
+                </span>
+            </a>
 
-<body class="sg-coffee-bg">
-    <div class="sg-admin-wrapper">
+            <button type="button" class="demo-nav-toggle" id="demoNavToggle" aria-label="Abrir navegación">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-        <aside class="sg-sidebar">
-            <div class="sg-sidebar-brand">
-                <div class="sg-brand-icon">
-                    <i class="fa-solid fa-seedling"></i>
-                </div>
-
-                <div>
-                    <h4>San Gabriel</h4>
-                    <span>Microbeneficio</span>
-                </div>
-            </div>
-
-            <nav class="sg-sidebar-menu">
-                <a asp-controller="Home" asp-action="Dashboard" class="@Active("dashboard")">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>Dashboard</span>
+            <nav class="demo-primary-nav" id="demoPrimaryNav">
+                <a asp-controller="Home" asp-action="Dashboard" class="demo-nav-link @Active("/home/dashboard", "/home")">
+                    Inicio
                 </a>
 
-                @if (User.IsInRole("Administrador"))
-                {
-                    <a asp-controller="Usuarios" asp-action="Index" class="@Active("usuarios")">
-                        <i class="fa-solid fa-users"></i>
-                        <span>Usuarios</span>
-                    </a>
-                }
-
                 @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
                 {
-                    <a asp-controller="Productores" asp-action="Index" class="@Active("productores")">
-                        <i class="fa-solid fa-user-tie"></i>
-                        <span>Productores</span>
-                    </a>
+                    <details class="demo-nav-group @(operacionActiva ? "current" : "")">
+                        <summary>Operación <i class="fa-solid fa-chevron-down"></i></summary>
+                        <div class="demo-nav-dropdown">
+                            <a asp-controller="Productores" asp-action="Index"><i class="fa-solid fa-user-tie"></i> Productores</a>
+                            <a asp-controller="Fincas" asp-action="Index"><i class="fa-solid fa-mountain-sun"></i> Fincas</a>
+                            <a asp-controller="Productos" asp-action="Index"><i class="fa-solid fa-mug-hot"></i> Productos</a>
+                            <a asp-controller="MovimientosInventario" asp-action="Index"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+                            <a asp-controller="Lotes" asp-action="Index"><i class="fa-solid fa-layer-group"></i> Lotes</a>
+                            <a asp-controller="Producciones" asp-action="Index"><i class="fa-solid fa-industry"></i> Producción</a>
+                            <a asp-controller="Trazabilidades" asp-action="Index"><i class="fa-solid fa-route"></i> Trazabilidad</a>
+                        </div>
+                    </details>
                 }
-
-                @if (User.IsInRole("Administrador") || User.IsInRole("Operador") || User.IsInRole("Vendedor"))
+                else if (User.IsInRole("Vendedor"))
                 {
-                    <a asp-controller="Productos" asp-action="Index" class="@Active("productos")">
-                        <i class="fa-solid fa-mug-hot"></i>
-                        <span>Productos</span>
-                    </a>
-                }
-
-                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
-                {
-                    <a asp-controller="MovimientosInventario" asp-action="Index" class="@Active("movimientosinventario")">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                        <span>Inventario</span>
-                    </a>
-
-                    <a asp-controller="Lotes" asp-action="Index" class="@Active("lotes")">
-                        <i class="fa-solid fa-layer-group"></i>
-                        <span>Lotes</span>
-                    </a>
-
-                    <a asp-controller="Producciones" asp-action="Index" class="@Active("producciones")">
-                        <i class="fa-solid fa-industry"></i>
-                        <span>Producción</span>
-                    </a>
-
-                    <a asp-controller="Trazabilidades" asp-action="Index" class="@Active("trazabilidades")">
-                        <i class="fa-solid fa-route"></i>
-                        <span>Trazabilidad</span>
-                    </a>
+                    <a asp-controller="Productos" asp-action="Index" class="demo-nav-link @Active("productos")">Productos</a>
                 }
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
                 {
-                    <a asp-controller="Pedidos" asp-action="Index" class="@Active("pedidos")">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span>Pedidos</span>
-                    </a>
-
-                    <a asp-controller="Facturas" asp-action="Index" class="@Active("facturas")">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                        <span>Facturación</span>
-                    </a>
+                    <details class="demo-nav-group @(comercialActiva ? "current" : "")">
+                        <summary>Comercial <i class="fa-solid fa-chevron-down"></i></summary>
+                        <div class="demo-nav-dropdown">
+                            <a asp-controller="Pedidos" asp-action="Index"><i class="fa-solid fa-cart-shopping"></i> Pedidos</a>
+                            <a asp-controller="Facturas" asp-action="Index"><i class="fa-solid fa-file-invoice-dollar"></i> Facturación</a>
+                        </div>
+                    </details>
                 }
 
                 @if (User.IsInRole("Administrador"))
                 {
-                    <a asp-controller="RegistrosFinancieros" asp-action="Index" class="@Active("registrosfinancieros")">
-                        <i class="fa-solid fa-coins"></i>
-                        <span>Contabilidad</span>
-                    </a>
+                    <details class="demo-nav-group @(administracionActiva ? "current" : "")">
+                        <summary>Administración <i class="fa-solid fa-chevron-down"></i></summary>
+                        <div class="demo-nav-dropdown">
+                            <a asp-controller="Usuarios" asp-action="Index"><i class="fa-solid fa-users"></i> Usuarios</a>
+                            <a asp-controller="RegistrosFinancieros" asp-action="Index"><i class="fa-solid fa-coins"></i> Contabilidad</a>
+                            <a asp-controller="Auditorias" asp-action="Index"><i class="fa-solid fa-clock-rotate-left"></i> Auditoría</a>
+                        </div>
+                    </details>
                 }
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
                 {
-                    <a asp-controller="Reportes" asp-action="Index" class="@Active("reportes")">
-                        <i class="fa-solid fa-chart-pie"></i>
-                        <span>Reportes</span>
-                    </a>
+                    <a asp-controller="Reportes" asp-action="Index" class="demo-nav-link @Active("reportes")">Reportes</a>
                 }
             </nav>
-        </aside>
 
-        <main class="sg-main">
+            <div class="demo-header-actions">
+                <div class="demo-notification-wrap">
+                    <button type="button" class="demo-icon-button" id="notificationButton" aria-label="Notificaciones">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="demo-notification-count" id="notificationCount" style="@(alertasSistema.Any() ? "" : "display:none;")">
+                            @alertasSistema.Count
+                        </span>
+                    </button>
 
-            <header class="sg-topbar">
-                <div class="sg-topbar-title">
-                    <div>
-                        <h5>@ViewData["Title"]</h5>
-                        <small>Sistema de gestión administrativa</small>
-                    </div>
-                </div>
-
-                <div class="sg-topbar-actions">
-
-                    <div class="notification-wrap">
-                        <button type="button" class="notification-button" id="notificationButton">
-                            <i class="fa-regular fa-bell"></i>
-
-                            <span class="notification-count" id="notificationCount"
-                                  style="@(alertasSistema.Any() ? "" : "display:none;")">
-                                @alertasSistema.Count
-                            </span>
-                        </button>
-
-                        <div class="notification-panel" id="notificationPanel" hidden>
-                            <div class="notification-panel-header">
+                    <div class="demo-notification-panel" id="notificationPanel" hidden>
+                        <div class="demo-notification-head">
+                            <div>
                                 <strong>Alertas del sistema</strong>
-                                <span id="notificationPanelCount">@alertasSistema.Count alerta(s)</span>
-                            </div>
-
-                            <div id="notificationEmpty"
-                                 class="notification-empty"
-                                 style="@(alertasSistema.Any() ? "display:none;" : "")">
-                                No hay alertas pendientes.
-                            </div>
-
-                            @foreach (var alerta in alertasSistema)
-                            {
-                                <div class="notification-item notification-@alerta.Tipo"
-                                     data-alert-key="@alerta.Clave">
-
-                                    <button type="button"
-                                            class="notification-close"
-                                            data-alert-dismiss="@alerta.Clave"
-                                            title="Eliminar notificación">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-
-                                    <a href="@alerta.Url" class="notification-link">
-                                        <div class="notification-title">
-                                            <i class="fa-solid @alerta.Icono"></i>
-                                            <span>@alerta.Titulo</span>
-                                        </div>
-
-                                        <strong>@alerta.Modulo</strong>
-                                        <p>@alerta.Mensaje</p>
-
-                                        <small class="notification-time">
-                                            <i class="fa-regular fa-clock"></i>
-                                            @alerta.Tiempo
-                                        </small>
-                                    </a>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                    <div class="sg-user-pill">
-                        <i class="fa-solid fa-user"></i>
-                        <div class="user-info">
-                            <div class="user-name">
-                                @usuarioActual?.NombreCompleto
-                            </div>
-
-                            <div class="user-role">
-                                @NombreRol()
+                                <small id="notificationPanelCount">@alertasSistema.Count alerta(s)</small>
                             </div>
                         </div>
+
+                        <div id="notificationEmpty" class="demo-notification-empty" style="@(alertasSistema.Any() ? "display:none;" : "")">
+                            No hay alertas pendientes.
+                        </div>
+
+                        @foreach (var alerta in alertasSistema)
+                        {
+                            <article class="demo-notification-item" data-alert-key="@alerta.Clave">
+                                <button type="button" class="demo-notification-close" data-alert-dismiss="@alerta.Clave" aria-label="Eliminar">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                                <a href="@alerta.Url">
+                                    <strong><i class="fa-solid @alerta.Icono"></i> @alerta.Titulo</strong>
+                                    <span>@alerta.Mensaje</span>
+                                    <small>@alerta.Tiempo</small>
+                                </a>
+                            </article>
+                        }
                     </div>
-
-                    <form asp-area="Identity"
-                          asp-page="/Account/Logout"
-                          asp-route-returnUrl="/Identity/Account/Login"
-                          method="post">
-
-                        <button type="submit" class="sg-logout-btn">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            <span>Cerrar sesión</span>
-                        </button>
-                    </form>
                 </div>
-            </header>
 
-            <section class="sg-content sg-bg-page">
-                @RenderBody()
+                <div class="demo-user-chip">
+                    <span class="demo-user-avatar"><i class="fa-solid fa-user"></i></span>
+                    <span>
+                        <strong>@nombreUsuarioActual</strong>
+                        <small>@NombreRol()</small>
+                    </span>
+                </div>
+
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Identity/Account/Login" method="post">
+                    <button type="submit" class="demo-logout-button">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Salir</span>
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <main class="demo-main">
+            <section class="demo-page-context">
+                <div>
+                    <span class="demo-context-label">San Gabriel · Coffee Lab</span>
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+                <div class="demo-context-actions">
+                    <a asp-controller="Home" asp-action="Dashboard" class="demo-context-button">Página principal</a>
+                    @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+                    {
+                        <a asp-controller="Reportes" asp-action="Index" class="demo-context-button accent">Ver reportes</a>
+                    }
+                    else if (User.IsInRole("Operador"))
+                    {
+                        <a asp-controller="Lotes" asp-action="Create" class="demo-context-button accent">Nuevo lote</a>
+                    }
+                </div>
             </section>
 
+            <section class="demo-content">
+                <partial name="_MensajesSistema" />
+                @RenderBody()
+            </section>
         </main>
     </div>
 
-    <div class="alert-toast-area" id="alertToastArea"></div>
+    <div class="demo-toast-area" id="alertToastArea"></div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="~/js/Validaciones.js"></script>
 
     <script>
         (() => {
-        const input = document.getElementById("globalSearchInput");
-        const results = document.getElementById("globalSearchResults");
-        const clearButton = document.getElementById("globalSearchClear");
-
-        if (!input || !results || !clearButton) return;
-
-        const normalize = (text) =>
-        (text || "")
-        .toString()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
-
-        const getModules = () => {
-        return Array.from(document.querySelectorAll(".sg-sidebar-menu a"))
-        .map(link => ({
-        name: link.textContent.trim(),
-        url: link.href
-        }))
-        .filter(item => item.name && item.url);
-        };
-
-        const getTableRows = () => {
-        return Array.from(document.querySelectorAll("table tbody tr"));
-        };
-
-        const filterTable = (query) => {
-        const rows = getTableRows();
-
-        if (!rows.length) return;
-
-        rows.forEach(row => {
-        const text = normalize(row.textContent);
-
-        if (!query || text.includes(query)) {
-        row.classList.remove("search-hidden-row");
-        } else {
-        row.classList.add("search-hidden-row");
-        }
-        });
-        };
-
-        const renderResults = (query) => {
-        const modules = getModules();
-        const matches = modules.filter(module =>
-        normalize(module.name).includes(query)
-        );
-
-        results.innerHTML = "";
-
-        if (!query) {
-        results.hidden = true;
-        return;
-        }
-
-        if (matches.length === 0) {
-        results.innerHTML = '<div class="sg-search-empty">No se encontraron módulos.</div>';
-        results.hidden = false;
-        return;
-        }
-
-        matches.slice(0, 6).forEach(module => {
-        const link = document.createElement("a");
-        link.href = module.url;
-        link.textContent = module.name;
-        results.appendChild(link);
-        });
-
-        results.hidden = false;
-        };
-
-        input.addEventListener("input", () => {
-        const query = normalize(input.value);
-
-        clearButton.style.display = query ? "block" : "none";
-
-        filterTable(query);
-        renderResults(query);
-        });
-
-        input.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") return;
-
-        const query = normalize(input.value);
-        const firstResult = results.querySelector("a");
-
-        if (firstResult && query) {
-        window.location.href = firstResult.href;
-        }
-        });
-
-        clearButton.addEventListener("click", () => {
-        input.value = "";
-        clearButton.style.display = "none";
-        results.hidden = true;
-        filterTable("");
-        input.focus();
-        });
-
-        document.addEventListener("click", (event) => {
-        if (!event.target.closest(".sg-search")) {
-        results.hidden = true;
-        }
-        });
+            const toggle = document.getElementById("demoNavToggle");
+            const nav = document.getElementById("demoPrimaryNav");
+            if (toggle && nav) {
+                toggle.addEventListener("click", () => nav.classList.toggle("open"));
+            }
         })();
     </script>
 
     <script>
         (() => {
-        const notificationButton = document.getElementById("notificationButton");
-        const notificationPanel = document.getElementById("notificationPanel");
-        const notificationCount = document.getElementById("notificationCount");
-        const notificationPanelCount = document.getElementById("notificationPanelCount");
-        const notificationEmpty = document.getElementById("notificationEmpty");
-        const toastArea = document.getElementById("alertToastArea");
+            const notificationButton = document.getElementById("notificationButton");
+            const notificationPanel = document.getElementById("notificationPanel");
+            const notificationCount = document.getElementById("notificationCount");
+            const notificationPanelCount = document.getElementById("notificationPanelCount");
+            const notificationEmpty = document.getElementById("notificationEmpty");
+            const toastArea = document.getElementById("alertToastArea");
+            const alertas = @Html.Raw(alertasToastJson);
+            const storageKey = "san-gabriel-alertas-eliminadas-@usuarioStorageId";
+            const shownKey = "san-gabriel-alertas-mostradas-@usuarioStorageId";
 
-        const alertas = @Html.Raw(alertasToastJson);
-        const storageKey = "san-gabriel-alertas-eliminadas";
+            const read = key => {
+                try { return JSON.parse(localStorage.getItem(key)) || []; }
+                catch { return []; }
+            };
+            const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-        const obtenerEliminadas = () => {
-        try {
-        return JSON.parse(localStorage.getItem(storageKey)) || [];
-        } catch {
-        return [];
-        }
-        };
+            const refresh = () => {
+                const dismissed = read(storageKey);
+                let visible = 0;
+                document.querySelectorAll("[data-alert-key]").forEach(item => {
+                    const key = item.getAttribute("data-alert-key");
+                    const show = !dismissed.includes(key);
+                    item.style.display = show ? "block" : "none";
+                    if (show) visible++;
+                });
+                if (notificationCount) {
+                    notificationCount.textContent = visible;
+                    notificationCount.style.display = visible ? "inline-flex" : "none";
+                }
+                if (notificationPanelCount) notificationPanelCount.textContent = `${visible} alerta(s)`;
+                if (notificationEmpty) notificationEmpty.style.display = visible ? "none" : "block";
+            };
 
-        const guardarEliminadas = (alertasEliminadas) => {
-        localStorage.setItem(storageKey, JSON.stringify(alertasEliminadas));
-        };
+            const dismiss = key => {
+                const dismissed = read(storageKey);
+                if (!dismissed.includes(key)) {
+                    dismissed.push(key);
+                    write(storageKey, dismissed);
+                }
+                refresh();
+            };
 
-        const eliminarAlerta = (clave) => {
-        const eliminadas = obtenerEliminadas();
+            document.querySelectorAll("[data-alert-dismiss]").forEach(button => {
+                button.addEventListener("click", event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    dismiss(button.getAttribute("data-alert-dismiss"));
+                });
+            });
 
-        if (!eliminadas.includes(clave)) {
-        eliminadas.push(clave);
-        guardarEliminadas(eliminadas);
-        }
+            if (notificationButton && notificationPanel) {
+                notificationButton.addEventListener("click", () => notificationPanel.hidden = !notificationPanel.hidden);
+                document.addEventListener("click", event => {
+                    if (!event.target.closest(".demo-notification-wrap")) notificationPanel.hidden = true;
+                });
+            }
 
-        actualizarAlertas();
-        };
+            const showToast = alerta => {
+                if (!toastArea) return;
+                const dismissed = read(storageKey);
+                const shown = read(shownKey);
+                if (dismissed.includes(alerta.clave) || shown.includes(alerta.clave)) return;
 
-        const actualizarAlertas = () => {
-        const eliminadas = obtenerEliminadas();
-        const items = document.querySelectorAll("[data-alert-key]");
-        let visibles = 0;
+                const toast = document.createElement("article");
+                toast.className = `demo-toast demo-toast-${alerta.tipo}`;
+                toast.innerHTML = `<button type="button" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button><strong>${alerta.titulo}</strong><span>${alerta.mensaje}</span><small>${alerta.tiempo}</small>`;
+                toast.querySelector("button").addEventListener("click", () => {
+                    dismiss(alerta.clave);
+                    toast.remove();
+                });
+                toastArea.appendChild(toast);
+                shown.push(alerta.clave);
+                write(shownKey, shown);
+                setTimeout(() => toast.remove(), 6000);
+            };
 
-        items.forEach(item => {
-        const clave = item.getAttribute("data-alert-key");
-
-        if (eliminadas.includes(clave)) {
-        item.style.display = "none";
-        } else {
-        item.style.display = "block";
-        visibles++;
-        }
-        });
-
-        if (notificationCount) {
-        notificationCount.textContent = visibles;
-        notificationCount.style.display = visibles > 0 ? "inline-flex" : "none";
-        }
-
-        if (notificationPanelCount) {
-        notificationPanelCount.textContent = visibles + (visibles === 1 ? " alerta" : " alertas");
-        }
-
-        if (notificationEmpty) {
-        notificationEmpty.style.display = visibles === 0 ? "block" : "none";
-        }
-        };
-
-        document.querySelectorAll("[data-alert-dismiss]").forEach(button => {
-        button.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const clave = button.getAttribute("data-alert-dismiss");
-        eliminarAlerta(clave);
-        });
-        });
-
-        if (notificationButton && notificationPanel) {
-        notificationButton.addEventListener("click", () => {
-        notificationPanel.hidden = !notificationPanel.hidden;
-        });
-
-        document.addEventListener("click", (event) => {
-        if (!event.target.closest(".notification-wrap")) {
-        notificationPanel.hidden = true;
-        }
-        });
-        }
-
-        const mostrarToast = (alerta) => {
-        if (!toastArea) return;
-
-        const eliminadas = obtenerEliminadas();
-
-        if (eliminadas.includes(alerta.clave)) return;
-
-        const toast = document.createElement("div");
-        toast.className = "alert-toast alert-toast-" + alerta.tipo;
-        toast.setAttribute("data-alert-toast", alerta.clave);
-
-        toast.innerHTML = `
-        <button type="button" class="alert-toast-close" title="Eliminar notificación">
-        <i class="fa-solid fa-xmark"></i>
-        </button>
-
-        <strong>${alerta.titulo}</strong>
-        <p>${alerta.mensaje}</p>
-        <small><i class="fa-regular fa-clock"></i> ${alerta.tiempo}</small>
-        `;
-
-        toast.querySelector(".alert-toast-close").addEventListener("click", () => {
-        eliminarAlerta(alerta.clave);
-        toast.remove();
-        });
-
-        toastArea.appendChild(toast);
-
-        setTimeout(() => {
-        toast.remove();
-        }, 9000);
-        };
-
-        const eliminadas = obtenerEliminadas();
-
-        alertas
-        .filter(alerta => !eliminadas.includes(alerta.clave))
-        .slice(0, 3)
-        .forEach(alerta => mostrarToast(alerta));
-
-        actualizarAlertas();
+            alertas.slice(0, 3).forEach(showToast);
+            refresh();
         })();
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
+                setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
+            });
+        });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

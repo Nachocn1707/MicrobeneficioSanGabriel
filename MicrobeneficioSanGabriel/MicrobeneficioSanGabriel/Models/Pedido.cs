@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrobeneficioSanGabriel.Models
@@ -12,9 +12,12 @@ namespace MicrobeneficioSanGabriel.Models
         public string ClienteNombre { get; set; } = string.Empty;
 
         [Display(Name = "Correo del cliente")]
+        [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido")]
+        [StringLength(150)]
         public string? ClienteCorreo { get; set; }
 
         [Required(ErrorMessage = "El teléfono del cliente es obligatorio")]
+        [RegularExpression(@"^\d{4}-?\d{4}$", ErrorMessage = "El teléfono debe tener 8 dígitos, por ejemplo 8888-8888")]
         [Display(Name = "Teléfono del cliente")]
         public string ClienteTelefono { get; set; } = string.Empty;
 

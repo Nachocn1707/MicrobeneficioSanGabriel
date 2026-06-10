@@ -123,7 +123,6 @@
                             <i class="fa-solid fa-user"></i>
 
                             <input asp-for="Nombre"
-                                   maxlength="40"
                                    class="form-control"
                                    placeholder="Nombre del usuario" />
                         </div>
@@ -137,7 +136,6 @@
                     <div class="col-md-6">
 
                         <label asp-for="Apellidos"
-                               maxlength="40"
                                class="form-label">
                             Apellidos
                         </label>
@@ -181,7 +179,6 @@
                     <div class="col-md-6">
 
                         <label asp-for="PhoneNumber"
-                               maxlength="8"
                                class="form-label">
                             Teléfono
                         </label>
@@ -288,7 +285,7 @@
                 <div class="VistaCrear-actions">
 
                     <a asp-action="Index"
-                       class="btn-cancelar">
+                           class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
@@ -312,5 +309,26 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }  
+    }
+
+    <script>
+        function toggleUsuarioPassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (!input || !icon) {
+                return;
+            }
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 }

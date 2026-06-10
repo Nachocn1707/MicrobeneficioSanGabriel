@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
 using Rotativa.AspNetCore;
+using MicrobeneficioSanGabriel.Services;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -50,12 +51,21 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (ModelState.IsValid)
             {
                 factura.FechaFactura = DateTime.Now;
-                factura.Subtotal = pedido!.Cantidad * pedido.Producto!.Precio;
+
+                if (pedido!.Estado == "Completado")
+                {
+                    factura.EstadoPago = "Pago completado";
+                }
+
+                factura.Subtotal = pedido.Cantidad * pedido.Producto!.Precio;
                 factura.IVA = factura.Subtotal * 0.13m;
                 factura.Total = factura.Subtotal + factura.IVA;
 
                 _context.Facturas.Add(factura);
                 await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Facturas", "Crear", factura.Id,
+                    $"Se creó la factura #{factura.Id} para el pedido #{factura.PedidoId}.");
+                TempData["Success"] = "Factura creada correctamente.";
 
                 return RedirectToAction(nameof(Index));
             }
@@ -111,12 +121,20 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 try
                 {
-                    factura.Subtotal = pedido!.Cantidad * pedido.Producto!.Precio;
+                    if (pedido!.Estado == "Completado")
+                    {
+                        factura.EstadoPago = "Pago completado";
+                    }
+
+                    factura.Subtotal = pedido.Cantidad * pedido.Producto!.Precio;
                     factura.IVA = factura.Subtotal * 0.13m;
                     factura.Total = factura.Subtotal + factura.IVA;
 
                     _context.Update(factura);
                     await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(_context, User, "Facturas", "Editar", factura.Id,
+                        $"Se actualizó la factura #{factura.Id}.");
+                    TempData["Success"] = "Factura actualizada correctamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -147,6 +165,9 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             _context.Update(factura);
             await _context.SaveChangesAsync();
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Facturas", "Anular", factura.Id,
+                $"Se anuló la factura #{factura.Id}.");
+            TempData["Success"] = "Factura anulada correctamente.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -184,7 +205,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Select(p => new
                 {
                     Id = p.Id,
-                    Nombre = $"{p.ClienteNombre} - {p.Producto!.Nombre} - {p.Cantidad} unidades"
+                    Nombre = $"{p.ClienteNombre} - {p.Producto!.Nombre} - {p.Cantidad} kg"
                 });
 
             ViewBag.PedidoId = new SelectList(

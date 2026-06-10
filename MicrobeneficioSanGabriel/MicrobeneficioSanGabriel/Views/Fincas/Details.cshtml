@@ -1,0 +1,18 @@
+@model MicrobeneficioSanGabriel.Models.Finca
+@{
+    ViewData["Title"] = "Detalle de finca";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="sg-visual-hero sg-hero-fincas"><div class="sg-visual-hero-content"><span class="sg-visual-badge"><i class="fa-solid fa-mountain-sun"></i> Finca</span><h1>@Model.Nombre</h1><div class="sg-visual-line"></div><p>@Model.Productor?.Nombre · @Model.UbicacionCompleta</p></div></div>
+<div class="sg-card">
+    <div class="row g-4">
+        <div class="col-md-6"><small class="text-muted">Productor</small><h5>@Model.Productor?.Nombre</h5></div>
+        <div class="col-md-6"><small class="text-muted">Estado</small><h5>@(Model.Activa ? "Activa" : "Inactiva")</h5></div>
+        <div class="col-md-4"><small class="text-muted">Provincia</small><p>@Model.Provincia</p></div>
+        <div class="col-md-4"><small class="text-muted">Cantón</small><p>@Model.Canton</p></div>
+        <div class="col-md-4"><small class="text-muted">Distrito</small><p>@Model.Distrito</p></div>
+        <div class="col-12"><small class="text-muted">Dirección exacta</small><p>@Model.DireccionExacta</p></div>
+        <div class="col-12"><small class="text-muted">Lotes asociados</small><h5>@Model.Lotes.Count</h5></div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4"><a asp-action="Index" class="btn btn-outline-secondary">Volver</a>@if(User.IsInRole("Administrador")){<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>}</div>
+</div>

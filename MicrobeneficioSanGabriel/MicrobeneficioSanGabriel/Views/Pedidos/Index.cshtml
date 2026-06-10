@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Pedido>
+@model IEnumerable<MicrobeneficioSanGabriel.Models.Pedido>
 
 @{
     ViewData["Title"] = "Pedidos";
@@ -194,6 +194,45 @@
             color: #5f5147;
             font-weight: 650;
             line-height: 1.35;
+        }
+
+
+        .payment-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 900;
+            border: 1px solid transparent;
+        }
+
+        .payment-status-paid {
+            background: rgba(46, 156, 89, 0.14);
+            color: #1f7a43;
+            border-color: rgba(46, 156, 89, 0.18);
+        }
+
+        .payment-status-pending {
+            background: rgba(237, 195, 110, 0.18);
+            color: #8e6420;
+            border-color: rgba(237, 195, 110, 0.28);
+        }
+
+        .payment-status-waiting {
+            background: rgba(220, 143, 153, 0.12);
+            color: #99515b;
+            border-color: rgba(220, 143, 153, 0.22);
+        }
+
+        .payment-status-note {
+            display: block;
+            margin-top: 6px;
+            color: #8b7a70;
+            font-size: 0.73rem;
+            line-height: 1.35;
+            font-weight: 700;
         }
 
         .pedido-actions {
@@ -462,18 +501,28 @@
                             </td>
 
                             <td>
-                                @if (item.EstadoPago == "Pagado")
+                                @if (item.EstadoPago == "Pago completado" || item.EstadoPago == "Pagado")
                                 {
-                                    <span class="badge bg-success">
-                                        Pagado
-                                    </span>
+                                    <div class="payment-status-badge payment-status-paid">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <span>Pago completado</span>
+                                    </div>
+                                }
+                                else if (item.EstadoPago == "Pendiente de pago")
+                                {
+                                    <div class="payment-status-badge payment-status-pending">
+                                        <i class="fa-solid fa-hourglass-half"></i>
+                                        <span>Pendiente de pago</span>
+                                    </div>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-warning text-dark">
-                                        Pendiente de pago
-                                    </span>
+                                    <div class="payment-status-badge payment-status-waiting">
+                                        <i class="fa-solid fa-clock"></i>
+                                        <span>Pendiente</span>
+                                    </div>
                                 }
+                                <small class="payment-status-note">Se actualiza automáticamente al cambiar el estado del pedido.</small>
                             </td>
 
                             <td>
@@ -501,16 +550,6 @@
                                             <i class="fa-solid fa-trash"></i>
                                             Eliminar
                                         </a>
-
-                                        @if (item.EstadoPago?.Trim() == "Pendiente de pago")
-                                        {
-                                            <a href="#"
-                                               class="btn btn-success btn-sm btn-confirmar-pago"
-                                               data-id="@item.Id">
-                                                <i class="fa-solid fa-money-bill-wave"></i>
-                                                Confirmar Pago
-                                            </a>
-                                        }
 
                                     }
                                     else if (User.IsInRole("Cliente"))
@@ -572,34 +611,5 @@
             });
         });
 
-
-            document.querySelectorAll(".btn-confirmar-pago")
-        .forEach(btn => {
-
-            btn.addEventListener("click", function (e) {
-
-                e.preventDefault();
-
-                const id =
-                    this.dataset.id;
-
-                Swal.fire({
-                    title: '¿Confirmar pago?',
-                    text: 'El pedido será marcado como pagado.',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, confirmar',
-                    cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#198754'
-                }).then((result) => {
-
-                    if (result.isConfirmed) {
-
-                        window.location.href =
-                            '/Pedidos/ConfirmarPago/' + id;
-                    }
-                });
-            });
-        });
     </script>
 }

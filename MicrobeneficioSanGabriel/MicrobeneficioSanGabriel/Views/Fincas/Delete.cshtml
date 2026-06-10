@@ -1,0 +1,17 @@
+@model MicrobeneficioSanGabriel.Models.Finca
+@{
+    ViewData["Title"] = "Eliminar finca";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="sg-card border-danger">
+    <h1 class="text-danger">Eliminar finca</h1>
+    <p>Está por eliminar <strong>@Model.Nombre</strong>, asociada a @Model.Productor?.Nombre.</p>
+    @if (Model.Lotes.Any())
+    {
+        <div class="alert alert-warning">Esta finca tiene @Model.Lotes.Count lote(s) asociados y no podrá eliminarse hasta reasignarlos o eliminarlos.</div>
+    }
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex justify-content-end gap-2"><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a><button type="submit" class="btn btn-danger">Confirmar eliminación</button></div>
+    </form>
+</div>

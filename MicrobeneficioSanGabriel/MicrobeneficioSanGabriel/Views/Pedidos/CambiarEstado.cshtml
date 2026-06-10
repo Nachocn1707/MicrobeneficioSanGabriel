@@ -67,6 +67,10 @@
                             <option value="Completado" selected="@(Model.Estado == "Completado")">Completado</option>
                             <option value="Cancelado" selected="@(Model.Estado == "Cancelado")">Cancelado</option>
                         </select>
+
+                        <small class="text-muted d-block mt-2">
+                            El estado de pago se sincroniza automáticamente según el estado del pedido.
+                        </small>
                     </div>
 
                 </div>

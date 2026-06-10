@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
@@ -137,7 +137,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 worksheet.Cell(11, 1).Value = "Ventas totales";
                 worksheet.Cell(11, 2).Value = totalVentas;
 
-                worksheet.Cell(12, 1).Value = "Stock total disponible";
+                worksheet.Cell(12, 1).Value = "Stock total disponible (kg)";
                 worksheet.Cell(12, 2).Value = _context.Productos.Sum(p => (decimal?)p.Stock) ?? 0;
 
                 worksheet.Cell(13, 1).Value = "Productos con stock bajo";
@@ -152,6 +152,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 worksheet.Range("A6:B6").Style.Font.FontColor = XLColor.White;
 
                 worksheet.Cell(11, 2).Style.NumberFormat.Format = "CRC #,##0.00";
+                worksheet.Cell(12, 2).Style.NumberFormat.Format = "#,##0 \"kg\"";
 
                 worksheet.Columns().AdjustToContents();
 

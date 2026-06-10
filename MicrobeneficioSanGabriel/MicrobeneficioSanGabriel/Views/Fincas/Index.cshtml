@@ -1,0 +1,57 @@
+@model IEnumerable<MicrobeneficioSanGabriel.Models.Finca>
+@{
+    ViewData["Title"] = "Fincas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="sg-visual-hero sg-hero-fincas">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge"><i class="fa-solid fa-mountain-sun"></i> Origen del café</span>
+        <h1>Fincas registradas</h1>
+        <div class="sg-visual-line"></div>
+        <p>Administre las fincas, sus productores, ubicación y lotes relacionados.</p>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-1">Catálogo de fincas</h2>
+        <small class="text-muted">@Model.Count() finca(s) registrada(s)</small>
+    </div>
+    <a asp-action="Create" class="btn btn-success"><i class="fa-solid fa-plus me-2"></i>Nueva finca</a>
+</div>
+
+<div class="sg-card p-3 table-responsive">
+    <table class="table table-hover align-middle" id="tablaFincas">
+        <thead>
+            <tr>
+                <th>Finca</th>
+                <th>Productor</th>
+                <th>Ubicación</th>
+                <th>Lotes</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><strong>@item.Nombre</strong></td>
+                <td>@item.Productor?.Nombre</td>
+                <td>@item.UbicacionCompleta</td>
+                <td>@item.Lotes.Count</td>
+                <td><span class="badge @(item.Activa ? "bg-success" : "bg-secondary")">@(item.Activa ? "Activa" : "Inactiva")</span></td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-eye"></i></a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

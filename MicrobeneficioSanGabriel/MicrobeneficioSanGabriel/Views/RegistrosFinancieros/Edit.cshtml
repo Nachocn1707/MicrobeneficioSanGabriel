@@ -57,13 +57,9 @@
                             Categoría
                         </label>
 
-                        <select asp-for="Categoria" class="form-select">
-                            <option value="">-- Seleccione una categoría -- </option>
-                            <option value="Venta"> Venta</option>
-                            <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="transporte">transporte</option>
-                            <option value="Nomina">Nómina</option>
-                        </select>
+                        <input asp-for="Categoria"
+                               class="form-control"
+                               placeholder="Venta, mantenimiento, transporte..." />
 
                         <span asp-validation-for="Categoria" class="text-danger"></span>
 
@@ -109,6 +105,21 @@
                                placeholder="Descripción del movimiento financiero" />
 
                         <span asp-validation-for="Descripcion" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Observacion" class="form-label">
+                            Observación
+                        </label>
+
+                        <textarea asp-for="Observacion"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Observación adicional del registro"></textarea>
+
+                        <span asp-validation-for="Observacion" class="text-danger"></span>
 
                     </div>
 

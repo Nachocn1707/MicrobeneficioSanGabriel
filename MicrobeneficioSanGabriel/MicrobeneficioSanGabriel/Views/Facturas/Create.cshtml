@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Factura
+@model MicrobeneficioSanGabriel.Models.Factura
 
 @{
     ViewData["Title"] = "Nueva Factura";
@@ -368,7 +368,7 @@
 
                             <select asp-for="EstadoPago" class="form-select">
                                 <option value="Pendiente">Pendiente</option>
-                                <option value="Pagado">Pagado</option>
+                                <option value="Pago completado">Pago completado</option>
                                 <option value="Anulada">Anulada</option>
                             </select>
                         </div>
@@ -387,7 +387,6 @@
                             <i class="fa-solid fa-comment"></i>
 
                             <textarea asp-for="Observacion"
-                                      maxlength="40"
                                       class="form-control"
                                       rows="5"
                                       placeholder="Detalle adicional de la factura"></textarea>

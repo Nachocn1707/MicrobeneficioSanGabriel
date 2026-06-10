@@ -1,11 +1,21 @@
-﻿@page
-@using MicrobeneficioSanGabriel.Models;
+@page
+@using MicrobeneficioSanGabriel.Models
 @model LockoutModel
 @{
-    ViewData["Title"] = "Locked out";
+    ViewData["Title"] = "Cuenta bloqueada";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">This account has been locked out, please try again later.</p>
-</header>
+<div class="auth-shell auth-state-shell">
+    <header class="auth-topbar">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-brand"><span class="auth-brand-mark"><i class="fa-solid fa-mug-hot"></i></span><div><h1>San Gabriel</h1><span>Coffee Lab · Seguridad</span></div></a>
+    </header>
+    <main class="auth-state-stage">
+        <article class="auth-state-card auth-state-warning">
+            <div class="auth-state-icon"><i class="fa-solid fa-user-lock"></i></div>
+            <span class="auth-kicker"><i class="fa-solid fa-clock"></i> Protección temporal</span>
+            <h2>Cuenta bloqueada</h2>
+            <p>La cuenta fue bloqueada temporalmente después de varios intentos fallidos. Esperá unos minutos antes de volver a intentarlo.</p>
+            <div class="auth-state-actions"><a asp-page="./Login" class="btn-login auth-inline-action"><i class="fa-solid fa-arrow-left"></i> Volver al login</a></div>
+        </article>
+    </main>
+</div>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
+using MicrobeneficioSanGabriel.Services;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -139,6 +140,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 _context.Add(registroFinanciero);
                 await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Finanzas", "Crear", registroFinanciero.Id,
+                    $"Se registró un {registroFinanciero.Tipo.ToLower()} por ₡{registroFinanciero.Monto:N2}.");
 
                 TempData["Success"] = "Registro financiero creado correctamente.";
                 return RedirectToAction(nameof(Index));
@@ -179,6 +183,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     _context.Update(registroFinanciero);
                     await _context.SaveChangesAsync();
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Finanzas", "Editar", registroFinanciero.Id,
+                        $"Se actualizó el registro financiero #{registroFinanciero.Id}.");
 
                     TempData["Success"] = "Registro financiero actualizado correctamente.";
                 }
@@ -244,6 +251,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 _context.RegistrosFinancieros.Remove(registro);
                 await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Finanzas", "Eliminar", id,
+                    $"Se eliminó el registro financiero #{id}.");
 
                 TempData["Success"] = "Registro financiero eliminado correctamente.";
             }

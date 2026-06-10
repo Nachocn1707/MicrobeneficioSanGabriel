@@ -1,11 +1,21 @@
-﻿@page
-@using MicrobeneficioSanGabriel.Models;
+@page
+@using MicrobeneficioSanGabriel.Models
 @model AccessDeniedModel
 @{
-    ViewData["Title"] = "Access denied";
+    ViewData["Title"] = "Acceso denegado";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">You do not have access to this resource.</p>
-</header>
+<div class="auth-shell auth-state-shell">
+    <header class="auth-topbar">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-brand"><span class="auth-brand-mark"><i class="fa-solid fa-mug-hot"></i></span><div><h1>San Gabriel</h1><span>Coffee Lab · Seguridad</span></div></a>
+    </header>
+    <main class="auth-state-stage">
+        <article class="auth-state-card auth-state-danger">
+            <div class="auth-state-icon"><i class="fa-solid fa-ban"></i></div>
+            <span class="auth-kicker"><i class="fa-solid fa-lock"></i> Permiso requerido</span>
+            <h2>Acceso denegado</h2>
+            <p>Tu usuario no tiene permisos para ingresar a este recurso. Regresá al panel correspondiente o iniciá sesión con otra cuenta.</p>
+            <div class="auth-state-actions"><a asp-area="" asp-controller="Home" asp-action="Index" class="btn-login auth-inline-action"><i class="fa-solid fa-house"></i> Volver al inicio</a></div>
+        </article>
+    </main>
+</div>

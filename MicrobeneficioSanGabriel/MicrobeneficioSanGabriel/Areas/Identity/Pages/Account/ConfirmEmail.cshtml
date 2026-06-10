@@ -1,25 +1,34 @@
-﻿@page
-@using MicrobeneficioSanGabriel.Models;
+@page
+@using MicrobeneficioSanGabriel.Models
 @model ConfirmEmailModel
-
 @{
-    ViewData["Title"] = "Confirmar correo";
+    ViewData["Title"] = "Correo confirmado";
 }
 
-<div class="login-container">
-    <div class="login-card text-center">
-        <div class="user-icon">
-            <i class="fa-solid fa-circle-check"></i>
-        </div>
-        <h2 class="mb-3">
-            Correo confirmado
-        </h2>
-        <p class="text-muted mb-4">
-            Tu correo electrónico fue confirmado correctamente.
-        </p>
-        <a asp-page="./Login"
-           class="btn-login text-decoration-none d-inline-block">
-            IR AL LOGIN
+<div class="auth-shell auth-state-shell">
+    <header class="auth-topbar">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-brand">
+            <span class="auth-brand-mark"><i class="fa-solid fa-mug-hot"></i></span>
+            <div><h1>San Gabriel</h1><span>Coffee Lab · Confirmación de cuenta</span></div>
         </a>
-    </div>
+        <nav class="auth-nav"><a asp-area="" asp-controller="Home" asp-action="Index" class="auth-nav-pill">Inicio</a></nav>
+    </header>
+
+    <main class="auth-state-stage">
+        <article class="auth-state-card auth-state-success">
+            <div class="auth-state-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <span class="auth-kicker"><i class="fa-solid fa-shield-halved"></i> Verificación completada</span>
+            <h2>Correo confirmado</h2>
+            <p>Tu correo electrónico fue confirmado correctamente. La cuenta ya está lista para ingresar al sistema.</p>
+            <div class="auth-state-details">
+                <span><i class="fa-solid fa-user-check"></i> Cuenta habilitada</span>
+                <span><i class="fa-solid fa-lock"></i> Acceso seguro</span>
+                <span><i class="fa-solid fa-mug-hot"></i> Portal San Gabriel</span>
+            </div>
+            <div class="auth-state-actions">
+                <a asp-page="./Login" class="btn-login auth-inline-action"><i class="fa-solid fa-right-to-bracket"></i> Ir al login</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-secondary-action"><i class="fa-solid fa-house"></i> Volver al inicio</a>
+            </div>
+        </article>
+    </main>
 </div>

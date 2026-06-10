@@ -1,52 +1,50 @@
-﻿@page
-@using MicrobeneficioSanGabriel.Models;
+@page
+@using MicrobeneficioSanGabriel.Models
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = "Confirmá tu correo";
 }
 
-<div class="login-container">
-    <div class="login-card text-center">
-        <div class="user-icon">
-            <i class="fa-solid fa-envelope-circle-check"></i>
-        </div>
-        <h2 class="mb-3">
-            Confirmá tu correo
-        </h2>
-        <p class="text-muted mb-4">
-            Te enviamos un enlace de confirmación a tu correo electrónico.
-        </p>
-        <a asp-page="./Login"
-           class="btn-login text-decoration-none d-inline-block">
-
-            VOLVER AL LOGIN
+<div class="auth-shell auth-state-shell">
+    <header class="auth-topbar">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-brand">
+            <span class="auth-brand-mark"><i class="fa-solid fa-mug-hot"></i></span>
+            <div><h1>San Gabriel</h1><span>Coffee Lab · Registro de cliente</span></div>
         </a>
+        <nav class="auth-nav"><a asp-page="./Login" class="auth-top-action">Ir al login</a></nav>
+    </header>
 
-        @if (TempData["RegistroExitoso"] != null)
-        {
-            <script>
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Revisá tu correo',
-                            html: `
-                            <p style="
-                                color:#666;
-                                font-size:15px;
-                                margin-top:10px;
-                                line-height:1.6;">
-
-                                Te enviamos un enlace para confirmar tu cuenta.
-
-                            </p>
-                            `,
-                            confirmButtonText: 'Entendido',
-                            confirmButtonColor: '#5c3317',
-                            background: '#f8f5e9',
-                            color: '#2d2d2d'
-                        });
-
-            </script>
-        }
-    </div>
+    <main class="auth-state-stage">
+        <article class="auth-state-card auth-state-info">
+            <div class="auth-state-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <span class="auth-kicker"><i class="fa-solid fa-user-check"></i> Registro recibido</span>
+            <h2>Confirmá tu correo</h2>
+            <p>Te enviamos un enlace de confirmación. Abrilo para activar tu cuenta y acceder al Coffee Club de San Gabriel.</p>
+            <div class="auth-state-details">
+                <span><i class="fa-solid fa-envelope"></i> Revisá tu bandeja</span>
+                <span><i class="fa-solid fa-link"></i> Abrí el enlace</span>
+                <span><i class="fa-solid fa-circle-check"></i> Activá tu cuenta</span>
+            </div>
+            <div class="auth-state-actions">
+                <a asp-page="./Login" class="btn-login auth-inline-action"><i class="fa-solid fa-right-to-bracket"></i> Volver al login</a>
+            </div>
+        </article>
+    </main>
 </div>
+
+@if (TempData["RegistroExitoso"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Revisá tu correo',
+                text: 'Te enviamos un enlace para confirmar tu cuenta.',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#ef5b2a',
+                background: '#fffaf4',
+                color: '#221612'
+            });
+        });
+    </script>
+}

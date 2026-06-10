@@ -29,7 +29,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             _analisisInventarioIAService = analisisInventarioIAService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
@@ -46,7 +46,18 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(AccessDenied));
             }
 
-            return RedirectToPage("/Account/Login", new { area = "Identity" });
+            ViewBag.ProductosPublicos = await _context.Productos
+                .Where(p => p.Activo)
+                .OrderByDescending(p => p.Stock)
+                .ThenBy(p => p.Nombre)
+                .Take(6)
+                .ToListAsync();
+
+            ViewBag.TotalProductoresPublico = await _context.Productores.CountAsync(p => p.Activo);
+            ViewBag.TotalFincasPublico = await _context.Fincas.CountAsync(f => f.Activa);
+            ViewBag.TotalLotesPublico = await _context.Lotes.CountAsync();
+
+            return View();
         }
 
         [Authorize(Roles = "Administrador,Operador,Vendedor")]
@@ -59,13 +70,40 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             ViewBag.TotalPedidos = await _context.Pedidos.CountAsync();
             ViewBag.TotalFacturas = await _context.Facturas.CountAsync();
-            ViewBag.TotalVentas = await _context.Facturas.SumAsync(f => f.Total);
+            ViewBag.TotalVentas = await _context.Facturas
+                .Where(f => f.EstadoPago != "Anulada")
+                .SumAsync(f => (decimal?)f.Total) ?? 0m;
             ViewBag.StockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
+
+            ViewBag.TotalFincas = await _context.Fincas.CountAsync(f => f.Activa);
+            ViewBag.TotalLotes = await _context.Lotes.CountAsync();
+            ViewBag.LotesActivos = await _context.Lotes.CountAsync(l => l.Estado != "Finalizado" && l.Estado != "Cancelado");
+            ViewBag.TotalKgRecibidos = await _context.Lotes.SumAsync(l => (double?)l.PesoKg) ?? 0d;
+            ViewBag.ProduccionesEnProceso = await _context.Producciones.CountAsync(p => p.Estado == "En proceso");
+            ViewBag.ProductoresActivos = await _context.Productores.CountAsync(p => p.Activo);
+            ViewBag.TotalStockKg = await _context.Productos.SumAsync(p => (int?)p.Stock) ?? 0;
 
             ViewBag.UltimosPedidos = await _context.Pedidos
                 .Include(p => p.Producto)
                 .OrderByDescending(p => p.FechaPedido)
                 .Take(5)
+                .ToListAsync();
+
+            ViewBag.UltimosLotes = await _context.Lotes
+                .Include(l => l.Productor)
+                .Include(l => l.Finca)
+                .OrderByDescending(l => l.FechaRecepcion)
+                .Take(6)
+                .ToListAsync();
+
+            ViewBag.ProcesosPorTipo = await _context.Producciones
+                .GroupBy(p => p.TipoProceso)
+                .Select(g => new
+                {
+                    Tipo = g.Key,
+                    Cantidad = g.Count()
+                })
+                .OrderByDescending(x => x.Cantidad)
                 .ToListAsync();
 
             ViewBag.UltimasFacturas = await _context.Facturas
@@ -109,8 +147,36 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         [Authorize(Roles = "Cliente")]
-        public IActionResult ClienteDashboard()
+        public async Task<IActionResult> ClienteDashboard()
         {
+            var usuarioActual = await _userManager.GetUserAsync(User);
+            var correo = usuarioActual?.Email ?? User.Identity?.Name ?? string.Empty;
+
+            var pedidosClienteQuery = _context.Pedidos
+                .Include(p => p.Producto)
+                .Where(p => !string.IsNullOrWhiteSpace(p.ClienteCorreo) && p.ClienteCorreo == correo);
+
+            ViewBag.ClienteNombre = usuarioActual?.NombreCompleto ?? "Cliente";
+            ViewBag.TotalProductos = await _context.Productos.CountAsync(p => p.Activo);
+            ViewBag.TotalPedidosCliente = await pedidosClienteQuery.CountAsync();
+            ViewBag.PedidosPendientesCliente = await pedidosClienteQuery.CountAsync(p => p.Estado != "Completado");
+            ViewBag.PedidosCompletadosCliente = await pedidosClienteQuery.CountAsync(p => p.Estado == "Completado");
+            ViewBag.UltimosPedidosCliente = await pedidosClienteQuery
+                .OrderByDescending(p => p.FechaPedido)
+                .Take(5)
+                .ToListAsync();
+
+            ViewBag.ProductosDestacados = await _context.Productos
+                .Where(p => p.Activo)
+                .OrderByDescending(p => p.Stock)
+                .ThenBy(p => p.Nombre)
+                .Take(3)
+                .ToListAsync();
+
+            ViewBag.TotalKgDisponibles = await _context.Productos
+                .Where(p => p.Activo)
+                .SumAsync(p => (int?)p.Stock) ?? 0;
+
             return View();
         }
 

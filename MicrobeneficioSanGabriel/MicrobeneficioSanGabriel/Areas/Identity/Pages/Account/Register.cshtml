@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using MicrobeneficioSanGabriel.Models;
 @model RegisterModel
 
@@ -6,250 +6,182 @@
     ViewData["Title"] = "Registrarse";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-<link rel="stylesheet" href="~/css/Login_Register.css" asp-append-version="true" />
 
-<style>
-    body {
-        background-image: linear-gradient( 90deg, rgba(58, 33, 20, 0.25) 0%, rgba(58, 33, 20, 0.18) 42%, rgba(255, 248, 223, 0.45) 42%, rgba(255, 248, 223, 0.72) 100% ), url("/images/visual/login-bg.jpg") !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
-    }
+<div class="auth-shell">
+    <header class="auth-topbar">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-brand">
+            <span class="auth-brand-mark"><i class="fa-solid fa-seedling"></i></span>
+            <div>
+                <h1>San Gabriel</h1>
+                <span>Coffee Club · Nueva cuenta</span>
+            </div>
+        </a>
 
-    .login-page {
-        background: transparent !important;
-    }
+        <nav class="auth-nav">
+            <a asp-area="" asp-controller="Home" asp-action="Index" asp-fragment="inicio" class="auth-nav-pill">Inicio</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" asp-fragment="catalogo" class="auth-nav-pill">Catálogo</a>
+            <a asp-page="./Login" class="auth-top-action">Volver al login</a>
+        </nav>
+    </header>
 
-    .login-brand-panel {
-        background-image: linear-gradient( rgba(58, 33, 20, 0.68), rgba(58, 33, 20, 0.68) ), url("/images/visual/login-bg.jpg") !important;
-        background-size: cover !important;
-        background-position: center left !important;
-        background-repeat: no-repeat !important;
-    }
+    <div class="auth-layout">
+        <section class="auth-showcase">
+            <span class="auth-kicker"><i class="fa-solid fa-user-plus"></i> Unite al Coffee Club</span>
+            <h2>Creá tu cuenta y descubrí cafés con origen, calidad y trazabilidad.</h2>
+            <p class="lead">
+                Registrate como cliente para consultar el catálogo, realizar pedidos y seguir el recorrido del café
+                desde el lote hasta el producto final.
+            </p>
 
-        .login-brand-panel::before,
-        .login-brand-panel::after {
-            display: none !important;
-            content: none !important;
-        }
+            <article class="auth-floating-card">
+                <span class="auth-kicker"><i class="fa-solid fa-layer-group"></i> Una experiencia conectada</span>
+                <h3>Tu catálogo, tus pedidos y el origen del café</h3>
+                <p class="auth-feature-text">
+                    Toda la información comercial queda organizada dentro de un portal claro, moderno y fácil de utilizar.
+                </p>
+                <div class="auth-tag-row">
+                    <span class="auth-tag">Cuenta segura</span>
+                    <span class="auth-tag">Pedidos organizados</span>
+                    <span class="auth-tag">Origen controlado</span>
+                </div>
+            </article>
 
-    .login-form-panel {
-        background-image: linear-gradient( rgba(255, 248, 223, 0.68), rgba(255, 248, 223, 0.84) ), url("/images/visual/login-bg.jpg") !important;
-        background-size: cover !important;
-        background-position: center right !important;
-        background-repeat: no-repeat !important;
-    }
-
-    .login-card {
-        background: rgba(255, 253, 248, 0.92) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(216, 179, 106, 0.75) !important;
-        border-top: 6px solid #f3d27a !important;
-        box-shadow: 0 24px 70px rgba(58, 33, 20, 0.18) !important;
-    }
-</style>
-
-<div class="login-page">
-
-    <section class="login-brand-panel">
-        <div class="brand-content">
-            <div class="brand-badge">
-                <i class="fa-solid fa-seedling"></i>
+            <div class="auth-mini-grid">
+                <article class="auth-mini-card">
+                    <strong>Seguridad</strong>
+                    <p>Indicadores visuales para ayudar al usuario a completar una contraseña fuerte.</p>
+                </article>
+                <article class="auth-mini-card">
+                    <strong>Orden</strong>
+                    <p>Una estructura más limpia para completar la información sin saturación visual.</p>
+                </article>
+                <article class="auth-mini-card">
+                    <strong>Consistencia</strong>
+                    <p>El acceso y el registro comparten una misma línea gráfica moderna y profesional.</p>
+                </article>
             </div>
 
-            <h1>San Gabriel</h1>
-            <p>Crear una cuenta</p>
-
-            <div class="brand-line"></div>
-
-            <span>Acceso al sistema administrativo del microbeneficio.</span>
-        </div>
-    </section>
-
-    <section class="login-form-panel">
-        <div class="login-card register-card">
-
-            <div class="login-card-header">
-                <div class="user-icon">
-                    <i class="fa-solid fa-user-plus"></i>
-                </div>
-
-                <h2>Registro</h2>
-                <p>Completá los datos para crear tu cuenta.</p>
+            <div class="auth-feature-list">
+                <article class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <strong>Validaciones visibles</strong>
+                        <span>Los requisitos de seguridad se muestran de forma clara mientras el usuario completa sus datos.</span>
+                    </div>
+                </article>
+                <article class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fa-solid fa-palette"></i></div>
+                    <div>
+                        <strong>Diseño más atractivo</strong>
+                        <span>Tarjetas, hero, colores crema, café y dorado para transmitir una experiencia visual de mayor calidad.</span>
+                    </div>
+                </article>
             </div>
+        </section>
 
-            <form method="post" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger validation-summary mb-3">
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Nombre"
-                           class="form-control"
-                           autocomplete="given-name"
-                           placeholder="Nombre" />
-
-                    <label asp-for="Input.Nombre">
-                        Nombre
-                    </label>
-
-                    <span asp-validation-for="Input.Nombre"
-                          class="text-danger">
-                    </span>
+        <section class="auth-form-panel">
+            <div class="auth-panel-card">
+                <div class="auth-card-header">
+                    <span class="auth-kicker"><i class="fa-solid fa-id-card"></i> Crear cuenta</span>
+                    <h2>Registro</h2>
+                    <p>Completá el formulario para crear una nueva cuenta dentro del sistema.</p>
                 </div>
 
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Apellidos"
-                           class="form-control"
-                           autocomplete="family-name"
-                           placeholder="Apellidos" />
+                <form method="post" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl">
+                    <div asp-validation-summary="ModelOnly" class="text-danger validation-summary mb-3"></div>
 
-                    <label asp-for="Input.Apellidos">
-                        Apellidos
-                    </label>
-
-                    <span asp-validation-for="Input.Apellidos"
-                          class="text-danger">
-                    </span>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.PhoneNumber"
-                           class="form-control"
-                           autocomplete="tel"
-                           placeholder="Teléfono" />
-
-                    <label asp-for="Input.PhoneNumber">
-                        Teléfono
-                    </label>
-
-                    <span asp-validation-for="Input.PhoneNumber"
-                          class="text-danger">
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" asp-for="Input.Email">Correo</label>
-
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-envelope"></i>
-
-                        <input asp-for="Input.Email"
-                               id="email"
-                               class="form-control custom-input"
-                               autocomplete="username"
-                               placeholder="correo@ejemplo.com" />
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Nombre" class="form-control" autocomplete="given-name" placeholder="Nombre" />
+                        <label asp-for="Input.Nombre">Nombre</label>
+                        <span asp-validation-for="Input.Nombre" class="text-danger"></span>
                     </div>
 
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" asp-for="Input.Password">Contraseña</label>
-
-                    <div class="input-wrapper password-field">
-                        <i class="fa-solid fa-lock"></i>
-
-                        <input asp-for="Input.Password"
-                               id="password"
-                               class="form-control custom-input"
-                               autocomplete="new-password"
-                               placeholder="Mínimo 8 caracteres" />
-
-                        <button type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('password', 'passwordIcon')"
-                                aria-label="Mostrar u ocultar contraseña">
-                            <i id="passwordIcon" class="fa-solid fa-eye"></i>
-                        </button>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Apellidos" class="form-control" autocomplete="family-name" placeholder="Apellidos" />
+                        <label asp-for="Input.Apellidos">Apellidos</label>
+                        <span asp-validation-for="Input.Apellidos" class="text-danger"></span>
                     </div>
 
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" asp-for="Input.ConfirmPassword">
-                        Confirmar contraseña
-                    </label>
-
-                    <div class="input-wrapper password-field">
-                        <i class="fa-solid fa-shield-halved"></i>
-
-                        <input asp-for="Input.ConfirmPassword"
-                               id="confirmPassword"
-                               class="form-control custom-input"
-                               autocomplete="new-password"
-                               placeholder="Repetí la contraseña" />
-
-                        <button type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('confirmPassword', 'confirmPasswordIcon')"
-                                aria-label="Mostrar u ocultar confirmación de contraseña">
-                            <i id="confirmPasswordIcon" class="fa-solid fa-eye"></i>
-                        </button>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" placeholder="Teléfono" />
+                        <label asp-for="Input.PhoneNumber">Teléfono</label>
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
 
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                </div>
-
-                <div class="validation-box">
-                    <div class="validation-box-title">
-                        Requisitos de seguridad
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Input.Email">Correo</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input asp-for="Input.Email"
+                                   id="email"
+                                   class="form-control custom-input"
+                                   autocomplete="username"
+                                   placeholder="correo@ejemplo.com" />
+                        </div>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
-                    <div id="emailMessage" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Correo válido
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Input.Password">Contraseña</label>
+                        <div class="input-wrapper password-field">
+                            <i class="fa-solid fa-lock"></i>
+                            <input asp-for="Input.Password"
+                                   id="password"
+                                   class="form-control custom-input"
+                                   autocomplete="new-password"
+                                   placeholder="Mínimo 8 caracteres" />
+                            <button type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('password', 'passwordIcon')"
+                                    aria-label="Mostrar u ocultar contraseña">
+                                <i id="passwordIcon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
-                    <div id="length" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Mínimo 8 caracteres
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Input.ConfirmPassword">Confirmar contraseña</label>
+                        <div class="input-wrapper password-field">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <input asp-for="Input.ConfirmPassword"
+                                   id="confirmPassword"
+                                   class="form-control custom-input"
+                                   autocomplete="new-password"
+                                   placeholder="Repetí la contraseña" />
+                            <button type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('confirmPassword', 'confirmPasswordIcon')"
+                                    aria-label="Mostrar u ocultar confirmación de contraseña">
+                                <i id="confirmPasswordIcon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
-                    <div id="uppercase" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Una mayúscula
+                    <div class="validation-box">
+                        <div class="validation-box-title">Requisitos de seguridad</div>
+                        <div id="emailMessage" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Correo válido</div>
+                        <div id="length" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Mínimo 8 caracteres</div>
+                        <div id="uppercase" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Una mayúscula</div>
+                        <div id="lowercase" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Una minúscula</div>
+                        <div id="number" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Un número</div>
+                        <div id="symbol" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Un símbolo</div>
+                        <div id="match" class="rule-item"><i class="fa-solid fa-circle-xmark"></i> Las contraseñas coinciden</div>
                     </div>
 
-                    <div id="lowercase" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Una minúscula
+                    <button type="submit" class="btn-login" id="btnRegister">
+                        <i class="fa-solid fa-user-check"></i>
+                        Registrarse
+                    </button>
+
+                    <div class="register-links">
+                        <a asp-page="./Login">Volver al inicio de sesión</a>
                     </div>
-
-                    <div id="number" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Un número
-                    </div>
-
-                    <div id="symbol" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Un símbolo
-                    </div>
-
-                    <div id="match" class="rule-item">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        Las contraseñas coinciden
-                    </div>
-                </div>
-
-                <button type="submit"
-                        class="btn-login"
-                        id="btnRegister">
-                    <i class="fa-solid fa-user-check"></i>
-                    Registrarse
-                </button>
-
-                <div class="links register-links">
-                    <a asp-page="./Login">
-                        Volver al inicio de sesión
-                    </a>
-                </div>
-            </form>
-        </div>
-    </section>
+                </form>
+            </div>
+        </section>
+    </div>
 </div>
 
 @section Scripts {

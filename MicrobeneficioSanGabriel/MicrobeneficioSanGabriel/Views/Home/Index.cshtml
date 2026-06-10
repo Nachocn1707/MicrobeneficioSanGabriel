@@ -1,8 +1,225 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@using MicrobeneficioSanGabriel.Models
+@{
+    ViewData["Title"] = "Café con origen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var productos = ViewBag.ProductosPublicos as List<Producto> ?? new List<Producto>();
+    var totalProductores = Convert.ToInt32(ViewBag.TotalProductoresPublico ?? 0);
+    var totalFincas = Convert.ToInt32(ViewBag.TotalFincasPublico ?? 0);
+    var totalLotes = Convert.ToInt32(ViewBag.TotalLotesPublico ?? 0);
+
+    string ImagenProducto(string nombre)
+    {
+        var valor = (nombre ?? string.Empty).ToLowerInvariant();
+        if (valor.Contains("premium")) return "/images/products/cafe-premium.jpg";
+        if (valor.Contains("normal")) return "/images/products/cafe-normal.jpg";
+        return "/images/products/default-coffee.jpg";
+    }
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="rc-public-page">
+    <header class="rc-public-header">
+        <a href="#inicio" class="rc-public-brand" aria-label="Ir al inicio de San Gabriel">
+            <span class="rc-brand-symbol"><i class="fa-solid fa-seedling"></i></span>
+            <span><strong>San Gabriel</strong><small>Microbeneficio</small></span>
+        </a>
+
+        <button type="button" class="rc-mobile-toggle" id="rcPublicToggle" aria-label="Abrir menú">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="rc-public-nav" id="rcPublicNav">
+            <a href="#inicio">Inicio</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#ventajas">Ventajas</a>
+            <a href="#proceso">Proceso</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+
+        <div class="rc-public-actions">
+            <a asp-area="Identity" asp-page="/Account/Login" class="rc-login-link"><i class="fa-regular fa-user"></i> Ingresar</a>
+            <a asp-area="Identity" asp-page="/Account/Register" class="rc-header-cta">Crear cuenta</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="rc-public-hero" id="inicio">
+            <div class="rc-hero-grid">
+                <div class="rc-hero-copy">
+                    <span class="rc-kicker"><i class="fa-solid fa-leaf"></i> Café costarricense con trazabilidad</span>
+                    <h1>Café que nace en la finca y se convierte en una experiencia.</h1>
+                    <p>
+                        Microbeneficio San Gabriel conecta productores, lotes, procesos y productos en una plataforma
+                        creada para proteger el origen y mostrar la calidad de cada grano.
+                    </p>
+                    <div class="rc-hero-actions">
+                        <a href="#catalogo" class="rc-button rc-button-primary">Explorar cafés <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="#proceso" class="rc-button rc-button-ghost">Conocer el proceso</a>
+                    </div>
+                    <div class="rc-public-metrics">
+                        <article><strong>@totalProductores</strong><span>Productores activos</span></article>
+                        <article><strong>@totalFincas</strong><span>Fincas registradas</span></article>
+                        <article><strong>@totalLotes</strong><span>Lotes trazados</span></article>
+                    </div>
+                </div>
+
+                <div class="rc-hero-art" aria-hidden="true">
+                    <div class="rc-hero-photo"></div>
+                    <div class="rc-orbit rc-orbit-one"></div>
+                    <div class="rc-orbit rc-orbit-two"></div>
+                    <div class="rc-floating-note">
+                        <span><i class="fa-solid fa-location-dot"></i> Origen local</span>
+                        <strong>San Gabriel, Costa Rica</strong>
+                    </div>
+                    <div class="rc-floating-score">
+                        <i class="fa-solid fa-award"></i>
+                        <span><strong>Calidad</strong><small>Controlada por etapa</small></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="rc-marquee" aria-hidden="true">
+            <div>
+                <span>Café de origen</span><i class="fa-solid fa-star"></i>
+                <span>Trazabilidad completa</span><i class="fa-solid fa-star"></i>
+                <span>Producción costarricense</span><i class="fa-solid fa-star"></i>
+                <span>Calidad artesanal</span><i class="fa-solid fa-star"></i>
+                <span>Café de origen</span><i class="fa-solid fa-star"></i>
+                <span>Trazabilidad completa</span><i class="fa-solid fa-star"></i>
+            </div>
+        </div>
+
+        <section class="rc-section rc-catalog-section" id="catalogo">
+            <div class="rc-section-heading">
+                <div>
+                    <span class="rc-section-label">Catálogo</span>
+                    <h2>Cafés para disfrutar, compartir y recordar.</h2>
+                </div>
+                <a asp-area="Identity" asp-page="/Account/Login" class="rc-text-link">Ingresar al catálogo <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </div>
+
+            <div class="rc-product-grid">
+                @if (productos.Any())
+                {
+                    foreach (var producto in productos)
+                    {
+                        <article class="rc-product-card">
+                            <div class="rc-product-media">
+                                <img src="@ImagenProducto(producto.Nombre)" alt="@producto.Nombre" />
+                                <span class="rc-product-stock">@producto.Stock kg disponibles</span>
+                            </div>
+                            <div class="rc-product-body">
+                                <span class="rc-product-category">@producto.Categoria</span>
+                                <h3>@producto.Nombre</h3>
+                                <p>@(string.IsNullOrWhiteSpace(producto.Descripcion) ? "Café del Microbeneficio San Gabriel con origen controlado y calidad artesanal." : producto.Descripcion)</p>
+                                <div class="rc-product-footer">
+                                    <strong>₡ @producto.Precio.ToString("N0")</strong>
+                                    <a asp-area="Identity" asp-page="/Account/Login" aria-label="Consultar @producto.Nombre"><i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <article class="rc-empty-catalog">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        <h3>El catálogo se está preparando</h3>
+                        <p>Cuando existan productos activos, aparecerán automáticamente en esta sección.</p>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="rc-section rc-advantages" id="ventajas">
+            <div class="rc-advantages-intro">
+                <span class="rc-section-label">Ventajas</span>
+                <h2>¿Por qué elegir el café de San Gabriel?</h2>
+                <p>
+                    No se trata solo de vender café. Cada producto mantiene una historia, una finca y un proceso
+                    registrado para ofrecer mayor confianza y valor.
+                </p>
+                <a asp-area="Identity" asp-page="/Account/Register" class="rc-button rc-button-primary">Unirme a la plataforma</a>
+            </div>
+
+            <div class="rc-advantage-list">
+                <article>
+                    <span>01</span>
+                    <div><h3>Origen identificado</h3><p>Información organizada de productores, fincas y lotes vinculados con cada etapa.</p></div>
+                    <i class="fa-solid fa-location-dot"></i>
+                </article>
+                <article>
+                    <span>02</span>
+                    <div><h3>Hecho en Costa Rica</h3><p>Producción local con control operativo y comercial desde una misma plataforma.</p></div>
+                    <i class="fa-solid fa-mountain-sun"></i>
+                </article>
+                <article>
+                    <span>03</span>
+                    <div><h3>Trazabilidad real</h3><p>Seguimiento del lote desde su recepción hasta el producto disponible para compra.</p></div>
+                    <i class="fa-solid fa-route"></i>
+                </article>
+                <article>
+                    <span>04</span>
+                    <div><h3>Calidad para regalar</h3><p>Presentaciones ideales para disfrutar en casa o compartir un producto con identidad local.</p></div>
+                    <i class="fa-solid fa-gift"></i>
+                </article>
+            </div>
+        </section>
+
+        <section class="rc-process-section" id="proceso">
+            <div class="rc-process-photo"></div>
+            <div class="rc-process-content">
+                <span class="rc-section-label">Del fruto a la taza</span>
+                <h2>Un proceso conectado de principio a fin.</h2>
+                <p>Cada paso se registra para que la operación sea más clara y el café conserve su historia.</p>
+                <ol class="rc-process-steps">
+                    <li><span>01</span><div><strong>Productor y finca</strong><small>Registro del origen y ubicación.</small></div></li>
+                    <li><span>02</span><div><strong>Recepción del lote</strong><small>Peso, código y estado inicial.</small></div></li>
+                    <li><span>03</span><div><strong>Producción</strong><small>Procesos, responsables y resultados.</small></div></li>
+                    <li><span>04</span><div><strong>Producto final</strong><small>Inventario, pedido y facturación.</small></div></li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="rc-custom-cta" id="contacto">
+            <div>
+                <span class="rc-section-label">¿Buscás una presentación específica?</span>
+                <h2>Creá tu cuenta y consultá nuestro catálogo completo.</h2>
+                <p>Desde el portal cliente podés revisar productos, realizar pedidos y consultar la trazabilidad.</p>
+            </div>
+            <div class="rc-custom-actions">
+                <a asp-area="Identity" asp-page="/Account/Register" class="rc-button rc-button-light">Crear cuenta</a>
+                <a asp-area="Identity" asp-page="/Account/Login" class="rc-button rc-button-ghost-light">Iniciar sesión</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="rc-public-footer">
+        <div class="rc-footer-brand">
+            <span class="rc-brand-symbol"><i class="fa-solid fa-seedling"></i></span>
+            <div><strong>San Gabriel</strong><small>Microbeneficio de café</small></div>
+        </div>
+        <div class="rc-footer-links">
+            <a href="#inicio">Inicio</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#ventajas">Ventajas</a>
+            <a href="#proceso">Proceso</a>
+            <a asp-area="Identity" asp-page="/Account/Login">Ingresar</a>
+        </div>
+        <p>© @DateTime.Now.Year Microbeneficio San Gabriel. Café con origen, control y trazabilidad.</p>
+    </footer>
 </div>
+
+@section Scripts {
+<script>
+(() => {
+    const toggle = document.getElementById('rcPublicToggle');
+    const nav = document.getElementById('rcPublicNav');
+    if (toggle && nav) {
+        toggle.addEventListener('click', () => nav.classList.toggle('open'));
+        nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => nav.classList.remove('open')));
+    }
+})();
+</script>
+}

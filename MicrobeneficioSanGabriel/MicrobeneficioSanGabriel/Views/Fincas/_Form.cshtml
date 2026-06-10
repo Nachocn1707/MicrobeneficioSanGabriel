@@ -1,0 +1,60 @@
+@model MicrobeneficioSanGabriel.Models.Finca
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" placeholder="Ej. Finca El Roble" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="ProductorId" class="form-label"></label>
+        <select asp-for="ProductorId" asp-items="ViewBag.ProductorId" class="form-select">
+            <option value="">Seleccione un productor</option>
+        </select>
+        <span asp-validation-for="ProductorId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Provincia" class="form-label"></label>
+        <select asp-for="Provincia" class="form-select">
+            <option value="">Seleccione</option>
+            <option>San José</option>
+            <option>Alajuela</option>
+            <option>Cartago</option>
+            <option>Heredia</option>
+            <option>Guanacaste</option>
+            <option>Puntarenas</option>
+            <option>Limón</option>
+        </select>
+        <span asp-validation-for="Provincia" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Canton" class="form-label"></label>
+        <input asp-for="Canton" class="form-control" placeholder="Cantón" />
+        <span asp-validation-for="Canton" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Distrito" class="form-label"></label>
+        <input asp-for="Distrito" class="form-control" placeholder="Distrito" />
+        <span asp-validation-for="Distrito" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="DireccionExacta" class="form-label"></label>
+        <textarea asp-for="DireccionExacta" class="form-control" rows="3"
+                  placeholder="Señas exactas, puntos de referencia y ruta de acceso"></textarea>
+        <span asp-validation-for="DireccionExacta" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check form-switch">
+            <input asp-for="Activa" class="form-check-input" />
+            <label asp-for="Activa" class="form-check-label">Finca activa</label>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,663 @@
+:root {
+    --client-rose: #de8f98;
+    --client-sand: #f5e5c6;
+    --client-card: #fffdf8;
+    --client-border: #eadfce;
+    --client-ink: #271711;
+    --client-muted: #6f6258;
+    --client-shadow: 0 20px 44px rgba(58, 33, 20, 0.09);
+}
+
+.sg-client-content {
+    position: relative;
+    isolation: isolate;
+    padding: 30px 32px 36px;
+}
+
+.sg-client-content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(247,241,233,.70), rgba(244,238,230,.86)),
+        url('/images/dashboard/client-hero.jpg') center/cover no-repeat;
+    opacity: .62;
+    z-index: 0;
+}
+
+
+.sg-client-content::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: 26px;
+    pointer-events: none;
+    background: url('/images/visual/coffee-beans.jpg') right bottom / 34% no-repeat;
+    opacity: .12;
+    z-index: 0;
+}
+
+.sg-client-content > * {
+    position: relative;
+    z-index: 1;
+}
+
+.cliente-premium-dashboard {
+    display: grid;
+    gap: 22px;
+}
+
+.cliente-overview {
+    display: grid;
+    grid-template-columns: 1.4fr .9fr;
+    gap: 20px;
+}
+
+.cliente-hero-premium,
+.cliente-side-panel,
+.cliente-stat-card,
+.cliente-module-card,
+.cliente-order-card,
+.cliente-benefit-card,
+.cliente-feature-card,
+.cliente-banner-card {
+    background: var(--client-card);
+    border: 1px solid var(--client-border);
+    box-shadow: var(--client-shadow);
+}
+
+.cliente-hero-premium {
+    position: relative;
+    min-height: 345px;
+    overflow: hidden;
+    padding: 28px;
+    border-radius: 28px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    gap: 24px;
+    background:
+        linear-gradient(90deg, rgba(255,250,242,.94) 0%, rgba(255,250,242,.76) 43%, rgba(255,250,242,.12) 100%),
+        url('/images/dashboard/client-hero.jpg') center/cover no-repeat;
+}
+
+.cliente-hero-premium::after {
+    content: "";
+    position: absolute;
+    right: -26px;
+    top: -40px;
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(222,143,152,.3), rgba(243,210,122,.1));
+    filter: blur(2px);
+}
+
+.cliente-hero-copy,
+.cliente-hero-aside {
+    position: relative;
+    z-index: 2;
+}
+
+.cliente-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: rgba(47,111,70,.12);
+    color: #1f6a36;
+    font-size: .82rem;
+    font-weight: 900;
+}
+
+.cliente-hero-copy h1 {
+    margin: 18px 0 8px;
+    color: var(--client-ink);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.04;
+    font-weight: 950;
+}
+
+.cliente-hero-copy p {
+    max-width: 600px;
+    color: #54463c;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 700;
+    margin: 0;
+}
+
+.cliente-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.cliente-btn-primary,
+.cliente-btn-secondary,
+.cliente-module-button,
+.cliente-chip-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 900;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.cliente-btn-primary,
+.cliente-module-button.primary {
+    background: linear-gradient(135deg, #d88f98, #efc36e);
+    color: #2a1711;
+    box-shadow: 0 14px 28px rgba(222, 143, 152, 0.25);
+}
+
+.cliente-btn-secondary,
+.cliente-module-button.secondary,
+.cliente-chip-button {
+    background: rgba(255,255,255,.8);
+    color: #2f1b15;
+    border: 1px solid rgba(234, 223, 206, .95);
+}
+
+.cliente-btn-primary:hover,
+.cliente-btn-secondary:hover,
+.cliente-module-button:hover,
+.cliente-chip-button:hover {
+    transform: translateY(-2px);
+}
+
+.cliente-hero-aside {
+    display: grid;
+    align-content: end;
+    gap: 12px;
+}
+
+.cliente-mini-stat {
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.52);
+    background: rgba(255,255,255,.55);
+    backdrop-filter: blur(10px);
+}
+
+.cliente-mini-stat strong {
+    display: block;
+    color: var(--client-ink);
+    font-size: 1.8rem;
+    font-weight: 950;
+}
+
+.cliente-mini-stat span {
+    color: #6b5f56;
+    font-size: .82rem;
+    font-weight: 800;
+}
+
+.cliente-side-panel {
+    border-radius: 28px;
+    padding: 22px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+
+.cliente-panel-head small,
+.cliente-section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #a16f50;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 900;
+    font-size: .72rem;
+}
+
+.cliente-panel-head h2,
+.cliente-section-title {
+    margin: 8px 0 0;
+    color: var(--client-ink);
+    font-weight: 950;
+}
+
+.cliente-order-list {
+    display: grid;
+    gap: 12px;
+}
+
+.cliente-order-card {
+    padding: 16px;
+    border-radius: 18px;
+}
+
+.cliente-order-top,
+.cliente-feature-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cliente-order-code,
+.cliente-feature-top span {
+    font-weight: 900;
+    color: var(--client-ink);
+}
+
+.cliente-order-meta,
+.cliente-feature-card p,
+.cliente-module-card p,
+.cliente-banner-card p,
+.cliente-benefit-card p {
+    color: var(--client-muted);
+    font-size: .9rem;
+    line-height: 1.5;
+}
+
+.cliente-order-tag,
+.cliente-order-pay,
+.cliente-card-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: .72rem;
+    font-weight: 900;
+}
+
+.cliente-order-tag.pending { background: #fff2d4; color: #8a5a14; }
+.cliente-order-tag.complete { background: #dff2e3; color: #1f6a36; }
+.cliente-order-tag.process { background: #e5eef9; color: #315f8c; }
+.cliente-order-pay { background: #f5efe6; color: #6b5d4b; }
+.cliente-card-tag { background: rgba(222, 143, 152, .12); color: #a24f65; }
+
+.cliente-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.cliente-stat-card {
+    border-radius: 24px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cliente-stat-card::after {
+    content: "";
+    position: absolute;
+    right: -22px;
+    bottom: -28px;
+    width: 98px;
+    height: 98px;
+    border-radius: 50%;
+    background: rgba(243, 210, 122, .18);
+}
+
+.cliente-stat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: #fff2d5;
+    color: #a66b20;
+    font-size: 1rem;
+}
+
+.cliente-stat-card small,
+.cliente-stat-card span {
+    display: block;
+    color: var(--client-muted);
+}
+
+.cliente-stat-card strong {
+    display: block;
+    margin: 14px 0 4px;
+    color: var(--client-ink);
+    font-size: 2rem;
+    font-weight: 950;
+}
+
+.cliente-module-gallery,
+.cliente-bottom-grid,
+.cliente-products-grid {
+    display: grid;
+    gap: 18px;
+}
+
+.cliente-module-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cliente-module-card {
+    padding: 22px;
+    border-radius: 24px;
+    display: grid;
+    gap: 16px;
+    min-height: 240px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cliente-module-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(130deg, rgba(255,255,255,.5), transparent 65%);
+    pointer-events: none;
+}
+
+.cliente-module-card.featured {
+    background:
+        linear-gradient(90deg, rgba(20, 21, 18, .82), rgba(20, 21, 18, .18)),
+        url('/images/visual/coffee-beans.jpg') center/cover no-repeat;
+    color: white;
+}
+
+.cliente-module-card.featured h3,
+.cliente-module-card.featured p,
+.cliente-module-card.featured .cliente-card-tag {
+    color: white;
+}
+
+.cliente-module-card.featured .cliente-card-tag {
+    background: rgba(255,255,255,.18);
+}
+
+.cliente-module-card h3 {
+    margin: 0;
+    color: var(--client-ink);
+    font-size: 1.85rem;
+    font-weight: 950;
+}
+
+.cliente-module-card .cliente-module-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: #fff2d5;
+    color: #8d5d20;
+    font-size: 1.2rem;
+}
+
+.cliente-module-card.featured .cliente-module-icon {
+    background: rgba(255,255,255,.16);
+    color: white;
+}
+
+.cliente-module-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.cliente-section-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.cliente-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cliente-chip-button.is-active {
+    background: #211d1c;
+    color: white;
+    border-color: #211d1c;
+}
+
+.cliente-bottom-grid {
+    grid-template-columns: 1.15fr .85fr;
+}
+
+.cliente-products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cliente-feature-card,
+.cliente-benefits-panel,
+.cliente-banner-card {
+    border-radius: 24px;
+    padding: 22px;
+}
+
+.cliente-feature-card {
+    display: grid;
+    gap: 12px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.95)),
+        url('/images/visual/coffee-farm.jpg') center/cover no-repeat;
+}
+
+.cliente-feature-card strong {
+    color: var(--client-ink);
+}
+
+.cliente-benefits-panel {
+    display: grid;
+    gap: 14px;
+    background:
+        linear-gradient(180deg, rgba(255,253,248,.94), rgba(255,253,248,.94)),
+        url('/images/visual/coffee-process.jpg') center/cover no-repeat;
+}
+
+.cliente-benefit-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 18px;
+}
+
+.cliente-benefit-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: #fff2d5;
+    color: #8a5a14;
+    flex-shrink: 0;
+}
+
+.cliente-banner-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background:
+        linear-gradient(90deg, rgba(255,250,242,.95), rgba(255,250,242,.76) 55%, rgba(255,250,242,.18)),
+        url('/images/dashboard/coffee-banner.jpg') center/cover no-repeat;
+}
+
+.cliente-banner-card::after {
+    content: "";
+    position: absolute;
+    right: -42px;
+    bottom: -48px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(243,210,122,.14);
+}
+
+.cliente-banner-card h3 {
+    margin: 0 0 8px;
+    color: var(--client-ink);
+    font-size: 1.7rem;
+    font-weight: 950;
+}
+
+@media (max-width: 1250px) {
+    .cliente-overview,
+    .cliente-bottom-grid,
+    .cliente-module-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .cliente-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cliente-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .sg-client-content { padding: 24px 18px 30px; }
+    .cliente-hero-premium { grid-template-columns: 1fr; min-height: auto; }
+    .cliente-products-grid,
+    .cliente-stats-grid,
+    .cliente-module-gallery { grid-template-columns: 1fr; }
+    .cliente-banner-card { flex-direction: column; align-items: flex-start; }
+}
+
+
+.sg-client-content .card,
+.sg-client-content .table-responsive,
+.sg-client-content .dataTables_wrapper,
+.sg-client-content .form-card,
+.sg-client-content .details-card,
+.sg-client-content .edit-card,
+.sg-client-content .create-card,
+.sg-client-content .sg-card {
+    background: rgba(255, 253, 248, 0.86) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(234, 223, 206, 0.95) !important;
+    box-shadow: var(--client-shadow) !important;
+}
+
+
+/* Match client module headers to the approved login/register visual language */
+.sg-client-content .sg-visual-hero {
+    position: relative;
+    min-height: 320px;
+    margin-bottom: 22px;
+    border-radius: 32px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(229, 214, 192, 0.95);
+    background:
+        linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%),
+        url('/images/visual/coffee-banner.jpg') center/cover no-repeat;
+    box-shadow: 0 24px 56px rgba(58, 33, 20, 0.14);
+}
+
+.sg-client-content .sg-visual-hero::before {
+    content: "";
+    position: absolute;
+    right: -24px;
+    top: -18px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(222, 143, 152, 0.3), rgba(243, 210, 122, 0.08) 62%, transparent 70%);
+}
+
+.sg-client-content .sg-visual-hero::after {
+    content: "";
+    position: absolute;
+    right: 28px;
+    bottom: 26px;
+    width: min(34%, 330px);
+    height: 140px;
+    border-radius: 26px;
+    background:
+        linear-gradient(180deg, rgba(18, 20, 30, 0.16), rgba(18, 20, 30, 0.56)),
+        url('/images/visual/coffee-beans.jpg') center/cover no-repeat;
+    box-shadow: 0 22px 44px rgba(12, 8, 6, 0.24);
+    border: 1px solid rgba(255,255,255,0.18);
+    opacity: .95;
+}
+
+.sg-client-content .sg-visual-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    padding: 34px;
+}
+
+.sg-client-content .sg-visual-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.9);
+    color: #b26a74;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 900;
+    font-size: .85rem;
+    box-shadow: 0 10px 18px rgba(28, 20, 15, 0.08);
+}
+
+.sg-client-content .sg-visual-hero h1 {
+    color: #fff6d8;
+    font-size: clamp(2.35rem, 4vw, 4rem);
+    font-weight: 950;
+    line-height: 1.02;
+    max-width: 680px;
+    margin: 15px 0 8px;
+}
+
+.sg-client-content .sg-visual-line {
+    width: 82px;
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #e8c26f, #f5d992);
+    margin: 14px 0 18px;
+}
+
+.sg-client-content .sg-visual-hero p {
+    max-width: 680px;
+    color: rgba(255, 248, 223, 0.95);
+    line-height: 1.65;
+    font-weight: 720;
+}
+
+.sg-client-content .sg-hero-productores { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/productores.jpg'); }
+.sg-client-content .sg-hero-productos { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/productos.jpg'); }
+.sg-client-content .sg-hero-lotes { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/lotes.jpg'); }
+.sg-client-content .sg-hero-inventario { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/inventario.jpg'); }
+.sg-client-content .sg-hero-pedidos { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/pedidos.jpg'); }
+.sg-client-content .sg-hero-facturacion { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/facturacion.jpg'); }
+.sg-client-content .sg-hero-contabilidad { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/contabilidad.jpg'); }
+.sg-client-content .sg-hero-trazabilidad { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/trazabilidad.jpg'); }
+.sg-client-content .sg-hero-reportes { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/reportes.jpg'); }
+.sg-client-content .sg-hero-usuarios { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/usuarios.jpg'); }
+.sg-client-content .sg-hero-produccion { background-image: linear-gradient(100deg, rgba(31, 18, 12, 0.84) 0%, rgba(31, 18, 12, 0.62) 34%, rgba(255, 250, 244, 0.18) 100%), url('/images/visual/produccion.jpg'); }
+
+@media (max-width: 900px) {
+    .sg-client-content .sg-visual-hero {
+        min-height: 250px;
+    }
+    .sg-client-content .sg-visual-hero::after {
+        display: none;
+    }
+    .sg-client-content .sg-visual-hero-content {
+        padding: 26px 22px;
+    }
+}

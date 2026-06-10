@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Factura
+@model MicrobeneficioSanGabriel.Models.Factura
 
 @{
     ViewData["Title"] = "Detalles de factura";
@@ -14,6 +14,7 @@
 
     string estadoClase = Model.EstadoPago switch
     {
+        "Pago completado" => "factura-estado factura-estado-pagado",
         "Pagado" => "factura-estado factura-estado-pagado",
         "Pendiente" => "factura-estado factura-estado-pendiente",
         "Anulada" => "factura-estado factura-estado-anulada",

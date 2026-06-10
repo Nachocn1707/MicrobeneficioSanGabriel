@@ -1,0 +1,57 @@
+@model MicrobeneficioSanGabriel.Models.Productor
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+<div class="row g-4">
+    <div class="col-md-6">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" placeholder="Nombre completo" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Cedula" class="form-label"></label>
+        <input asp-for="Cedula" class="form-control" inputmode="numeric" placeholder="101230456" />
+        <span asp-validation-for="Cedula" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Telefono" class="form-label"></label>
+        <input asp-for="Telefono" class="form-control" inputmode="tel" placeholder="8888-8888" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" type="email" placeholder="productor@correo.com" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check form-switch mb-2">
+            <input asp-for="Activo" class="form-check-input" />
+            <label asp-for="Activo" class="form-check-label">Productor activo</label>
+        </div>
+    </div>
+
+    <div class="col-12"><hr /><h5 class="mb-0"><i class="fa-solid fa-location-dot me-2 text-success"></i>Ubicación del productor</h5></div>
+
+    <div class="col-md-4">
+        <label asp-for="Provincia" class="form-label"></label>
+        <select asp-for="Provincia" class="form-select">
+            <option value="">Seleccione</option>
+            <option>San José</option><option>Alajuela</option><option>Cartago</option><option>Heredia</option><option>Guanacaste</option><option>Puntarenas</option><option>Limón</option>
+        </select>
+        <span asp-validation-for="Provincia" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Canton" class="form-label"></label>
+        <input asp-for="Canton" class="form-control" placeholder="Cantón" />
+        <span asp-validation-for="Canton" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Distrito" class="form-label"></label>
+        <input asp-for="Distrito" class="form-control" placeholder="Distrito" />
+        <span asp-validation-for="Distrito" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="DireccionExacta" class="form-label"></label>
+        <textarea asp-for="DireccionExacta" class="form-control" rows="3" placeholder="Señas exactas y puntos de referencia"></textarea>
+        <span asp-validation-for="DireccionExacta" class="text-danger"></span>
+    </div>
+</div>

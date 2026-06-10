@@ -1,132 +1,144 @@
-﻿@page
+@page
 @model LoginModel
 
 @{
     ViewData["Title"] = "Iniciar sesión";
 }
 
-<link rel="stylesheet" href="~/css/Login_Register.css" />
 
-<div class="sg-login-bg">
-
-    <div class="login-page">
-
-        <section class="login-brand-panel">
-            <div class="brand-content">
-                <div class="brand-badge">
-                    <i class="fa-solid fa-mug-hot"></i>
-                </div>
-
+<div class="auth-shell">
+    <header class="auth-topbar">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-brand">
+            <span class="auth-brand-mark"><i class="fa-solid fa-mug-hot"></i></span>
+            <div>
                 <h1>San Gabriel</h1>
-                <p>Microbeneficio cafetalero</p>
+                <span>Coffee Lab · Acceso al sistema</span>
+            </div>
+        </a>
 
-                <div class="brand-line"></div>
+        <nav class="auth-nav">
+            <a asp-area="" asp-controller="Home" asp-action="Index" asp-fragment="inicio" class="auth-nav-pill">Inicio</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" asp-fragment="ventajas" class="auth-nav-pill">Microbeneficio</a>
+            <a asp-page="./Register" class="auth-top-action">Crear cuenta</a>
+        </nav>
+    </header>
 
-                <span>Sistema de gestión administrativa</span>
+    <div class="auth-layout">
+        <section class="auth-showcase">
+            <span class="auth-kicker"><i class="fa-solid fa-seedling"></i> Café, datos y trazabilidad</span>
+            <h2>Ingresá al centro de control del Microbeneficio San Gabriel.</h2>
+            <p class="lead">
+                Administrá el origen, la producción, el inventario y las ventas, o ingresá al portal cliente para
+                explorar productos, pedidos y trazabilidad desde una experiencia visual inspirada en una tienda moderna.
+            </p>
+
+            <article class="auth-floating-card">
+                <span class="auth-kicker"><i class="fa-solid fa-star"></i> Panel destacado</span>
+                <h3>Todo el recorrido del café en un solo lugar</h3>
+                <p class="auth-feature-text">
+                    Una interfaz oscura, enérgica y orientada al catálogo, adaptada a la identidad del café costarricense
+                    y conectada con las funciones reales del sistema.
+                </p>
+                <div class="auth-tag-row">
+                    <span class="auth-tag">Dashboard operativo</span>
+                    <span class="auth-tag">Coffee Club</span>
+                    <span class="auth-tag">Trazabilidad real</span>
+                </div>
+            </article>
+
+            <div class="auth-mini-grid">
+                <article class="auth-mini-card">
+                    <strong>Catálogo visual</strong>
+                    <p>Productos, pedidos y accesos rápidos con una presentación más atractiva.</p>
+                </article>
+                <article class="auth-mini-card">
+                    <strong>Seguimiento</strong>
+                    <p>Estados, pagos y trazabilidad organizados en módulos con mejor jerarquía visual.</p>
+                </article>
+                <article class="auth-mini-card">
+                    <strong>Confianza</strong>
+                    <p>Una estética alineada al café, con contraste, tarjetas y paneles más profesionales.</p>
+                </article>
+            </div>
+
+            <div class="auth-feature-list">
+                <article class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div>
+                        <strong>Dashboard más interactivo</strong>
+                        <span>Accesos rápidos, tarjetas y una presentación con mayor dinamismo visual.</span>
+                    </div>
+                </article>
+                <article class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fa-solid fa-bell"></i></div>
+                    <div>
+                        <strong>Mensajes y alertas mejor organizados</strong>
+                        <span>Más control sobre las notificaciones y mejor percepción del estado del sistema.</span>
+                    </div>
+                </article>
             </div>
         </section>
 
-        <section class="login-form-panel">
-            <div class="login-card">
-
-                <div class="login-card-header">
-                    <div class="user-icon">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-
-                    <h2>Bienvenido</h2>
-                    <p>Ingresá tus credenciales para continuar.</p>
+        <section class="auth-form-panel">
+            <div class="auth-panel-card">
+                <div class="auth-card-header">
+                    <span class="auth-kicker"><i class="fa-solid fa-right-to-bracket"></i> Acceso seguro</span>
+                    <h2>Iniciar sesión</h2>
+                    <p>Ingrese sus credenciales para acceder al sistema del Microbeneficio San Gabriel.</p>
                 </div>
 
-                <form method="post"
-                      asp-route-returnUrl="@Model.ReturnUrl">
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="text-danger validation-summary mb-3">
-                    </div>
+                <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+                    <div asp-validation-summary="ModelOnly" class="text-danger validation-summary mb-3"></div>
 
                     <div class="form-group">
-                        <label class="form-label"
-                               asp-for="Input.Email">
-                            Correo
-                        </label>
-
+                        <label class="form-label" asp-for="Input.Email">Correo</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-envelope"></i>
-
                             <input asp-for="Input.Email"
                                    class="form-control custom-input"
                                    autocomplete="username"
                                    placeholder="correo@ejemplo.com" />
                         </div>
-
-                        <span asp-validation-for="Input.Email"
-                              class="text-danger">
-                        </span>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label"
-                               asp-for="Input.Password">
-                            Contraseña
-                        </label>
-
+                        <label class="form-label" asp-for="Input.Password">Contraseña</label>
                         <div class="input-wrapper password-field">
                             <i class="fa-solid fa-lock"></i>
-
                             <input asp-for="Input.Password"
                                    id="loginPassword"
                                    class="form-control custom-input"
                                    autocomplete="current-password"
                                    placeholder="Ingresá tu contraseña" />
-
                             <button type="button"
                                     class="password-toggle"
                                     onclick="togglePassword('loginPassword', 'loginPasswordIcon')"
                                     aria-label="Mostrar u ocultar contraseña">
-                                <i id="loginPasswordIcon"
-                                       class="fa-solid fa-eye">
-                                </i>
+                                <i id="loginPasswordIcon" class="fa-solid fa-eye"></i>
                             </button>
                         </div>
-
-                        <span asp-validation-for="Input.Password"
-                              class="text-danger">
-                        </span>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <div class="form-check mb-3">
-                        <input asp-for="Input.RememberMe"
-                               class="form-check-input" />
-
-                        <label asp-for="Input.RememberMe"
-                               class="form-check-label">
-                            Recordarme
-                        </label>
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label asp-for="Input.RememberMe" class="form-check-label">Recordarme</label>
                     </div>
 
-                    <button type="submit"
-                            class="btn-login">
+                    <button type="submit" class="btn-login">
                         <i class="fa-solid fa-right-to-bracket"></i>
-                        Iniciar sesión
+                        Ingresar al sistema
                     </button>
 
                     <div class="links">
-                        <a asp-page="./ForgotPassword">
-                            ¿Olvidó su contraseña?
-                        </a>
-
-                        <a asp-page="./Register">
-                            Registrarse
-                        </a>
+                        <a asp-page="./ForgotPassword">¿Olvidó su contraseña?</a>
+                        <a asp-page="./Register">Registrarse</a>
                     </div>
-
                 </form>
             </div>
         </section>
-
     </div>
-
 </div>
 
 @section Scripts {
@@ -137,9 +149,7 @@
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
 
-            if (!input || !icon) {
-                return;
-            }
+            if (!input || !icon) return;
 
             if (input.type === "password") {
                 input.type = "text";

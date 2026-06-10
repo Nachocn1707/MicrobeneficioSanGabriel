@@ -1,4 +1,4 @@
-﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Services;
 using MicrobeneficioSanGabriel.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -131,6 +131,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                     await _userManager.AddToRoleAsync(usuario, model.Rol);
                 }
 
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Usuarios", "Crear", null,
+                    $"Se registró el usuario {usuario.NombreCompleto} ({usuario.Email}) con rol {model.Rol}.");
                 TempData["Success"] = "Usuario registrado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
@@ -230,6 +232,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await _userManager.AddToRoleAsync(usuario, model.Rol);
             }
 
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Usuarios", "Editar", null,
+                $"Se actualizó el usuario {usuario.NombreCompleto} ({usuario.Email}) con rol {model.Rol}.");
             TempData["Success"] = "Usuario actualizado correctamente.";
             return RedirectToAction(nameof(Index));
         }
@@ -287,6 +291,8 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (resultado.Succeeded)
             {
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Usuarios", "Eliminar", null,
+                    $"Se eliminó el usuario {usuario.NombreCompleto} ({usuario.Email}).");
                 TempData["Success"] = "Usuario eliminado correctamente.";
                 return RedirectToAction(nameof(Index));
             }

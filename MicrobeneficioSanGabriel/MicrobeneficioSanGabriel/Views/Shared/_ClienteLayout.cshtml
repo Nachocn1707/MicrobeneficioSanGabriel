@@ -1,13 +1,13 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @using MicrobeneficioSanGabriel.Models
 @inject UserManager<ApplicationUser> UserManager
 
 @{
     var usuarioActual = await UserManager.GetUserAsync(User);
 
-var nombreCliente = usuarioActual != null
-    ? usuarioActual.NombreCompleto
-    : "Cliente";
+    var nombreCliente = usuarioActual != null
+        ? usuarioActual.NombreCompleto
+        : "Cliente";
 
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
 
@@ -30,13 +30,15 @@ var nombreCliente = usuarioActual != null
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/visual-backgrounds.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/client-dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
-    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
 </head>
 
-<body class="sg-coffee-bg">
+<body class="sg-coffee-bg rc-client-body">
     <div class="sg-client-wrapper">
 
         <aside class="sg-client-sidebar">
@@ -47,38 +49,42 @@ var nombreCliente = usuarioActual != null
 
                 <div>
                     <h4>San Gabriel</h4>
-                    <span>Portal cliente</span>
+                    <span>Coffee Club</span>
                 </div>
             </div>
 
             <nav class="sg-sidebar-menu">
                 <a asp-controller="Home"
-                       asp-action="ClienteDashboard"
-                       class="@Active("/home/clientedashboard")">
+                   asp-action="ClienteDashboard"
+                   class="@Active("/home/clientedashboard")">
                     <i class="fa-solid fa-house"></i>
                     Inicio
                 </a>
 
                 <a asp-controller="Productos"
-                       asp-action="Index"
-                       class="@Active("/productos")">
+                   asp-action="Index"
+                   class="@Active("/productos")">
                     <i class="fa-solid fa-mug-hot"></i>
                     Productos
                 </a>
 
-
                 <a asp-controller="Pedidos"
-                       asp-action="Index"
-                       class="@(currentPath == "/pedidos" || currentPath.Contains("/pedidos/index") ? "active" : "")">
+                   asp-action="Index"
+                   class="@(currentPath == "/pedidos" || currentPath.Contains("/pedidos/index") ? "active" : "")">
                     <i class="fa-solid fa-clipboard-list"></i>
                     Mis pedidos
                 </a>
 
+                <a asp-controller="Trazabilidades"
+                   asp-action="Index"
+                   class="@Active("/trazabilidades")">
+                    <i class="fa-solid fa-route"></i>
+                    Trazabilidad
+                </a>
             </nav>
         </aside>
 
         <main class="sg-client-main">
-
             <header class="sg-topbar">
                 <div class="sg-topbar-title">
                     <h5>@ViewData["Title"]</h5>
@@ -86,9 +92,12 @@ var nombreCliente = usuarioActual != null
                 </div>
 
                 <div class="sg-topbar-actions">
-                    <span class="sg-user-pill">
+                    <span class="sg-user-pill" title="Usuario activo">
                         <i class="fa-solid fa-user"></i>
-                        @nombreCliente
+                        <div class="sg-user-info">
+                            <strong>@nombreCliente</strong>
+                            <small>Cliente</small>
+                        </div>
                     </span>
 
                     <form asp-area="Identity"
@@ -103,10 +112,10 @@ var nombreCliente = usuarioActual != null
                 </div>
             </header>
 
-            <section class="sg-client-content">
+            <section class="sg-content sg-bg-page sg-client-content">
+                <partial name="_MensajesSistema" />
                 @RenderBody()
             </section>
-
         </main>
     </div>
 
@@ -114,7 +123,14 @@ var nombreCliente = usuarioActual != null
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
-    <script src="~/js/Validaciones.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
+                setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
+            });
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

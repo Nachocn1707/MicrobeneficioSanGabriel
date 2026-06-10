@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrobeneficioSanGabriel.Models
@@ -8,28 +8,36 @@ namespace MicrobeneficioSanGabriel.Models
         public int Id { get; set; }
 
         [Display(Name = "Código")]
+        [StringLength(30)]
         public string CodigoLote { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un productor")]
         [Display(Name = "Productor")]
         public int ProductorId { get; set; }
 
-        [ForeignKey("ProductorId")]
+        [ForeignKey(nameof(ProductorId))]
         public Productor? Productor { get; set; }
+
+        [Required(ErrorMessage = "Debe seleccionar una finca")]
+        [Display(Name = "Finca")]
+        public int? FincaId { get; set; }
+
+        [ForeignKey(nameof(FincaId))]
+        public Finca? Finca { get; set; }
 
         [Required(ErrorMessage = "El peso es obligatorio")]
         [Range(0.01, 999999, ErrorMessage = "El peso debe ser mayor a 0")]
-        [Display(Name = "Peso (Kg)")]
+        [Display(Name = "Peso (kg)")]
         public double PesoKg { get; set; }
 
         [Required(ErrorMessage = "La fecha de recepción es obligatoria")]
-        [Display(Name = "Fecha Recepción")]
+        [Display(Name = "Fecha de recepción")]
         public DateTime FechaRecepcion { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El estado es obligatorio")]
-        [Display(Name = "Estado")]
         public string Estado { get; set; } = string.Empty;
 
+        [StringLength(500)]
         [Display(Name = "Observación")]
         public string? Observacion { get; set; }
     }
