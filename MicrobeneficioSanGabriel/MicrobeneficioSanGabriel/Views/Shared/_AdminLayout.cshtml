@@ -11,13 +11,26 @@
 
     string Active(params string[] keywords)
     {
-        return keywords.Any(keyword => currentPath.Contains(keyword.ToLowerInvariant())) ? "active" : "";
+        return keywords.Any(keyword =>
+            currentPath.Contains(keyword.ToLowerInvariant()))
+            ? "active"
+            : "";
     }
 
+    var operacionActiva = Active(
+        "productores",
+        "fincas",
+        "productos",
+        "movimientosinventario",
+        "lotes",
+        "producciones",
+        "trazabilidades") == "active";
 
-    var operacionActiva = Active("productores", "fincas", "productos", "movimientosinventario", "lotes", "producciones", "trazabilidades") == "active";
-    var comercialActiva = Active("pedidos", "facturas") == "active";
-    var administracionActiva = Active("usuarios", "registrosfinancieros", "auditorias") == "active";
+    var comercialActiva =
+        Active("pedidos", "facturas") == "active";
+
+    var administracionActiva =
+        Active("usuarios", "registrosfinancieros", "auditorias") == "active";
 
     string NombreRol()
     {
@@ -25,6 +38,7 @@
         if (User.IsInRole("Operador")) return "Operador";
         if (User.IsInRole("Vendedor")) return "Vendedor";
         if (User.IsInRole("Cliente")) return "Cliente";
+
         return "Usuario";
     }
 
@@ -60,71 +74,254 @@
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - Microbeneficio San Gabriel</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/visual-backgrounds.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/VistaDetalles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/VistaEditar.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/VistaCrear.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/admin.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/modern-theme.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/visual-backgrounds.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/VistaDetalles.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/VistaEditar.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/VistaCrear.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
 
     @RenderSection("Styles", required: false)
-    <link rel="stylesheet" href="~/css/demo-admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/demo-admin.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/respawn-coffee.css"
+          asp-append-version="true" />
+
+    <style>
+            .demo-notification-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+            }
+
+            .notification-toggle-row {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                flex-shrink: 0;
+            }
+
+                .notification-toggle-row small {
+                    margin: 0 !important;
+                    font-size: .72rem;
+                    font-weight: 800;
+                }
+
+            .notification-switch {
+                position: relative;
+                width: 42px;
+                height: 23px;
+                margin: 0;
+                display: inline-block;
+            }
+
+                .notification-switch input {
+                    width: 0;
+                    height: 0;
+                    opacity: 0;
+                }
+
+            .notification-switch-slider {
+                position: absolute;
+                inset: 0;
+                cursor: pointer;
+                background: #aaa;
+                border-radius: 30px;
+                transition: .25s;
+            }
+
+                .notification-switch-slider::before {
+                    content: "";
+                    position: absolute;
+                    width: 17px;
+                    height: 17px;
+                    left: 3px;
+                    top: 3px;
+                    background: #fff;
+                    border-radius: 50%;
+                    transition: .25s;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+                }
+
+            .notification-switch input:checked + .notification-switch-slider {
+                background: #e9672f;
+            }
+
+                .notification-switch input:checked + .notification-switch-slider::before {
+                    transform: translateX(19px);
+                }
+
+            .notifications-disabled {
+                opacity: .65;
+            }
+    </style>
 </head>
+
 <body class="demo-body rc-admin-body">
     <div class="demo-app-shell">
+
         <header class="demo-header">
-            <a asp-controller="Home" asp-action="Dashboard" class="demo-brand">
-                <span class="demo-brand-logo"><i class="fa-solid fa-seedling"></i></span>
+
+            <a asp-controller="Home"
+               asp-action="Dashboard"
+               class="demo-brand">
+
+                <span class="demo-brand-logo">
+                    <i class="fa-solid fa-seedling"></i>
+                </span>
+
                 <span class="demo-brand-copy">
                     <strong>San Gabriel</strong>
                     <small>Coffee Lab</small>
                 </span>
             </a>
 
-            <button type="button" class="demo-nav-toggle" id="demoNavToggle" aria-label="Abrir navegación">
+            <button type="button"
+                    class="demo-nav-toggle"
+                    id="demoNavToggle"
+                    aria-label="Abrir navegación">
+
                 <i class="fa-solid fa-bars"></i>
             </button>
 
             <nav class="demo-primary-nav" id="demoPrimaryNav">
-                <a asp-controller="Home" asp-action="Dashboard" class="demo-nav-link @Active("/home/dashboard", "/home")">
+
+                <a asp-controller="Home"
+                   asp-action="Dashboard"
+                   class="demo-nav-link @Active("/home/dashboard", "/home")">
                     Inicio
                 </a>
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+                @if (User.IsInRole("Administrador")
+                    || User.IsInRole("Operador"))
                 {
                     <details class="demo-nav-group @(operacionActiva ? "current" : "")">
-                        <summary>Operación <i class="fa-solid fa-chevron-down"></i></summary>
+
+                        <summary>
+                            Operación
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </summary>
+
                         <div class="demo-nav-dropdown">
-                            <a asp-controller="Productores" asp-action="Index"><i class="fa-solid fa-user-tie"></i> Productores</a>
-                            <a asp-controller="Fincas" asp-action="Index"><i class="fa-solid fa-mountain-sun"></i> Fincas</a>
-                            <a asp-controller="Productos" asp-action="Index"><i class="fa-solid fa-mug-hot"></i> Productos</a>
-                            <a asp-controller="MovimientosInventario" asp-action="Index"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
-                            <a asp-controller="Lotes" asp-action="Index"><i class="fa-solid fa-layer-group"></i> Lotes</a>
-                            <a asp-controller="Producciones" asp-action="Index"><i class="fa-solid fa-industry"></i> Producción</a>
-                            <a asp-controller="Trazabilidades" asp-action="Index"><i class="fa-solid fa-route"></i> Trazabilidad</a>
+
+                            <a asp-controller="Productores"
+                               asp-action="Index">
+                                <i class="fa-solid fa-user-tie"></i>
+                                Productores
+                            </a>
+
+                            <a asp-controller="Fincas"
+                               asp-action="Index">
+                                <i class="fa-solid fa-mountain-sun"></i>
+                                Fincas
+                            </a>
+
+                            <a asp-controller="Productos"
+                               asp-action="Index">
+                                <i class="fa-solid fa-mug-hot"></i>
+                                Productos
+                            </a>
+
+                            <a asp-controller="MovimientosInventario"
+                               asp-action="Index">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                                Inventario
+                            </a>
+
+                            <a asp-controller="Lotes"
+                               asp-action="Index">
+                                <i class="fa-solid fa-layer-group"></i>
+                                Lotes
+                            </a>
+
+                            <a asp-controller="Producciones"
+                               asp-action="Index">
+                                <i class="fa-solid fa-industry"></i>
+                                Producción
+                            </a>
+
+                            <a asp-controller="Trazabilidades"
+                               asp-action="Index">
+                                <i class="fa-solid fa-route"></i>
+                                Trazabilidad
+                            </a>
+
                         </div>
                     </details>
                 }
                 else if (User.IsInRole("Vendedor"))
                 {
-                    <a asp-controller="Productos" asp-action="Index" class="demo-nav-link @Active("productos")">Productos</a>
+                    <a asp-controller="Productos"
+                       asp-action="Index"
+                       class="demo-nav-link @Active("productos")">
+                        Productos
+                    </a>
                 }
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+                @if (User.IsInRole("Administrador")
+                    || User.IsInRole("Vendedor"))
                 {
                     <details class="demo-nav-group @(comercialActiva ? "current" : "")">
-                        <summary>Comercial <i class="fa-solid fa-chevron-down"></i></summary>
+
+                        <summary>
+                            Comercial
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </summary>
+
                         <div class="demo-nav-dropdown">
-                            <a asp-controller="Pedidos" asp-action="Index"><i class="fa-solid fa-cart-shopping"></i> Pedidos</a>
-                            <a asp-controller="Facturas" asp-action="Index"><i class="fa-solid fa-file-invoice-dollar"></i> Facturación</a>
+
+                            <a asp-controller="Pedidos"
+                               asp-action="Index">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Pedidos
+                            </a>
+
+                            <a asp-controller="Facturas"
+                               asp-action="Index">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                                Facturación
+                            </a>
+
                         </div>
                     </details>
                 }
@@ -132,91 +329,210 @@
                 @if (User.IsInRole("Administrador"))
                 {
                     <details class="demo-nav-group @(administracionActiva ? "current" : "")">
-                        <summary>Administración <i class="fa-solid fa-chevron-down"></i></summary>
+
+                        <summary>
+                            Administración
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </summary>
+
                         <div class="demo-nav-dropdown">
-                            <a asp-controller="Usuarios" asp-action="Index"><i class="fa-solid fa-users"></i> Usuarios</a>
-                            <a asp-controller="RegistrosFinancieros" asp-action="Index"><i class="fa-solid fa-coins"></i> Contabilidad</a>
-                            <a asp-controller="Auditorias" asp-action="Index"><i class="fa-solid fa-clock-rotate-left"></i> Auditoría</a>
+
+                            <a asp-controller="Usuarios"
+                               asp-action="Index">
+                                <i class="fa-solid fa-users"></i>
+                                Usuarios
+                            </a>
+
+                            <a asp-controller="RegistrosFinancieros"
+                               asp-action="Index">
+                                <i class="fa-solid fa-coins"></i>
+                                Contabilidad
+                            </a>
+
+                            <a asp-controller="Auditorias"
+                               asp-action="Index">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                Auditoría
+                            </a>
+
                         </div>
                     </details>
                 }
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+                @if (User.IsInRole("Administrador")
+                    || User.IsInRole("Vendedor"))
                 {
-                    <a asp-controller="Reportes" asp-action="Index" class="demo-nav-link @Active("reportes")">Reportes</a>
+                    <a asp-controller="Reportes"
+                       asp-action="Index"
+                       class="demo-nav-link @Active("reportes")">
+                        Reportes
+                    </a>
                 }
+
             </nav>
 
             <div class="demo-header-actions">
+
                 <div class="demo-notification-wrap">
-                    <button type="button" class="demo-icon-button" id="notificationButton" aria-label="Notificaciones">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="demo-notification-count" id="notificationCount" style="@(alertasSistema.Any() ? "" : "display:none;")">
+
+                    <button type="button"
+                            class="demo-icon-button"
+                            id="notificationButton"
+                            aria-label="Notificaciones">
+
+                        <i class="fa-regular fa-bell"
+                           id="notificationBellIcon"></i>
+
+                        <span class="demo-notification-count"
+                              id="notificationCount"
+                              style="@(alertasSistema.Any() ? "" : "display:none;")">
                             @alertasSistema.Count
                         </span>
                     </button>
 
-                    <div class="demo-notification-panel" id="notificationPanel" hidden>
+                    <div class="demo-notification-panel"
+                         id="notificationPanel"
+                         hidden>
+
                         <div class="demo-notification-head">
+
                             <div>
                                 <strong>Alertas del sistema</strong>
-                                <small id="notificationPanelCount">@alertasSistema.Count alerta(s)</small>
+
+                                <small id="notificationPanelCount">
+                                    @alertasSistema.Count alerta(s)
+                                </small>
                             </div>
+
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <div class="notification-toggle-row">
+
+                                    <small id="notificationStatusText">
+                                        Activadas
+                                    </small>
+
+                                    <label class="notification-switch"
+                                           title="Activar o desactivar notificaciones">
+
+                                        <input type="checkbox"
+                                               id="notificationsToggle"
+                                               checked />
+
+                                        <span class="notification-switch-slider"></span>
+                                    </label>
+
+                                </div>
+                            }
+
                         </div>
 
-                        <div id="notificationEmpty" class="demo-notification-empty" style="@(alertasSistema.Any() ? "display:none;" : "")">
+                        <div id="notificationEmpty"
+                             class="demo-notification-empty"
+                             style="@(alertasSistema.Any() ? "display:none;" : "")">
+
                             No hay alertas pendientes.
                         </div>
 
                         @foreach (var alerta in alertasSistema)
                         {
-                            <article class="demo-notification-item" data-alert-key="@alerta.Clave">
-                                <button type="button" class="demo-notification-close" data-alert-dismiss="@alerta.Clave" aria-label="Eliminar">
+                            <article class="demo-notification-item"
+                                     data-alert-key="@alerta.Clave">
+
+                                <button type="button"
+                                        class="demo-notification-close"
+                                        data-alert-dismiss="@alerta.Clave"
+                                        aria-label="Eliminar">
+
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
+
                                 <a href="@alerta.Url">
-                                    <strong><i class="fa-solid @alerta.Icono"></i> @alerta.Titulo</strong>
+
+                                    <strong>
+                                        <i class="fa-solid @alerta.Icono"></i>
+                                        @alerta.Titulo
+                                    </strong>
+
                                     <span>@alerta.Mensaje</span>
                                     <small>@alerta.Tiempo</small>
+
                                 </a>
+
                             </article>
                         }
+
                     </div>
                 </div>
 
                 <div class="demo-user-chip">
-                    <span class="demo-user-avatar"><i class="fa-solid fa-user"></i></span>
+
+                    <span class="demo-user-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+
                     <span>
                         <strong>@nombreUsuarioActual</strong>
                         <small>@NombreRol()</small>
                     </span>
+
                 </div>
 
-                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Identity/Account/Login" method="post">
-                    <button type="submit" class="demo-logout-button">
+                <form asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="/Identity/Account/Login"
+                      method="post">
+
+                    <button type="submit"
+                            class="demo-logout-button">
+
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Salir</span>
+
                     </button>
                 </form>
+
             </div>
         </header>
 
         <main class="demo-main">
+
             <section class="demo-page-context">
+
                 <div>
-                    <span class="demo-context-label">San Gabriel · Coffee Lab</span>
+                    <span class="demo-context-label">
+                        San Gabriel · Coffee Lab
+                    </span>
+
                     <h1>@ViewData["Title"]</h1>
                 </div>
+
                 <div class="demo-context-actions">
-                    <a asp-controller="Home" asp-action="Dashboard" class="demo-context-button">Página principal</a>
-                    @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+
+                    <a asp-controller="Home"
+                       asp-action="Dashboard"
+                       class="demo-context-button">
+                        Página principal
+                    </a>
+
+                    @if (User.IsInRole("Administrador")
+                        || User.IsInRole("Vendedor"))
                     {
-                        <a asp-controller="Reportes" asp-action="Index" class="demo-context-button accent">Ver reportes</a>
+                        <a asp-controller="Reportes"
+                           asp-action="Index"
+                           class="demo-context-button accent">
+                            Ver reportes
+                        </a>
                     }
                     else if (User.IsInRole("Operador"))
                     {
-                        <a asp-controller="Lotes" asp-action="Create" class="demo-context-button accent">Nuevo lote</a>
+                        <a asp-controller="Lotes"
+                           asp-action="Create"
+                           class="demo-context-button accent">
+                            Nuevo lote
+                        </a>
                     }
+
                 </div>
             </section>
 
@@ -224,116 +540,334 @@
                 <partial name="_MensajesSistema" />
                 @RenderBody()
             </section>
+
         </main>
     </div>
 
     <div class="demo-toast-area" id="alertToastArea"></div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="~/js/Validaciones.js"></script>
 
     <script>
         (() => {
-            const toggle = document.getElementById("demoNavToggle");
-            const nav = document.getElementById("demoPrimaryNav");
-            if (toggle && nav) {
-                toggle.addEventListener("click", () => nav.classList.toggle("open"));
-            }
+        const toggle =
+        document.getElementById("demoNavToggle");
+
+        const nav =
+        document.getElementById("demoPrimaryNav");
+
+        if (toggle && nav) {
+        toggle.addEventListener("click", () => {
+        nav.classList.toggle("open");
+        });
+        }
         })();
     </script>
 
     <script>
         (() => {
-            const notificationButton = document.getElementById("notificationButton");
-            const notificationPanel = document.getElementById("notificationPanel");
-            const notificationCount = document.getElementById("notificationCount");
-            const notificationPanelCount = document.getElementById("notificationPanelCount");
-            const notificationEmpty = document.getElementById("notificationEmpty");
-            const toastArea = document.getElementById("alertToastArea");
-            const alertas = @Html.Raw(alertasToastJson);
-            const storageKey = "san-gabriel-alertas-eliminadas-@usuarioStorageId";
-            const shownKey = "san-gabriel-alertas-mostradas-@usuarioStorageId";
+        const notificationButton =
+        document.getElementById("notificationButton");
 
-            const read = key => {
-                try { return JSON.parse(localStorage.getItem(key)) || []; }
-                catch { return []; }
-            };
-            const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+        const notificationPanel =
+        document.getElementById("notificationPanel");
 
-            const refresh = () => {
-                const dismissed = read(storageKey);
-                let visible = 0;
-                document.querySelectorAll("[data-alert-key]").forEach(item => {
-                    const key = item.getAttribute("data-alert-key");
-                    const show = !dismissed.includes(key);
-                    item.style.display = show ? "block" : "none";
-                    if (show) visible++;
-                });
-                if (notificationCount) {
-                    notificationCount.textContent = visible;
-                    notificationCount.style.display = visible ? "inline-flex" : "none";
-                }
-                if (notificationPanelCount) notificationPanelCount.textContent = `${visible} alerta(s)`;
-                if (notificationEmpty) notificationEmpty.style.display = visible ? "none" : "block";
-            };
+        const notificationCount =
+        document.getElementById("notificationCount");
 
-            const dismiss = key => {
-                const dismissed = read(storageKey);
-                if (!dismissed.includes(key)) {
-                    dismissed.push(key);
-                    write(storageKey, dismissed);
-                }
-                refresh();
-            };
+        const notificationPanelCount =
+        document.getElementById("notificationPanelCount");
 
-            document.querySelectorAll("[data-alert-dismiss]").forEach(button => {
-                button.addEventListener("click", event => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    dismiss(button.getAttribute("data-alert-dismiss"));
-                });
-            });
+        const notificationEmpty =
+        document.getElementById("notificationEmpty");
 
-            if (notificationButton && notificationPanel) {
-                notificationButton.addEventListener("click", () => notificationPanel.hidden = !notificationPanel.hidden);
-                document.addEventListener("click", event => {
-                    if (!event.target.closest(".demo-notification-wrap")) notificationPanel.hidden = true;
-                });
-            }
+        const notificationBellIcon =
+        document.getElementById("notificationBellIcon");
 
-            const showToast = alerta => {
-                if (!toastArea) return;
-                const dismissed = read(storageKey);
-                const shown = read(shownKey);
-                if (dismissed.includes(alerta.clave) || shown.includes(alerta.clave)) return;
+        const notificationsToggle =
+        document.getElementById("notificationsToggle");
 
-                const toast = document.createElement("article");
-                toast.className = `demo-toast demo-toast-${alerta.tipo}`;
-                toast.innerHTML = `<button type="button" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button><strong>${alerta.titulo}</strong><span>${alerta.mensaje}</span><small>${alerta.tiempo}</small>`;
-                toast.querySelector("button").addEventListener("click", () => {
-                    dismiss(alerta.clave);
-                    toast.remove();
-                });
-                toastArea.appendChild(toast);
-                shown.push(alerta.clave);
-                write(shownKey, shown);
-                setTimeout(() => toast.remove(), 6000);
-            };
+        const notificationStatusText =
+        document.getElementById("notificationStatusText");
 
-            alertas.slice(0, 3).forEach(showToast);
-            refresh();
+        const toastArea =
+        document.getElementById("alertToastArea");
+
+        const alertas = @Html.Raw(alertasToastJson);
+
+        const canManageNotifications =
+        @(User.IsInRole("Administrador") ? "true" : "false");
+
+        const storageKey =
+        "san-gabriel-alertas-eliminadas-@usuarioStorageId";
+
+        const shownKey =
+        "san-gabriel-alertas-mostradas-@usuarioStorageId";
+
+        const enabledKey =
+        "san-gabriel-notificaciones-activas-@usuarioStorageId";
+
+        const read = key => {
+        try {
+        return JSON.parse(localStorage.getItem(key)) || [];
+        }
+        catch {
+        return [];
+        }
+        };
+
+        const write = (key, value) => {
+        localStorage.setItem(
+        key,
+        JSON.stringify(value)
+        );
+        };
+
+        const notificationsEnabled = () => {
+        if (!canManageNotifications) {
+        return true;
+        }
+
+        return localStorage.getItem(enabledKey) !== "false";
+        };
+
+        const updateToggle = () => {
+        const enabled = notificationsEnabled();
+
+        if (notificationsToggle) {
+        notificationsToggle.checked = enabled;
+        }
+
+        if (notificationStatusText) {
+        notificationStatusText.textContent =
+        enabled
+        ? "Activadas"
+        : "Desactivadas";
+        }
+
+        if (notificationButton) {
+        notificationButton.classList.toggle(
+        "notifications-disabled",
+        !enabled
+        );
+
+        notificationButton.title = enabled
+        ? "Notificaciones activadas"
+        : "Notificaciones desactivadas";
+        }
+
+        if (notificationBellIcon) {
+        notificationBellIcon.className = enabled
+        ? "fa-regular fa-bell"
+        : "fa-solid fa-bell-slash";
+        }
+        };
+
+        const refresh = () => {
+        const enabled = notificationsEnabled();
+        const dismissed = read(storageKey);
+
+        let visible = 0;
+
+        document
+        .querySelectorAll("[data-alert-key]")
+        .forEach(item => {
+        const key =
+        item.getAttribute("data-alert-key");
+
+        const show =
+        enabled && !dismissed.includes(key);
+
+        item.style.display =
+        show ? "block" : "none";
+
+        if (show) {
+        visible++;
+        }
+        });
+
+        if (notificationCount) {
+        notificationCount.textContent = visible;
+
+        notificationCount.style.display =
+        enabled && visible
+        ? "inline-flex"
+        : "none";
+        }
+
+        if (notificationPanelCount) {
+        notificationPanelCount.textContent = enabled
+        ? `${visible} alerta(s)`
+        : "Notificaciones desactivadas";
+        }
+
+        if (notificationEmpty) {
+        notificationEmpty.textContent = enabled
+        ? "No hay alertas pendientes."
+        : "Las notificaciones están desactivadas.";
+
+        notificationEmpty.style.display =
+        !enabled || visible === 0
+        ? "block"
+        : "none";
+        }
+
+        updateToggle();
+        };
+
+        const dismiss = key => {
+        const dismissed = read(storageKey);
+
+        if (!dismissed.includes(key)) {
+        dismissed.push(key);
+        write(storageKey, dismissed);
+        }
+
+        refresh();
+        };
+
+        document
+        .querySelectorAll("[data-alert-dismiss]")
+        .forEach(button => {
+        button.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        dismiss(
+        button.getAttribute(
+        "data-alert-dismiss"
+        )
+        );
+        });
+        });
+
+        if (notificationButton && notificationPanel) {
+        notificationButton.addEventListener(
+        "click",
+        () => {
+        notificationPanel.hidden =
+        !notificationPanel.hidden;
+        }
+        );
+
+        document.addEventListener("click", event => {
+        if (!event.target.closest(
+        ".demo-notification-wrap"
+        )) {
+        notificationPanel.hidden = true;
+        }
+        });
+        }
+
+        const showToast = alerta => {
+        if (!toastArea || !notificationsEnabled()) {
+        return;
+        }
+
+        const dismissed = read(storageKey);
+        const shown = read(shownKey);
+
+        if (
+        dismissed.includes(alerta.clave)
+        || shown.includes(alerta.clave)
+        ) {
+        return;
+        }
+
+        const toast =
+        document.createElement("article");
+
+        toast.className =
+        `demo-toast demo-toast-${alerta.tipo}`;
+
+        toast.innerHTML = `
+        <button type="button" aria-label="Cerrar">
+        <i class="fa-solid fa-xmark"></i>
+        </button>
+        <strong>${alerta.titulo}</strong>
+        <span>${alerta.mensaje}</span>
+        <small>${alerta.tiempo}</small>
+        `;
+
+        toast
+        .querySelector("button")
+        .addEventListener("click", () => {
+        dismiss(alerta.clave);
+        toast.remove();
+        });
+
+        toastArea.appendChild(toast);
+
+        shown.push(alerta.clave);
+        write(shownKey, shown);
+
+        setTimeout(() => {
+        toast.remove();
+        }, 6000);
+        };
+
+        if (notificationsToggle) {
+        notificationsToggle.addEventListener(
+        "change",
+        () => {
+        localStorage.setItem(
+        enabledKey,
+        notificationsToggle.checked
+        ? "true"
+        : "false"
+        );
+
+        if (
+        !notificationsToggle.checked
+        && toastArea
+        ) {
+        toastArea.replaceChildren();
+        }
+
+        refresh();
+
+        if (notificationsToggle.checked) {
+        alertas
+        .slice(0, 3)
+        .forEach(showToast);
+        }
+        }
+        );
+        }
+
+        alertas
+        .slice(0, 3)
+        .forEach(showToast);
+
+        refresh();
         })();
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
-                setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
-            });
+        document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+        document
+        .querySelectorAll(
+        "[data-auto-dismiss='true']"
+        )
+        .forEach(message => {
+        setTimeout(() => {
+        bootstrap.Alert
+        .getOrCreateInstance(message)
+        .close();
+        }, 5000);
         });
+        }
+        );
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
