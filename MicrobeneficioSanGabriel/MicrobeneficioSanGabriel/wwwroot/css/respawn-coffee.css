@@ -1661,3 +1661,43 @@ html body.rc-admin-body .movimiento-premium-body .movimiento-side-line {
 .rc-client-body .cliente-hero-premium p {
     text-shadow: 0 4px 18px rgba(0,0,0,.58) !important;
 }
+.rc-admin-body .demo-brand-logo {
+    overflow: hidden;
+    padding: 0;
+    background: transparent !important;
+    transform: none;
+}
+
+    .rc-admin-body .demo-brand-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+.auth-brand-mark {
+    overflow: hidden;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+    .auth-brand-mark img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+.rc-public-brand .rc-brand-symbol {
+    overflow: hidden;
+    padding: 0;
+    background: transparent !important;
+    transform: none;
+}
+
+    .rc-public-brand .rc-brand-symbol img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
