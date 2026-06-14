@@ -126,6 +126,10 @@
           href="~/css/respawn-coffee.css"
           asp-append-version="true" />
 
+    <link rel="stylesheet"
+          href="~/css/notificaciones.css"
+          asp-append-version="true" />
+
     <style>
             .demo-notification-head {
                 display: flex;
@@ -219,7 +223,7 @@
             <button type="button"
                     class="demo-nav-toggle"
                     id="demoNavToggle"
-                    aria-label="Abrir navegación">
+                    aria-label="Abrir navegaciÃƒÂ³n">
 
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -501,7 +505,7 @@
 
                 <div>
                     <span class="demo-context-label">
-                        San Gabriel · Coffee Lab
+                        San Gabriel Ã‚Â· Coffee Lab
                     </span>
 
                     <h1>@ViewData["Title"]</h1>
@@ -512,7 +516,7 @@
                     <a asp-controller="Home"
                        asp-action="Dashboard"
                        class="demo-context-button">
-                        Página principal
+                        PÃƒÂ¡gina principal
                     </a>
 
                     @if (User.IsInRole("Administrador")
@@ -712,7 +716,7 @@
         if (notificationEmpty) {
         notificationEmpty.textContent = enabled
         ? "No hay alertas pendientes."
-        : "Las notificaciones están desactivadas.";
+        : "Las notificaciones estÃƒÂ¡n desactivadas.";
 
         notificationEmpty.style.display =
         !enabled || visible === 0
@@ -871,5 +875,29 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/notificaciones.js" asp-append-version="true"></script>
+    <script>
+        document.querySelectorAll(".demo-nav-group").forEach(menu => {
+        menu.addEventListener("toggle", () => {
+        if (!menu.open) return;
+
+        document.querySelectorAll(".demo-nav-group[open]")
+        .forEach(otroMenu => {
+        if (otroMenu !== menu) {
+        otroMenu.removeAttribute("open");
+        }
+        });
+        });
+        });
+
+        document.addEventListener("click", event => {
+        if (!event.target.closest(".demo-primary-nav")) {
+        document.querySelectorAll(".demo-nav-group[open]")
+        .forEach(menu => menu.removeAttribute("open"));
+        }
+        });
+    </script>
+
 </body>
 </html>
+

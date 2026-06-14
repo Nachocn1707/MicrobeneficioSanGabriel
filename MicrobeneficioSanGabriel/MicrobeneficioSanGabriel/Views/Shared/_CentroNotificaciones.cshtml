@@ -1,0 +1,128 @@
+﻿@using System.Security.Claims
+@using System.Text.Json
+@using Microsoft.AspNetCore.Identity
+@using MicrobeneficioSanGabriel.Models
+@using MicrobeneficioSanGabriel.ViewModels
+@inject MicrobeneficioSanGabriel.Services.IAlertasSistemaService AlertasSistemaService
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var alertas = User.Identity?.IsAuthenticated == true
+        ? await AlertasSistemaService.ObtenerAlertasAsync(User)
+        : new List<AlertaSistemaViewModel>();
+
+    var usuario = User.Identity?.IsAuthenticated == true
+        ? await UserManager.GetUserAsync(User)
+        : null;
+
+    var usuarioId = usuario?.Id
+        ?? User.FindFirstValue(ClaimTypes.NameIdentifier)
+        ?? "anonimo";
+
+    var puedeAdministrar = User.IsInRole("Administrador")
+        || User.IsInRole("Cliente");
+
+    var alertasJson = JsonSerializer.Serialize(
+        alertas.Take(5).Select(alerta => new
+        {
+            clave = alerta.Clave,
+            titulo = alerta.Titulo,
+            mensaje = alerta.Mensaje,
+            tipo = alerta.Tipo,
+            tiempo = alerta.Tiempo
+        })
+    );
+}
+
+<div class="demo-notification-wrap"
+     id="notificationRoot"
+     data-user-id="@usuarioId"
+     data-can-manage="@puedeAdministrar.ToString().ToLowerInvariant()">
+
+    <button type="button"
+            class="demo-icon-button"
+            id="notificationButton"
+            aria-label="Notificaciones"
+            title="Notificaciones">
+
+        <i class="fa-regular fa-bell"
+           id="notificationBellIcon"></i>
+
+        <span class="demo-notification-count"
+              id="notificationCount"
+              style="@(alertas.Any() ? "" : "display:none;")">
+            @alertas.Count
+        </span>
+    </button>
+
+    <div class="demo-notification-panel"
+         id="notificationPanel"
+         hidden>
+
+        <div class="demo-notification-head">
+            <div>
+                <strong>Alertas del sistema</strong>
+
+                <small id="notificationPanelCount">
+                    @alertas.Count alerta(s)
+                </small>
+            </div>
+
+            @if (puedeAdministrar)
+            {
+                <div class="notification-toggle-row">
+                    <small id="notificationStatusText">
+                        Activadas
+                    </small>
+
+                    <label class="notification-switch"
+                           title="Activar o desactivar notificaciones">
+
+                        <input type="checkbox"
+                               id="notificationsToggle"
+                               checked />
+
+                        <span class="notification-switch-slider"></span>
+                    </label>
+                </div>
+            }
+        </div>
+
+        <div id="notificationEmpty"
+             class="demo-notification-empty"
+             style="@(alertas.Any() ? "display:none;" : "")">
+            No hay alertas pendientes.
+        </div>
+
+        <div id="notificationList">
+            @foreach (var alerta in alertas)
+            {
+                <article class="demo-notification-item"
+                         data-alert-key="@alerta.Clave">
+
+                    <button type="button"
+                            class="demo-notification-close"
+                            data-alert-dismiss="@alerta.Clave"
+                            aria-label="Eliminar">
+
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <a href="@alerta.Url">
+                        <strong>
+                            <i class="fa-solid @alerta.Icono"></i>
+                            @alerta.Titulo
+                        </strong>
+
+                        <span>@alerta.Mensaje</span>
+                        <small>@alerta.Tiempo</small>
+                    </a>
+                </article>
+            }
+        </div>
+    </div>
+</div>
+
+<script id="notificationData" type="application/json">
+    @Html.Raw(alertasJson)
+</script>

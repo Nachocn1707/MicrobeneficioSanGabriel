@@ -36,6 +36,7 @@
 
     @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/notificaciones.css" asp-append-version="true" />
 </head>
 
 <body class="sg-coffee-bg rc-client-body">
@@ -91,7 +92,8 @@
                     <small>Sistema de compras del microbeneficio</small>
                 </div>
 
-                <div class="sg-topbar-actions">
+                <div class="sg-topbar-actions ">
+                    <partial name="_CentroNotificaciones" />
                     <span class="sg-user-pill" title="Usuario activo">
                         <i class="fa-solid fa-user"></i>
                         <div class="sg-user-info">
@@ -106,7 +108,7 @@
                           method="post">
                         <button type="submit" class="sg-logout-btn">
                             <i class="fa-solid fa-right-from-bracket"></i>
-                            Cerrar sesión
+                            Cerrar sesion
                         </button>
                     </form>
                 </div>
@@ -127,12 +129,15 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
-                setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
-            });
+        document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
+        setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
+        });
         });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/notificaciones.js" asp-append-version="true"></script>
 </body>
 </html>
+
+
