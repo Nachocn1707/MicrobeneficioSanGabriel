@@ -4,7 +4,7 @@
 <div class="row g-4">
     <div class="col-md-6">
         <label asp-for="Nombre" class="form-label"></label>
-        <input asp-for="Nombre" class="form-control" placeholder="Nombre completo" />
+        <input asp-for="Nombre" class="form-control" maxlength="50" placeholder="Nombre completo" />
         <span asp-validation-for="Nombre" class="text-danger"></span>
     </div>
     <div class="col-md-3">

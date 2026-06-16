@@ -29,12 +29,11 @@ function soloLetras(id, maximo) {
 document.addEventListener("DOMContentLoaded", function () {
 
     // Usuarios
-    soloLetras("Nombre", 12);
+    soloLetras("Nombre", 50);
     soloLetras("Apellidos", 25);
     soloNumeros("PhoneNumber", 8);
 
     // Productores
-    soloLetras("NombreProductor", 50);
     soloNumeros("Cedula", 9);
     soloNumeros("Telefono", 8);
     soloLetras("Finca", 11)
