@@ -44,6 +44,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         public IActionResult Create()
         {
             CargarFincas();
+
             return View(new Lote
             {
                 FechaRecepcion = DateTime.Now,
@@ -58,7 +59,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             Lote lote)
         {
             var finca = lote.FincaId.HasValue
-                ? await _context.Fincas.Include(f => f.Productor)
+                ? await _context.Fincas
+                    .Include(f => f.Productor)
                     .FirstOrDefaultAsync(f => f.Id == lote.FincaId.Value && f.Activa)
                 : null;
 
@@ -74,9 +76,13 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (ModelState.IsValid)
             {
                 await using var transaction = await _context.Database.BeginTransactionAsync();
+
                 try
                 {
-                    lote.CodigoLote = $"TEMP-{Guid.NewGuid():N}";
+                    // Código temporal corto para que no falle el límite de 30 caracteres.
+                    // Antes estaba usando TEMP + Guid completo y eso podía pasar el límite de la columna CodigoLote.
+                    lote.CodigoLote = $"TMP-{Guid.NewGuid():N}".Substring(0, 30);
+
                     lote.Observacion = string.IsNullOrWhiteSpace(lote.Observacion)
                         ? null
                         : lote.Observacion.Trim();
@@ -84,12 +90,18 @@ namespace MicrobeneficioSanGabriel.Controllers
                     _context.Lotes.Add(lote);
                     await _context.SaveChangesAsync();
 
+                    // Código final visible para el usuario.
                     lote.CodigoLote = $"SG-{lote.FechaRecepcion:yyyy}-{lote.Id:D5}";
+
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
                     await AuditoriaHelper.RegistrarAsync(
-                        _context, User, "Lotes", "Crear", lote.Id,
+                        _context,
+                        User,
+                        "Lotes",
+                        "Crear",
+                        lote.Id,
                         $"Se registró el lote {lote.CodigoLote} para la finca {finca!.Nombre}.");
 
                     TempData["Success"] = $"Lote {lote.CodigoLote} registrado correctamente.";
@@ -98,7 +110,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                 catch (DbUpdateException)
                 {
                     await transaction.RollbackAsync();
-                    ModelState.AddModelError(string.Empty,
+
+                    ModelState.AddModelError(
+                        string.Empty,
                         "No fue posible registrar el lote. Revise la información e inténtelo nuevamente.");
                 }
             }
@@ -113,6 +127,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (id == null) return NotFound();
 
             var lote = await _context.Lotes.FindAsync(id);
+
             if (lote == null) return NotFound();
 
             CargarFincas(lote.FincaId);
@@ -129,7 +144,10 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (id != lote.Id) return NotFound();
 
-            var original = await _context.Lotes.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
+            var original = await _context.Lotes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(l => l.Id == id);
+
             if (original == null) return NotFound();
 
             var finca = lote.FincaId.HasValue
@@ -150,14 +168,20 @@ namespace MicrobeneficioSanGabriel.Controllers
                 try
                 {
                     lote.CodigoLote = original.CodigoLote;
+
                     lote.Observacion = string.IsNullOrWhiteSpace(lote.Observacion)
                         ? null
                         : lote.Observacion.Trim();
 
                     _context.Update(lote);
                     await _context.SaveChangesAsync();
+
                     await AuditoriaHelper.RegistrarAsync(
-                        _context, User, "Lotes", "Editar", lote.Id,
+                        _context,
+                        User,
+                        "Lotes",
+                        "Editar",
+                        lote.Id,
                         $"Se actualizó el lote {lote.CodigoLote}.");
 
                     TempData["Success"] = $"Lote {lote.CodigoLote} actualizado correctamente.";
@@ -170,7 +194,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
                 catch (DbUpdateException)
                 {
-                    ModelState.AddModelError(string.Empty,
+                    ModelState.AddModelError(
+                        string.Empty,
                         "No fue posible actualizar el lote. Verifique sus relaciones.");
                 }
             }
@@ -202,6 +227,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             try
             {
                 var lote = await _context.Lotes.FindAsync(id);
+
                 if (lote == null) return NotFound();
 
                 var producciones = await _context.Producciones
@@ -217,10 +243,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 foreach (var item in cantidadesPorProducto)
                 {
                     var producto = producciones.First(p => p.ProductoId == item.Key).Producto;
+
                     if (producto == null || producto.Stock < item.Value)
                     {
                         TempData["Error"] =
                             "No se puede eliminar el lote porque parte del inventario generado por sus producciones ya fue utilizado.";
+
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -232,6 +260,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
 
                 var idsProducciones = producciones.Select(p => p.Id).ToList();
+
                 var trazabilidades = await _context.Trazabilidades
                     .Where(t => t.LoteId == id || idsProducciones.Contains(t.ProduccionId))
                     .ToListAsync();
@@ -244,10 +273,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                     ? new List<MovimientoInventario>()
                     : await _context.MovimientosInventario
                         .Where(m => m.TipoMovimiento == "Entrada" &&
-                                    m.Observacion != null && referencias.Contains(m.Observacion))
+                                    m.Observacion != null &&
+                                    referencias.Contains(m.Observacion))
                         .ToListAsync();
 
                 var codigo = lote.CodigoLote;
+
                 _context.Trazabilidades.RemoveRange(trazabilidades);
                 _context.MovimientosInventario.RemoveRange(movimientos);
                 _context.Producciones.RemoveRange(producciones);
@@ -257,7 +288,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await transaction.CommitAsync();
 
                 await AuditoriaHelper.RegistrarAsync(
-                    _context, User, "Lotes", "Eliminar", id,
+                    _context,
+                    User,
+                    "Lotes",
+                    "Eliminar",
+                    id,
                     $"Se eliminó el lote {codigo} y sus registros dependientes.");
 
                 TempData["Success"] = $"Lote {codigo} eliminado correctamente.";
@@ -265,6 +300,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             catch (DbUpdateException)
             {
                 await transaction.RollbackAsync();
+
                 TempData["Error"] =
                     "No fue posible eliminar el lote porque todavía tiene información relacionada.";
             }
@@ -287,6 +323,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             ViewBag.FincaId = new SelectList(fincas, "Id", "Texto", seleccionada);
         }
 
-        private bool LoteExists(int id) => _context.Lotes.Any(e => e.Id == id);
+        private bool LoteExists(int id)
+        {
+            return _context.Lotes.Any(e => e.Id == id);
+        }
     }
 }

@@ -1,8 +1,130 @@
 @model IEnumerable<MicrobeneficioSanGabriel.Models.AuditoriaRegistro>
+@using Microsoft.AspNetCore.Mvc.Rendering
+
 @{
     ViewData["Title"] = "Auditoría";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var modulos = ViewBag.Modulos as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var usuarios = ViewBag.Usuarios as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
 }
-<div class="sg-visual-hero sg-hero-auditoria"><div class="sg-visual-hero-content"><span class="sg-visual-badge"><i class="fa-solid fa-clock-rotate-left"></i> Trazabilidad administrativa</span><h1>Registro de actividad</h1><div class="sg-visual-line"></div><p>Consulte quién creó, modificó o eliminó información del sistema.</p></div></div>
-<form method="get" class="sg-card mb-4"><div class="row g-3 align-items-end"><div class="col-md-3"><label class="form-label">Módulo</label><input name="modulo" value="@ViewBag.Modulo" class="form-control" /></div><div class="col-md-3"><label class="form-label">Usuario</label><input name="usuario" value="@ViewBag.Usuario" class="form-control" /></div><div class="col-md-2"><label class="form-label">Desde</label><input type="date" name="fechaInicio" value="@ViewBag.FechaInicio" class="form-control" /></div><div class="col-md-2"><label class="form-label">Hasta</label><input type="date" name="fechaFin" value="@ViewBag.FechaFin" class="form-control" /></div><div class="col-md-2 d-grid"><button class="btn btn-primary">Filtrar</button></div></div></form>
-<div class="sg-card p-3 table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Fecha</th><th>Usuario</th><th>Rol</th><th>Módulo</th><th>Acción</th><th>Detalle</th></tr></thead><tbody>@foreach(var item in Model){<tr><td>@item.Fecha.ToString("dd/MM/yyyy HH:mm:ss")</td><td><strong>@item.UsuarioNombre</strong></td><td>@item.Rol</td><td>@item.Modulo</td><td><span class="badge bg-dark">@item.Accion</span></td><td>@item.Detalle</td></tr>}</tbody></table></div>
+
+<div class="sg-visual-hero sg-hero-auditoria">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-clock-rotate-left"></i> Trazabilidad administrativa
+        </span>
+
+        <h1>Registro de actividad</h1>
+
+        <div class="sg-visual-line"></div>
+
+        <p>Consulte quién creó, modificó o eliminó información del sistema.</p>
+    </div>
+</div>
+
+<form method="get" class="sg-card mb-4">
+    <div class="row g-3 align-items-end">
+
+        <div class="col-md-2">
+            <label class="form-label">Módulo</label>
+
+            <select name="modulo" class="form-select">
+                <option value="">Todos los módulos</option>
+
+                @foreach (var item in modulos)
+                {
+                    <option value="@item.Value" selected="@item.Selected">
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Usuario</label>
+
+            <select name="usuarioId" class="form-select">
+                <option value="">Todos los usuarios</option>
+
+                @foreach (var item in usuarios)
+                {
+                    <option value="@item.Value" selected="@item.Selected">
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Desde</label>
+            <input type="date"
+                   name="fechaInicio"
+                   value="@ViewBag.FechaInicio"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Hasta</label>
+            <input type="date"
+                   name="fechaFin"
+                   value="@ViewBag.FechaFin"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary flex-fill" type="submit">
+                    Filtrar
+                </button>
+
+                <a asp-action="Index"
+                   asp-controller="Auditorias"
+                   class="btn btn-outline-dark flex-fill">
+                    Borrar filtro
+                </a>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<div class="sg-card p-3 table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Módulo</th>
+                <th>Acción</th>
+                <th>Detalle</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm:ss")</td>
+
+                    <td>
+                        <strong>@item.UsuarioNombre</strong>
+                    </td>
+
+                    <td>@item.Rol</td>
+
+                    <td>@item.Modulo</td>
+
+                    <td>
+                        <span class="badge bg-dark">
+                            @item.Accion
+                        </span>
+                    </td>
+
+                    <td>@item.Detalle</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
