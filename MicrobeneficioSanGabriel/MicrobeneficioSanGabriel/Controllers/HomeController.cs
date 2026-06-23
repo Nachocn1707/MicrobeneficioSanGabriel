@@ -1,4 +1,4 @@
-using MicrobeneficioSanGabriel.Data;
+﻿using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Globalization;
 
 
 namespace MicrobeneficioSanGabriel.Controllers
@@ -60,28 +61,114 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrador,Operador,Vendedor")]
+        [Authorize]
         public async Task<IActionResult> Dashboard()
         {
+            if (User.IsInRole("Cliente"))
+            {
+                return RedirectToAction(nameof(ClienteDashboard));
+            }
+
+            if (!(User.IsInRole("Administrador") || User.IsInRole("Operador") || User.IsInRole("Vendedor")))
+            {
+                return RedirectToAction(nameof(AccessDenied));
+            }
+
+            var hoy = DateTime.Today;
+            var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
+            var finMes = inicioMes.AddMonths(1);
+            var inicioAnio = new DateTime(hoy.Year, 1, 1);
+            var finAnio = inicioAnio.AddYears(1);
+
+            ViewBag.PeriodoActual = hoy.ToString("MMMM yyyy", new CultureInfo("es-CR"));
+            ViewBag.AnioActual = hoy.Year;
+
             ViewBag.TotalUsuarios = await _userManager.Users.CountAsync();
             ViewBag.TotalProductores = await _context.Productores.CountAsync();
             ViewBag.TotalProductos = await _context.Productos.CountAsync();
             ViewBag.TotalInventario = await _context.MovimientosInventario.CountAsync();
-
             ViewBag.TotalPedidos = await _context.Pedidos.CountAsync();
             ViewBag.TotalFacturas = await _context.Facturas.CountAsync();
-            ViewBag.TotalVentas = await _context.Facturas
-                .Where(f => f.EstadoPago != "Anulada")
-                .SumAsync(f => (decimal?)f.Total) ?? 0m;
-            ViewBag.StockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
-
             ViewBag.TotalFincas = await _context.Fincas.CountAsync(f => f.Activa);
             ViewBag.TotalLotes = await _context.Lotes.CountAsync();
-            ViewBag.LotesActivos = await _context.Lotes.CountAsync(l => l.Estado != "Finalizado" && l.Estado != "Cancelado");
-            ViewBag.TotalKgRecibidos = await _context.Lotes.SumAsync(l => (double?)l.PesoKg) ?? 0d;
-            ViewBag.ProduccionesEnProceso = await _context.Producciones.CountAsync(p => p.Estado == "En proceso");
             ViewBag.ProductoresActivos = await _context.Productores.CountAsync(p => p.Activo);
-            ViewBag.TotalStockKg = await _context.Productos.SumAsync(p => (int?)p.Stock) ?? 0;
+            ViewBag.StockBajo = await _context.Productos.CountAsync(p => p.Stock <= p.StockMinimo);
+
+            ViewBag.VentasMes = await _context.Facturas
+                .Where(f => f.FechaFactura >= inicioMes && f.FechaFactura < finMes &&
+                            f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .SumAsync(f => (decimal?)f.Total) ?? 0m;
+
+            ViewBag.TotalVentas = await _context.Facturas
+                .Where(f => f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .SumAsync(f => (decimal?)f.Total) ?? 0m;
+
+            ViewBag.ProduccionMesKg = await _context.Producciones
+                .Where(p => p.FechaProduccion >= inicioMes && p.FechaProduccion < finMes)
+                .SumAsync(p => (double?)p.CantidadResultanteKg) ?? 0d;
+
+            ViewBag.LotesActivos = await _context.Lotes
+                .CountAsync(l => l.Estado != "Finalizado" && l.Estado != "Cancelado");
+
+            ViewBag.PedidosPendientes = await _context.Pedidos
+                .CountAsync(p => p.Estado == "Pendiente" || p.Estado == "En proceso");
+
+            ViewBag.PedidosCompletados = await _context.Pedidos
+                .CountAsync(p => p.Estado == "Completado");
+
+            ViewBag.TotalKgRecibidos = await _context.Lotes
+                .SumAsync(l => (double?)l.PesoKg) ?? 0d;
+
+            ViewBag.ProduccionesEnProceso = await _context.Producciones
+                .CountAsync(p => p.Estado == "En proceso");
+
+            ViewBag.ProduccionesCompletadasHoy = await _context.Producciones
+                .CountAsync(p => p.Estado == "Completado" && p.FechaProduccion.Date == hoy);
+
+            ViewBag.TotalStockKg = await _context.Productos
+                .Where(p => p.Activo)
+                .SumAsync(p => (int?)p.Stock) ?? 0;
+
+            var ventasPorMes = await _context.Facturas
+                .Where(f => f.FechaFactura >= inicioAnio && f.FechaFactura < finAnio &&
+                            f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .GroupBy(f => f.FechaFactura.Month)
+                .Select(g => new { Mes = g.Key, Total = g.Sum(f => f.Total) })
+                .ToListAsync();
+
+            var ventasMensuales = Enumerable.Range(1, 12)
+                .Select(m => ventasPorMes.FirstOrDefault(v => v.Mes == m)?.Total ?? 0m)
+                .ToList();
+            ViewBag.VentasMensuales = ventasMensuales;
+
+            ViewBag.EstadosPedidos = await _context.Pedidos
+                .GroupBy(p => string.IsNullOrWhiteSpace(p.Estado) ? "Sin estado" : p.Estado)
+                .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+                .ToDictionaryAsync(x => x.Estado, x => x.Cantidad);
+
+            ViewBag.ProductosInventario = await _context.Productos
+                .Where(p => p.Activo)
+                .OrderByDescending(p => p.Stock)
+                .ThenBy(p => p.Nombre)
+                .Take(5)
+                .ToListAsync();
+
+            ViewBag.ProcesosPorEstado = await _context.Producciones
+                .GroupBy(p => string.IsNullOrWhiteSpace(p.Estado) ? "Sin estado" : p.Estado)
+                .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+                .ToDictionaryAsync(x => x.Estado, x => x.Cantidad);
+
+            ViewBag.TotalRegistrosTrazabilidad = await _context.Trazabilidades.CountAsync();
+            ViewBag.LotesConTrazabilidad = await _context.Trazabilidades
+                .Select(t => t.LoteId)
+                .Distinct()
+                .CountAsync();
+
+            var totalLotes = await _context.Lotes.CountAsync();
+            var lotesConTrazabilidad = Convert.ToInt32(ViewBag.LotesConTrazabilidad ?? 0);
+            ViewBag.PorcentajeTrazabilidad = totalLotes == 0
+                ? 0
+                : Math.Round((decimal)lotesConTrazabilidad * 100m / totalLotes, 0);
 
             ViewBag.UltimosPedidos = await _context.Pedidos
                 .Include(p => p.Producto)
@@ -117,28 +204,6 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Where(p => p.Stock <= p.StockMinimo)
                 .OrderBy(p => p.Stock)
                 .Take(5)
-                .ToListAsync();
-
-            ViewBag.NombresProductos = await _context.Productos
-                .OrderBy(p => p.Nombre)
-                .Select(p => p.Nombre)
-                .ToListAsync();
-
-            ViewBag.StockProductos = await _context.Productos
-                .OrderBy(p => p.Nombre)
-                .Select(p => p.Stock)
-                .ToListAsync();
-
-            ViewBag.VentasProductos = await _context.Facturas
-                .Include(f => f.Pedido)
-                .ThenInclude(p => p.Producto)
-                .Where(f => f.Pedido != null && f.Pedido.Producto != null)
-                .GroupBy(f => f.Pedido!.Producto!.Nombre)
-                .Select(g => new
-                {
-                    Producto = g.Key,
-                    Total = g.Sum(x => x.Total)
-                })
                 .ToListAsync();
 
             ViewBag.AlertasInventarioIA = await _analisisInventarioIAService.GenerarAlertasAsync();
@@ -182,6 +247,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public IActionResult AccessDenied()
         {
+            if (User.IsInRole("Cliente"))
+            {
+                return RedirectToAction(nameof(ClienteDashboard));
+            }
+
             return View();
         }
 

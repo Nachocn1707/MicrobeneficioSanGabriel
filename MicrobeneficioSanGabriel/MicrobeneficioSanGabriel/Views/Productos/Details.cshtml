@@ -1,502 +1,100 @@
-﻿@model MicrobeneficioSanGabriel.Models.Producto
-
+@model MicrobeneficioSanGabriel.Models.Producto
 @{
     ViewData["Title"] = "Detalles del producto";
+    Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
 
-    if (User.IsInRole("Cliente"))
+    string ImagenProducto()
     {
-        Layout = "~/Views/Shared/_ClienteLayout.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    }
+        if (!string.IsNullOrWhiteSpace(Model.ImagenUrl)) return Model.ImagenUrl;
 
-    string imagenProducto;
-    var nombreProducto = (Model.Nombre ?? "").ToLower();
-
-    if (nombreProducto.Contains("premium"))
-    {
-        imagenProducto = "/images/products/cafe-premium.jpg";
-    }
-    else if (nombreProducto.Contains("normal"))
-    {
-        imagenProducto = "/images/products/cafe-normal.jpg";
-    }
-    else
-    {
-        imagenProducto = "/images/products/default-coffee.jpg";
+        var valor = (Model.Nombre ?? string.Empty).ToLowerInvariant();
+        if (valor.Contains("premium")) return "/images/products/cafe-premium.jpg";
+        if (valor.Contains("normal")) return "/images/products/cafe-normal.jpg";
+        return "/images/products/default-coffee.jpg";
     }
 
-    string estadoClase = Model.Activo ? "producto-estado-activo" : "producto-estado-inactivo";
-    string estadoTexto = Model.Activo ? "Activo" : "Inactivo";
-
-    bool stockBajo = Model.Stock <= Model.StockMinimo;
+    var imagenProducto = ImagenProducto();
+    var estadoTexto = Model.Activo ? "Activo" : "Inactivo";
+    var stockBajo = Model.Stock <= Model.StockMinimo;
 }
 
-@section Styles {
-    <style>
-        .producto-detalle-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 18px;
-        }
+<section class="sg-page-head">
+    <div>
+        <h1>Detalles del producto</h1>
+        <p>Información registrada para este producto del microbeneficio.</p>
+    </div>
+    <div class="sg-actions">
+        <span class="sg-badge @(Model.Activo ? "" : "red")">Estado actual: @estadoTexto</span>
+    </div>
+</section>
 
-        .producto-detalle-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-        }
+<section class="sg-hero sg-product-hero" style="background-image:url('/images/visual/productos.jpg')">
+    <div class="sg-hero-content">
+        <span class="sg-visual-badge"><i class="fa-solid fa-mug-hot"></i> Producto de café</span>
+        <h2>@Model.Nombre</h2>
+        <p>@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Producto registrado en el catálogo comercial." : Model.Descripcion)</p>
+    </div>
+</section>
 
-        .producto-detalle-title h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #2b160d;
-        }
-
-        .producto-detalle-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #d8b36a;
-            margin: 12px 0;
-        }
-
-        .producto-detalle-title p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .producto-status-top {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 14px 18px;
-            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.08);
-            min-width: 190px;
-            text-align: center;
-        }
-
-            .producto-status-top small {
-                display: block;
-                color: #7a6a5d;
-                font-weight: 800;
-                margin-bottom: 8px;
-            }
-
-        .producto-premium-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 26px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-        }
-
-        .producto-premium-header {
-            background: linear-gradient(135deg, #3a1f12, #7a5230);
-            padding: 24px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 18px;
-            border-top: 5px solid #f3d27a;
-        }
-
-            .producto-premium-header h2 {
-                margin: 0;
-                color: #fff3c4;
-                font-size: 1.8rem;
-                font-weight: 950;
-            }
-
-            .producto-premium-header span {
-                color: #fff8df;
-                font-weight: 700;
-                opacity: 0.92;
-            }
-
-        .producto-premium-body {
-            display: grid;
-            grid-template-columns: 0.92fr 1.08fr;
-            gap: 0;
-            min-height: 440px;
-        }
-
-        .producto-image-panel {
-            padding: 30px 0 30px 30px;
-        }
-
-        .producto-image-box {
-            height: 100%;
-            min-height: 380px;
-            border-radius: 24px;
-            background: linear-gradient(180deg, rgba(58, 31, 18, 0.02), rgba(58, 31, 18, 0.24)), url("@imagenProducto");
-            background-size: cover;
-            background-position: center;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.20);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .producto-image-badge {
-            position: absolute;
-            left: 22px;
-            bottom: 22px;
-            background: rgba(255, 253, 248, 0.92);
-            border: 1px solid rgba(234, 216, 162, 0.9);
-            border-radius: 16px;
-            padding: 12px 16px;
-            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.14);
-        }
-
-            .producto-image-badge strong {
-                display: block;
-                color: #2b160d;
-                font-weight: 950;
-                margin-bottom: 3px;
-            }
-
-            .producto-image-badge span {
-                color: #7a5230;
-                font-weight: 750;
-                font-size: 13px;
-            }
-
-        .producto-info-panel {
-            padding: 30px;
-        }
-
-        .producto-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .producto-detail-item {
-            background: #fff8df;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 17px;
-            min-height: 92px;
-        }
-
-            .producto-detail-item.full {
-                grid-column: 1 / -1;
-            }
-
-        .producto-detail-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #7a5230;
-            font-size: 0.78rem;
-            font-weight: 950;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 8px;
-        }
-
-            .producto-detail-label i {
-                color: #a66b20;
-            }
-
-        .producto-detail-value {
-            display: block;
-            color: #2b160d;
-            font-size: 1rem;
-            font-weight: 800;
-            line-height: 1.45;
-            word-break: break-word;
-        }
-
-        .producto-description-box {
-            line-height: 1.55;
-        }
-
-        .producto-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 22px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn-producto {
-            border: none;
-            border-radius: 13px;
-            padding: 11px 18px;
-            font-weight: 900;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: 0.18s ease;
-        }
-
-            .btn-producto:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-producto-primary {
-            background: #4a2c1a;
-            color: #fff8df;
-        }
-
-            .btn-producto-primary:hover {
-                background: #7a5230;
-                color: #fff8df;
-            }
-
-        .btn-producto-warning {
-            background: #f3b23f;
-            color: #2b160d;
-        }
-
-            .btn-producto-warning:hover {
-                background: #e5a22e;
-                color: #2b160d;
-            }
-
-        .btn-producto-success {
-            background: #198754;
-            color: #ffffff;
-        }
-
-            .btn-producto-success:hover {
-                background: #157347;
-                color: #ffffff;
-            }
-
-        .producto-estado-activo,
-        .producto-estado-inactivo,
-        .producto-stock-ok,
-        .producto-stock-bajo {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            padding: 7px 13px;
-            font-size: 0.82rem;
-            font-weight: 950;
-            width: fit-content;
-        }
-
-        .producto-estado-activo,
-        .producto-stock-ok {
-            background: #dff5e3;
-            color: #1e7d32;
-        }
-
-        .producto-estado-inactivo,
-        .producto-stock-bajo {
-            background: #fde1df;
-            color: #b42318;
-        }
-
-        @@media (max-width: 1100px) {
-            .producto-premium-body {
-                grid-template-columns: 1fr;
-            }
-
-            .producto-image-panel {
-                padding: 30px 30px 0;
-            }
-
-            .producto-image-box {
-                min-height: 300px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .producto-detalle-header {
-                flex-direction: column;
-            }
-
-            .producto-detail-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .producto-premium-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .producto-actions {
-                justify-content: flex-start;
-            }
-        }
-    </style>
-}
-
-<div class="producto-detalle-page">
-
-    <div class="producto-detalle-header">
-        <div class="producto-detalle-title">
-            <h1>Detalles del producto</h1>
-            <div class="producto-detalle-line"></div>
-            <p>Información registrada para este producto del microbeneficio.</p>
-        </div>
-
-        <div class="producto-status-top">
-            <small>Estado actual</small>
-            <span class="@estadoClase">@estadoTexto</span>
+<section class="sg-card sg-product-detail-clean">
+    <div class="sg-product-detail-media">
+        <img src="@imagenProducto" alt="Imagen de @Model.Nombre" />
+        <div class="sg-product-detail-badge">
+            <strong>@Model.Nombre</strong>
+            <span>Microbeneficio San Gabriel</span>
         </div>
     </div>
 
-    <div class="producto-premium-card">
-
-        <div class="producto-premium-header">
-            <div>
-                <h2>@Model.Nombre</h2>
-                <span>Microbeneficio San Gabriel</span>
+    <div class="sg-product-detail-info">
+        <div class="detalle-grid">
+            <div class="detalle-item">
+                <span class="detalle-label"><i class="fa-solid fa-mug-hot"></i> Nombre</span>
+                <span class="detalle-value">@Model.Nombre</span>
             </div>
 
-            <span>
-                <i class="fa-solid fa-mug-hot"></i>
-                Producto de café
-            </span>
+            <div class="detalle-item">
+                <span class="detalle-label"><i class="fa-solid fa-tags"></i> Categoría</span>
+                <span class="detalle-value">@Model.Categoria</span>
+            </div>
+
+            <div class="detalle-item">
+                <span class="detalle-label"><i class="fa-solid fa-coins"></i> Precio</span>
+                <span class="detalle-value">₡ @Model.Precio.ToString("N2")</span>
+            </div>
+
+            <div class="detalle-item">
+                <span class="detalle-label"><i class="fa-solid fa-weight-hanging"></i> Stock</span>
+                <span class="sg-badge @(stockBajo ? "red" : "")">@(stockBajo ? $"{Model.Stock} kg · Stock bajo" : $"{Model.Stock} kg disponibles")</span>
+            </div>
+
+            <div class="detalle-item">
+                <span class="detalle-label"><i class="fa-solid fa-circle-check"></i> Estado</span>
+                <span class="sg-badge @(Model.Activo ? "" : "red")">@estadoTexto</span>
+            </div>
+
+            <div class="detalle-item">
+                <span class="detalle-label"><i class="fa-solid fa-calendar-days"></i> Fecha de registro</span>
+                <span class="detalle-value">@Model.FechaRegistro.ToString("dd/MM/yyyy hh:mm tt")</span>
+            </div>
+
+            <div class="detalle-item full">
+                <span class="detalle-label"><i class="fa-solid fa-align-left"></i> Descripción</span>
+                <span class="detalle-value">@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripción registrada." : Model.Descripcion)</span>
+            </div>
         </div>
 
-        <div class="producto-premium-body">
+        <div class="VistaCrear-actions">
+            <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a la lista</a>
 
-            <div class="producto-image-panel">
-                <div class="producto-image-box">
-                    <div class="producto-image-badge">
-                        <strong>@Model.Nombre</strong>
-                        <span>Café artesanal San Gabriel</span>
-                    </div>
-                </div>
-            </div>
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
+            }
 
-            <div class="producto-info-panel">
-
-                <div class="producto-detail-grid">
-
-                    <div class="producto-detail-item">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-mug-hot"></i>
-                            Nombre
-                        </span>
-
-                        <span class="producto-detail-value">
-                            @Model.Nombre
-                        </span>
-                    </div>
-
-                    <div class="producto-detail-item">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-tags"></i>
-                            Categoría
-                        </span>
-
-                        <span class="producto-detail-value">
-                            @Model.Categoria
-                        </span>
-                    </div>
-
-                    <div class="producto-detail-item">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-coins"></i>
-                            Precio
-                        </span>
-
-                        <span class="producto-detail-value">
-                            ₡ @Model.Precio.ToString("N2")
-                        </span>
-                    </div>
-
-                    <div class="producto-detail-item">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-weight-hanging"></i>
-                            Stock
-                        </span>
-
-                        @if (stockBajo)
-                        {
-                            <span class="producto-stock-bajo">
-                                @Model.Stock kg · Stock bajo
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="producto-stock-ok">
-                                @Model.Stock kg disponibles
-                            </span>
-                        }
-                    </div>
-
-                    <div class="producto-detail-item">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-circle-check"></i>
-                            Estado
-                        </span>
-
-                        <span class="@estadoClase">
-                            @estadoTexto
-                        </span>
-                    </div>
-
-                    <div class="producto-detail-item">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            Fecha de registro
-                        </span>
-
-                        <span class="producto-detail-value">
-                            @Model.FechaRegistro.ToString("dd/MM/yyyy hh:mm tt")
-                        </span>
-                    </div>
-
-                    <div class="producto-detail-item full producto-description-box">
-                        <span class="producto-detail-label">
-                            <i class="fa-solid fa-align-left"></i>
-                            Descripción
-                        </span>
-
-                        <span class="producto-detail-value">
-                            @(string.IsNullOrWhiteSpace(Model.Descripcion)
-                                ? "Sin descripción registrada."
-                                : Model.Descripcion)
-                        </span>
-                    </div>
-
-                </div>
-
-                <div class="producto-actions">
-
-                    <a asp-controller="Productos" asp-action="Index"
-                           class="btn-producto btn-producto-primary">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la lista
-                    </a>
-
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <a asp-action="Edit"
-                               asp-route-id="@Model.Id"
-                               class="btn-producto btn-producto-warning">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                            Editar
-                        </a>
-                    }
-
-                    @if (User.IsInRole("Cliente") && Model.Activo && Model.Stock > 0)
-                    {
-                        <a asp-controller="Pedidos"
-                           asp-action="Create"
-                           asp-route-productoId="@Model.Id"
-                           class="btn-producto btn-producto-success">
-                            <i class="fa-solid fa-cart-plus"></i>
-                            Realizar pedido
-                        </a>
-                    }
-                </div>
-            </div>
+            @if (User.IsInRole("Cliente") && Model.Activo && Model.Stock > 0)
+            {
+                <a asp-controller="Pedidos" asp-action="Create" asp-route-productoId="@Model.Id" class="btn btn-success"><i class="fa-solid fa-cart-plus"></i> Realizar pedido</a>
+            }
         </div>
     </div>
-</div>
+</section>

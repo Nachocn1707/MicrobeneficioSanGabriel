@@ -8,84 +8,98 @@
     var stockTotal = productos.Sum(p => p.Stock);
     var stockBajo = productos.Count(p => p.Stock <= p.StockMinimo);
 
-    string ImagenProducto(string nombre)
+    string ImagenProducto(MicrobeneficioSanGabriel.Models.Producto producto)
     {
-        var valor = (nombre ?? string.Empty).ToLowerInvariant();
+        if (!string.IsNullOrWhiteSpace(producto.ImagenUrl)) return producto.ImagenUrl;
+
+        var valor = (producto.Nombre ?? string.Empty).ToLowerInvariant();
         if (valor.Contains("premium")) return "/images/products/cafe-premium.jpg";
         if (valor.Contains("normal")) return "/images/products/cafe-normal.jpg";
         return "/images/products/default-coffee.jpg";
     }
 }
 
-<div class="sg-visual-hero sg-hero-productos">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-mug-hot"></i> Catálogo del café</span>
-        <h1>@(User.IsInRole("Cliente") ? "Elegí tu café" : "Productos")</h1>
-        <div class="sg-visual-line"></div>
-        <p>@(User.IsInRole("Cliente") ? "Explorá productos, precios y disponibilidad antes de realizar tu pedido." : "Administrá productos, precios, categorías, stock disponible y estado comercial.")</p>
-    </div>
-</div>
-
 @if (User.IsInRole("Cliente"))
 {
-    <section class="rc-client-panel mb-4">
-        <div class="rc-panel-head">
-            <div>
-                <span class="rc-section-label">Catálogo San Gabriel</span>
-                <h3>Café artesanal disponible</h3>
-                <p>Productos activos con información de precio, categoría y existencias.</p>
-            </div>
-            <a asp-controller="Pedidos" asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-clipboard-list me-2"></i>Mis pedidos</a>
+    <div class="sg-page-head">
+        <div>
+            <h1>Elegí tu café</h1>
+            <p>Explorá productos, precios y disponibilidad antes de realizar tu pedido.</p>
         </div>
-
-        <div class="rc-client-products">
-            @foreach (var item in productos.Where(p => p.Activo))
-            {
-                <article class="rc-client-product">
-                    <img src="@ImagenProducto(item.Nombre)" alt="@item.Nombre" />
-                    <div class="rc-client-product-body">
-                        <span class="rc-product-category">@item.Categoria</span>
-                        <h3>@item.Nombre</h3>
-                        <p>@(string.IsNullOrWhiteSpace(item.Descripcion) ? "Café procesado por Microbeneficio San Gabriel con calidad y trazabilidad." : item.Descripcion)</p>
-                        <div class="rc-client-product-footer">
-                            <strong>₡ @item.Precio.ToString("N0")</strong>
-                            <span class="rc-status-tag">@item.Stock kg</span>
-                        </div>
-                        <div class="d-flex flex-wrap gap-2 mt-3">
-                            <a asp-controller="Pedidos" asp-action="Create" asp-route-productoId="@item.Id" class="btn btn-primary"><i class="fa-solid fa-cart-plus me-2"></i>Realizar pedido</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark"><i class="fa-solid fa-eye me-2"></i>Detalles</a>
-                        </div>
-                    </div>
-                </article>
-            }
+        <div class="sg-actions">
+            <a asp-controller="Pedidos" asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-clipboard-list"></i>Mis pedidos</a>
         </div>
+    </div>
 
-        @if (!productos.Any(p => p.Activo))
+    <section class="sg-grid-3">
+        @foreach (var item in productos.Where(p => p.Activo))
         {
-            <div class="text-muted text-center py-5">No hay productos activos disponibles.</div>
+            <article class="sg-card sg-product-card">
+                <img src="@ImagenProducto(item)" alt="@item.Nombre" />
+                <div class="sg-product-body">
+                    <span class="sg-badge gold">@item.Categoria</span>
+                    <h3>@item.Nombre</h3>
+                    <p>@(string.IsNullOrWhiteSpace(item.Descripcion) ? "Café procesado por Microbeneficio San Gabriel con calidad y trazabilidad." : item.Descripcion)</p>
+                    <div class="sg-product-footer">
+                        <strong>₡ @item.Precio.ToString("N0")</strong>
+                        <span class="sg-badge">@item.Stock kg</span>
+                    </div>
+                    <div class="sg-actions mt-3">
+                        <a asp-controller="Pedidos" asp-action="Create" asp-route-productoId="@item.Id" class="sg-btn gold"><i class="fa-solid fa-cart-plus"></i>Realizar pedido</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="sg-btn ghost"><i class="fa-solid fa-eye"></i>Detalles</a>
+                    </div>
+                </div>
+            </article>
         }
     </section>
+
+    @if (!productos.Any(p => p.Activo))
+    {
+        <div class="sg-card sg-panel text-center py-5 text-muted">No hay productos activos disponibles.</div>
+    }
 }
 else
 {
-    <section class="rc-dashboard-kpis mb-4">
-        <article class="rc-dashboard-kpi"><i class="fa-solid fa-mug-hot"></i><strong>@productos.Count</strong><span>Productos registrados</span></article>
-        <article class="rc-dashboard-kpi"><i class="fa-solid fa-circle-check"></i><strong>@activos</strong><span>Productos activos</span></article>
-        <article class="rc-dashboard-kpi"><i class="fa-solid fa-boxes-stacked"></i><strong>@stockTotal kg</strong><span>Stock total</span></article>
-        <article class="rc-dashboard-kpi"><i class="fa-solid fa-triangle-exclamation"></i><strong>@stockBajo</strong><span>Alertas de stock</span></article>
-    </section>
-
-    <section class="rc-dashboard-panel">
-        <div class="rc-panel-head">
-            <div><h3>Catálogo administrativo</h3><p>Control de productos, precios, existencias y publicación.</p></div>
+    <div class="sg-page-head">
+        <div>
+            <h1>Productos</h1>
+            <p>Administrá productos, precios, categorías, stock disponible y estado comercial.</p>
+        </div>
+        <div class="sg-actions">
             @if (User.IsInRole("Administrador"))
             {
-                <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Nuevo producto</a>
+                <a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo producto</a>
             }
+            <label class="sg-search" for="sgProductSearch"><i class="fa-solid fa-magnifying-glass"></i><input id="sgProductSearch" type="search" placeholder="Buscar producto..." /></label>
+        </div>
+    </div>
+
+    <section class="sg-hero sg-product-hero" style="background-image:url('/images/visual/productos.jpg')">
+        <div class="sg-hero-content">
+            <span class="sg-visual-badge"><i class="fa-solid fa-mug-hot"></i> Catálogo del café</span>
+            <h2>Catálogo administrativo</h2>
+            <p>Control de productos, existencias, precios y publicación comercial.</p>
+        </div>
+    </section>
+
+    <section class="sg-kpi-grid mb-3">
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-mug-hot"></i></span><div><span>Productos registrados</span><strong>@productos.Count</strong><div class="sg-trend">Catálogo activo</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Productos activos</span><strong>@activos</strong><div class="sg-trend">Disponibles para venta</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-boxes-stacked"></i></span><div><span>Stock total</span><strong>@stockTotal kg</strong><div class="sg-trend warn">Inventario actual</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon brown"><i class="fa-solid fa-triangle-exclamation"></i></span><div><span>Alertas de stock</span><strong>@stockBajo</strong><div class="sg-trend @(stockBajo > 0 ? "down" : "")">@(stockBajo > 0 ? "Revisar mínimos" : "Sin alertas")</div></div></article>
+    </section>
+
+    <section class="sg-card sg-table-card">
+        <div class="sg-panel-head">
+            <div>
+                <h2>Lista de productos</h2>
+                <small>Productos registrados para venta, inventario y facturación.</small>
+            </div>
+            <span class="sg-badge">@productos.Count registro(s)</span>
         </div>
 
         <div class="table-responsive">
-            <table id="tablaProductos" class="table align-middle w-100">
+            <table id="tablaProductos" class="sg-table w-100">
                 <thead>
                     <tr>
                         <th>Producto</th>
@@ -94,26 +108,31 @@ else
                         <th>Stock</th>
                         <th>Estado</th>
                         <th>Fecha</th>
-                        <th>Acciones</th>
+                        <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in productos)
                     {
                         <tr>
-                            <td><strong>@item.Nombre</strong><br /><small class="text-muted">@(string.IsNullOrWhiteSpace(item.Descripcion) ? "Sin descripción" : item.Descripcion)</small></td>
+                            <td>
+                                <div class="sg-product-cell">
+                                    <img src="@ImagenProducto(item)" alt="@item.Nombre" />
+                                    <div><strong>@item.Nombre</strong><small>@(string.IsNullOrWhiteSpace(item.Descripcion) ? "Sin descripción" : item.Descripcion)</small></div>
+                                </div>
+                            </td>
                             <td>@item.Categoria</td>
                             <td>₡ @item.Precio.ToString("N2")</td>
-                            <td><span class="badge @(item.Stock <= item.StockMinimo ? "bg-danger" : "bg-success")">@item.Stock kg</span></td>
-                            <td><span class="badge @(item.Activo ? "bg-success" : "bg-danger")">@(item.Activo ? "Activo" : "Inactivo")</span></td>
+                            <td><span class="sg-badge @(item.Stock <= item.StockMinimo ? "red" : "")">@item.Stock kg</span></td>
+                            <td><span class="sg-badge @(item.Activo ? "" : "red")">@(item.Activo ? "Activo" : "Inactivo")</span></td>
                             <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-eye"></i><span class="ms-1">Detalles</span></a>
+                            <td class="text-end">
+                                <div class="sg-action-icons justify-content-end">
+                                    <a asp-action="Details" asp-route-id="@item.Id" title="Detalles" aria-label="Detalles"><i class="fa-solid fa-eye"></i></a>
                                     @if (User.IsInRole("Administrador"))
                                     {
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i><span class="ms-1">Editar</span></a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i><span class="ms-1">Eliminar</span></a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" title="Editar" aria-label="Editar"><i class="fa-solid fa-pen"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" title="Eliminar" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></a>
                                     }
                                 </div>
                             </td>
@@ -131,12 +150,14 @@ else
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 if (window.jQuery && jQuery.fn.DataTable) {
-                    jQuery('#tablaProductos').DataTable({
+                    const table = jQuery('#tablaProductos').DataTable({
                         language: { url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json' },
                         pageLength: 5,
                         lengthMenu: [5, 10, 15, 20],
-                        responsive: true
+                        responsive: true,
+                        dom: 'rt<"d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3"ip>'
                     });
+                    document.getElementById('sgProductSearch')?.addEventListener('input', e => table.search(e.target.value).draw());
                 }
             });
         </script>

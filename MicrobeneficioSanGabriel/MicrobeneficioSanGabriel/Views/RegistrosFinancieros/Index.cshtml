@@ -584,32 +584,32 @@
                             </td>
 
                             <td>
-                                <div class="finanzas-actions">
+                                <div class="finanzas-actions sg-action-icons justify-content-end">
 
                                     @if (User.IsInRole("Administrador"))
                                     {
                                         <a asp-action="Edit"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                            Editar
+                                           asp-route-id="@item.Id"
+                                           title="Editar"
+                                           aria-label="Editar">
+                                            <i class="fa-solid fa-pen"></i>
                                         </a>
                                     }
 
                                     <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-info btn-sm text-white">
+                                       asp-route-id="@item.Id"
+                                       title="Detalles"
+                                       aria-label="Detalles">
                                         <i class="fa-solid fa-eye"></i>
-                                        Detalles
                                     </a>
 
                                     @if (User.IsInRole("Administrador"))
                                     {
                                         <a asp-action="Delete"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-danger btn-sm">
+                                           asp-route-id="@item.Id"
+                                           title="Eliminar"
+                                           aria-label="Eliminar">
                                             <i class="fa-solid fa-trash"></i>
-                                            Eliminar
                                         </a>
                                     }
 

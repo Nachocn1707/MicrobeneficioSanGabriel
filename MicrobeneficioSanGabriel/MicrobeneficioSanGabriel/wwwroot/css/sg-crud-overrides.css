@@ -1,0 +1,1019 @@
+﻿:root{
+  --sg-overlay-dark:linear-gradient(90deg,rgba(24,14,9,.88) 0%,rgba(24,14,9,.66) 48%,rgba(24,14,9,.24) 100%);
+}
+
+/* ---------- Visual heroes for CRUD/detail pages ---------- */
+.sg-visual-hero{
+  position:relative;
+  min-height:215px;
+  margin:0 0 22px;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid var(--sg-line);
+  box-shadow:var(--sg-shadow);
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+.sg-visual-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:var(--sg-overlay-dark);
+}
+.sg-visual-hero-content{
+  position:relative;
+  z-index:2;
+  color:#fff;
+  max-width:700px;
+  padding:30px 34px;
+  display:flex;
+  min-height:215px;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.sg-visual-hero-content h1{
+  margin:14px 0 0;
+  font-size:2.6rem;
+  line-height:1.03;
+  font-weight:950;
+  letter-spacing:-.04em;
+  color:#fff;
+}
+.sg-visual-hero-content p{
+  margin:0;
+  color:rgba(255,255,255,.92);
+  font-size:1.02rem;
+  font-weight:600;
+}
+.sg-visual-line{
+  width:92px;
+  height:4px;
+  border-radius:999px;
+  margin:14px 0 12px;
+  background:linear-gradient(90deg,#d59a36,#f0c46b);
+  box-shadow:0 8px 16px rgba(213,154,54,.35);
+}
+.sg-hero-productores{background-image:url('/images/visual/productores.jpg');}
+.sg-hero-fincas{background-image:url('/images/visual/coffee-farm.jpg');}
+.sg-hero-lotes{background-image:url('/images/visual/lotes.jpg');}
+.sg-hero-auditoria{background-image:url('/images/visual/reportes.jpg');}
+.sg-hero-productos{background-image:url('/images/visual/productos.jpg');}
+.sg-hero-inventario{background-image:url('/images/visual/inventario.jpg');}
+.sg-hero-pedidos{background-image:url('/images/visual/pedidos.jpg');}
+.sg-hero-produccion{background-image:url('/images/visual/produccion.jpg');}
+.sg-hero-trazabilidad{background-image:url('/images/visual/trazabilidad.jpg');}
+.sg-hero-usuarios{background-image:url('/images/visual/usuarios.jpg');}
+.sg-hero-facturacion{background-image:url('/images/visual/facturacion.jpg');}
+.sg-hero-contabilidad{background-image:url('/images/visual/contabilidad.jpg');}
+
+/* ---------- Generic structure for custom CRUD pages ---------- */
+.VistaCrear-page,
+.EstiloEditar-edit-page,
+.EstiloDetalle-detalle-page,
+.delete-page,
+.producto-detalle-page,
+.pedido-detalle-page,
+.factura-detalle-page,
+.pedido-create-page,
+.pedido-edit-page,
+.pedido-admin-edit-page,
+.pedido-cancel-page,
+.factura-create-page,
+.factura-edit-page,
+.factura-pago-page,
+.movimiento-edit-page,
+.movimiento-create-page,
+.produccion-create-page,
+.produccion-edit-page,
+.payment-page{
+  display:grid;
+  gap:22px;
+}
+
+.VistaCrear-top,
+.EstiloEditar-header,
+.EstiloDetalle-header,
+.delete-header,
+.producto-detalle-header,
+.pedido-detalle-header,
+.factura-detalle-header,
+.pedido-create-header,
+.pedido-edit-header,
+.pedido-admin-edit-header,
+.pedido-cancel-header,
+.factura-create-header,
+.factura-edit-header,
+.factura-pago-header,
+.movimiento-edit-header,
+.movimiento-create-header,
+.produccion-create-header,
+.produccion-edit-header,
+.payment-header{
+  position:relative;
+  overflow:hidden;
+  min-height:180px;
+  border-radius:24px;
+  padding:30px 34px;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:var(--sg-shadow);
+  background:
+      linear-gradient(90deg,rgba(26,15,10,.90),rgba(26,15,10,.66),rgba(26,15,10,.22)),
+      url('/images/visual/coffee-banner.jpg') center/cover no-repeat;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.VistaCrear-title h1,
+.EstiloEditar-header h1,
+.EstiloDetalle-header h1,
+.delete-header h1,
+.producto-detalle-title h1,
+.pedido-detalle-title h1,
+.factura-detalle-title h1,
+.pedido-create-title h1,
+.pedido-edit-title h1,
+.pedido-admin-edit-title h1,
+.pedido-cancel-header h1,
+.factura-create-title h1,
+.factura-edit-title h1,
+.factura-pago-header h1,
+.movimiento-edit-title h1,
+.movimiento-create-title h1,
+.produccion-create-title h1,
+.produccion-edit-title h1,
+.payment-header h1,
+.VistaCrear-top h1,
+.EstiloEditar-header h1,
+.EstiloDetalle-header h1,
+.delete-header h1,
+.producto-detalle-header h1,
+.pedido-detalle-header h1,
+.factura-detalle-header h1{
+  margin:14px 0 0;
+  font-size:2.45rem;
+  line-height:1.04;
+  font-weight:950;
+  letter-spacing:-.04em;
+  color:#fff;
+}
+.VistaCrear-title p,
+.EstiloEditar-header p,
+.EstiloDetalle-header p,
+.delete-header p,
+.producto-detalle-title p,
+.pedido-detalle-title p,
+.factura-detalle-title p,
+.pedido-create-title p,
+.pedido-edit-title p,
+.pedido-admin-edit-title p,
+.pedido-cancel-header p,
+.factura-create-title p,
+.factura-edit-title p,
+.factura-pago-header p,
+.movimiento-edit-title p,
+.movimiento-create-title p,
+.produccion-create-title p,
+.produccion-edit-title p,
+.payment-header p,
+.VistaCrear-top p,
+.producto-detalle-header p,
+.pedido-detalle-header p,
+.factura-detalle-header p{
+  margin:10px 0 0;
+  color:rgba(255,255,255,.92);
+  font-weight:600;
+  font-size:1.02rem;
+}
+.VistaCrear-badge,
+.delete-badge,
+.producto-image-badge,
+.pedido-create-badge,
+.pedido-edit-badge,
+.pedido-admin-edit-badge,
+.pedido-cancel-badge,
+.factura-create-badge,
+.factura-edit-badge,
+.movimiento-edit-badge,
+.movimiento-create-badge,
+.produccion-create-badge,
+.produccion-edit-badge,
+.EstiloDetalle-badge,
+.EstiloEditar-badge,
+.payment-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  width:max-content;
+  padding:8px 13px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:.82rem;
+  font-weight:900;
+  backdrop-filter:blur(3px);
+}
+.delete-line,
+.pedido-create-line,
+.pedido-edit-line,
+.pedido-admin-edit-line,
+.pedido-cancel-line,
+.factura-create-line,
+.factura-edit-line,
+.movimiento-edit-line,
+.movimiento-create-line,
+.produccion-create-line,
+.produccion-edit-line,
+.producto-detalle-line,
+.pedido-detalle-line,
+.factura-detalle-line,
+.payment-line{
+  width:92px;
+  height:4px;
+  border-radius:999px;
+  margin:14px 0 8px;
+  background:linear-gradient(90deg,#d59a36,#f0c46b);
+}
+
+.VistaCrear-card,
+.EstiloEditar-card,
+.EstiloDetalle-card,
+.delete-card,
+.producto-premium-card,
+.pedido-premium-card,
+.factura-premium-card,
+.pedido-create-card,
+.pedido-edit-card,
+.pedido-admin-edit-card,
+.pedido-cancel-card,
+.factura-create-card,
+.factura-edit-card,
+.factura-pago-card,
+.movimiento-edit-card,
+.movimiento-create-card,
+.produccion-create-card,
+.produccion-edit-card,
+.payment-card{
+  background:rgba(255,253,248,.94);
+  border:1px solid var(--sg-line);
+  border-radius:24px;
+  box-shadow:var(--sg-shadow);
+  overflow:hidden;
+}
+
+.VistaCrear-card,
+.pedido-create-card,
+.pedido-edit-card,
+.pedido-admin-edit-card,
+.pedido-cancel-card,
+.factura-create-card,
+.factura-edit-card,
+.factura-pago-card,
+.movimiento-edit-card,
+.movimiento-create-card,
+.produccion-create-card,
+.produccion-edit-card{
+  display:grid;
+  grid-template-columns:minmax(280px,340px) minmax(0,1fr);
+}
+
+.VistaCrear-side,
+.delete-side,
+.pedido-create-side,
+.pedido-edit-side,
+.pedido-admin-edit-side,
+.pedido-cancel-side,
+.factura-create-side,
+.factura-edit-side,
+.factura-pago-side,
+.movimiento-edit-side,
+.movimiento-create-side,
+.produccion-create-side,
+.produccion-edit-side{
+  background:
+    linear-gradient(180deg,rgba(31,18,11,.92),rgba(18,11,8,.98)),
+    url('/images/visual/coffee-beans.jpg') center/cover no-repeat;
+  color:#fff;
+  padding:28px 24px;
+  min-height:100%;
+}
+.VistaCrear-side-content,
+.delete-side-content,
+.pedido-create-side-content,
+.pedido-edit-side-content,
+.pedido-admin-edit-side-content,
+.pedido-cancel-side-content,
+.factura-create-side-content,
+.factura-edit-side-content,
+.factura-pago-side-content,
+.movimiento-edit-side-content,
+.movimiento-create-side-content,
+.produccion-create-side-content,
+.produccion-edit-side-content{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+.VistaCrear-icon,
+.delete-icon,
+.pedido-create-icon,
+.pedido-edit-icon,
+.pedido-admin-edit-icon,
+.pedido-cancel-icon,
+.factura-create-icon,
+.factura-edit-icon,
+.factura-pago-icon,
+.movimiento-edit-icon,
+.movimiento-create-icon,
+.produccion-create-icon,
+.produccion-edit-icon{
+  width:74px;
+  height:74px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#c18321,#e4b053);
+  color:#fff;
+  font-size:1.8rem;
+  box-shadow:0 18px 28px rgba(193,131,33,.28);
+  margin-bottom:20px;
+}
+.VistaCrear-side h3,
+.delete-side h3,
+.pedido-create-side h3,
+.pedido-edit-side h3,
+.pedido-admin-edit-side h3,
+.pedido-cancel-side h3,
+.factura-create-side h3,
+.factura-edit-side h3,
+.factura-pago-side h3,
+.movimiento-edit-side h3,
+.movimiento-create-side h3,
+.produccion-create-side h3,
+.produccion-edit-side h3{
+  color:#fff;
+  font-weight:900;
+  margin:0 0 12px;
+  font-size:1.4rem;
+}
+.VistaCrear-side p,
+.delete-side p,
+.pedido-create-side p,
+.pedido-edit-side p,
+.pedido-admin-edit-side p,
+.pedido-cancel-side p,
+.factura-create-side p,
+.factura-edit-side p,
+.factura-pago-side p,
+.movimiento-edit-side p,
+.movimiento-create-side p,
+.produccion-create-side p,
+.produccion-edit-side p{
+  color:rgba(255,255,255,.86);
+}
+.VistaCrear-info,
+.delete-info-list,
+.pedido-create-info,
+.pedido-edit-info,
+.pedido-admin-edit-info,
+.pedido-cancel-info,
+.factura-create-info,
+.factura-edit-info,
+.factura-pago-info,
+.movimiento-edit-info,
+.movimiento-create-info,
+.produccion-create-info,
+.produccion-edit-info{
+  display:grid;
+  gap:12px;
+  margin-top:auto;
+}
+.VistaCrear-info-item,
+.delete-info-item,
+.pedido-create-info-item,
+.pedido-edit-info-item,
+.pedido-admin-edit-info-item,
+.pedido-cancel-info-item,
+.factura-create-info-item,
+.factura-edit-info-item,
+.factura-pago-info-item,
+.movimiento-edit-info-item,
+.movimiento-create-info-item,
+.produccion-create-info-item,
+.produccion-edit-info-item{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  color:#fff;
+  font-weight:700;
+}
+.VistaCrear-info-item i,
+.delete-info-item i,
+.pedido-create-info-item i,
+.pedido-edit-info-item i,
+.pedido-admin-edit-info-item i,
+.pedido-cancel-info-item i,
+.factura-create-info-item i,
+.factura-edit-info-item i,
+.factura-pago-info-item i,
+.movimiento-edit-info-item i,
+.movimiento-create-info-item i,
+.produccion-create-info-item i,
+.produccion-edit-info-item i{
+  color:#f0c46b;
+}
+.VistaCrear-form-container,
+.EstiloEditar-card-body,
+.EstiloDetalle-card-body,
+.delete-body,
+.producto-premium-body,
+.pedido-premium-body,
+.factura-premium-body,
+.pedido-create-form-container,
+.pedido-edit-form-container,
+.pedido-admin-edit-form-container,
+.pedido-cancel-body,
+.factura-create-form-container,
+.factura-edit-form-container,
+.factura-pago-form-container,
+.movimiento-edit-form-container,
+.movimiento-create-form-container,
+.produccion-create-form-container,
+.produccion-edit-form-container,
+.payment-card{
+  padding:28px 30px;
+}
+.EstiloEditar-card-header,
+.EstiloDetalle-card-header,
+.producto-premium-header,
+.pedido-premium-header,
+.factura-premium-header{
+  padding:24px 28px 0;
+}
+.EstiloEditar-card-header h2,
+.EstiloDetalle-card-header h2,
+.producto-premium-header h2,
+.pedido-premium-header h2,
+.factura-premium-header h2,
+.VistaCrear-form-container h2,
+.delete-body h2{
+  margin:0;
+  color:var(--sg-text);
+  font-weight:900;
+}
+.EstiloEditar-card-header span,
+.EstiloDetalle-card-header span,
+.producto-premium-header span,
+.pedido-premium-header span,
+.factura-premium-header span{
+  display:block;
+  margin-top:6px;
+  color:var(--sg-muted);
+  font-weight:700;
+}
+
+/* ---------- Generic details grids ---------- */
+.detalle-grid,
+.producto-detail-grid,
+.pedido-detail-grid,
+.factura-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+.detalle-item,
+.producto-detail-item,
+.pedido-detail-item,
+.factura-detail-item{
+  min-height:100px;
+  padding:18px 18px 16px;
+  border-radius:18px;
+  border:1px solid #eee3d4;
+  background:#fffdfa;
+  box-shadow:0 8px 18px rgba(43,26,14,.05);
+}
+.detalle-item.full,
+.producto-detail-item.full,
+.pedido-detail-item.full,
+.factura-detail-item.full{
+  grid-column:1 / -1;
+}
+.detalle-label,
+.producto-detail-label,
+.pedido-detail-label,
+.factura-detail-label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+  color:var(--sg-muted);
+  font-size:.82rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+}
+.detalle-label i,
+.producto-detail-label i,
+.pedido-detail-label i,
+.factura-detail-label i{
+  color:var(--sg-gold);
+}
+.detalle-value,
+.producto-detail-value,
+.pedido-detail-value,
+.factura-detail-value{
+  color:var(--sg-text);
+  font-size:1.04rem;
+  font-weight:800;
+  line-height:1.45;
+}
+.producto-image-panel,
+.pedido-image-panel,
+.factura-image-panel{
+  display:grid;
+  place-items:center;
+}
+.producto-image-box,
+.pedido-image-box,
+.factura-image-box{
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid var(--sg-line);
+  background:#fff;
+  box-shadow:var(--sg-shadow);
+}
+.producto-image-box img,
+.pedido-image-box img,
+.factura-image-box img{
+  display:block;
+  width:100%;
+  max-height:320px;
+  object-fit:cover;
+}
+.producto-status-top,
+.pedido-status-top,
+.factura-status-top{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:#edf4e8;
+  color:var(--sg-green-2);
+  font-weight:900;
+  font-size:.82rem;
+  margin-top:12px;
+}
+.producto-status-top.inactivo,
+.pedido-status-top.cancelado,
+.factura-status-top.pendiente{
+  background:#fff1ee;
+  color:var(--sg-danger);
+}
+
+/* ---------- Generic form controls ---------- */
+.sg-main .form-control,
+.sg-main .form-select,
+.sg-main input[type="date"],
+.sg-main input[type="datetime-local"],
+.sg-main input[type="time"],
+.sg-main input[type="number"],
+.sg-main textarea,
+.sg-main select{
+  min-height:48px;
+  border-radius:14px!important;
+  border:1px solid #d9ccb8!important;
+  background:#fffdf9!important;
+  color:var(--sg-text)!important;
+  box-shadow:inset 0 1px 2px rgba(43,26,14,.03)!important;
+}
+.sg-main textarea.form-control,
+.sg-main textarea{
+  min-height:118px;
+}
+.sg-main .form-control:focus,
+.sg-main .form-select:focus,
+.sg-main textarea:focus,
+.sg-main select:focus{
+  border-color:#d9a747!important;
+  box-shadow:0 0 0 .2rem rgba(217,167,71,.15)!important;
+}
+.sg-main .form-label,
+.sg-main label,
+.sg-main .col-form-label{
+  color:var(--sg-text);
+  font-weight:800;
+  margin-bottom:8px;
+}
+.sg-main .form-check-input{
+  width:3rem;
+  height:1.55rem;
+  border-radius:999px!important;
+  border:1px solid #ceb48c!important;
+}
+.sg-main .form-check-input:checked{
+  background-color:var(--sg-green)!important;
+  border-color:var(--sg-green)!important;
+}
+.sg-main .form-check-label{font-weight:800;color:var(--sg-text);}
+.sg-main .text-danger.validation-summary-errors,
+.sg-main .validation-summary-errors,
+.sg-main span.text-danger{
+  font-size:.85rem;
+  font-weight:700;
+}
+
+/* ---------- Buttons ---------- */
+.sg-main .btn,
+.VistaCrear-actions a,
+.VistaCrear-actions button,
+.EstiloEditar-actions a,
+.EstiloEditar-actions button,
+.EstiloDetalle-actions a,
+.EstiloDetalle-actions button,
+.delete-actions a,
+.delete-actions button,
+.payment-actions a,
+.payment-actions button{
+  min-height:46px;
+  padding:0 18px;
+  border-radius:12px!important;
+  font-weight:900!important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  text-decoration:none;
+}
+.sg-main .btn-primary,
+.sg-main .btn.btn-primary,
+.sg-main .btn-guardar,
+.sg-main .btn-save,
+.sg-main .btn-success,
+.sg-main .btn.btn-success{
+  background:linear-gradient(135deg,var(--sg-green),var(--sg-green-2))!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 12px 22px rgba(53,95,49,.22)!important;
+}
+.sg-main .btn-warning,
+.sg-main .btn.btn-warning,
+.sg-main .btn-gold{
+  background:linear-gradient(135deg,#b8791c,#d9a747)!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 12px 22px rgba(184,121,28,.22)!important;
+}
+.sg-main .btn-danger,
+.sg-main .btn.btn-danger,
+.sg-main .delete-confirm-btn,
+.sg-main .btn-delete{
+  background:linear-gradient(135deg,#b5483f,#8f281f)!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 12px 22px rgba(143,40,31,.20)!important;
+}
+.sg-main .btn-outline-secondary,
+.sg-main .btn.btn-outline-secondary,
+.sg-main .btn-volver,
+.sg-main .btn-cancel,
+.sg-main .btn-outline-primary,
+.sg-main .btn-outline-info{
+  background:#fffdf9!important;
+  border:1px solid #d9ccb8!important;
+  color:var(--sg-text)!important;
+  box-shadow:none!important;
+}
+.sg-main .btn:hover,
+.sg-main .btn-volver:hover,
+.sg-main .btn-guardar:hover{
+  transform:translateY(-1px);
+}
+.VistaCrear-actions,
+.EstiloEditar-actions,
+.EstiloDetalle-actions,
+.delete-actions,
+.payment-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:26px;
+}
+
+/* ---------- Generic helpers inside sg-cards ---------- */
+.sg-content > .sg-card,
+.sg-content .sg-card.mb-4,
+.sg-content .sg-card.border-danger{
+  padding:24px;
+}
+.sg-content .sg-card h1,
+.sg-content .sg-card h2,
+.sg-content .sg-card h3,
+.sg-content .sg-card h4,
+.sg-content .sg-card h5{color:var(--sg-text);font-weight:900;}
+.sg-content .sg-card .alert{
+  border-radius:16px;
+  border:1px solid #ecd7ab;
+  background:#fff6df;
+  color:#7a5815;
+}
+.sg-content .sg-card .alert-info{
+  border-color:#d6e7da;
+  background:#f3f8f4;
+  color:#355f31;
+}
+.sg-content .sg-card .row.g-4 > [class*='col-'] small.text-muted,
+.sg-content .sg-card .row.g-3 > [class*='col-'] small.text-muted{
+  display:block;
+  margin-bottom:6px;
+  color:var(--sg-muted)!important;
+  text-transform:uppercase;
+  font-size:.76rem;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+.sg-content .sg-card .row.g-4 > [class*='col-'] h5,
+.sg-content .sg-card .row.g-4 > [class*='col-'] p,
+.sg-content .sg-card .row.g-3 > [class*='col-'] h5,
+.sg-content .sg-card .row.g-3 > [class*='col-'] p{
+  margin:0;
+  color:var(--sg-text);
+  font-weight:800;
+}
+.sg-content .sg-card .border.rounded-4,
+.sg-content .sg-card .border.rounded-3,
+.sg-content .sg-card .border.rounded{
+  border:1px solid #eee3d4!important;
+  border-radius:18px!important;
+  background:#fffdfa;
+  box-shadow:0 10px 20px rgba(43,26,14,.05);
+}
+.sg-content .sg-card .border.rounded-4 a:not(.btn),
+.sg-content .sg-card .border.rounded-3 a:not(.btn),
+.sg-content .sg-card .border.rounded a:not(.btn){
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:#f3f7ee;
+  border:1px solid #dbe8d4;
+  color:var(--sg-green-2);
+  text-decoration:none;
+  font-size:.8rem;
+  font-weight:900;
+}
+.sg-content .sg-card .border.rounded-4 a:not(.btn)::after,
+.sg-content .sg-card .border.rounded-3 a:not(.btn)::after,
+.sg-content .sg-card .border.rounded a:not(.btn)::after{
+  content:"\f061";
+  font-family:"Font Awesome 6 Free";
+  font-weight:900;
+  font-size:.68rem;
+}
+
+/* ---------- Delete / confirmation visuals ---------- */
+.delete-warning,
+.pedido-cancel-warning{
+  padding:16px 18px;
+  border-radius:16px;
+  border:1px solid #ecd7ab;
+  background:#fff6df;
+  color:#7a5815;
+  font-weight:700;
+  margin:16px 0 0;
+}
+.delete-warning strong,
+.pedido-cancel-warning strong{color:#5f4210;}
+
+/* ---------- Payment / summary ---------- */
+.payment-summary,
+.customer-info,
+.payment-methods{
+  background:#fffdfa;
+  border:1px solid #eee3d4;
+  border-radius:18px;
+  padding:18px;
+}
+.summary-row,
+.total-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid #eee3d4;
+  font-weight:700;
+}
+.total-row{font-size:1.05rem;font-weight:900;color:var(--sg-text);}
+.summary-row:last-child,
+.total-row:last-child{border-bottom:0;}
+.payment-option{
+  border:1px solid #d9ccb8;
+  border-radius:16px;
+  padding:14px 16px;
+  background:#fffdf9;
+}
+.card-input-wrapper{position:relative;}
+.card-logo{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--sg-muted);}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1200px){
+  .VistaCrear-card,
+  .pedido-create-card,
+  .pedido-edit-card,
+  .pedido-admin-edit-card,
+  .pedido-cancel-card,
+  .factura-create-card,
+  .factura-edit-card,
+  .factura-pago-card,
+  .movimiento-edit-card,
+  .movimiento-create-card,
+  .produccion-create-card,
+  .produccion-edit-card{grid-template-columns:1fr;}
+}
+@media (max-width: 768px){
+  .sg-visual-hero,
+  .VistaCrear-top,
+  .EstiloEditar-header,
+  .EstiloDetalle-header,
+  .delete-header,
+  .producto-detalle-header,
+  .pedido-detalle-header,
+  .factura-detalle-header,
+  .pedido-create-header,
+  .pedido-edit-header,
+  .pedido-admin-edit-header,
+  .pedido-cancel-header,
+  .factura-create-header,
+  .factura-edit-header,
+  .factura-pago-header,
+  .movimiento-edit-header,
+  .movimiento-create-header,
+  .produccion-create-header,
+  .produccion-edit-header,
+  .payment-header{min-height:180px;padding:24px 22px;}
+  .sg-visual-hero-content h1,
+  .VistaCrear-title h1,
+  .EstiloEditar-header h1,
+  .EstiloDetalle-header h1,
+  .delete-header h1,
+  .producto-detalle-title h1,
+  .pedido-detalle-title h1,
+  .factura-detalle-title h1,
+  .VistaCrear-top h1,
+  .producto-detalle-header h1,
+  .pedido-detalle-header h1,
+  .factura-detalle-header h1{font-size:2rem;}
+  .detalle-grid,
+  .producto-detail-grid,
+  .pedido-detail-grid,
+  .factura-detail-grid{grid-template-columns:1fr;}
+  .VistaCrear-form-container,
+  .EstiloEditar-card-body,
+  .EstiloDetalle-card-body,
+  .delete-body,
+  .producto-premium-body,
+  .pedido-premium-body,
+  .factura-premium-body,
+  .pedido-create-form-container,
+  .pedido-edit-form-container,
+  .pedido-admin-edit-form-container,
+  .pedido-cancel-body,
+  .factura-create-form-container,
+  .factura-edit-form-container,
+  .factura-pago-form-container,
+  .movimiento-edit-form-container,
+  .movimiento-create-form-container,
+  .produccion-create-form-container,
+  .produccion-edit-form-container,
+  .payment-card{padding:20px 18px;}
+}
+
+
+/* ---------- Ajustes solicitados: imagen real en detalle de producto ---------- */
+.sg-product-detail-clean{
+  display:grid;
+  grid-template-columns:minmax(360px,.85fr) minmax(0,1.15fr);
+  gap:0;
+  padding:0!important;
+  overflow:hidden;
+}
+.sg-product-detail-media{
+  position:relative;
+  min-height:520px;
+  background:#1f120b;
+  border-right:1px solid var(--sg-line);
+}
+.sg-product-detail-media img{
+  width:100%;
+  height:100%;
+  min-height:520px;
+  object-fit:cover;
+  display:block;
+  filter:saturate(.95) contrast(1.03);
+}
+.sg-product-detail-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(31,18,11,.05),rgba(31,18,11,.38));
+  pointer-events:none;
+}
+.sg-product-detail-badge{
+  position:absolute;
+  left:24px;
+  bottom:24px;
+  z-index:2;
+  background:rgba(255,253,248,.94);
+  border:1px solid var(--sg-line);
+  border-radius:18px;
+  padding:14px 18px;
+  box-shadow:0 18px 35px rgba(43,26,14,.18);
+}
+.sg-product-detail-badge strong{display:block;color:var(--sg-text);font-weight:950;}
+.sg-product-detail-badge span{display:block;color:var(--sg-muted);font-weight:750;font-size:.85rem;margin-top:3px;}
+.sg-product-detail-info{padding:30px;}
+
+/* ---------- Acciones compactas para contabilidad y formularios dentro de tablas ---------- */
+.finanzas-actions.sg-action-icons,
+.sg-action-icons{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex-wrap:nowrap!important;
+}
+.finanzas-actions.sg-action-icons a,
+.finanzas-actions.sg-action-icons button,
+.sg-action-icons a,
+.sg-action-icons button,
+.sg-inline-action-form button{
+  width:34px!important;
+  height:34px!important;
+  min-height:34px!important;
+  padding:0!important;
+  border-radius:10px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border:1px solid var(--sg-line)!important;
+  background:#fffdf9!important;
+  color:var(--sg-green-2)!important;
+  box-shadow:none!important;
+  text-decoration:none!important;
+  font-size:.88rem!important;
+  line-height:1!important;
+}
+.finanzas-actions.sg-action-icons a[title="Editar"],
+.sg-action-icons a[title="Editar"]{background:#fff8ea!important;color:#93610d!important;border-color:#efd8a7!important;}
+.finanzas-actions.sg-action-icons a[title="Eliminar"],
+.sg-action-icons a[title="Eliminar"]{background:#fff1ee!important;color:#9f362c!important;border-color:#f0c8c0!important;}
+.sg-inline-action-form{display:inline-flex!important;margin:0!important;}
+.sg-inline-action-form button{background:#fff1ee!important;color:#9f362c!important;border-color:#f0c8c0!important;}
+.sg-inline-action-form button:hover,
+.finanzas-actions.sg-action-icons a:hover,
+.finanzas-actions.sg-action-icons button:hover,
+.sg-action-icons a:hover,
+.sg-action-icons button:hover{transform:translateY(-1px)!important;}
+
+@media(max-width:1100px){
+  .sg-product-detail-clean{grid-template-columns:1fr;}
+  .sg-product-detail-media,.sg-product-detail-media img{min-height:340px;}
+}
+
+
+/* Refuerzo: en contabilidad y acciones de tabla nunca mostrar texto montado */
+.finanzas-actions.sg-action-icons a,
+.finanzas-actions.sg-action-icons button,
+.sg-table .sg-action-icons a,
+.sg-table .sg-action-icons button,
+.sg-inline-action-form button{
+  font-size:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+.finanzas-actions.sg-action-icons a i,
+.finanzas-actions.sg-action-icons button i,
+.sg-table .sg-action-icons a i,
+.sg-table .sg-action-icons button i,
+.sg-inline-action-form button i{
+  font-size:.95rem!important;
+  line-height:1!important;
+}
+.finanzas-actions.sg-action-icons a::before,
+.finanzas-actions.sg-action-icons a::after,
+.finanzas-actions.sg-action-icons button::before,
+.finanzas-actions.sg-action-icons button::after,
+.sg-table .sg-action-icons a::before,
+.sg-table .sg-action-icons a::after,
+.sg-table .sg-action-icons button::before,
+.sg-table .sg-action-icons button::after{
+  content:none!important;
+  display:none!important;
+}

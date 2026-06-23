@@ -8,9 +8,11 @@
     var totalFincas = Convert.ToInt32(ViewBag.TotalFincasPublico ?? 0);
     var totalLotes = Convert.ToInt32(ViewBag.TotalLotesPublico ?? 0);
 
-    string ImagenProducto(string nombre)
+    string ImagenProducto(Producto producto)
     {
-        var valor = (nombre ?? string.Empty).ToLowerInvariant();
+        if (!string.IsNullOrWhiteSpace(producto.ImagenUrl)) return producto.ImagenUrl;
+
+        var valor = (producto.Nombre ?? string.Empty).ToLowerInvariant();
         if (valor.Contains("premium")) return "/images/products/cafe-premium.jpg";
         if (valor.Contains("normal")) return "/images/products/cafe-normal.jpg";
         return "/images/products/default-coffee.jpg";
@@ -109,7 +111,7 @@
                     {
                         <article class="rc-product-card">
                             <div class="rc-product-media">
-                                <img src="@ImagenProducto(producto.Nombre)" alt="@producto.Nombre" />
+                                <img src="@ImagenProducto(producto)" alt="@producto.Nombre" />
                                 <span class="rc-product-stock">@producto.Stock kg disponibles</span>
                             </div>
                             <div class="rc-product-body">

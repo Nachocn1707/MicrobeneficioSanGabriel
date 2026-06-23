@@ -129,8 +129,9 @@
         }
 
         if (empty) {
+            const emptyMessage = empty.dataset.emptyMessage || "No hay alertas pendientes.";
             empty.textContent = enabled
-                ? "No hay alertas pendientes."
+                ? emptyMessage
                 : "Las notificaciones están desactivadas.";
 
             empty.style.display =

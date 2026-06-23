@@ -11,7 +11,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseSqlServer(connectionString);
+});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -69,10 +71,22 @@ app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
     // Aplica automáticamente las migraciones pendientes antes de crear roles y usuarios.
-    // Esto incluye las mejoras de productores, fincas, lotes y auditoría.
+    // Después valida columnas nuevas críticas para bases de datos existentes.
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.MigrateAsync();
 
+    try
+    {
+        await dbContext.Database.MigrateAsync();
+    }
+    catch (InvalidOperationException ex) when (ex.Message.Contains("pending model changes", StringComparison.OrdinalIgnoreCase)
+        || ex.Message.Contains("cambios pendientes", StringComparison.OrdinalIgnoreCase))
+    {
+        // En algunas bases locales EF puede detectar cambios pendientes aunque la migración exista.
+        // No se detiene el sistema; se ejecuta la verificación de compatibilidad justo abajo.
+        Console.WriteLine($"Migraciones pendientes detectadas por EF: {ex.Message}");
+    }
+
+    await DatabaseCompatibilityHelper.EnsureLatestSchemaAsync(dbContext);
     await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
 

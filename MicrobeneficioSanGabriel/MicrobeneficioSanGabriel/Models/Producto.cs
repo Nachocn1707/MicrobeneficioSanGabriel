@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MicrobeneficioSanGabriel.Models
 {
@@ -27,6 +27,10 @@ namespace MicrobeneficioSanGabriel.Models
 
         [StringLength(300)]
         public string? Descripcion { get; set; }
+
+        [Display(Name = "Imagen del producto")]
+        [StringLength(250)]
+        public string? ImagenUrl { get; set; }
 
         public bool Activo { get; set; } = true;
 

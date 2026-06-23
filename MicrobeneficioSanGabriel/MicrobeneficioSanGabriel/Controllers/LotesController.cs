@@ -117,11 +117,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
             }
 
+            ViewBag.SoloEstado = EsOperadorSoloEstado();
             CargarFincas(lote.FincaId);
             return View(lote);
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -130,13 +131,14 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (lote == null) return NotFound();
 
+            ViewBag.SoloEstado = EsOperadorSoloEstado();
             CargarFincas(lote.FincaId);
             return View(lote);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(
             int id,
             [Bind("Id,FincaId,PesoKg,FechaRecepcion,Estado,Observacion")]
@@ -149,6 +151,36 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (original == null) return NotFound();
+
+            if (EsOperadorSoloEstado())
+            {
+                if (!EstadoLoteValido(lote.Estado))
+                {
+                    ModelState.AddModelError(nameof(Lote.Estado), "Seleccione un estado válido.");
+                    ViewBag.SoloEstado = true;
+                    CargarFincas(original.FincaId);
+                    original.Estado = lote.Estado;
+                    return View(original);
+                }
+
+                var loteActual = await _context.Lotes.FindAsync(id);
+                if (loteActual == null) return NotFound();
+
+                var estadoAnterior = loteActual.Estado;
+                loteActual.Estado = lote.Estado;
+
+                await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(
+                    _context,
+                    User,
+                    "Lotes",
+                    "Cambiar estado",
+                    loteActual.Id,
+                    $"El operador cambió el estado del lote {loteActual.CodigoLote} de {estadoAnterior} a {loteActual.Estado}.");
+
+                TempData["Success"] = $"Estado del lote {loteActual.CodigoLote} actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var finca = lote.FincaId.HasValue
                 ? await _context.Fincas.FirstOrDefaultAsync(f => f.Id == lote.FincaId.Value)
@@ -200,6 +232,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
             }
 
+            ViewBag.SoloEstado = EsOperadorSoloEstado();
             CargarFincas(lote.FincaId);
             return View(lote);
         }
@@ -321,6 +354,16 @@ namespace MicrobeneficioSanGabriel.Controllers
                 });
 
             ViewBag.FincaId = new SelectList(fincas, "Id", "Texto", seleccionada);
+        }
+
+        private bool EsOperadorSoloEstado()
+        {
+            return User.IsInRole("Operador") && !User.IsInRole("Administrador");
+        }
+
+        private static bool EstadoLoteValido(string? estado)
+        {
+            return estado is "Recibido" or "En proceso" or "Finalizado" or "Cancelado";
         }
 
         private bool LoteExists(int id)

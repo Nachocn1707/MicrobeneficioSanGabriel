@@ -1,615 +1,123 @@
 @model IEnumerable<MicrobeneficioSanGabriel.Models.Pedido>
-
 @{
-    ViewData["Title"] = "Pedidos";
-    <div class="sg-visual-hero sg-hero-pedidos">
-        <div class="sg-visual-hero-content">
-            <span class="sg-visual-badge">
-                <i class="fa-solid fa-cart-shopping"></i>
-                Gestión comercial
-            </span>
+    var esCliente = User.IsInRole("Cliente");
+    ViewData["Title"] = esCliente ? "Mis pedidos" : "Pedidos y Facturación";
+    Layout = esCliente ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
 
-            <h1>Pedidos</h1>
-            <div class="sg-visual-line"></div>
+    var pedidos = Model?.ToList() ?? new List<MicrobeneficioSanGabriel.Models.Pedido>();
+    var total = pedidos.Count;
+    var pendientes = pedidos.Count(p => p.Estado == "Pendiente" || p.Estado == "En proceso");
+    var completados = pedidos.Count(p => p.Estado == "Completado");
+    var cancelados = pedidos.Count(p => (p.Estado ?? string.Empty).Contains("Cancel"));
+    var pagosPendientes = pedidos.Count(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago");
+    var ventas = pedidos.Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
 
-            <p>
-                Consultá solicitudes de clientes, estados de pedidos y seguimiento comercial.
-            </p>
-        </div>
-    </div>
-
-
-    if (User.IsInRole("Cliente"))
+    string EstadoClase(string estado)
     {
-        Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+        estado = estado ?? string.Empty;
+        estado ??= string.Empty;
+        if (estado.Contains("Complet")) return "";
+        if (estado.Contains("Pend")) return "tan";
+        if (estado.Contains("Cancel")) return "brown";
+        return "gold";
     }
-    else
-    {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    }
-
-    int totalPedidos = Model.Count();
-    int pedidosPendientes = Model.Count(p => p.Estado == "Pendiente");
-    int pedidosCompletados = Model.Count(p => p.Estado == "Completado");
-    int pedidosCancelados = Model.Count(p => p.Estado == "Cancelado");
 }
 
-@section Styles {
-    <style>
-        .pedidos-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 10px;
-        }
-
-        .pedidos-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-            .pedidos-header h1 {
-                font-size: 2.35rem;
-                font-weight: 950;
-                margin: 0;
-                color: #2b160d;
-            }
-
-        .pedidos-title-line {
-            width: 76px;
-            height: 4px;
-            background: #d8b36a;
-            border-radius: 999px;
-            margin: 12px 0;
-        }
-
-        .pedidos-header p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .btn-nuevo-pedido {
-            background: #198754;
-            color: #fff;
-            border-radius: 13px;
-            padding: 11px 18px;
-            font-weight: 900;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 12px 28px rgba(25, 135, 84, 0.18);
-            transition: 0.18s ease;
-        }
-
-            .btn-nuevo-pedido:hover {
-                background: #157347;
-                color: #fff;
-                transform: translateY(-1px);
-            }
-
-        .pedidos-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .pedido-summary-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: 0 16px 36px rgba(58, 33, 20, 0.08);
-            position: relative;
-            overflow: hidden;
-        }
-
-            .pedido-summary-card::after {
-                content: "";
-                position: absolute;
-                right: -32px;
-                bottom: -36px;
-                width: 110px;
-                height: 110px;
-                background: rgba(243, 210, 122, 0.22);
-                border-radius: 50%;
-            }
-
-        .pedido-summary-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            background: #fff2d5;
-            color: #a66b20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 13px;
-            font-size: 18px;
-        }
-
-        .pedido-summary-label {
-            color: #7a6a5d;
-            font-weight: 850;
-            font-size: 0.92rem;
-            margin-bottom: 4px;
-        }
-
-        .pedido-summary-value {
-            color: #2b160d;
-            font-size: 1.9rem;
-            font-weight: 950;
-            line-height: 1;
-        }
-
-        .pedidos-table-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 24px;
-            box-shadow: 0 18px 42px rgba(58, 33, 20, 0.08);
-            padding: 18px;
-            overflow: hidden;
-        }
-
-            .pedidos-table-card table {
-                margin-bottom: 0;
-            }
-
-                .pedidos-table-card table thead th {
-                    background: #1f2937 !important;
-                    color: #fff !important;
-                    border: none !important;
-                    padding: 15px 14px !important;
-                    font-weight: 900;
-                    vertical-align: middle;
-                }
-
-                    .pedidos-table-card table thead th:first-child {
-                        border-top-left-radius: 13px;
-                    }
-
-                    .pedidos-table-card table thead th:last-child {
-                        border-top-right-radius: 13px;
-                    }
-
-                .pedidos-table-card table tbody td {
-                    padding: 16px 14px !important;
-                    vertical-align: middle;
-                    border-bottom: 1px solid #ece2cf;
-                }
-
-                .pedidos-table-card table tbody tr:hover {
-                    background: rgba(243, 210, 122, 0.12);
-                }
-
-        .pedido-cliente {
-            font-weight: 900;
-            color: #2b160d;
-        }
-
-        .pedido-observacion {
-            max-width: 260px;
-            color: #5f5147;
-            font-weight: 650;
-            line-height: 1.35;
-        }
-
-
-        .payment-status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-size: 0.82rem;
-            font-weight: 900;
-            border: 1px solid transparent;
-        }
-
-        .payment-status-paid {
-            background: rgba(46, 156, 89, 0.14);
-            color: #1f7a43;
-            border-color: rgba(46, 156, 89, 0.18);
-        }
-
-        .payment-status-pending {
-            background: rgba(237, 195, 110, 0.18);
-            color: #8e6420;
-            border-color: rgba(237, 195, 110, 0.28);
-        }
-
-        .payment-status-waiting {
-            background: rgba(220, 143, 153, 0.12);
-            color: #99515b;
-            border-color: rgba(220, 143, 153, 0.22);
-        }
-
-        .payment-status-note {
-            display: block;
-            margin-top: 6px;
-            color: #8b7a70;
-            font-size: 0.73rem;
-            line-height: 1.35;
-            font-weight: 700;
-        }
-
-        .pedido-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: nowrap;
-        }
-
-            .pedido-actions .btn {
-                border-radius: 10px;
-                font-weight: 850;
-                padding: 8px 11px;
-                white-space: nowrap;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-            }
-
-        .pedido-estado {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            padding: 7px 12px;
-            font-size: 0.8rem;
-            font-weight: 950;
-            white-space: nowrap;
-        }
-
-        .pedido-estado-pendiente {
-            background: #fff4d3;
-            color: #8a6500;
-        }
-
-        .pedido-estado-proceso {
-            background: #dff6fd;
-            color: #0369a1;
-        }
-
-        .pedido-estado-camino {
-            background: #e9e0ff;
-            color: #5636a3;
-        }
-
-        .pedido-estado-retiro {
-            background: #e8edf3;
-            color: #495057;
-        }
-
-        .pedido-estado-completado {
-            background: #dff5e3;
-            color: #1e7d32;
-        }
-
-        .pedido-estado-cancelado {
-            background: #fde1df;
-            color: #b42318;
-        }
-
-        .pedido-estado-neutral {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .dataTables_wrapper .dataTables_length,
-        .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 15px;
-            color: #2b160d;
-            font-weight: 700;
-        }
-
-            .dataTables_wrapper .dataTables_filter input,
-            .dataTables_wrapper .dataTables_length select {
-                border: 1px solid #d9c8ab;
-                border-radius: 10px;
-                padding: 7px 10px;
-                background: white;
-            }
-
-        .dataTables_wrapper .dataTables_info {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin-top: 14px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate {
-            margin-top: 14px;
-        }
-
-            .dataTables_wrapper .dataTables_paginate .paginate_button {
-                border-radius: 10px !important;
-            }
-
-        @@media (max-width: 1200px) {
-            .pedidos-summary-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .pedido-actions {
-                flex-wrap: wrap;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .pedidos-header {
-                flex-direction: column;
-            }
-
-            .pedidos-summary-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-}
-
-@if (TempData["Debug"] != null)
+@if (esCliente)
 {
-    <div class="alert alert-warning">
-        @TempData["Debug"]
-    </div>
-}
-
-<div class="pedidos-page">
-
-    <div class="pedidos-header">
+    <section class="sg-page-head">
         <div>
-            <h1></h1>
-            <div class="pedidos-title-line"></div>
-
-            @if (User.IsInRole("Cliente"))
-            {
-                <p></p>
-            }
-            else
-            {
-                <p></p>
-            }
+            <h1>Mis pedidos</h1>
+            <p>Consultá el estado de tus compras, pagos y entregas desde tu portal.</p>
         </div>
-
-        @if (User.IsInRole("Administrador"))
-        {
-            //   <a asp-action="Create" class="btn-nuevo-pedido">
-            //      <i class="fa-solid fa-plus"></i>
-            //    Nuevo Pedido
-            //  </a>
-        }
-        else
-        {
-            <a asp-controller="Productos" asp-action="Index"
-               class="btn-nuevo-pedido">
-                <i class="fa-solid fa-mug-hot"></i>
-                Nuevo Pedido
-            </a>
-        }
-
-    </div>
-
-    <section class="pedidos-summary-grid">
-
-        <div class="pedido-summary-card">
-            <div class="pedido-summary-icon">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
-            <div class="pedido-summary-label">Pedidos registrados</div>
-            <div class="pedido-summary-value">@totalPedidos</div>
+        <div class="sg-actions">
+            <a asp-controller="Productos" asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-mug-hot"></i>Ver catálogo</a>
+            <a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a>
         </div>
-
-        <div class="pedido-summary-card">
-            <div class="pedido-summary-icon">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-            <div class="pedido-summary-label">Pendientes</div>
-            <div class="pedido-summary-value">@pedidosPendientes</div>
-        </div>
-
-        <div class="pedido-summary-card">
-            <div class="pedido-summary-icon">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div class="pedido-summary-label">Completados</div>
-            <div class="pedido-summary-value">@pedidosCompletados</div>
-        </div>
-
-        <div class="pedido-summary-card">
-            <div class="pedido-summary-icon">
-                <i class="fa-solid fa-ban"></i>
-            </div>
-            <div class="pedido-summary-label">Cancelados</div>
-            <div class="pedido-summary-value">@pedidosCancelados</div>
-        </div>
-
     </section>
 
-    <div class="pedidos-table-card">
+    <section class="sg-kpi-grid">
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-bag-shopping"></i></span><div><span>Total de pedidos</span><strong>@total</strong><div class="sg-trend">Historial personal</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-hourglass-half"></i></span><div><span>En seguimiento</span><strong>@pendientes</strong><div class="sg-trend warn">Pendientes o en proceso</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Completados</span><strong>@completados</strong><div class="sg-trend">Compras finalizadas</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-wallet"></i></span><div><span>Pagos pendientes</span><strong>@pagosPendientes</strong><div class="sg-trend @(pagosPendientes > 0 ? "warn" : "")">@(pagosPendientes > 0 ? "Revisar pago" : "Al día")</div></div></article>
+    </section>
 
+    <section class="sg-card sg-table-card">
+        <div class="sg-panel-head">
+            <div>
+                <h3>Historial de pedidos</h3>
+                <small>Estados, pagos y acciones disponibles para tus compras.</small>
+            </div>
+        </div>
         <div class="table-responsive">
-
-            <table id="tablaPedidos" class="table align-middle">
-
+            <table class="sg-table" id="tablaMisPedidos">
                 <thead>
                     <tr>
-                        <th>Cliente</th>
-                        <th>Teléfono</th>
+                        <th>Pedido</th>
                         <th>Producto</th>
                         <th>Cantidad</th>
-                        <th>Fecha</th>
                         <th>Estado</th>
-                        <th>Observación</th>
-                        <th>Estado Pago</th>
-                        <th width="290">Acciones</th>
+                        <th>Pago</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
-
                 <tbody>
-
-                    @foreach (var item in Model)
+                    @foreach (var p in pedidos)
                     {
-                        string estadoClase = item.Estado switch
-                        {
-                            "Pendiente" => "pedido-estado pedido-estado-pendiente",
-                            "En proceso" => "pedido-estado pedido-estado-proceso",
-                            "En camino" => "pedido-estado pedido-estado-camino",
-                            "Listo para retirar" => "pedido-estado pedido-estado-retiro",
-                            "Completado" => "pedido-estado pedido-estado-completado",
-                            "Cancelado" => "pedido-estado pedido-estado-cancelado",
-                            _ => "pedido-estado pedido-estado-neutral"
-                        };
-
+                        var totalPedido = (p.Producto?.Precio ?? 0) * p.Cantidad;
                         <tr>
-
-                            <td class="pedido-cliente">
-                                @item.ClienteNombre
-                            </td>
-
+                            <td>PP-@p.Id.ToString("0000")</td>
+                            <td>@(p.Producto?.Nombre ?? "Producto")</td>
+                            <td>@p.Cantidad kg</td>
+                            <td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td>
+                            <td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td>
+                            <td>@p.FechaPedido.ToString("dd MMM yyyy")</td>
+                            <td>₡@totalPedido.ToString("N0")</td>
                             <td>
-                                @(string.IsNullOrWhiteSpace(item.ClienteTelefono)
-                                    ? "Sin teléfono"
-                                    : item.ClienteTelefono)
-                            </td>
-
-                            <td>
-                                @(item.Producto != null
-                                    ? item.Producto.Nombre
-                                    : "Sin producto")
-                            </td>
-
-                            <td>
-                                @item.Cantidad kg
-                            </td>
-
-                            <td>
-                                @item.FechaPedido.ToString("dd/MM/yyyy HH:mm")
-                            </td>
-
-                            <td>
-                                <span class="@estadoClase">
-                                    @item.Estado
+                                <span class="sg-action-icons">
+                                    <a asp-action="Details" asp-route-id="@p.Id" title="Ver" aria-label="Ver"><i class="fa-solid fa-eye"></i></a>
+                                    @if (p.Estado == "Pendiente")
+                                    {
+                                        <a asp-action="EditCliente" asp-route-id="@p.Id" title="Editar" aria-label="Editar"><i class="fa-solid fa-pen"></i></a>
+                                        <a asp-action="Cancelar" asp-route-id="@p.Id" title="Cancelar pedido" aria-label="Cancelar pedido"><i class="fa-solid fa-ban"></i></a>
+                                    }
+                                    @if (p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago")
+                                    {
+                                        <a asp-action="Pago" asp-route-id="@p.Id" title="Pagar" aria-label="Pagar"><i class="fa-solid fa-wallet"></i></a>
+                                    }
                                 </span>
-                            </td>
-
-                            <td class="pedido-observacion">
-                                @(string.IsNullOrWhiteSpace(item.Observacion)
-                                    ? "Sin observación"
-                                    : item.Observacion)
-                            </td>
-
-                            <td>
-                                @if (item.EstadoPago == "Pago completado" || item.EstadoPago == "Pagado")
-                                {
-                                    <div class="payment-status-badge payment-status-paid">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        <span>Pago completado</span>
-                                    </div>
-                                }
-                                else if (item.EstadoPago == "Pendiente de pago")
-                                {
-                                    <div class="payment-status-badge payment-status-pending">
-                                        <i class="fa-solid fa-hourglass-half"></i>
-                                        <span>Pendiente de pago</span>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="payment-status-badge payment-status-waiting">
-                                        <i class="fa-solid fa-clock"></i>
-                                        <span>Pendiente</span>
-                                    </div>
-                                }
-                                <small class="payment-status-note">Se actualiza automáticamente al cambiar el estado del pedido.</small>
-                            </td>
-
-                            <td>
-                                <div class="pedido-actions">
-
-                                    @if (User.IsInRole("Administrador"))
-                                    {
-                                        <a asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                            Editar
-                                        </a>
-
-                                        <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-info btn-sm text-white">
-                                            <i class="fa-solid fa-eye"></i>
-                                            Detalles
-                                        </a>
-
-                                        <a asp-action="Delete"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-danger btn-sm">
-                                            <i class="fa-solid fa-trash"></i>
-                                            Eliminar
-                                        </a>
-
-                                    }
-                                    else if (User.IsInRole("Cliente"))
-                                    {
-                                        @if (item.Estado != null && item.Estado.Trim() == "Pendiente")
-                                        {
-                                            <a asp-action="EditCliente"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-warning btn-sm">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                                Actualizar
-                                            </a>
-
-                                            <a asp-action="Cancelar"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-danger btn-sm">
-                                                <i class="fa-solid fa-ban"></i>
-                                                Cancelar
-                                            </a>
-                                        }
-
-                                        <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-info btn-sm text-white">
-                                            <i class="fa-solid fa-eye"></i>
-                                            Detalles
-                                        </a>
-
-                                    }
-                                    else if (User.IsInRole("Vendedor"))
-                                    {
-                                        <a asp-action="CambiarEstado"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-rotate"></i>
-                                            Cambiar estado
-                                        </a>
-                                    }
-                                </div>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
+    </section>
+}
+else
+{
+    var inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+    var finMes = inicioMes.AddMonths(1);
+    var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes).Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
+    var enProceso = pedidos.Count(p => p.Estado == "En proceso");
+    decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
 
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('#tablaPedidos').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
-                },
-                pageLength: 5,
-                lengthMenu: [5, 10, 15, 20],
-                responsive: true
-            });
-        });
-
-    </script>
+    <section class="sg-page-head">
+        <div><h1>Pedidos y Facturación</h1><p>Gestión de pedidos, entregas y facturación.</p></div>
+        <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar pedido, cliente, factura..." /></label></div>
+    </section>
+    <section class="sg-kpi-grid">
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Pedidos totales</span><strong>@total</strong><div class="sg-trend">Registros reales</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-clipboard-list"></i></span><div><span>Pedidos pendientes</span><strong>@pendientes</strong><div class="sg-trend warn">Pendiente / En proceso</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Completados</span><strong>@completados</strong><div class="sg-trend">Según estado actual</div></div></article>
+    </section>
+    <section class="sg-grid-2">
+        <article class="sg-card sg-panel"><h3>Estado de pedidos</h3><div class="sg-donut-wrap mt-3"><div class="sg-donut" style="--p:@Porcentaje(completados)"><div><b>@Porcentaje(completados)%</b><br/><span>Completados</span></div></div><div class="sg-legend"><div class="sg-legend-row"><span class="sg-dot"></span><span>Completados</span><b>@completados</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@enProceso</b></div><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pendientes</span><b>@pedidos.Count(p => p.Estado == "Pendiente")</b></div><div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@cancelados</b></div></div></div></article>
+        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => !string.IsNullOrWhiteSpace(p.EstadoPago) && (p.EstadoPago.Contains("completado", StringComparison.OrdinalIgnoreCase) || p.EstadoPago.Contains("Pag", StringComparison.OrdinalIgnoreCase)))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto total en pedidos</span><b>₡@ventas.ToString("N0")</b></div></div><hr/><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
+    </section>
+    <section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaPedidos"><thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Total</th><th>Acciones</th></tr></thead><tbody>@foreach(var p in pedidos){<tr><td>PP-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td><td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td><td>₡@(((p.Producto?.Precio ?? 0)*p.Cantidad).ToString("N0"))</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador")||User.IsInRole("Vendedor")){<a asp-action="Edit" asp-route-id="@p.Id"><i class="fa-solid fa-pen"></i></a>}</span></td></tr>}</tbody></table></div></section>
 }

@@ -21,6 +21,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public async Task<IActionResult> Index(string? codigoLote, string? etapa)
         {
+            if (User.IsInRole("Cliente"))
+            {
+                TempData["Info"] = "La trazabilidad interna no está disponible para el perfil cliente. Podés consultar el estado de tus pedidos desde Mis pedidos.";
+                return RedirectToAction("ClienteDashboard", "Home");
+            }
             var trazabilidades = _context.Trazabilidades
                 .Include(t => t.Lote)
                     .ThenInclude(l => l.Productor)
@@ -48,6 +53,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "Recepción",
                 "Producción",
                 "Secado",
+                "Tostado",
+                "Molido",
                 "Empaque",
                 "Almacenamiento"
             }, etapa);
@@ -61,6 +68,10 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
+            if (User.IsInRole("Cliente"))
+            {
+                return RedirectToAction("ClienteDashboard", "Home");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -83,6 +94,10 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public async Task<IActionResult> Historial(int? loteId)
         {
+            if (User.IsInRole("Cliente"))
+            {
+                return RedirectToAction("ClienteDashboard", "Home");
+            }
             if (loteId == null)
             {
                 return NotFound();
@@ -157,7 +172,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(trazabilidad);
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -172,18 +187,48 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            ViewBag.SoloEtapa = EsOperadorSoloEtapa();
             CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
             return View(trazabilidad);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
         {
             if (id != trazabilidad.Id)
             {
                 return NotFound();
+            }
+
+            var trazabilidadActual = await _context.Trazabilidades.FindAsync(id);
+            if (trazabilidadActual == null)
+            {
+                return NotFound();
+            }
+
+            if (EsOperadorSoloEtapa())
+            {
+                if (!EtapaValida(trazabilidad.Etapa))
+                {
+                    ModelState.AddModelError(nameof(Trazabilidad.Etapa), "Seleccione una etapa válida.");
+                    ViewBag.SoloEtapa = true;
+                    CargarListas(trazabilidadActual.LoteId, trazabilidadActual.ProduccionId);
+                    trazabilidadActual.Etapa = trazabilidad.Etapa;
+                    return View(trazabilidadActual);
+                }
+
+                var etapaAnterior = trazabilidadActual.Etapa;
+                trazabilidadActual.Etapa = trazabilidad.Etapa;
+
+                await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Trazabilidad", "Cambiar etapa", trazabilidadActual.Id,
+                    $"El operador cambió la etapa del registro de trazabilidad #{trazabilidadActual.Id} de {etapaAnterior} a {trazabilidadActual.Etapa}.");
+
+                TempData["Success"] = "Etapa de trazabilidad actualizada correctamente.";
+                return RedirectToAction(nameof(Index));
             }
 
             await ValidarRelacionAsync(trazabilidad);
@@ -192,13 +237,17 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 try
                 {
-                    trazabilidad.Responsable = trazabilidad.Responsable?.Trim();
-                    trazabilidad.Observacion = trazabilidad.Observacion?.Trim();
-                    _context.Update(trazabilidad);
+                    trazabilidadActual.LoteId = trazabilidad.LoteId;
+                    trazabilidadActual.ProduccionId = trazabilidad.ProduccionId;
+                    trazabilidadActual.Etapa = trazabilidad.Etapa;
+                    trazabilidadActual.FechaRegistro = trazabilidad.FechaRegistro;
+                    trazabilidadActual.Responsable = trazabilidad.Responsable?.Trim();
+                    trazabilidadActual.Observacion = trazabilidad.Observacion?.Trim();
+
                     await _context.SaveChangesAsync();
                     await AuditoriaHelper.RegistrarAsync(
-                        _context, User, "Trazabilidad", "Editar", trazabilidad.Id,
-                        $"Se actualizó el registro de trazabilidad #{trazabilidad.Id}.");
+                        _context, User, "Trazabilidad", "Editar", trazabilidadActual.Id,
+                        $"Se actualizó el registro de trazabilidad #{trazabilidadActual.Id}.");
                     TempData["Success"] = "Registro de trazabilidad actualizado correctamente.";
                 }
                 catch (DbUpdateConcurrencyException)
@@ -214,6 +263,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.SoloEtapa = false;
             CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
             return View(trazabilidad);
         }
@@ -257,6 +307,16 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool EsOperadorSoloEtapa()
+        {
+            return User.IsInRole("Operador") && !User.IsInRole("Administrador");
+        }
+
+        private static bool EtapaValida(string? etapa)
+        {
+            return etapa is "Recepción" or "Producción" or "Secado" or "Tostado" or "Molido" or "Empaque" or "Almacenamiento";
         }
 
         private async Task ValidarRelacionAsync(Trazabilidad trazabilidad)
@@ -307,6 +367,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "Recepción",
                 "Producción",
                 "Secado",
+                "Tostado",
+                "Molido",
                 "Empaque",
                 "Almacenamiento"
             });

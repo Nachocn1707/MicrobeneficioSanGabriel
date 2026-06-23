@@ -24,6 +24,114 @@ namespace MicrobeneficioSanGabriel.Services
             var hoy = DateTime.Now;
             var fechaLimite = hoy.AddDays(-7);
 
+            if (user.IsInRole("Cliente"))
+            {
+                var correoCliente = user.FindFirst(ClaimTypes.Email)?.Value
+                    ?? user.Identity?.Name
+                    ?? string.Empty;
+
+                var pedidosCliente = await _context.Pedidos
+                    .Include(p => p.Producto)
+                    .Where(p => !string.IsNullOrWhiteSpace(p.ClienteCorreo) && p.ClienteCorreo == correoCliente)
+                    .OrderByDescending(p => p.FechaPedido)
+                    .ToListAsync();
+
+                var pedidosPendientesCliente = pedidosCliente
+                    .Where(p => p.Estado == "Pendiente" || p.Estado == "En proceso")
+                    .ToList();
+
+                if (pedidosPendientesCliente.Any())
+                {
+                    var pedidoReferencia = pedidosPendientesCliente.First();
+                    alertas.Add(new AlertaSistemaViewModel
+                    {
+                        Clave = $"cliente-pedidos-pendientes-{pedidoReferencia.Id}-{pedidosPendientesCliente.Count}",
+                        Modulo = "Mis pedidos",
+                        Titulo = "Pedido en seguimiento",
+                        Mensaje = pedidosPendientesCliente.Count == 1
+                            ? "Tenés 1 pedido pendiente o en proceso."
+                            : $"Tenés {pedidosPendientesCliente.Count} pedidos pendientes o en proceso.",
+                        Tipo = "info",
+                        Icono = "fa-clipboard-list",
+                        Url = "/Pedidos",
+                        Prioridad = 1,
+                        FechaReferencia = pedidoReferencia.FechaPedido,
+                        Tiempo = TiempoRelativo(pedidoReferencia.FechaPedido)
+                    });
+                }
+
+                var pedidosCompletadosCliente = pedidosCliente
+                    .Where(p => p.Estado == "Completado")
+                    .ToList();
+
+                if (pedidosCompletadosCliente.Any())
+                {
+                    var pedidoReferencia = pedidosCompletadosCliente.First();
+                    alertas.Add(new AlertaSistemaViewModel
+                    {
+                        Clave = $"cliente-pedidos-completados-{pedidoReferencia.Id}-{pedidosCompletadosCliente.Count}",
+                        Modulo = "Mis pedidos",
+                        Titulo = "Pedido completado",
+                        Mensaje = pedidosCompletadosCliente.Count == 1
+                            ? "Tenés 1 pedido completado listo para revisar."
+                            : $"Tenés {pedidosCompletadosCliente.Count} pedidos completados.",
+                        Tipo = "success",
+                        Icono = "fa-circle-check",
+                        Url = "/Pedidos",
+                        Prioridad = 2,
+                        FechaReferencia = pedidoReferencia.FechaPedido,
+                        Tiempo = TiempoRelativo(pedidoReferencia.FechaPedido)
+                    });
+                }
+
+                var pagosPendientesCliente = pedidosCliente
+                    .Where(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago")
+                    .ToList();
+
+                if (pagosPendientesCliente.Any())
+                {
+                    var pedidoReferencia = pagosPendientesCliente.First();
+                    alertas.Add(new AlertaSistemaViewModel
+                    {
+                        Clave = $"cliente-pagos-pendientes-{pedidoReferencia.Id}-{pagosPendientesCliente.Count}",
+                        Modulo = "Pagos",
+                        Titulo = "Pago pendiente",
+                        Mensaje = pagosPendientesCliente.Count == 1
+                            ? "Tenés 1 pedido con pago pendiente."
+                            : $"Tenés {pagosPendientesCliente.Count} pedidos con pago pendiente.",
+                        Tipo = "warning",
+                        Icono = "fa-wallet",
+                        Url = "/Pedidos",
+                        Prioridad = 3,
+                        FechaReferencia = pedidoReferencia.FechaPedido,
+                        Tiempo = TiempoRelativo(pedidoReferencia.FechaPedido)
+                    });
+                }
+
+                var ultimoPedido = pedidosCliente.FirstOrDefault();
+                if (ultimoPedido != null && !alertas.Any())
+                {
+                    alertas.Add(new AlertaSistemaViewModel
+                    {
+                        Clave = $"cliente-ultimo-pedido-{ultimoPedido.Id}-{ultimoPedido.Estado}",
+                        Modulo = "Mis pedidos",
+                        Titulo = "Estado de tu pedido",
+                        Mensaje = $"Tu último pedido está en estado: {ultimoPedido.Estado}.",
+                        Tipo = "info",
+                        Icono = "fa-mug-hot",
+                        Url = "/Pedidos",
+                        Prioridad = 4,
+                        FechaReferencia = ultimoPedido.FechaPedido,
+                        Tiempo = TiempoRelativo(ultimoPedido.FechaPedido)
+                    });
+                }
+
+                return alertas
+                    .OrderBy(a => a.Prioridad)
+                    .ThenByDescending(a => a.FechaReferencia)
+                    .ToList();
+            }
+
             if (user.IsInRole("Administrador") || user.IsInRole("Operador") || user.IsInRole("Vendedor"))
             {
                 var productosStockBajo = await _context.Productos

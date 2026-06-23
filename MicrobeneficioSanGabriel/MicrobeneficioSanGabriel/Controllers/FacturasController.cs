@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +43,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(p => p.Producto)
                 .FirstOrDefaultAsync(p => p.Id == factura.PedidoId);
 
+            // Los montos de la factura se recalculan desde el pedido.
+            // Se eliminan del ModelState para evitar errores cuando el navegador envía decimales
+            // con coma o punto. En pantalla se muestran como enteros.
+            ModelState.Remove(nameof(Factura.Subtotal));
+            ModelState.Remove(nameof(Factura.IVA));
+            ModelState.Remove(nameof(Factura.Total));
+
             if (pedido == null)
             {
                 ModelState.AddModelError("", "El pedido seleccionado no existe.");
@@ -57,9 +64,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                     factura.EstadoPago = "Pago completado";
                 }
 
-                factura.Subtotal = pedido.Cantidad * pedido.Producto!.Precio;
-                factura.IVA = factura.Subtotal * 0.13m;
-                factura.Total = factura.Subtotal + factura.IVA;
+                factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 0, MidpointRounding.AwayFromZero);
+                factura.IVA = Math.Round(factura.Subtotal * 0.13m, 0, MidpointRounding.AwayFromZero);
+                factura.Total = Math.Round(factura.Subtotal + factura.IVA, 0, MidpointRounding.AwayFromZero);
 
                 _context.Facturas.Add(factura);
                 await _context.SaveChangesAsync();
@@ -112,6 +119,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(p => p.Producto)
                 .FirstOrDefaultAsync(p => p.Id == factura.PedidoId);
 
+            // Los montos de la factura se recalculan desde el pedido.
+            // Se eliminan del ModelState para evitar errores cuando el navegador envía decimales
+            // con coma o punto. En pantalla se muestran como enteros.
+            ModelState.Remove(nameof(Factura.Subtotal));
+            ModelState.Remove(nameof(Factura.IVA));
+            ModelState.Remove(nameof(Factura.Total));
+
             if (pedido == null)
             {
                 ModelState.AddModelError("", "El pedido seleccionado no existe.");
@@ -126,9 +140,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                         factura.EstadoPago = "Pago completado";
                     }
 
-                    factura.Subtotal = pedido.Cantidad * pedido.Producto!.Precio;
-                    factura.IVA = factura.Subtotal * 0.13m;
-                    factura.Total = factura.Subtotal + factura.IVA;
+                    factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 0, MidpointRounding.AwayFromZero);
+                    factura.IVA = Math.Round(factura.Subtotal * 0.13m, 0, MidpointRounding.AwayFromZero);
+                    factura.Total = Math.Round(factura.Subtotal + factura.IVA, 0, MidpointRounding.AwayFromZero);
 
                     _context.Update(factura);
                     await _context.SaveChangesAsync();
@@ -169,6 +183,39 @@ namespace MicrobeneficioSanGabriel.Controllers
                 $"Se anuló la factura #{factura.Id}.");
             TempData["Success"] = "Factura anulada correctamente.";
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var factura = await _context.Facturas
+                .Include(f => f.Pedido)
+                .ThenInclude(p => p.Producto)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (factura == null) return NotFound();
+
+            TempData["Warning"] = "Las facturas no se eliminan; se anulan para conservar el histórico contable.";
+            return RedirectToAction(nameof(Details), new { id = factura.Id });
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var factura = await _context.Facturas.FindAsync(id);
+            if (factura == null) return NotFound();
+
+            factura.EstadoPago = "Anulada";
+            _context.Update(factura);
+            await _context.SaveChangesAsync();
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Facturas", "Anular", factura.Id,
+                $"Se anuló la factura #{factura.Id} desde la ruta de eliminación heredada.");
+            TempData["Success"] = "Factura anulada correctamente. El registro se conserva en el histórico.";
             return RedirectToAction(nameof(Index));
         }
 

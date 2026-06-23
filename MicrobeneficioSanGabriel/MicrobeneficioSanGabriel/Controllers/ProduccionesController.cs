@@ -112,7 +112,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // GET: Producciones/Edit/5
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -120,13 +120,17 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
-            var produccion = await _context.Producciones.FindAsync(id);
+            var produccion = await _context.Producciones
+                .Include(p => p.Lote)
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (produccion == null)
             {
                 return NotFound();
             }
 
+            ViewBag.SoloEstado = EsOperadorSoloEstado();
             CargarCombos(produccion.LoteId, produccion.ProductoId);
 
             return View(produccion);
@@ -135,6 +139,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Producciones/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(int id, Produccion produccion)
         {
             if (id != produccion.Id)
@@ -143,12 +148,44 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             var produccionOriginal = await _context.Producciones
-                .AsNoTracking()
+                .Include(p => p.Lote)
+                .Include(p => p.Producto)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (produccionOriginal == null)
             {
                 return NotFound();
+            }
+
+            if (EsOperadorSoloEstado())
+            {
+                if (!EstadoProduccionValido(produccion.Estado))
+                {
+                    ModelState.AddModelError(nameof(Produccion.Estado), "Seleccione un estado válido.");
+                    ViewBag.SoloEstado = true;
+                    CargarCombos(produccionOriginal.LoteId, produccionOriginal.ProductoId);
+                    produccionOriginal.Estado = produccion.Estado;
+                    return View(produccionOriginal);
+                }
+
+                var estadoAnterior = produccionOriginal.Estado;
+                var errorEstado = await CambiarEstadoProduccionAsync(produccionOriginal, produccion.Estado);
+
+                if (errorEstado != null)
+                {
+                    ModelState.AddModelError(nameof(Produccion.Estado), errorEstado);
+                    ViewBag.SoloEstado = true;
+                    CargarCombos(produccionOriginal.LoteId, produccionOriginal.ProductoId);
+                    return View(produccionOriginal);
+                }
+
+                await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Producciones", "Cambiar estado", produccionOriginal.Id,
+                    $"El operador cambió el estado de la producción #{produccionOriginal.Id} de {estadoAnterior} a {produccionOriginal.Estado}.");
+
+                TempData["Success"] = "Estado de producción actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
             }
 
             if (produccion.CantidadResultanteKg > produccion.CantidadProcesadaKg)
@@ -157,44 +194,39 @@ namespace MicrobeneficioSanGabriel.Controllers
                     "La cantidad resultante no puede superar la cantidad procesada.");
             }
 
+            if (!EstadoProduccionValido(produccion.Estado))
+            {
+                ModelState.AddModelError(nameof(Produccion.Estado), "Seleccione un estado válido.");
+            }
+
             if (ModelState.IsValid)
             {
+                await using var transaction = await _context.Database.BeginTransactionAsync();
+
                 try
                 {
-                    // Si la producción pasa a Completado por primera vez, se suma stock.
-                    if (produccionOriginal.Estado != "Completado" &&
-                        produccion.Estado == "Completado" &&
-                        produccion.ProductoId.HasValue)
+                    var errorInventario = await SincronizarInventarioProduccionAsync(produccionOriginal, produccion);
+
+                    if (errorInventario != null)
                     {
-                        var producto = await _context.Productos.FindAsync(produccion.ProductoId.Value);
-
-                        if (producto != null)
-                        {
-                            producto.Stock += (int)produccion.CantidadResultanteKg;
-
-                            var movimiento = new MovimientoInventario
-                            {
-                                ProductoId = producto.Id,
-                                TipoMovimiento = "Entrada",
-                                Cantidad = (int)produccion.CantidadResultanteKg,
-                                FechaMovimiento = DateTime.Now,
-                                Observacion = $"Entrada automática por producción #{produccion.Id}"
-                            };
-
-                            _context.MovimientosInventario.Add(movimiento);
-                            _context.Productos.Update(producto);
-                        }
+                        await transaction.RollbackAsync();
+                        ModelState.AddModelError(nameof(Produccion.Estado), errorInventario);
+                        ViewBag.SoloEstado = false;
+                        CargarCombos(produccion.LoteId, produccion.ProductoId);
+                        return View(produccion);
                     }
 
-                    _context.Update(produccion);
                     await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
                     await AuditoriaHelper.RegistrarAsync(
-                        _context, User, "Producciones", "Editar", produccion.Id,
-                        $"Se actualizó la producción #{produccion.Id}.");
+                        _context, User, "Producciones", "Editar", produccionOriginal.Id,
+                        $"Se actualizó la producción #{produccionOriginal.Id}.");
                     TempData["Success"] = "Producción actualizada correctamente.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    await transaction.RollbackAsync();
                     if (!ProduccionExists(produccion.Id))
                     {
                         return NotFound();
@@ -202,10 +234,20 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                     throw;
                 }
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync();
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible actualizar la producción. Verifique la información relacionada.");
+                    ViewBag.SoloEstado = false;
+                    CargarCombos(produccion.LoteId, produccion.ProductoId);
+                    return View(produccion);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.SoloEstado = false;
             CargarCombos(produccion.LoteId, produccion.ProductoId);
             return View(produccion);
         }
@@ -297,6 +339,136 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool EsOperadorSoloEstado()
+        {
+            return User.IsInRole("Operador") && !User.IsInRole("Administrador");
+        }
+
+        private static bool EstadoProduccionValido(string? estado)
+        {
+            return estado is "En proceso" or "Completado" or "Cancelado";
+        }
+
+        private async Task<string?> CambiarEstadoProduccionAsync(Produccion produccion, string nuevoEstado)
+        {
+            if (produccion.Estado == nuevoEstado)
+            {
+                return null;
+            }
+
+            if (produccion.Estado == "Completado")
+            {
+                var errorReversion = await RevertirEntradaProduccionAsync(produccion);
+                if (errorReversion != null)
+                {
+                    return errorReversion;
+                }
+            }
+
+            produccion.Estado = nuevoEstado;
+
+            if (produccion.Estado == "Completado")
+            {
+                return await AplicarEntradaProduccionAsync(produccion);
+            }
+
+            return null;
+        }
+
+        private async Task<string?> SincronizarInventarioProduccionAsync(Produccion produccionActual, Produccion datosNuevos)
+        {
+            var cambiaInventario = produccionActual.Estado != datosNuevos.Estado ||
+                                   produccionActual.ProductoId != datosNuevos.ProductoId ||
+                                   (int)produccionActual.CantidadResultanteKg != (int)datosNuevos.CantidadResultanteKg;
+
+            if (cambiaInventario && produccionActual.Estado == "Completado")
+            {
+                var errorReversion = await RevertirEntradaProduccionAsync(produccionActual);
+                if (errorReversion != null)
+                {
+                    return errorReversion;
+                }
+            }
+
+            produccionActual.LoteId = datosNuevos.LoteId;
+            produccionActual.FechaProduccion = datosNuevos.FechaProduccion;
+            produccionActual.TipoProceso = datosNuevos.TipoProceso?.Trim() ?? string.Empty;
+            produccionActual.CantidadProcesadaKg = datosNuevos.CantidadProcesadaKg;
+            produccionActual.CantidadResultanteKg = datosNuevos.CantidadResultanteKg;
+            produccionActual.Estado = datosNuevos.Estado;
+            produccionActual.Observacion = string.IsNullOrWhiteSpace(datosNuevos.Observacion)
+                ? null
+                : datosNuevos.Observacion.Trim();
+            produccionActual.ProductoId = datosNuevos.ProductoId;
+
+            if (cambiaInventario && produccionActual.Estado == "Completado")
+            {
+                return await AplicarEntradaProduccionAsync(produccionActual);
+            }
+
+            return null;
+        }
+
+        private async Task<string?> AplicarEntradaProduccionAsync(Produccion produccion)
+        {
+            if (!produccion.ProductoId.HasValue)
+            {
+                return "Para marcar la producción como completada debe seleccionar un producto resultante.";
+            }
+
+            var producto = await _context.Productos.FindAsync(produccion.ProductoId.Value);
+            if (producto == null)
+            {
+                return "El producto resultante seleccionado no existe.";
+            }
+
+            var cantidad = (int)produccion.CantidadResultanteKg;
+            producto.Stock += cantidad;
+
+            var movimiento = new MovimientoInventario
+            {
+                ProductoId = producto.Id,
+                TipoMovimiento = "Entrada",
+                Cantidad = cantidad,
+                FechaMovimiento = DateTime.Now,
+                Observacion = $"Entrada automática por producción #{produccion.Id}"
+            };
+
+            _context.MovimientosInventario.Add(movimiento);
+            return null;
+        }
+
+        private async Task<string?> RevertirEntradaProduccionAsync(Produccion produccion)
+        {
+            if (!produccion.ProductoId.HasValue)
+            {
+                return null;
+            }
+
+            var producto = await _context.Productos.FindAsync(produccion.ProductoId.Value);
+            if (producto == null)
+            {
+                return "No se encontró el producto asociado para ajustar el inventario.";
+            }
+
+            var cantidad = (int)produccion.CantidadResultanteKg;
+            if (producto.Stock < cantidad)
+            {
+                return "No se puede cambiar el estado porque parte del inventario generado por esta producción ya fue utilizado.";
+            }
+
+            producto.Stock -= cantidad;
+
+            var movimientos = await _context.MovimientosInventario
+                .Where(m => m.ProductoId == produccion.ProductoId &&
+                            m.TipoMovimiento == "Entrada" &&
+                            m.Observacion == $"Entrada automática por producción #{produccion.Id}")
+                .ToListAsync();
+
+            _context.MovimientosInventario.RemoveRange(movimientos);
+            return null;
         }
 
         private void CargarCombos(int? loteId = null, int? productoId = null)

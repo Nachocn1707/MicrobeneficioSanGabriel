@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using MicrobeneficioSanGabriel.Models
 @inject UserManager<ApplicationUser> UserManager
 
@@ -37,6 +37,8 @@
     @await RenderSectionAsync("Styles", required: false)
     <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/notificaciones.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sg-coffee-ui.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
 </head>
 
 <body class="sg-coffee-bg rc-client-body">
@@ -76,12 +78,6 @@
                     Mis pedidos
                 </a>
 
-                <a asp-controller="Trazabilidades"
-                   asp-action="Index"
-                   class="@Active("/trazabilidades")">
-                    <i class="fa-solid fa-route"></i>
-                    Trazabilidad
-                </a>
             </nav>
         </aside>
 

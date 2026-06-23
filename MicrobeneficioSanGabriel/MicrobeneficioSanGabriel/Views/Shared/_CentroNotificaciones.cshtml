@@ -19,8 +19,18 @@
         ?? User.FindFirstValue(ClaimTypes.NameIdentifier)
         ?? "anonimo";
 
+    var esCliente = User.IsInRole("Cliente");
+
     var puedeAdministrar = User.IsInRole("Administrador")
-        || User.IsInRole("Cliente");
+        || esCliente;
+
+    var tituloPanel = esCliente
+        ? "Estado de mis pedidos"
+        : "Alertas del sistema";
+
+    var textoVacio = esCliente
+        ? "No hay actualizaciones pendientes de tus pedidos."
+        : "No hay alertas pendientes.";
 
     var alertasJson = JsonSerializer.Serialize(
         alertas.Take(5).Select(alerta => new
@@ -61,7 +71,7 @@
 
         <div class="demo-notification-head">
             <div>
-                <strong>Alertas del sistema</strong>
+                <strong>@tituloPanel</strong>
 
                 <small id="notificationPanelCount">
                     @alertas.Count alerta(s)
@@ -90,8 +100,9 @@
 
         <div id="notificationEmpty"
              class="demo-notification-empty"
+             data-empty-message="@textoVacio"
              style="@(alertas.Any() ? "display:none;" : "")">
-            No hay alertas pendientes.
+            @textoVacio
         </div>
 
         <div id="notificationList">

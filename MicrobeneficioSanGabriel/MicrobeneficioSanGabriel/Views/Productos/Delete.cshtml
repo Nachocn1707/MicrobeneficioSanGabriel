@@ -1,23 +1,31 @@
-﻿@model MicrobeneficioSanGabriel.Models.Producto
+@model MicrobeneficioSanGabriel.Models.Producto
 
 @{
     ViewData["Title"] = "Eliminar producto";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     string imagenProducto;
-    var nombreProducto = (Model.Nombre ?? "").ToLower();
 
-    if (nombreProducto.Contains("premium"))
+    if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
     {
-        imagenProducto = "/images/products/cafe-premium.jpg";
-    }
-    else if (nombreProducto.Contains("normal"))
-    {
-        imagenProducto = "/images/products/cafe-normal.jpg";
+        imagenProducto = Model.ImagenUrl;
     }
     else
     {
-        imagenProducto = "/images/products/default-coffee.jpg";
+        var nombreProducto = (Model.Nombre ?? "").ToLowerInvariant();
+
+        if (nombreProducto.Contains("premium"))
+        {
+            imagenProducto = "/images/products/cafe-premium.jpg";
+        }
+        else if (nombreProducto.Contains("normal"))
+        {
+            imagenProducto = "/images/products/cafe-normal.jpg";
+        }
+        else
+        {
+            imagenProducto = "/images/products/default-coffee.jpg";
+        }
     }
 
     string estadoClase = Model.Activo

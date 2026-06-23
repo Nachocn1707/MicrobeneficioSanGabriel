@@ -1,6 +1,8 @@
 ﻿@model MicrobeneficioSanGabriel.Models.Pedido
 
 @{
+    Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Pago del pedido";
     var total = ViewBag.Total;
 }
 

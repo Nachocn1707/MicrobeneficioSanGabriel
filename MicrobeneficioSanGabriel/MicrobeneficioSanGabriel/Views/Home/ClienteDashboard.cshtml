@@ -12,9 +12,11 @@
     var pedidosCompletados = (int?)ViewBag.PedidosCompletadosCliente ?? 0;
     var totalKgDisponibles = (int?)ViewBag.TotalKgDisponibles ?? 0;
 
-    string ImagenProducto(string nombre)
+    string ImagenProducto(Producto producto)
     {
-        var valor = (nombre ?? string.Empty).ToLowerInvariant();
+        if (!string.IsNullOrWhiteSpace(producto.ImagenUrl)) return producto.ImagenUrl;
+
+        var valor = (producto.Nombre ?? string.Empty).ToLowerInvariant();
         if (valor.Contains("premium")) return "/images/products/cafe-premium.jpg";
         if (valor.Contains("normal")) return "/images/products/cafe-normal.jpg";
         return "/images/products/default-coffee.jpg";
@@ -27,13 +29,12 @@
             <span class="rc-kicker"><i class="fa-solid fa-circle-check"></i> Coffee Club activo</span>
             <h1>Hola, @nombreCliente</h1>
             <p>
-                Descubrí cafés con origen, realizá pedidos y seguí el recorrido del producto desde el lote hasta tu compra,
-                todo dentro de una experiencia más visual y organizada.
+                Descubrí cafés disponibles, realizá pedidos y consultá el estado de tus compras
+                dentro de una experiencia más visual y organizada.
             </p>
             <div class="rc-client-hero-actions">
                 <a asp-controller="Productos" asp-action="Index" class="rc-button rc-button-primary"><i class="fa-solid fa-mug-hot"></i> Ver catálogo</a>
                 <a asp-controller="Pedidos" asp-action="Create" class="rc-button rc-button-ghost"><i class="fa-solid fa-cart-plus"></i> Nuevo pedido</a>
-                <a asp-controller="Trazabilidades" asp-action="Index" class="rc-button rc-button-ghost"><i class="fa-solid fa-route"></i> Trazabilidad</a>
             </div>
         </div>
         <div class="rc-client-hero-stats">
@@ -63,7 +64,7 @@
                     foreach (var producto in productosDestacados)
                     {
                         <article class="rc-client-product">
-                            <img src="@ImagenProducto(producto.Nombre)" alt="@producto.Nombre" />
+                            <img src="@ImagenProducto(producto)" alt="@producto.Nombre" />
                             <div class="rc-client-product-body">
                                 <span class="rc-product-category">@producto.Categoria</span>
                                 <h3>@producto.Nombre</h3>
@@ -112,7 +113,6 @@
             <a asp-controller="Productos" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/productos.jpg')"><i class="fa-solid fa-store"></i><strong>Productos</strong><small>Explorá cafés, precios y disponibilidad.</small></a>
             <a asp-controller="Pedidos" asp-action="Create" class="rc-module-card" style="--module-image:url('/images/visual/pedidos.jpg')"><i class="fa-solid fa-cart-plus"></i><strong>Nuevo pedido</strong><small>Solicitá tu café desde el portal.</small></a>
             <a asp-controller="Pedidos" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/orders/order-detail-coffee.jpg')"><i class="fa-solid fa-clipboard-list"></i><strong>Mis pedidos</strong><small>Consultá estados y pagos.</small></a>
-            <a asp-controller="Trazabilidades" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/trazabilidad.jpg')"><i class="fa-solid fa-route"></i><strong>Trazabilidad</strong><small>Seguí el origen y el proceso.</small></a>
         </div>
     </section>
 </div>

@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Producto
+@model MicrobeneficioSanGabriel.Models.Producto
 
 @{
     ViewData["Title"] = "Create";
@@ -68,7 +68,7 @@
         </div>
         <div class="VistaCrear-form-container">
 
-            <form asp-action="Create">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-4">
@@ -196,6 +196,34 @@
                         </div>
 
                     </div>
+                    <div class="col-12">
+
+                        <div class="form-group">
+
+                            <label for="imagenArchivo"
+                                   class="form-label">
+                                Imagen del producto
+                            </label>
+
+                            <div class="input-modern">
+
+                                <i class="fa-solid fa-image"></i>
+
+                                <input id="imagenArchivo"
+                                       name="imagenArchivo"
+                                       type="file"
+                                       class="form-control"
+                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                            </div>
+
+                            <small class="text-muted">Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: 5 MB.</small>
+                            @Html.ValidationMessage("imagenArchivo", null, new { @class = "text-danger d-block" })
+
+                        </div>
+
+                    </div>
+
                     <div class="col-md-6">
 
                         <div class="form-group form-check">

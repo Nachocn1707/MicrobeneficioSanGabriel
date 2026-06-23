@@ -1,6 +1,8 @@
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Services;
@@ -11,10 +13,14 @@ namespace MicrobeneficioSanGabriel.Controllers
     public class ProductosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
+        private static readonly string[] ExtensionesImagenPermitidas = { ".jpg", ".jpeg", ".png", ".webp" };
+        private const long TamanoMaximoImagenBytes = 5 * 1024 * 1024;
 
-        public ProductosController(ApplicationDbContext context)
+        public ProductosController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         // GET: Productos
@@ -43,7 +49,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         }
 
         // GET: Productos/Create
-        [Authorize(Roles = "Administrador,Operador,Vendedor")]
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             return View();
@@ -52,9 +58,14 @@ namespace MicrobeneficioSanGabriel.Controllers
         // POST: Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador,Operador,Vendedor")]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto)
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto, IFormFile? imagenArchivo)
         {
+            if (!ValidarImagenProducto(imagenArchivo))
+            {
+                return View(producto);
+            }
+
             if (ModelState.IsValid)
             {
                 producto.Nombre = producto.Nombre?.Trim() ?? string.Empty;
@@ -66,6 +77,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                     ModelState.AddModelError(nameof(Producto.Nombre), "Ya existe un producto con este nombre.");
                     return View(producto);
                 }
+
+                producto.ImagenUrl = await GuardarImagenProductoAsync(imagenArchivo);
 
                 _context.Add(producto);
                 await _context.SaveChangesAsync();
@@ -101,26 +114,61 @@ namespace MicrobeneficioSanGabriel.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto, IFormFile? imagenArchivo, bool eliminarImagenActual = false)
         {
             if (id != producto.Id)
             {
                 return NotFound();
             }
 
+            var productoDb = await _context.Productos.FindAsync(id);
+            if (productoDb == null)
+            {
+                return NotFound();
+            }
+
+            if (!ValidarImagenProducto(imagenArchivo))
+            {
+                producto.ImagenUrl = productoDb.ImagenUrl;
+                return View(producto);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    producto.Nombre = producto.Nombre?.Trim() ?? string.Empty;
+                    producto.Categoria = producto.Categoria?.Trim() ?? string.Empty;
+
                     var duplicado = await _context.Productos.AnyAsync(p =>
                         p.Id != producto.Id && p.Nombre.ToLower() == producto.Nombre.ToLower());
                     if (duplicado)
                     {
                         ModelState.AddModelError(nameof(Producto.Nombre), "Ya existe otro producto con este nombre.");
+                        producto.ImagenUrl = productoDb.ImagenUrl;
                         return View(producto);
                     }
 
-                    _context.Update(producto);
+                    productoDb.Nombre = producto.Nombre;
+                    productoDb.Categoria = producto.Categoria;
+                    productoDb.Precio = producto.Precio;
+                    productoDb.Stock = producto.Stock;
+                    productoDb.StockMinimo = producto.StockMinimo;
+                    productoDb.Descripcion = producto.Descripcion;
+                    productoDb.Activo = producto.Activo;
+                    productoDb.FechaRegistro = producto.FechaRegistro;
+
+                    if (imagenArchivo is { Length: > 0 })
+                    {
+                        EliminarImagenPersonalizada(productoDb.ImagenUrl);
+                        productoDb.ImagenUrl = await GuardarImagenProductoAsync(imagenArchivo);
+                    }
+                    else if (eliminarImagenActual)
+                    {
+                        EliminarImagenPersonalizada(productoDb.ImagenUrl);
+                        productoDb.ImagenUrl = null;
+                    }
+
                     await _context.SaveChangesAsync();
                     await AuditoriaHelper.RegistrarAsync(_context, User, "Productos", "Editar", producto.Id,
                         $"Se actualizó el producto {producto.Nombre}.");
@@ -139,6 +187,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            producto.ImagenUrl = productoDb.ImagenUrl;
             return View(producto);
         }
 
@@ -182,6 +231,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            EliminarImagenPersonalizada(producto.ImagenUrl);
             _context.Productos.Remove(producto);
             await _context.SaveChangesAsync();
             await AuditoriaHelper.RegistrarAsync(_context, User, "Productos", "Eliminar", id,
@@ -193,6 +243,70 @@ namespace MicrobeneficioSanGabriel.Controllers
         private bool ProductoExists(int id)
         {
             return _context.Productos.Any(e => e.Id == id);
+        }
+
+        private bool ValidarImagenProducto(IFormFile? imagenArchivo)
+        {
+            if (imagenArchivo == null || imagenArchivo.Length == 0)
+            {
+                return true;
+            }
+
+            var extension = Path.GetExtension(imagenArchivo.FileName).ToLowerInvariant();
+            if (!ExtensionesImagenPermitidas.Contains(extension))
+            {
+                ModelState.AddModelError("imagenArchivo", "La imagen debe ser JPG, JPEG, PNG o WEBP.");
+                return false;
+            }
+
+            if (imagenArchivo.Length > TamanoMaximoImagenBytes)
+            {
+                ModelState.AddModelError("imagenArchivo", "La imagen no puede pesar más de 5 MB.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<string?> GuardarImagenProductoAsync(IFormFile? imagenArchivo)
+        {
+            if (imagenArchivo == null || imagenArchivo.Length == 0)
+            {
+                return null;
+            }
+
+            var extension = Path.GetExtension(imagenArchivo.FileName).ToLowerInvariant();
+            var carpetaRelativa = Path.Combine("images", "products", "uploads");
+            var carpetaFisica = Path.Combine(_env.WebRootPath, carpetaRelativa);
+            Directory.CreateDirectory(carpetaFisica);
+
+            var nombreArchivo = $"producto-{Guid.NewGuid():N}{extension}";
+            var rutaFisica = Path.Combine(carpetaFisica, nombreArchivo);
+
+            await using var stream = new FileStream(rutaFisica, FileMode.Create);
+            await imagenArchivo.CopyToAsync(stream);
+
+            return $"/images/products/uploads/{nombreArchivo}";
+        }
+
+        private void EliminarImagenPersonalizada(string? imagenUrl)
+        {
+            if (string.IsNullOrWhiteSpace(imagenUrl) || !imagenUrl.StartsWith("/images/products/uploads/", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var nombreArchivo = Path.GetFileName(imagenUrl);
+            if (string.IsNullOrWhiteSpace(nombreArchivo))
+            {
+                return;
+            }
+
+            var rutaFisica = Path.Combine(_env.WebRootPath, "images", "products", "uploads", nombreArchivo);
+            if (System.IO.File.Exists(rutaFisica))
+            {
+                System.IO.File.Delete(rutaFisica);
+            }
         }
     }
 }
