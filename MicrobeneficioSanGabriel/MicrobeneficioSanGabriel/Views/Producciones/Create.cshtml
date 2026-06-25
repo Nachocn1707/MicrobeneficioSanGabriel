@@ -419,7 +419,9 @@
 
                             <input asp-for="FechaProduccion"
                                    type="datetime-local"
-                                   class="form-control" />
+                                   class="form-control"
+                                   min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
+                                   max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
                         </div>
 
                         <span asp-validation-for="FechaProduccion"

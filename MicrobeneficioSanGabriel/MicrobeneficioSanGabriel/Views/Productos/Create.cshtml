@@ -253,7 +253,10 @@
                                 <i class="fa-solid fa-calendar"></i>
 
                                 <input asp-for="FechaRegistro"
-                                       class="form-control" />
+                                       type="datetime-local"
+                                       class="form-control"
+                                       min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
+                                       max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
 
                             </div>
 
