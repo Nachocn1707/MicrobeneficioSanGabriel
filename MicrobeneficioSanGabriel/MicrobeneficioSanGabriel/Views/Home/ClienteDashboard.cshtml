@@ -1,4 +1,4 @@
-@using MicrobeneficioSanGabriel.Models
+﻿@using MicrobeneficioSanGabriel.Models
 @{
     ViewData["Title"] = "Inicio";
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
@@ -10,7 +10,7 @@
     var totalPedidos = (int?)ViewBag.TotalPedidosCliente ?? 0;
     var pedidosPendientes = (int?)ViewBag.PedidosPendientesCliente ?? 0;
     var pedidosCompletados = (int?)ViewBag.PedidosCompletadosCliente ?? 0;
-    var totalKgDisponibles = (int?)ViewBag.TotalKgDisponibles ?? 0;
+    var totalKgDisponibles = Convert.ToDecimal(ViewBag.TotalKgDisponibles ?? 0m);
 
     string ImagenProducto(Producto producto)
     {
@@ -39,7 +39,7 @@
         </div>
         <div class="rc-client-hero-stats">
             <article class="rc-client-stat-dark"><i class="fa-solid fa-store"></i><strong>@totalProductos</strong><span>Productos activos</span></article>
-            <article class="rc-client-stat-dark"><i class="fa-solid fa-boxes-stacked"></i><strong>@totalKgDisponibles kg</strong><span>Stock disponible</span></article>
+            <article class="rc-client-stat-dark"><i class="fa-solid fa-boxes-stacked"></i><strong>@totalKgDisponibles.ToString("N2") kg</strong><span>Stock disponible</span></article>
             <article class="rc-client-stat-dark"><i class="fa-solid fa-bag-shopping"></i><strong>@totalPedidos</strong><span>Pedidos realizados</span></article>
             <article class="rc-client-stat-dark"><i class="fa-solid fa-award"></i><strong>@pedidosCompletados</strong><span>Compras completadas</span></article>
         </div>
@@ -69,7 +69,7 @@
                                 <span class="rc-product-category">@producto.Categoria</span>
                                 <h3>@producto.Nombre</h3>
                                 <p>@(string.IsNullOrWhiteSpace(producto.Descripcion) ? "Café de origen con calidad artesanal y trazabilidad." : producto.Descripcion)</p>
-                                <div class="rc-client-product-footer"><strong>₡ @producto.Precio.ToString("N0")</strong><span class="rc-status-tag">@producto.Stock kg</span></div>
+                                <div class="rc-client-product-footer"><strong>₡ @producto.Precio.ToString("N2")</strong><span class="rc-status-tag">@producto.Stock.ToString("N2") kg</span></div>
                             </div>
                         </article>
                     }
@@ -93,7 +93,7 @@
                     {
                         <article class="rc-client-order">
                             <div class="rc-client-order-top"><h4>Pedido #@pedido.Id</h4><span class="rc-status-tag">@pedido.Estado</span></div>
-                            <p>@(pedido.Producto?.Nombre ?? "Producto") · @pedido.Cantidad kg · @pedido.FechaPedido.ToString("dd/MM/yyyy")</p>
+                            <p>@(pedido.Producto?.Nombre ?? "Producto") · @pedido.Cantidad.ToString("N2") kg · @pedido.FechaPedido.ToString("dd/MM/yyyy")</p>
                         </article>
                     }
                 }

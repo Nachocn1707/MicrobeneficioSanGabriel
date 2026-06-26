@@ -1,4 +1,4 @@
-@model MicrobeneficioSanGabriel.Models.Lote
+﻿@model MicrobeneficioSanGabriel.Models.Lote
 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 <div class="row g-4">
     @if (Model.Id > 0)
@@ -17,7 +17,10 @@
     </div>
     <div class="col-md-3">
         <label asp-for="PesoKg" class="form-label"></label>
-        <input asp-for="PesoKg" class="form-control" step="0.01" min="0.01" />
+        <input asp-for="PesoKg"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal" class="form-control" min="0.01" />
         <span asp-validation-for="PesoKg" class="text-danger"></span>
     </div>
     <div class="col-md-3">

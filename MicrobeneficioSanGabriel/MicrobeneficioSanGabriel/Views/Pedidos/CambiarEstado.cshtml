@@ -51,7 +51,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Cantidad</label>
-                        <input value="@Model.Cantidad kg"
+                        <input value="@($"{Model.Cantidad:N2} kg")"
                                class="form-control"
                                readonly />
                     </div>

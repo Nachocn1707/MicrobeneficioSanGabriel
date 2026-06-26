@@ -1,4 +1,4 @@
-@model IEnumerable<MicrobeneficioSanGabriel.Models.Lote>
+﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Lote>
 @{
     ViewData["Title"] = "Lotes y Producción";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -18,7 +18,7 @@
 <section class="sg-kpi-grid">
     <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Lotes totales</span><strong>@total</strong><div class="sg-trend">Registros en base de datos</div></div></article>
     <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-arrows-rotate"></i></span><div><span>Lotes activos</span><strong>@activos</strong><div class="sg-trend">Recibido / En proceso</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-weight-scale"></i></span><div><span>Peso recibido</span><strong>@peso.ToString("N0") kg</strong><div class="sg-trend">Suma real de lotes</div></div></article>
+    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-weight-scale"></i></span><div><span>Peso recibido</span><strong>@peso.ToString("N2") kg</strong><div class="sg-trend">Suma real de lotes</div></div></article>
     <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-circle-check"></i></span><div><span>Finalizados</span><strong>@finalizados</strong><div class="sg-trend">Según estado actual</div></div></article>
 </section>
 <section class="sg-grid-2">
@@ -56,7 +56,7 @@
                         <td>@(string.IsNullOrWhiteSpace(l.CodigoLote) ? $"LO-{l.Id:0000}" : l.CodigoLote)</td>
                         <td>@l.Productor?.Nombre</td>
                         <td>@l.Finca?.Nombre</td>
-                        <td>@l.PesoKg.ToString("N0") kg</td>
+                        <td>@l.PesoKg.ToString("N2") kg</td>
                         <td><span class="sg-badge @((l.Estado ?? string.Empty).Contains("Finalizado") ? "" : (l.Estado ?? string.Empty).Contains("Cancelado") ? "brown" : "gold")">@l.Estado</span></td>
                         <td>@l.FechaRecepcion.ToString("dd MMM yyyy")</td>
                         <td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@l.Id"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador") || User.IsInRole("Operador")){<a asp-action="Edit" asp-route-id="@l.Id" title="Cambiar/editar"><i class="fa-solid fa-pen"></i></a>}@if(User.IsInRole("Administrador")){<a asp-action="Delete" asp-route-id="@l.Id"><i class="fa-solid fa-trash"></i></a>}</span></td>

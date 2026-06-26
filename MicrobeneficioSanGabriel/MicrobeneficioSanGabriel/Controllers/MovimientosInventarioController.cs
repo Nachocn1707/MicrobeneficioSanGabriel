@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -67,7 +67,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 producto.Stock < movimiento.Cantidad)
             {
                 ModelState.AddModelError(nameof(MovimientoInventario.Cantidad),
-                    $"No hay suficiente stock. Disponible: {producto.Stock} kg.");
+                    $"No hay suficiente stock. Disponible: {producto.Stock:N2} kg.");
             }
 
             if (ModelState.IsValid && producto != null)
@@ -81,7 +81,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await _context.SaveChangesAsync();
                 await AuditoriaHelper.RegistrarAsync(
                     _context, User, "Inventario", "Crear", movimiento.Id,
-                    $"Se registró una {movimiento.TipoMovimiento.ToLower()} de {movimiento.Cantidad} kg para {producto.Nombre}.");
+                    $"Se registró una {movimiento.TipoMovimiento.ToLower()} de {movimiento.Cantidad:N2} kg para {producto.Nombre}.");
 
                 TempData["Success"] = "Movimiento de inventario registrado correctamente.";
                 return RedirectToAction(nameof(Index));
@@ -154,7 +154,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         if (movimiento.TipoMovimiento == "Salida" && productoNuevo.Stock < movimiento.Cantidad)
                         {
                             ModelState.AddModelError(nameof(MovimientoInventario.Cantidad),
-                                $"No hay suficiente stock. Disponible después de revertir: {productoNuevo.Stock} kg.");
+                                $"No hay suficiente stock. Disponible después de revertir: {productoNuevo.Stock:N2} kg.");
                         }
                         else
                         {
@@ -259,16 +259,16 @@ namespace MicrobeneficioSanGabriel.Controllers
         private static bool EsTipoValido(string tipo) =>
             tipo == "Entrada" || tipo == "Salida";
 
-        private static void AplicarMovimiento(Producto producto, string tipo, int cantidad)
+        private static void AplicarMovimiento(Producto producto, string tipo, decimal cantidad)
         {
             if (tipo == "Entrada") producto.Stock += cantidad;
             else producto.Stock -= cantidad;
         }
 
-        private static bool PuedeRevertir(Producto producto, string tipo, int cantidad) =>
+        private static bool PuedeRevertir(Producto producto, string tipo, decimal cantidad) =>
             tipo != "Entrada" || producto.Stock >= cantidad;
 
-        private static void RevertirMovimiento(Producto producto, string tipo, int cantidad)
+        private static void RevertirMovimiento(Producto producto, string tipo, decimal cantidad)
         {
             if (tipo == "Entrada") producto.Stock -= cantidad;
             else producto.Stock += cantidad;

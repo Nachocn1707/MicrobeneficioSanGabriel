@@ -411,7 +411,10 @@
                             <label asp-for="CantidadProcesadaKg" class="form-label">Cantidad procesada en kg</label>
                             <div class="input-modern">
                                 <i class="fa-solid fa-weight-scale"></i>
-                                <input asp-for="CantidadProcesadaKg" class="form-control" min="1" />
+                                <input asp-for="CantidadProcesadaKg"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal" class="form-control" min="0.01" />
                             </div>
                             <span asp-validation-for="CantidadProcesadaKg" class="text-danger"></span>
                         </div>
@@ -420,7 +423,10 @@
                             <label asp-for="CantidadResultanteKg" class="form-label">Cantidad resultante en kg</label>
                             <div class="input-modern">
                                 <i class="fa-solid fa-scale-balanced"></i>
-                                <input asp-for="CantidadResultanteKg" class="form-control" min="1" />
+                                <input asp-for="CantidadResultanteKg"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal" class="form-control" min="0.01" />
                             </div>
                             <span asp-validation-for="CantidadResultanteKg" class="text-danger"></span>
                         </div>

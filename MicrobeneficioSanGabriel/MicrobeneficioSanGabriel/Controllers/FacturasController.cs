@@ -45,7 +45,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             // Los montos de la factura se recalculan desde el pedido.
             // Se eliminan del ModelState para evitar errores cuando el navegador envía decimales
-            // con coma o punto. En pantalla se muestran como enteros.
+            // con coma o punto. En pantalla se muestran con dos decimales.
             ModelState.Remove(nameof(Factura.Subtotal));
             ModelState.Remove(nameof(Factura.IVA));
             ModelState.Remove(nameof(Factura.Total));
@@ -64,9 +64,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                     factura.EstadoPago = "Pago completado";
                 }
 
-                factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 0, MidpointRounding.AwayFromZero);
-                factura.IVA = Math.Round(factura.Subtotal * 0.13m, 0, MidpointRounding.AwayFromZero);
-                factura.Total = Math.Round(factura.Subtotal + factura.IVA, 0, MidpointRounding.AwayFromZero);
+                factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 2, MidpointRounding.AwayFromZero);
+                factura.IVA = Math.Round(factura.Subtotal * 0.13m, 2, MidpointRounding.AwayFromZero);
+                factura.Total = Math.Round(factura.Subtotal + factura.IVA, 2, MidpointRounding.AwayFromZero);
 
                 _context.Facturas.Add(factura);
                 await _context.SaveChangesAsync();
@@ -121,7 +121,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             // Los montos de la factura se recalculan desde el pedido.
             // Se eliminan del ModelState para evitar errores cuando el navegador envía decimales
-            // con coma o punto. En pantalla se muestran como enteros.
+            // con coma o punto. En pantalla se muestran con dos decimales.
             ModelState.Remove(nameof(Factura.Subtotal));
             ModelState.Remove(nameof(Factura.IVA));
             ModelState.Remove(nameof(Factura.Total));
@@ -140,9 +140,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                         factura.EstadoPago = "Pago completado";
                     }
 
-                    factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 0, MidpointRounding.AwayFromZero);
-                    factura.IVA = Math.Round(factura.Subtotal * 0.13m, 0, MidpointRounding.AwayFromZero);
-                    factura.Total = Math.Round(factura.Subtotal + factura.IVA, 0, MidpointRounding.AwayFromZero);
+                    factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 2, MidpointRounding.AwayFromZero);
+                    factura.IVA = Math.Round(factura.Subtotal * 0.13m, 2, MidpointRounding.AwayFromZero);
+                    factura.Total = Math.Round(factura.Subtotal + factura.IVA, 2, MidpointRounding.AwayFromZero);
 
                     _context.Update(factura);
                     await _context.SaveChangesAsync();
@@ -252,7 +252,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Select(p => new
                 {
                     Id = p.Id,
-                    Nombre = $"{p.ClienteNombre} - {p.Producto!.Nombre} - {p.Cantidad} kg"
+                    Nombre = $"{p.ClienteNombre} - {p.Producto!.Nombre} - {p.Cantidad:N2} kg"
                 });
 
             ViewBag.PedidoId = new SelectList(

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -271,7 +271,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 var cantidadesPorProducto = producciones
                     .Where(p => p.Estado == "Completado" && p.ProductoId.HasValue)
                     .GroupBy(p => p.ProductoId!.Value)
-                    .ToDictionary(g => g.Key, g => g.Sum(p => (int)p.CantidadResultanteKg));
+                    .ToDictionary(g => g.Key, g => g.Sum(p => Convert.ToDecimal(p.CantidadResultanteKg)));
 
                 foreach (var item in cantidadesPorProducto)
                 {

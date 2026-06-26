@@ -18,8 +18,8 @@ namespace MicrobeneficioSanGabriel.Models
         public string TipoMovimiento { get; set; } // Entrada o Salida
 
         [Required(ErrorMessage = "La cantidad es obligatoria")]
-        [Range(1, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
-        public int Cantidad { get; set; }
+        [Range(typeof(decimal), "0.01", "999999", ErrorMessage = "La cantidad debe ser mayor a 0")]
+        public decimal Cantidad { get; set; }
 
         [StringLength(300)]
         public string? Observacion { get; set; }

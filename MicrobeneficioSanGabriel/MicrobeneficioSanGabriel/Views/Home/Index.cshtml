@@ -1,4 +1,4 @@
-@using MicrobeneficioSanGabriel.Models
+﻿@using MicrobeneficioSanGabriel.Models
 @{
     ViewData["Title"] = "Café con origen";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -112,14 +112,14 @@
                         <article class="rc-product-card">
                             <div class="rc-product-media">
                                 <img src="@ImagenProducto(producto)" alt="@producto.Nombre" />
-                                <span class="rc-product-stock">@producto.Stock kg disponibles</span>
+                                <span class="rc-product-stock">@producto.Stock.ToString("N2") kg disponibles</span>
                             </div>
                             <div class="rc-product-body">
                                 <span class="rc-product-category">@producto.Categoria</span>
                                 <h3>@producto.Nombre</h3>
                                 <p>@(string.IsNullOrWhiteSpace(producto.Descripcion) ? "Café del Microbeneficio San Gabriel con origen controlado y calidad artesanal." : producto.Descripcion)</p>
                                 <div class="rc-product-footer">
-                                    <strong>₡ @producto.Precio.ToString("N0")</strong>
+                                    <strong>₡ @producto.Precio.ToString("N2")</strong>
                                     <a asp-area="Identity" asp-page="/Account/Login" aria-label="Consultar @producto.Nombre"><i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>

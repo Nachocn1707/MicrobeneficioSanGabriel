@@ -34,7 +34,7 @@ namespace MicrobeneficioSanGabriel.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true,
-                    PhoneNumber = "8888-8888"
+                    PhoneNumber = "88888888"
                 };
 
                 var result = await userManager.CreateAsync(adminUser, adminPassword);

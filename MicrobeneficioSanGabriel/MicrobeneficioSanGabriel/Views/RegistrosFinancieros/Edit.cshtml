@@ -72,8 +72,11 @@
                         </label>
 
                         <input asp-for="Monto"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal"
                                class="form-control"
-                               min="0"
+                               min="0.01"
                                placeholder="Digite el monto" />
 
                         <span asp-validation-for="Monto" class="text-danger"></span>

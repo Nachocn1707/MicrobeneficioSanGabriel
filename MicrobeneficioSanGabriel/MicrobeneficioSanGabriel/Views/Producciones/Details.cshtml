@@ -438,8 +438,11 @@
                             <i class="fa-solid fa-weight-scale"></i>
 
                             <input asp-for="CantidadProcesadaKg"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal"
                                    class="form-control"
-                                   min="1" />
+                                   min="0.01" />
                         </div>
 
                         <span asp-validation-for="CantidadProcesadaKg"
@@ -456,8 +459,11 @@
                             <i class="fa-solid fa-scale-balanced"></i>
 
                             <input asp-for="CantidadResultanteKg"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal"
                                    class="form-control"
-                                   min="1" />
+                                   min="0.01" />
                         </div>
 
                         <span asp-validation-for="CantidadResultanteKg"

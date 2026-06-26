@@ -1,4 +1,4 @@
-@model MicrobeneficioSanGabriel.Models.Factura
+﻿@model MicrobeneficioSanGabriel.Models.Factura
 
 @{
     ViewData["Title"] = "Detalles de factura";
@@ -6,7 +6,7 @@
 
     var cliente = Model.Pedido?.ClienteNombre ?? "Sin cliente";
     var producto = Model.Pedido?.Producto?.Nombre ?? "Sin producto";
-    var cantidad = Model.Pedido != null ? $"{Model.Pedido.Cantidad} kg" : "Sin cantidad";
+    var cantidad = Model.Pedido != null ? $"{Model.Pedido.Cantidad:N2} kg" : "Sin cantidad";
     var telefono = Model.Pedido?.ClienteTelefono ?? "Sin teléfono";
     var observacion = string.IsNullOrWhiteSpace(Model.Observacion)
         ? "Sin observaciones"

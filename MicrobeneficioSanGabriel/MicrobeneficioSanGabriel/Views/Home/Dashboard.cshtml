@@ -1,4 +1,4 @@
-@using System.Text.Json
+﻿@using System.Text.Json
 @using MicrobeneficioSanGabriel.Models
 @{
     ViewData["Title"] = "Dashboard Ejecutivo";
@@ -13,7 +13,7 @@
     var produccionMesKg = Convert.ToDouble(ViewBag.ProduccionMesKg ?? 0d);
     var lotesActivos = Convert.ToInt32(ViewBag.LotesActivos ?? 0);
     var pedidosPendientes = Convert.ToInt32(ViewBag.PedidosPendientes ?? 0);
-    var totalStockKg = Convert.ToInt32(ViewBag.TotalStockKg ?? 0);
+    var totalStockKg = Convert.ToDecimal(ViewBag.TotalStockKg ?? 0m);
     var produccionesEnProceso = Convert.ToInt32(ViewBag.ProduccionesEnProceso ?? 0);
     var produccionesCompletadasHoy = Convert.ToInt32(ViewBag.ProduccionesCompletadasHoy ?? 0);
     var totalRegistrosTrazabilidad = Convert.ToInt32(ViewBag.TotalRegistrosTrazabilidad ?? 0);
@@ -54,7 +54,7 @@
 
 <section class="sg-kpi-grid">
     <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-seedling"></i></span><div><span>Producción del mes</span><strong>@produccionMesKg.ToString("N1") kg</strong><div class="sg-trend">Dato real del mes actual</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Facturas no anuladas</div></div></article>
+    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N2")</strong><div class="sg-trend">Facturas no anuladas</div></div></article>
     <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Lotes activos</span><strong>@lotesActivos</strong><div class="sg-trend">Según estado del lote</div></div></article>
     <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-clipboard-list"></i></span><div><span>Pedidos pendientes</span><strong>@pedidosPendientes</strong><div class="sg-trend warn">Pendiente / En proceso</div></div></article>
 </section>
@@ -93,7 +93,7 @@
                     <div class="sg-mini-row">
                         <img class="sg-thumb" src="@ImagenProducto(producto)" alt="@producto.Nombre" />
                         <span>@producto.Nombre<div class="sg-bar"><span style="width:@porcentajeStock%"></span></div></span>
-                        <b>@producto.Stock kg</b>
+                        <b>@producto.Stock.ToString("N2") kg</b>
                     </div>
                 }
             }
@@ -138,7 +138,7 @@
                 {
                     foreach(var p in pedidos.Take(5))
                     {
-                        <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
+                        <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad.ToString("N2") kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N2"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
                     }
                 }
                 else

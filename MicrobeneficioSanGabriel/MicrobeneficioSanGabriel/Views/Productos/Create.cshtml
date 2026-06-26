@@ -1,4 +1,4 @@
-@model MicrobeneficioSanGabriel.Models.Producto
+﻿@model MicrobeneficioSanGabriel.Models.Producto
 
 @{
     ViewData["Title"] = "Create";
@@ -137,6 +137,9 @@
                                 <i class="fa-solid fa-colon-sign"></i>
 
                                 <input asp-for="Precio"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal"
                                        class="form-control" />
 
                             </div>
@@ -161,6 +164,9 @@
                                 <i class="fa-solid fa-warehouse"></i>
 
                                 <input asp-for="Stock"
+                                   type="number"
+                                   step="0.01"
+                                   inputmode="decimal"
                                        class="form-control" />
 
                             </div>

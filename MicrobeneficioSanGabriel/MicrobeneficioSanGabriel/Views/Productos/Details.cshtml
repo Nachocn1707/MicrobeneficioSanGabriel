@@ -1,4 +1,4 @@
-@model MicrobeneficioSanGabriel.Models.Producto
+﻿@model MicrobeneficioSanGabriel.Models.Producto
 @{
     ViewData["Title"] = "Detalles del producto";
     Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
@@ -64,7 +64,7 @@
 
             <div class="detalle-item">
                 <span class="detalle-label"><i class="fa-solid fa-weight-hanging"></i> Stock</span>
-                <span class="sg-badge @(stockBajo ? "red" : "")">@(stockBajo ? $"{Model.Stock} kg · Stock bajo" : $"{Model.Stock} kg disponibles")</span>
+                <span class="sg-badge @(stockBajo ? "red" : "")">@(stockBajo ? $"{Model.Stock:N2} kg · Stock bajo" : $"{Model.Stock:N2} kg disponibles")</span>
             </div>
 
             <div class="detalle-item">

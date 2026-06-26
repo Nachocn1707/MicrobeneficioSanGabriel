@@ -1,4 +1,4 @@
-@model IEnumerable<MicrobeneficioSanGabriel.Models.Pedido>
+﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Pedido>
 @{
     var esCliente = User.IsInRole("Cliente");
     ViewData["Title"] = esCliente ? "Mis pedidos" : "Pedidos y Facturación";
@@ -71,11 +71,11 @@
                         <tr>
                             <td>PP-@p.Id.ToString("0000")</td>
                             <td>@(p.Producto?.Nombre ?? "Producto")</td>
-                            <td>@p.Cantidad kg</td>
+                            <td>@p.Cantidad.ToString("N2") kg</td>
                             <td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td>
                             <td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td>
                             <td>@p.FechaPedido.ToString("dd MMM yyyy")</td>
-                            <td>₡@totalPedido.ToString("N0")</td>
+                            <td>₡@totalPedido.ToString("N2")</td>
                             <td>
                                 <span class="sg-action-icons">
                                     <a asp-action="Details" asp-route-id="@p.Id" title="Ver" aria-label="Ver"><i class="fa-solid fa-eye"></i></a>
@@ -110,17 +110,17 @@ else
         <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar pedido, cliente, factura..." /></label></div>
     </section>
     <section class="sg-kpi-grid">
-        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N2")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Pedidos totales</span><strong>@total</strong><div class="sg-trend">Registros reales</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-clipboard-list"></i></span><div><span>Pedidos pendientes</span><strong>@pendientes</strong><div class="sg-trend warn">Pendiente / En proceso</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Completados</span><strong>@completados</strong><div class="sg-trend">Según estado actual</div></div></article>
     </section>
     <section class="sg-grid-2">
         <article class="sg-card sg-panel"><h3>Estado de pedidos</h3><div class="sg-donut-wrap mt-3"><div class="sg-donut" style="--p:@Porcentaje(completados)"><div><b>@Porcentaje(completados)%</b><br /><span>Completados</span></div></div><div class="sg-legend"><div class="sg-legend-row"><span class="sg-dot"></span><span>Completados</span><b>@completados</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@enProceso</b></div><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pendientes</span><b>@pedidos.Count(p => p.Estado == "Pendiente")</b></div><div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@cancelados</b></div></div></div></article>
-        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => !string.IsNullOrWhiteSpace(p.EstadoPago) && (p.EstadoPago.Contains("completado", StringComparison.OrdinalIgnoreCase) || p.EstadoPago.Contains("Pag", StringComparison.OrdinalIgnoreCase)))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto total en pedidos</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
+        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => !string.IsNullOrWhiteSpace(p.EstadoPago) && (p.EstadoPago.Contains("completado", StringComparison.OrdinalIgnoreCase) || p.EstadoPago.Contains("Pag", StringComparison.OrdinalIgnoreCase)))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto total en pedidos</span><b>₡@ventas.ToString("N2")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
     </section>
     <section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaPedidos"><thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Total</th><th>Acciones</th></tr></thead><tbody>@foreach(var p in pedidos){
-        <tr><td>PP-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td><td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador")||User.IsInRole("Vendedor")){
+        <tr><td>PP-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad.ToString("N2") kg</td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td><td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N2"))</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador")||User.IsInRole("Vendedor")){
             <a asp-action="Edit" asp-route-id="@p.Id" title="Editar pedido" aria-label="Editar pedido"><i class="fa-solid fa-pen"></i></a>
         }
         @if (User.IsInRole("Administrador"))
