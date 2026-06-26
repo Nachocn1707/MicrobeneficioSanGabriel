@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Producto>
+@model IEnumerable<MicrobeneficioSanGabriel.Models.Producto>
 @{
     ViewData["Title"] = "Productos";
     Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
@@ -41,8 +41,8 @@
                     <h3>@item.Nombre</h3>
                     <p>@(string.IsNullOrWhiteSpace(item.Descripcion) ? "Café procesado por Microbeneficio San Gabriel con calidad y trazabilidad." : item.Descripcion)</p>
                     <div class="sg-product-footer">
-                        <strong>₡ @item.Precio.ToString("N2")</strong>
-                        <span class="sg-badge">@item.Stock.ToString("N2") kg</span>
+                        <strong>₡ @item.Precio.ToString("N0")</strong>
+                        <span class="sg-badge">@item.Stock kg</span>
                     </div>
                     <div class="sg-actions mt-3">
                         <a asp-controller="Pedidos" asp-action="Create" asp-route-productoId="@item.Id" class="sg-btn gold"><i class="fa-solid fa-cart-plus"></i>Realizar pedido</a>
@@ -85,7 +85,7 @@ else
     <section class="sg-kpi-grid mb-3">
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-mug-hot"></i></span><div><span>Productos registrados</span><strong>@productos.Count</strong><div class="sg-trend">Catálogo activo</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Productos activos</span><strong>@activos</strong><div class="sg-trend">Disponibles para venta</div></div></article>
-        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-boxes-stacked"></i></span><div><span>Stock total</span><strong>@stockTotal.ToString("N2") kg</strong><div class="sg-trend warn">Inventario actual</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-boxes-stacked"></i></span><div><span>Stock total</span><strong>@stockTotal kg</strong><div class="sg-trend warn">Inventario actual</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon brown"><i class="fa-solid fa-triangle-exclamation"></i></span><div><span>Alertas de stock</span><strong>@stockBajo</strong><div class="sg-trend @(stockBajo > 0 ? "down" : "")">@(stockBajo > 0 ? "Revisar mínimos" : "Sin alertas")</div></div></article>
     </section>
 
@@ -123,7 +123,7 @@ else
                             </td>
                             <td>@item.Categoria</td>
                             <td>₡ @item.Precio.ToString("N2")</td>
-                            <td><span class="sg-badge @(item.Stock <= item.StockMinimo ? "red" : "")">@item.Stock.ToString("N2") kg</span></td>
+                            <td><span class="sg-badge @(item.Stock <= item.StockMinimo ? "red" : "")">@item.Stock kg</span></td>
                             <td><span class="sg-badge @(item.Activo ? "" : "red")">@(item.Activo ? "Activo" : "Inactivo")</span></td>
                             <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
                             <td class="text-end">

@@ -17,7 +17,7 @@ namespace MicrobeneficioSanGabriel.Models
         public string Cedula { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El teléfono es obligatorio")]
-        [RegularExpression(@"^\d{4}-?\d{4}$", ErrorMessage = "El teléfono debe tener 8 dígitos, por ejemplo 88888888")]
+        [RegularExpression(@"^\d{4}-?\d{4}$", ErrorMessage = "El teléfono debe tener 8 dígitos, por ejemplo 8888-8888")]
         [Display(Name = "Teléfono")]
         public string Telefono { get; set; } = string.Empty;
 

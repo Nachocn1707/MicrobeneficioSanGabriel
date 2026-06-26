@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MicrobeneficioSanGabriel.Models
 {
@@ -20,10 +20,10 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "El stock es obligatorio")]
         [Range(0, 999999, ErrorMessage = "El stock no puede ser negativo")]
-        public decimal Stock { get; set; }
+        public int Stock { get; set; }
 
         [Display(Name = "Stock mínimo")]
-        public decimal StockMinimo { get; set; } = 20m;
+        public int StockMinimo { get; set; } = 20;
 
         [StringLength(300)]
         public string? Descripcion { get; set; }

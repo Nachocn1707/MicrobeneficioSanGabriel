@@ -127,7 +127,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             ViewBag.TotalStockKg = await _context.Productos
                 .Where(p => p.Activo)
-                .SumAsync(p => (decimal?)p.Stock) ?? 0m;
+                .SumAsync(p => (int?)p.Stock) ?? 0;
 
             var ventasPorMes = await _context.Facturas
                 .Where(f => f.FechaFactura >= inicioAnio && f.FechaFactura < finAnio &&
@@ -240,7 +240,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             ViewBag.TotalKgDisponibles = await _context.Productos
                 .Where(p => p.Activo)
-                .SumAsync(p => (decimal?)p.Stock) ?? 0m;
+                .SumAsync(p => (int?)p.Stock) ?? 0;
 
             return View();
         }

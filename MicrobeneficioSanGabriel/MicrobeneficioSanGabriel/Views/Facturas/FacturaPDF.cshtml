@@ -191,7 +191,7 @@
             <tbody>
                 <tr>
                     <td>@Model.Pedido?.Producto?.Nombre</td>
-                    <td>@(Model.Pedido?.Cantidad.ToString("N2") ?? "0.00") kg</td>
+                    <td>@Model.Pedido?.Cantidad kg</td>
                     <td>₡ @Model.Subtotal.ToString("N2")</td>
                 </tr>
             </tbody>

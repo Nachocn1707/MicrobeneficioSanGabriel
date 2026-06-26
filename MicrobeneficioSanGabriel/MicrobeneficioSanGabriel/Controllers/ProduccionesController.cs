@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -82,13 +82,13 @@ namespace MicrobeneficioSanGabriel.Controllers
 
                     if (producto != null)
                     {
-                        producto.Stock += Convert.ToDecimal(produccion.CantidadResultanteKg);
+                        producto.Stock += (int)produccion.CantidadResultanteKg;
 
                         var movimiento = new MovimientoInventario
                         {
                             ProductoId = producto.Id,
                             TipoMovimiento = "Entrada",
-                            Cantidad = Convert.ToDecimal(produccion.CantidadResultanteKg),
+                            Cantidad = (int)produccion.CantidadResultanteKg,
                             FechaMovimiento = DateTime.Now,
                             Observacion = $"Entrada automática por producción #{produccion.Id}"
                         };
@@ -296,7 +296,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 // Si la producción completada aumentó el inventario, se revierte ese movimiento.
                 if (produccion.Estado == "Completado" && produccion.Producto != null)
                 {
-                    var cantidadARevertir = Convert.ToDecimal(produccion.CantidadResultanteKg);
+                    var cantidadARevertir = (int)produccion.CantidadResultanteKg;
 
                     if (produccion.Producto.Stock < cantidadARevertir)
                     {
@@ -381,7 +381,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             var cambiaInventario = produccionActual.Estado != datosNuevos.Estado ||
                                    produccionActual.ProductoId != datosNuevos.ProductoId ||
-                                   produccionActual.CantidadResultanteKg != datosNuevos.CantidadResultanteKg;
+                                   (int)produccionActual.CantidadResultanteKg != (int)datosNuevos.CantidadResultanteKg;
 
             if (cambiaInventario && produccionActual.Estado == "Completado")
             {
@@ -424,7 +424,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return "El producto resultante seleccionado no existe.";
             }
 
-            var cantidad = Convert.ToDecimal(produccion.CantidadResultanteKg);
+            var cantidad = (int)produccion.CantidadResultanteKg;
             producto.Stock += cantidad;
 
             var movimiento = new MovimientoInventario
@@ -453,7 +453,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return "No se encontró el producto asociado para ajustar el inventario.";
             }
 
-            var cantidad = Convert.ToDecimal(produccion.CantidadResultanteKg);
+            var cantidad = (int)produccion.CantidadResultanteKg;
             if (producto.Stock < cantidad)
             {
                 return "No se puede cambiar el estado porque parte del inventario generado por esta producción ya fue utilizado.";

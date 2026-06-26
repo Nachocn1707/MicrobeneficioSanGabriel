@@ -12,33 +12,6 @@
     });
 }
 
-function soloDecimal(id, maxEnteros = 9, maxDecimales = 2) {
-
-    const input = document.getElementById(id);
-
-    if (!input) return;
-
-    input.setAttribute("inputmode", "decimal");
-    input.setAttribute("step", "0.01");
-
-    input.addEventListener("input", function () {
-
-        let valor = this.value
-            .replace(/,/g, '.')
-            .replace(/[^0-9.]/g, '');
-
-        const partes = valor.split('.');
-        let enteros = (partes[0] || '').substring(0, maxEnteros);
-        let decimales = partes.slice(1).join('').substring(0, maxDecimales);
-
-        if (valor.startsWith('.')) {
-            enteros = '0';
-        }
-
-        this.value = partes.length > 1 ? `${enteros}.${decimales}` : enteros;
-    });
-}
-
 function soloLetras(id, maximo) {
 
     const input = document.getElementById(id);
@@ -64,19 +37,19 @@ document.addEventListener("DOMContentLoaded", function () {
     soloNumeros("Cedula", 9);
     soloNumeros("Telefono", 8);
     soloLetras("Finca", 11)
-    soloDecimal("Precio", 9, 2)
+    soloNumeros("Precio", 5)
     soloLetras("Canton", 12)
     soloLetras("Distrito", 12)
     
     //Inventario
-    soloDecimal("Cantidad", 9, 2)
+    soloNumeros("Cantidad", 5)
 
     //Lote
-    soloDecimal("PesoKg", 9, 2)
+    soloNumeros("PesoKg", 5)
 
     //Producción
-    soloDecimal("CantidadProcesadaKg", 9, 2)
-    soloDecimal("CantidadResultanteKg", 9, 2)
+    soloNumeros("CantidadProcesadaKg", 5)
+    soloNumeros("CantidadResultanteKg", 5)
 
     //Trazabilidad
     soloLetras("Responsable", 10)
@@ -84,19 +57,15 @@ document.addEventListener("DOMContentLoaded", function () {
     //Pedidos
     soloLetras("ClienteNombre", 35)
     soloNumeros("ClienteTelefono", 8)
-    soloDecimal("Cantidad", 9, 2)
+    soloNumeros("Cantidad", 5)
 
-    //Movimiento financiero
-    soloDecimal("Monto", 9, 2)
+    //Movimiento finacniero
+    soloNumeros("Monto")
 
     //Facturas
-    soloDecimal("Subtotal", 9, 2)
-    soloDecimal("IVA", 9, 2)
-    soloDecimal("Total", 9, 2)
-
-    //Productos
-    soloDecimal("Stock", 9, 2)
-    soloDecimal("StockMinimo", 9, 2)
+    soloNumeros("Subtotal")
+    soloNumeros("IVA")
+    soloNumeros("Total")
 
 
 });

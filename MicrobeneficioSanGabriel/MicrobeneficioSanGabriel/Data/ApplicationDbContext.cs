@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Models;
 
@@ -76,32 +76,6 @@ namespace MicrobeneficioSanGabriel.Data
                 .WithMany()
                 .HasForeignKey(t => t.ProduccionId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-
-
-            builder.Entity<Producto>()
-                .Property(p => p.Precio)
-                .HasPrecision(18, 2);
-
-            builder.Entity<Producto>()
-                .Property(p => p.Stock)
-                .HasPrecision(18, 2);
-
-            builder.Entity<Producto>()
-                .Property(p => p.StockMinimo)
-                .HasPrecision(18, 2);
-
-            builder.Entity<Pedido>()
-                .Property(p => p.Cantidad)
-                .HasPrecision(18, 2);
-
-            builder.Entity<MovimientoInventario>()
-                .Property(m => m.Cantidad)
-                .HasPrecision(18, 2);
-
-            builder.Entity<RegistroFinanciero>()
-                .Property(r => r.Monto)
-                .HasPrecision(18, 2);
 
             builder.Entity<Factura>()
                 .Property(f => f.Subtotal)

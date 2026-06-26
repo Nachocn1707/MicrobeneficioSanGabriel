@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrobeneficioSanGabriel.Models
@@ -17,7 +17,7 @@ namespace MicrobeneficioSanGabriel.Models
         public string? ClienteCorreo { get; set; }
 
         [Required(ErrorMessage = "El teléfono del cliente es obligatorio")]
-        [RegularExpression(@"^\d{4}-?\d{4}$", ErrorMessage = "El teléfono debe tener 8 dígitos, por ejemplo 88888888")]
+        [RegularExpression(@"^\d{4}-?\d{4}$", ErrorMessage = "El teléfono debe tener 8 dígitos, por ejemplo 8888-8888")]
         [Display(Name = "Teléfono del cliente")]
         public string ClienteTelefono { get; set; } = string.Empty;
 
@@ -29,8 +29,8 @@ namespace MicrobeneficioSanGabriel.Models
         public Producto? Producto { get; set; }
 
         [Required(ErrorMessage = "La cantidad es obligatoria")]
-        [Range(typeof(decimal), "0.01", "999999", ErrorMessage = "La cantidad debe ser mayor a 0")]
-        public decimal Cantidad { get; set; }
+        [Range(1, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
+        public int Cantidad { get; set; }
 
         [Required(ErrorMessage = "La fecha del pedido es obligatoria")]
         [Display(Name = "Fecha Pedido")]
