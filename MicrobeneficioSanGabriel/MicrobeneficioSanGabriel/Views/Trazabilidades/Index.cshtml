@@ -13,7 +13,27 @@
     var etapaPrincipal = etapasConteo.FirstOrDefault();
     decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
 }
-<section class="sg-page-head"><div><h1>Trazabilidad</h1><p>Rastrea el origen y recorrido del café desde la finca hasta el cliente con registros reales.</p></div><div class="sg-actions"><a asp-action="Index" class="sg-btn green"><i class="fa-solid fa-rotate"></i>Actualizar</a></div></section>
+<section class="sg-page-head">
+    <div>
+        <h1>Trazabilidad</h1>
+        <p>Rastrea el origen y recorrido del café desde la finca hasta el cliente con registros reales.</p>
+    </div>
+
+    <div class="sg-actions">
+        @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+        {
+            <a asp-action="Create" class="sg-btn gold">
+                <i class="fa-solid fa-plus"></i>
+                Agregar trazabilidad
+            </a>
+        }
+
+        <a asp-action="Index" class="sg-btn green">
+            <i class="fa-solid fa-rotate"></i>
+            Actualizar
+        </a>
+    </div>
+</section>
 <form method="get" asp-action="Index" class="sg-filters">
     <label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input name="codigoLote" value="@codigoLote" placeholder="Buscar por lote o código..." /></label>
     <select name="etapa" class="sg-filter form-select" asp-items="ViewBag.Etapas"><option value="">Todas las etapas</option></select>
