@@ -10,66 +10,23 @@
 }
 
 <div class="VistaCrear-page">
-
     <div class="VistaCrear-top">
-
         <div class="VistaCrear-title">
-
             <span class="VistaCrear-badge">
                 Sistema de trazabilidad
             </span>
 
             <h1>Nueva trazabilidad</h1>
-
             <p>
                 Registrá el seguimiento y control de los lotes dentro del proceso de producción.
             </p>
 
         </div>
-
     </div>
 
-    <div class="VistaCrear-card">
+    <div class="VistaCreaR-card">
 
-        <div class="VistaCrear-side">
-
-            <div class="VistaCrear-side-content">
-
-                <div class="VistaCrear-icon">
-                    <i class="fa-solid fa-route"></i>
-                </div>
-
-                <h2>Seguimiento</h2>
-
-                <p>
-                    Controlá las etapas, responsables y registros de producción
-                    para mantener la trazabilidad completa del café.
-                </p>
-
-                <div class="VistaCrear-info">
-
-                    <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-layer-group"></i>
-                        Seguimiento de lotes
-                    </div>
-
-                    <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-gears"></i>
-                        Procesos productivos
-                    </div>
-
-                    <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-user-check"></i>
-                        Control de responsables
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="VistaCrear-form-container">
+        <div class="VistaCreaR-form-container">
 
             <form asp-action="Create" method="post">
 
@@ -172,7 +129,9 @@
 
                             <input asp-for="FechaRegistro"
                                    type="datetime-local"
-                                   class="form-control" />
+                                   class="form-control"
+                                   min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
+                                   max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
 
                         </div>
 
@@ -248,13 +207,9 @@
                     </button>
 
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

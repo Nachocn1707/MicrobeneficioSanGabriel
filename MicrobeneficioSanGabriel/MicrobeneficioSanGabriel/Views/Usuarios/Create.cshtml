@@ -7,47 +7,11 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/VistaCrear.css" />
-
-    <style>
-        .password-input-wrapper {
-            position: relative;
-        }
-
-            .password-input-wrapper .form-control {
-                padding-right: 52px;
-            }
-
-        .password-toggle-btn {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            color: #9ca3af;
-            font-size: 1rem;
-            cursor: pointer;
-            z-index: 10;
-            padding: 0;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-            .password-toggle-btn:hover {
-                color: #7a5230;
-            }
-    </style>
 }
 
 <div class="VistaCrear-page">
-
     <div class="VistaCrear-top">
-
         <div class="VistaCrear-title">
-
             <span class="VistaCrear-badge">
                 Gestión de usuarios
             </span>
@@ -59,50 +23,11 @@
             </p>
 
         </div>
-
     </div>
 
-    <div class="VistaCrear-card">
+    <div class="VistaCreaR-card">
 
-        <div class="VistaCrear-side">
-
-            <div class="VistaCrear-side-content">
-
-                <div class="VistaCrear-icon">
-                    <i class="fa-solid fa-user-plus"></i>
-                </div>
-
-                <h2>Usuarios</h2>
-
-                <p>
-                    Administrá accesos, roles y datos de contacto
-                    para el Microbeneficio San Gabriel.
-                </p>
-
-                <div class="VistaCrear-info">
-
-                    <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Asignación de roles
-                    </div>
-
-                    <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-envelope"></i>
-                        Acceso por correo
-                    </div>
-
-                    <div class="VistaCrear-info-item">
-                        <i class="fa-solid fa-lock"></i>
-                        Seguridad de cuenta
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="VistaCrear-form-container">
+        <div class="VistaCreaR-form-container">
 
             <form asp-action="Create" method="post">
 
@@ -297,13 +222,9 @@
                     </button>
 
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

@@ -6,278 +6,14 @@
 }
 
 @section Styles {
-    <style>
-        .factura-create-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 14px;
-        }
 
-        .factura-create-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-        .factura-create-title h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #2b160d;
-        }
-
-        .factura-create-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #d8b36a;
-            margin: 12px 0;
-        }
-
-        .factura-create-title p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .factura-create-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #e2f4df;
-            color: #147a3d;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-weight: 900;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .factura-create-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 0.38fr 0.62fr;
-            min-height: 520px;
-        }
-
-        .factura-create-side {
-            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/orders/order-detail-coffee.jpg");
-            background-size: cover;
-            background-position: center;
-            padding: 36px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
-        }
-
-        .factura-create-side-content {
-            max-width: 360px;
-        }
-
-        .factura-create-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 26px;
-        }
-
-        .factura-create-side h2 {
-            color: #fff3c4;
-            font-size: 2rem;
-            font-weight: 950;
-            margin: 0;
-        }
-
-        .factura-side-line {
-            width: 70px;
-            height: 4px;
-            border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
-        }
-
-        .factura-create-side p {
-            color: #fff8df;
-            opacity: 0.95;
-            font-weight: 650;
-            line-height: 1.55;
-            margin-bottom: 28px;
-        }
-
-        .factura-create-info {
-            display: grid;
-            gap: 16px;
-        }
-
-        .factura-create-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff8df;
-            font-weight: 800;
-        }
-
-            .factura-create-info-item i {
-                color: #f3d27a;
-                width: 18px;
-            }
-
-        .factura-create-form-container {
-            padding: 38px;
-        }
-
-        .factura-alert {
-            background: #dff6fd;
-            color: #0369a1;
-            border: 1px solid #bde8f7;
-            border-radius: 18px;
-            padding: 15px 18px;
-            font-weight: 750;
-            margin-top: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .factura-field label {
-            color: #2b160d;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-
-        .input-modern {
-            position: relative;
-        }
-
-            .input-modern i {
-                position: absolute;
-                left: 17px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #a1a8b3;
-                z-index: 2;
-            }
-
-            .input-modern .form-control,
-            .input-modern .form-select {
-                min-height: 56px;
-                border-radius: 18px;
-                border: 1px solid #d8dee8;
-                background: #fff;
-                padding-left: 48px;
-                font-weight: 700;
-                color: #2b160d;
-            }
-
-                .input-modern .form-control:focus,
-                .input-modern .form-select:focus {
-                    border-color: #d8b36a;
-                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
-                }
-
-        .textarea-modern i {
-            top: 25px;
-            transform: none;
-        }
-
-        .textarea-modern textarea.form-control {
-            min-height: 115px;
-            padding-top: 17px;
-            resize: vertical;
-        }
-
-        .factura-create-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 26px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-factura-create {
-            border: none;
-            border-radius: 14px;
-            padding: 12px 20px;
-            font-weight: 950;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.18s ease;
-        }
-
-            .btn-factura-create:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-factura-volver {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-            .btn-factura-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
-            }
-
-        .btn-factura-guardar {
-            background: #4a2c1a;
-            color: #fff8df;
-        }
-
-            .btn-factura-guardar:hover {
-                background: #7a5230;
-                color: #fff8df;
-            }
-
-        @@media (max-width: 1100px) {
-            .factura-create-card {
-                grid-template-columns: 1fr;
-            }
-
-            .factura-create-side {
-                min-height: 300px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .factura-create-header {
-                flex-direction: column;
-            }
-
-            .factura-create-form-container {
-                padding: 24px;
-            }
-
-            .factura-create-side {
-                padding: 28px;
-            }
-
-            .factura-create-title h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
 
-<div class="factura-create-page">
-
-    <div class="factura-create-header">
-        <div class="factura-create-title">
-            <span class="factura-create-badge">
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+        <div class="VistaCrear-title">
+            <span class="VistaCrear-badge">
                 <i class="fa-solid fa-file-invoice-dollar"></i>
                 Sistema de facturación
             </span>
@@ -291,44 +27,9 @@
         </div>
     </div>
 
-    <div class="factura-create-card">
+    <div class="VistaCreaR-card">
 
-        <div class="factura-create-side">
-            <div class="factura-create-side-content">
-
-                <div class="factura-create-icon">
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                </div>
-
-                <h2>Facturación</h2>
-                <div class="factura-side-line"></div>
-
-                <p>
-                    Gestioná pagos, pedidos y facturas para mantener el control
-                    financiero del microbeneficio.
-                </p>
-
-                <div class="factura-create-info">
-                    <div class="factura-create-info-item">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        Relación con pedidos
-                    </div>
-
-                    <div class="factura-create-info-item">
-                        <i class="fa-solid fa-money-check-dollar"></i>
-                        Control de pagos
-                    </div>
-
-                    <div class="factura-create-info-item">
-                        <i class="fa-solid fa-receipt"></i>
-                        Facturación automática
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="factura-create-form-container">
+        <div class="VistaCreaR-form-container">
 
             <form asp-action="Create" method="post">
 
@@ -399,35 +100,31 @@
 
                 </div>
 
-                <div class="factura-alert">
+                <div class="Mensaje-alert">
                     <i class="fa-solid fa-circle-info"></i>
                     <span>
                         El subtotal, IVA y total se calcularán automáticamente al guardar la factura.
                     </span>
                 </div>
 
-                <div class="factura-create-actions">
+                <div class="VistaCrear-actions">
 
                     <a asp-action="Index"
-                           class="btn-factura-create btn-factura-volver">
+                           class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
 
                     <button type="submit"
-                            class="btn-factura-create btn-factura-guardar">
+                            class="btn-crear">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar factura
                     </button>
 
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

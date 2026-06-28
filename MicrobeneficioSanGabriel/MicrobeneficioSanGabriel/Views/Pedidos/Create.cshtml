@@ -14,297 +14,14 @@
 }
 
 @section Styles {
-    <style>
-        .pedido-create-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 14px;
-        }
 
-        .pedido-create-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-        .pedido-create-title h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #2b160d;
-        }
-
-        .pedido-create-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #d8b36a;
-            margin: 12px 0;
-        }
-
-        .pedido-create-title p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .pedido-create-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #e2f4df;
-            color: #147a3d;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-weight: 900;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .pedido-create-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 0.38fr 0.62fr;
-            min-height: 560px;
-        }
-
-        .pedido-create-side {
-            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/orders/order-detail-coffee.jpg");
-            background-size: cover;
-            background-position: center;
-            padding: 36px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
-        }
-
-        .pedido-create-side-content {
-            max-width: 360px;
-        }
-
-        .pedido-create-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 26px;
-        }
-
-        .pedido-create-side h2 {
-            color: #fff3c4;
-            font-size: 2rem;
-            font-weight: 950;
-            margin: 0;
-        }
-
-        .pedido-side-line {
-            width: 70px;
-            height: 4px;
-            border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
-        }
-
-        .pedido-create-side p {
-            color: #fff8df;
-            opacity: 0.95;
-            font-weight: 650;
-            line-height: 1.55;
-            margin-bottom: 28px;
-        }
-
-        .pedido-create-info {
-            display: grid;
-            gap: 16px;
-        }
-
-        .pedido-create-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff8df;
-            font-weight: 800;
-        }
-
-            .pedido-create-info-item i {
-                color: #f3d27a;
-                width: 18px;
-            }
-
-        .pedido-create-form-container {
-            padding: 38px;
-        }
-
-        .pedido-alert {
-            background: #fff4d3;
-            color: #7a5230;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 15px 18px;
-            font-weight: 750;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            .pedido-alert i {
-                color: #a66b20;
-            }
-
-        .pedido-field label {
-            color: #2b160d;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-
-        .readonly-product {
-            min-height: 56px;
-            border-radius: 18px;
-            border: 1px solid #d8dee8;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            padding-left: 48px;
-            font-weight: 700;
-            color: #a1a8b3;
-        }
-
-            .readonly-product i {
-                left: 17px;
-            }
-
-        .input-modern {
-            position: relative;
-        }
-
-            .input-modern i {
-                position: absolute;
-                left: 17px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #a1a8b3;
-                z-index: 2;
-            }
-
-            .input-modern .form-control, .input-modern .form-select {
-                min-height: 56px;
-                border-radius: 18px;
-                border: 1px solid #d8dee8;
-                background: #fff;
-                padding-left: 48px;
-                font-weight: 700;
-                color: #2b160d;
-
-            }
-
-                .input-modern .form-control:focus, .input-modern .form-select:focus {
-                    border-color: #d8b36a;
-                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
-                }
-
-        .textarea-modern i {
-            top: 25px;
-            transform: none;
-        }
-
-        .textarea-modern textarea.form-control {
-            min-height: 115px;
-            padding-top: 17px;
-            resize: vertical;
-        }
-
-        .pedido-create-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 26px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-pedido-create {
-            border: none;
-            border-radius: 14px;
-            padding: 12px 20px;
-            font-weight: 950;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.18s ease;
-        }
-
-            .btn-pedido-create:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-pedido-volver {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-            .btn-pedido-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
-            }
-
-        .btn-pedido-guardar {
-            background: #4a2c1a;
-            color: #fff8df;
-        }
-
-            .btn-pedido-guardar:hover {
-                background: #7a5230;
-                color: #fff8df;
-            }
-
-        @@media (max-width: 1100px) {
-            .pedido-create-card {
-                grid-template-columns: 1fr;
-            }
-
-            .pedido-create-side {
-                min-height: 320px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .pedido-create-header {
-                flex-direction: column;
-            }
-
-            .pedido-create-form-container {
-                padding: 24px;
-            }
-
-            .pedido-create-side {
-                padding: 28px;
-            }
-
-            .pedido-create-title h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
 
-<div class="pedido-create-page">
-
-    <div class="pedido-create-header">
-        <div class="pedido-create-title">
-            <span class="pedido-create-badge">
+<div class="VistaCrear-page">
+    <div class="VistaCrear-top">
+        <div class="VistaCrear-title">
+            <span class="VistaCrear-badge">
                 <i class="fa-solid fa-cart-shopping"></i>
                 Gestión de pedidos
             </span>
@@ -318,44 +35,9 @@
         </div>
     </div>
 
-    <div class="pedido-create-card">
+    <div class="VistaCreaR-card">
 
-        <div class="pedido-create-side">
-            <div class="pedido-create-side-content">
-
-                <div class="pedido-create-icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-
-                <h2>Pedidos</h2>
-                <div class="pedido-side-line"></div>
-
-                <p>
-                    Gestioná clientes, productos y solicitudes para mantener
-                    un control comercial ordenado y profesional.
-                </p>
-
-                <div class="pedido-create-info">
-                    <div class="pedido-create-info-item">
-                        <i class="fa-solid fa-user-group"></i>
-                        Gestión de clientes
-                    </div>
-
-                    <div class="pedido-create-info-item">
-                        <i class="fa-solid fa-box"></i>
-                        Selección de productos
-                    </div>
-
-                    <div class="pedido-create-info-item">
-                        <i class="fa-solid fa-truck-fast"></i>
-                        Seguimiento de pedidos
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="pedido-create-form-container">
+        <div class="VistaCreaR-form-container">
 
             <form asp-action="Create" method="post">
 
@@ -524,16 +206,16 @@
 
                 </div>
 
-                <div class="pedido-create-actions">
+                <div class="VistaCrear-actions">
 
                     <a asp-controller="Productos" asp-action="Index"
-                       class="btn-pedido-create btn-pedido-volver">
+                       class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver a la lista
                     </a>
 
                     <button type="submit"
-                            class="btn-pedido-create btn-pedido-guardar">
+                            class="btn-crear">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Pagar
                     </button>
