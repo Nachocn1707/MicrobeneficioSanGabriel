@@ -18,6 +18,7 @@
 }
 
 @section Styles {
+
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
@@ -28,206 +29,119 @@
         <p>Actualizá los datos del producto registrado.</p>
     </div>
 
-    <div class="EstiloEditar-card">
-
-        <div class="EstiloEditar-card-header">
-            <h2>@Model.Nombre</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloEditar-card-body">
-
+    <div class="EstiloEditaR-card">
+        <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
-                </div>
-
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="Id" />
 
-                <div class="row g-4">
+                <div class="EstiloEditar-section">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label asp-for="Nombre" class="form-label">Nombre</label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej: Café Monteverde" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label asp-for="Nombre" class="form-label">
-                            Nombre
-                        </label>
+                        <div class="col-md-6">
+                            <label asp-for="Categoria" class="form-label">Categoría</label>
+                            <input asp-for="Categoria" class="form-control" placeholder="Escriba la categoría del café" />
+                            <span asp-validation-for="Categoria" class="text-danger"></span>
+                        </div>
 
-                        <input asp-for="Nombre"
-                               class="form-control"
-                               placeholder="Ej: Café Normal" />
+                        <div class="col-md-6">
+                            <label asp-for="Precio" class="form-label">Precio</label>
+                            <input asp-for="Precio" class="form-control" min="0" placeholder="Ej: 1500" />
+                            <span asp-validation-for="Precio" class="text-danger"></span>
+                        </div>
 
-                        <span asp-validation-for="Nombre"
-                              class="text-danger">
-                        </span>
+                        <div class="col-md-6">
+                            <label asp-for="Stock" class="form-label">Stock disponible</label>
+                            <input asp-for="Stock" class="form-control" min="0" placeholder="0" />
+                            <span asp-validation-for="Stock" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="StockMinimo" class="form-label">Stock mínimo</label>
+                            <input asp-for="StockMinimo" class="form-control" min="0" placeholder="Cantidad mínima" />
+                            <span asp-validation-for="StockMinimo" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
+                            <input asp-for="FechaRegistro" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Descripcion" class="form-label">Descripción</label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="4" placeholder="Describa el producto"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
-                        <label asp-for="Categoria" class="form-label">
-                            Categoría
-                        </label>
+                <div class="EstiloEditar-section">
+                    <h5>
+                        <i class="fa-solid fa-image"></i>
+                        Imagen del producto
+                    </h5>
 
-                        <input asp-for="Categoria"
-                               class="form-control"
-                               placeholder="Ej: Café Molido" />
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="d-flex flex-wrap align-items-center gap-4 p-3 rounded-4 border custom-image-container">
+                                <img src="@imagenActual" alt="Imagen actual" class="img-preview-modern" />
 
-                        <span asp-validation-for="Categoria"
-                              class="text-danger">
-                        </span>
-                    </div>
+                                <div class="flex-grow-1">
+                                    <input id="imagenArchivo" name="imagenArchivo" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
 
-                    <div class="col-md-6">
-                        <label asp-for="Precio" class="form-label">
-                            Precio
-                        </label>
+                                    <small class="text-muted d-block mt-2">
+                                        Subí una nueva imagen para reemplazar la actual. Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: 5 MB.
+                                    </small>
 
-                        <input asp-for="Precio"
-                               class="form-control"
-                               min="0"
-                               placeholder="Digite el precio del producto" />
+                                    @Html.ValidationMessage("imagenArchivo", null, new { @class = "text-danger d-block" })
 
-                        <span asp-validation-for="Precio"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Stock" class="form-label">
-                            Stock disponible
-                        </label>
-
-                        <input asp-for="Stock"
-                               class="form-control"
-                               min="0"
-                               placeholder="Digite el stock en kg" />
-
-                        <span asp-validation-for="Stock"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="StockMinimo" class="form-label">
-                            Stock mínimo
-                        </label>
-
-                        <input asp-for="StockMinimo"
-                               class="form-control"
-                               min="0"
-                               placeholder="Cantidad mínima antes de alerta" />
-
-                        <span asp-validation-for="StockMinimo"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="FechaRegistro" class="form-label">
-                            Fecha de registro
-                        </label>
-
-                        <input asp-for="FechaRegistro"
-                               type="datetime-local"
-                               class="form-control"
-                               min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
-                               max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
-
-                        <span asp-validation-for="FechaRegistro"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="Descripcion" class="form-label">
-                            Descripción
-                        </label>
-
-                        <textarea asp-for="Descripcion"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Descripción breve del producto"></textarea>
-
-                        <span asp-validation-for="Descripcion"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="imagenArchivo" class="form-label">
-                            Imagen del producto
-                        </label>
-
-                        <div class="d-flex flex-wrap align-items-center gap-3 p-3 rounded-4 border bg-light">
-                            <img src="@imagenActual"
-                                 alt="Imagen actual de @Model.Nombre"
-                                 style="width: 150px; height: 110px; object-fit: cover; border-radius: 18px; border: 1px solid #e7d6bd;" />
-
-                            <div class="flex-grow-1">
-                                <input id="imagenArchivo"
-                                       name="imagenArchivo"
-                                       type="file"
-                                       class="form-control"
-                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
-
-                                <small class="text-muted d-block mt-2">
-                                    Subí una nueva imagen para reemplazar la actual. Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: 5 MB.
-                                </small>
-
-                                @Html.ValidationMessage("imagenArchivo", null, new { @class = "text-danger d-block" })
-
-                                @if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
-                                {
-                                    <div class="form-check mt-2">
-                                        <input class="form-check-input"
-                                               type="checkbox"
-                                               id="eliminarImagenActual"
-                                               name="eliminarImagenActual"
-                                               value="true" />
-
-                                        <label class="form-check-label" for="eliminarImagenActual">
-                                            Quitar imagen personalizada y usar la imagen por defecto
-                                        </label>
-                                    </div>
-                                }
+                                    @if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+                                    {
+                                        <div class="form-check form-switch custom-remove-image-switch">
+                                            <input class="form-check-input" type="checkbox" id="eliminarImagenActual" name="eliminarImagenActual" value="true" />
+                                            <label class="form-check-label" for="eliminarImagenActual">
+                                                Quitar imagen personalizada y usar la imagen por defecto
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-12">
-                        <div class="form-check form-switch mt-2">
-                            <input class="form-check-input"
-                                   asp-for="Activo" />
-
-                            <label class="form-check-label"
-                                   asp-for="Activo">
-                                Producto activo
-                            </label>
+                <div class="EstiloEditar-section">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="form-check form-switch custom-active-product-switch">
+                                <input class="form-check-input" asp-for="Activo" />
+                                <label class="form-check-label" asp-for="Activo">
+                                    Producto activo
+                                </label>
+                            </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="EstiloEditar-actions">
-
-                    <a asp-action="Index"
-                           class="btn-volver">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la lista
+                    <a asp-action="Index" class="btn-volver">
+                        Cancelar
                     </a>
-
-                    <button type="submit"
-                            class="btn-guardar">
-                        <i class="fa-solid fa-floppy-disk"></i>
+                    <button type="submit" class="btn-guardar">
                         Guardar cambios
                     </button>
-
                 </div>
 
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

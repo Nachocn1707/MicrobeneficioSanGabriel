@@ -10,118 +10,167 @@
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloEditar-edit-page">
-
+<div class="EstiloEditar-page">
     <div class="EstiloEditar-header">
+        <h1>Editar Trazabilidad</h1>
+        <p>Actualizá los datos de la trazabilidad registrada.</p>
         <h1>@(soloEtapa ? "Cambiar etapa de trazabilidad" : "Editar trazabilidad")</h1>
-        <p>@(soloEtapa ? "Como operador solo podés actualizar la etapa del seguimiento." : "Actualizá la información registrada del seguimiento del lote.")</p>
+        <p>
+            @(soloEtapa ? "Como operador solo podés actualizar la etapa del seguimiento." : "Actualizá la información registrada del seguimiento del lote.")
+        </p>
     </div>
 
-    <div class="EstiloEditar-card">
-
-        <div class="EstiloEditar-card-header">
-            <h2>@(Model.Lote != null ? Model.Lote.CodigoLote : $"Registro #{Model.Id}")</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloEditar-card-body">
-
+    <div class="EstiloEditaR-card">
+        <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post">
-
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
                 <input type="hidden" asp-for="Id" />
 
-                @if (soloEtapa)
-                {
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Registro</label>
-                            <input value="#@Model.Id" class="form-control" readonly />
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Etapa" class="form-label">Etapa</label>
-                            <select asp-for="Etapa" class="form-select">
-                                <option value="">Seleccione una etapa</option>
-                                <option value="Recepción">Recepción</option>
-                                <option value="Producción">Producción</option>
-                                <option value="Secado">Secado</option>
-                                <option value="Tostado">Tostado</option>
-                                <option value="Molido">Molido</option>
-                                <option value="Empaque">Empaque</option>
-                                <option value="Almacenamiento">Almacenamiento</option>
-                            </select>
-                            <span asp-validation-for="Etapa" class="text-danger"></span>
-                            <small class="text-muted">Los demás datos del registro quedan protegidos.</small>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="row g-4">
-
-                        <div class="col-md-6">
-                            <label asp-for="LoteId" class="form-label">Lote</label>
-                            <select asp-for="LoteId" class="form-select" asp-items="ViewBag.LoteId">
-                                <option value="">Seleccione un lote</option>
-                            </select>
-                            <span asp-validation-for="LoteId" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="ProduccionId" class="form-label">Producción asociada</label>
-                            <select asp-for="ProduccionId" class="form-select" asp-items="ViewBag.ProduccionId">
-                                <option value="">Seleccione una producción</option>
-                            </select>
-                            <span asp-validation-for="ProduccionId" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Etapa" class="form-label">Etapa</label>
-                            <select asp-for="Etapa" class="form-select">
-                                <option value="">Seleccione una etapa</option>
-                                <option value="Recepción">Recepción</option>
-                                <option value="Producción">Producción</option>
-                                <option value="Secado">Secado</option>
-                                <option value="Tostado">Tostado</option>
-                                <option value="Molido">Molido</option>
-                                <option value="Empaque">Empaque</option>
-                                <option value="Almacenamiento">Almacenamiento</option>
-                            </select>
-                            <span asp-validation-for="Etapa" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
-                            <input asp-for="FechaRegistro" type="datetime-local" class="form-control" />
-                            <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Responsable" class="form-label">Responsable</label>
-                            <input asp-for="Responsable" class="form-control" placeholder="Nombre del responsable" />
-                            <span asp-validation-for="Responsable" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Observacion" class="form-label">Observación</label>
-                            <textarea asp-for="Observacion" class="form-control" rows="4" placeholder="Detalle adicional del seguimiento"></textarea>
-                            <span asp-validation-for="Observacion" class="text-danger"></span>
-                        </div>
-
-                    </div>
-                }
-
-                <div class="EstiloEditar-actions">
-                    <a asp-action="Index" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver a la lista</a>
-                    <button type="submit" class="btn-guardar"><i class="fa-solid fa-floppy-disk"></i> Guardar cambios</button>
+                <div class="Estilo-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>
+                        Verificá los datos antes de guardar para mantener la precisión del historial de trazabilidad del Microbeneficio San Gabriel.
+                    </span>
                 </div>
 
+                <div class="EstiloEditar-section">
+                    <h5>
+                        <i class="fa-solid fa-route"></i>
+                        @(soloEtapa ? "Actualización de la etapa operativa" : "Detalle del seguimiento")
+                    </h5>
+
+                    @if (soloEtapa)
+                    {
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Registro</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-hashtag"></i>
+                                        <input value="#@Model.Id" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Etapa" class="form-label">Etapa</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <select asp-for="Etapa" class="form-select">
+                                            <option value="">Seleccione una etapa</option>
+                                            <option value="Recepción">Recepción</option>
+                                            <option value="Producción">Producción</option>
+                                            <option value="Secado">Secado</option>
+                                            <option value="Tostado">Tostado</option>
+                                            <option value="Molido">Molido</option>
+                                            <option value="Empaque">Empaque</option>
+                                            <option value="Almacenamiento">Almacenamiento</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Etapa" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="LoteId" class="form-label">Lote</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                        <select asp-for="LoteId" class="form-select" asp-items="ViewBag.LoteId">
+                                            <option value="">Seleccione un lote</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="LoteId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ProduccionId" class="form-label">Producción asociada</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-industry"></i>
+                                        <select asp-for="ProduccionId" class="form-select" asp-items="ViewBag.ProduccionId">
+                                            <option value="">Seleccione una producción</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="ProduccionId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Etapa" class="form-label">Etapa</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <select asp-for="Etapa" class="form-select">
+                                            <option value="">Seleccione una etapa</option>
+                                            <option value="Recepción">Recepción</option>
+                                            <option value="Producción">Producción</option>
+                                            <option value="Secado">Secado</option>
+                                            <option value="Tostado">Tostado</option>
+                                            <option value="Molido">Molido</option>
+                                            <option value="Empaque">Empaque</option>
+                                            <option value="Almacenamiento">Almacenamiento</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Etapa" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-calendar"></i>
+                                        <input asp-for="FechaRegistro" type="datetime-local" class="form-control" />
+                                    </div>
+                                    <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Responsable" class="form-label">Responsable</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-user"></i>
+                                        <input asp-for="Responsable" class="form-control" placeholder="Nombre del responsable" />
+                                    </div>
+                                    <span asp-validation-for="Responsable" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Observacion" class="form-label">Observación</label>
+                                    <div class="input-modern textarea-modern">
+                                        <i class="fa-solid fa-comment"></i>
+                                        <textarea asp-for="Observacion" class="form-control" rows="4" placeholder="Detalle adicional del seguimiento"></textarea>
+                                    </div>
+                                    <span asp-validation-for="Observacion" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="EstiloEditar-actions">
+                    <a asp-action="Index" class="btn-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver
+                    </a>
+                    <button type="submit" class="btn-guardar">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Guardar cambios
+                    </button>
+                </div>
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

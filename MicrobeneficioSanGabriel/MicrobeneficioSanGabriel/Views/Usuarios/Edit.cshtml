@@ -6,151 +6,110 @@
 }
 
 @section Styles {
+
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloEditar-edit-page">
-
-    <div class="EstiloEditar-header">
-        <h1>Editar usuario</h1>
-        <p>Actualizá la información básica y el rol del usuario.</p>
+<div class="EstiloEditar-page">
+    <div class="EstiloEditar-top">
+        <div class="EstiloEditar-header">
+            <h1>Editar Usuarios</h1>
+            <p>Actualizá los datos de los usuarios registrados.</p>
+        </div>
     </div>
 
-    <div class="EstiloEditar-card">
-
-        <div class="EstiloEditar-card-header">
-            <h2>@Model.Email</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloEditar-card-body">
-
+    <div class="EstiloEditaR-card">
+        <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
-                </div>
-
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
                 <input type="hidden" asp-for="Id" />
 
-                <div class="row g-4">
+                <div class="Estilo-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>
+                        Verificá los datos del usuario <strong>@Model.Email</strong> antes de guardar los cambios en el sistema.
+                    </span>
+                </div>
 
-                    <div class="col-md-6">
+                <div class="EstiloEditar-section">
+                    <h5>
+                        <i class="fa-solid fa-user-gear"></i>
+                        Detalle del usuario
+                    </h5>
 
-                        <label asp-for="Nombre"
-                               class="form-label">
-                            Nombre
-                        </label>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="form-label">Nombre</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-user"></i>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Nombre del usuario" />
+                                </div>
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                        <input asp-for="Nombre"
-                               class="form-control"
-                               placeholder="Nombre del usuario" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Apellidos" class="form-label">Apellidos</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-user-tag"></i>
+                                    <input asp-for="Apellidos" class="form-control" placeholder="Apellidos del usuario" />
+                                </div>
+                                <span asp-validation-for="Apellidos" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                        <span asp-validation-for="Nombre"
-                              class="text-danger">
-                        </span>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">Correo</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-envelope"></i>
+                                    <input asp-for="Email" class="form-control" autocomplete="username" placeholder="correo@ejemplo.com" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber" class="form-label">Teléfono</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="8888-8888" />
+                                </div>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Rol" class="form-label">Rol</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-user-shield"></i>
+                                    <select asp-for="Rol" asp-items="Model.Roles" class="form-select">
+                                        <option value="">Seleccione un rol</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="Rol" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Apellidos"
-                               class="form-label">
-                            Apellidos
-                        </label>
-
-                        <input asp-for="Apellidos"
-                               class="form-control"
-                               placeholder="Apellidos del usuario" />
-
-                        <span asp-validation-for="Apellidos"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Email"
-                               class="form-label">
-                            Correo
-                        </label>
-
-                        <input asp-for="Email"
-                               class="form-control"
-                               autocomplete="username"
-                               placeholder="correo@ejemplo.com" />
-
-                        <span asp-validation-for="Email"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="PhoneNumber"
-                               class="form-label">
-                            Teléfono
-                        </label>
-
-                        <input asp-for="PhoneNumber"
-                               class="form-control"
-                               placeholder="8888-8888" />
-
-                        <span asp-validation-for="PhoneNumber"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-12">
-
-                        <label asp-for="Rol"
-                               class="form-label">
-                            Rol
-                        </label>
-
-                        <select asp-for="Rol"
-                                asp-items="Model.Roles"
-                                class="form-select">
-
-                            <option value="">
-                                Seleccione un rol
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="Rol"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
                 </div>
 
                 <div class="EstiloEditar-actions">
-
-                    <a asp-action="Index"
-                           class="btn-volver">
+                    <a asp-action="Index" class="btn-volver">
                         <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la lista
+                        Volver
                     </a>
-
-                    <button type="submit"
-                            class="btn-guardar">
+                    <button type="submit" class="btn-guardar">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar cambios
                     </button>
-
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

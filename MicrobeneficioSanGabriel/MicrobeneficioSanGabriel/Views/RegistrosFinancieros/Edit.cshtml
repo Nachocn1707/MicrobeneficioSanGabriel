@@ -6,147 +6,123 @@
 }
 
 @section Styles {
+
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloEditar-edit-page">
-
-    <div class="EstiloEditar-header">
-        <h1>Editar registro financiero</h1>
-        <p>Actualizá la información del ingreso o gasto registrado.</p>
+<div class="EstiloEditar-page">
+    <div class="EstiloEditar-top">
+        <div class="EstiloEditar-header">
+            <h1>Contabilidad</h1>
+            <p>Administrá ingresos, egresos, registros financieros y movimientos económicos del microbeneficio.</p>
+        </div>
     </div>
 
-    <div class="EstiloEditar-card">
-
-        <div class="EstiloEditar-card-header">
-            <h2>@Model.Tipo</h2>
-            <span>Microbeneficio San Gabriel</span>
-        </div>
-
-        <div class="EstiloEditar-card-body">
-
+    <div class="EstiloEditaR-card">
+        <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post">
-
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
                 <input type="hidden" asp-for="Id" />
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
+                <div class="Estilo-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>
+                        Asegurá que el tipo de movimiento, categoría y montos coincidan con el comprobante físico o digital correspondiente.
+                    </span>
                 </div>
 
-                <div class="row g-4">
+                <div class="EstiloEditar-section">
+                    <h5>
+                        <i class="fa-solid fa-scale-balanced"></i>
+                        Detalle del movimiento financiero
+                    </h5>
 
-                    <div class="col-md-6">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Tipo" class="form-label">Tipo</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <select asp-for="Tipo" class="form-select">
+                                        <option value="">Seleccione un tipo</option>
+                                        <option value="Ingreso">Ingreso</option>
+                                        <option value="Gasto">Gasto</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="Tipo" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                        <label asp-for="Tipo" class="form-label">
-                            Tipo
-                        </label>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Categoria" class="form-label">Categoría</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-tags"></i>
+                                    <input asp-for="Categoria" class="form-control" placeholder="Venta, mantenimiento, transporte..." />
+                                </div>
+                                <span asp-validation-for="Categoria" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                        <select asp-for="Tipo" class="form-select">
-                            <option value="">Seleccione un tipo</option>
-                            <option value="Ingreso">Ingreso</option>
-                            <option value="Gasto">Gasto</option>
-                        </select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Monto" class="form-label">Monto</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-coins"></i>
+                                    <input asp-for="Monto" class="form-control" min="0" placeholder="Digite el monto" />
+                                </div>
+                                <span asp-validation-for="Monto" class="text-danger"></span>
+                            </div>
+                        </div>
 
-                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Fecha" class="form-label">Fecha</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <input asp-for="Fecha" type="date" class="form-control" />
+                                </div>
+                                <span asp-validation-for="Fecha" class="text-danger"></span>
+                            </div>
+                        </div>
 
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="form-label">Descripción</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    <input asp-for="Descripcion" class="form-control" placeholder="Descripción del movimiento financiero" />
+                                </div>
+                                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Observacion" class="form-label">Observación</label>
+                                <div class="input-modern textarea-modern">
+                                    <i class="fa-solid fa-comment"></i>
+                                    <textarea asp-for="Observacion" class="form-control" rows="4" placeholder="Observación adicional del registro"></textarea>
+                                </div>
+                                <span asp-validation-for="Observacion" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Categoria" class="form-label">
-                            Categoría
-                        </label>
-
-                        <input asp-for="Categoria"
-                               class="form-control"
-                               placeholder="Venta, mantenimiento, transporte..." />
-
-                        <span asp-validation-for="Categoria" class="text-danger"></span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Monto" class="form-label">
-                            Monto
-                        </label>
-
-                        <input asp-for="Monto"
-                               class="form-control"
-                               min="0"
-                               placeholder="Digite el monto" />
-
-                        <span asp-validation-for="Monto" class="text-danger"></span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Fecha" class="form-label">
-                            Fecha
-                        </label>
-
-                        <input asp-for="Fecha"
-                               type="date"
-                               class="form-control" />
-
-                        <span asp-validation-for="Fecha" class="text-danger"></span>
-
-                    </div>
-
-                    <div class="col-12">
-
-                        <label asp-for="Descripcion" class="form-label">
-                            Descripción
-                        </label>
-
-                        <input asp-for="Descripcion"
-                               class="form-control"
-                               placeholder="Descripción del movimiento financiero" />
-
-                        <span asp-validation-for="Descripcion" class="text-danger"></span>
-
-                    </div>
-
-                    <div class="col-12">
-
-                        <label asp-for="Observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <textarea asp-for="Observacion"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Observación adicional del registro"></textarea>
-
-                        <span asp-validation-for="Observacion" class="text-danger"></span>
-
-                    </div>
-
                 </div>
 
                 <div class="EstiloEditar-actions">
-
-                    <a asp-action="Index"
-                           class="btn-volver">
+                    <a asp-action="Index" class="btn-volver">
                         <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la lista
+                        Volver
                     </a>
-
-                    <button type="submit"
-                            class="btn-guardar">
+                    <button type="submit" class="btn-guardar">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar cambios
                     </button>
-
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
