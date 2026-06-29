@@ -17,10 +17,7 @@
                 <i class="fa-solid fa-file-invoice-dollar"></i>
                 Sistema de facturación
             </span>
-
             <h1>Nueva factura</h1>
-            <div class="factura-create-line"></div>
-
             <p>
                 Generá facturas automáticamente a partir de pedidos registrados en el sistema.
             </p>
@@ -28,76 +25,61 @@
     </div>
 
     <div class="VistaCreaR-card">
-
         <div class="VistaCreaR-form-container">
-
             <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
-                </div>
+                <div class="VistaCrear-section">
+                    <h5>
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        Detalle de la factura
+                    </h5>
 
-                <div class="row g-4">
-
-                    <div class="col-md-6 factura-field">
-                        <label asp-for="PedidoId" class="form-label">
-                            Pedido
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-cart-shopping"></i>
-
-                            <select asp-for="PedidoId"
-                                    class="form-select"
-                                    asp-items="ViewBag.PedidoId">
-                                <option value="">Seleccione un pedido</option>
-                            </select>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="PedidoId" class="form-label">Pedido</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <select asp-for="PedidoId"
+                                            class="form-select"
+                                            asp-items="ViewBag.PedidoId">
+                                        <option value="">Seleccione un pedido</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="PedidoId" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="PedidoId"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6 factura-field">
-                        <label asp-for="EstadoPago" class="form-label">
-                            Estado de pago
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-wallet"></i>
-
-                            <select asp-for="EstadoPago" class="form-select">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="Pago completado">Pago completado</option>
-                                <option value="Anulada">Anulada</option>
-                            </select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="EstadoPago" class="form-label">Estado de pago</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-wallet"></i>
+                                    <select asp-for="EstadoPago" class="form-select">
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pago completado">Pago completado</option>
+                                        <option value="Anulada">Anulada</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="EstadoPago" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="EstadoPago"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-12 factura-field">
-                        <label asp-for="Observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <div class="input-modern textarea-modern">
-                            <i class="fa-solid fa-comment"></i>
-
-                            <textarea asp-for="Observacion"
-                                      class="form-control"
-                                      rows="5"
-                                      placeholder="Detalle adicional de la factura"></textarea>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Observacion" class="form-label">Observación</label>
+                                <div class="input-modern textarea-modern">
+                                    <i class="fa-solid fa-comment"></i>
+                                    <textarea asp-for="Observacion"
+                                              class="form-control"
+                                              rows="5"
+                                              placeholder="Detalle adicional de la factura"></textarea>
+                                </div>
+                                <span asp-validation-for="Observacion" class="text-danger"></span>
+                            </div>
                         </div>
-
-                        <span asp-validation-for="Observacion"
-                              class="text-danger">
-                        </span>
                     </div>
-
                 </div>
 
                 <div class="Mensaje-alert">
@@ -108,19 +90,14 @@
                 </div>
 
                 <div class="VistaCrear-actions">
-
-                    <a asp-action="Index"
-                           class="btn-cancelar">
+                    <a asp-action="Index" class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
-
-                    <button type="submit"
-                            class="btn-crear">
+                    <button type="submit" class="btn-crear">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar factura
                     </button>
-
                 </div>
             </form>
         </div>

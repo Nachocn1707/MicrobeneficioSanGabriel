@@ -25,10 +25,7 @@
                 <i class="fa-solid fa-cart-shopping"></i>
                 Gestión de pedidos
             </span>
-
             <h1>Nuevo pedido</h1>
-            <div class="pedido-create-line"></div>
-
             <p>
                 Registrá pedidos realizados por clientes dentro del sistema del microbeneficio.
             </p>
@@ -36,186 +33,135 @@
     </div>
 
     <div class="VistaCreaR-card">
-
         <div class="VistaCreaR-form-container">
-
             <form asp-action="Create" method="post">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
-                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
                 <input type="hidden" asp-for="ClienteCorreo" />
 
                 @if (User.IsInRole("Cliente"))
                 {
-                    <input type="hidden"
-                           asp-for="Estado"
-                           value="Pendiente" />
-
-                    <input type="hidden"
-                           asp-for="FechaPedido"
-                           value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    <input type="hidden" asp-for="Estado" value="Pendiente" />
+                    <input type="hidden" asp-for="FechaPedido" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 
                     <div class="pedido-alert">
                         <i class="fa-solid fa-circle-info"></i>
                         <span>
-                            El pedido se registrará automáticamente en estado
-                            <strong>Pendiente</strong>.
+                            El pedido se registrará automáticamente en estado <strong>Pendiente</strong>.
                         </span>
                     </div>
                 }
 
-                <div class="row g-4">
+                <div class="VistaCrear-section">
+                    <h5>
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        Detalle del pedido
+                    </h5>
 
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="ClienteNombre" class="form-label">
-                            Cliente
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-user"></i>
-
-                            <input asp-for="ClienteNombre"
-                                   class="form-control"
-                                   placeholder="Digite el nombre completo del cliente" />
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ClienteNombre" class="form-label">Cliente</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-user"></i>
+                                    <input asp-for="ClienteNombre"
+                                           class="form-control"
+                                           placeholder="Digite el nombre completo del cliente" />
+                                </div>
+                                <span asp-validation-for="ClienteNombre" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="ClienteNombre"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="ClienteTelefono" class="form-label">
-                            Teléfono
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-phone"></i>
-
-                            <input asp-for="ClienteTelefono"
-                                   class="form-control"
-                                   placeholder="Digite el número de teléfono" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ClienteTelefono" class="form-label">Teléfono</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <input asp-for="ClienteTelefono"
+                                           class="form-control"
+                                           placeholder="Digite el número de teléfono" />
+                                </div>
+                                <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="ClienteTelefono"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="ProductoId" class="form-label">
-                            Producto
-                        </label>
-
-                        <div class="input-modern readonly-product">
-                            <i class="fa-solid fa-box"></i>
-                            <span>
-                                @ViewBag.ProductoNombre
-                            </span>
-                            <input type="hidden" asp-for="ProductoId" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ProductoId" class="form-label">Producto</label>
+                                <div class="input-modern readonly-product">
+                                    <i class="fa-solid fa-box"></i>
+                                    <span>@ViewBag.ProductoNombre</span>
+                                    <input type="hidden" asp-for="ProductoId" />
+                                </div>
+                                <span asp-validation-for="ProductoId" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="ProductoId"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="Cantidad" class="form-label">
-                            Cantidad en kg
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-weight-scale"></i>
-
-                            <input asp-for="Cantidad"
-                                   class="form-control"
-                                   min="1" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Cantidad" class="form-label">Cantidad en kg</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-weight-scale"></i>
+                                    <input asp-for="Cantidad" class="form-control" min="1" />
+                                </div>
+                                <span asp-validation-for="Cantidad" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="Cantidad"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    @if (!User.IsInRole("Cliente"))
-                    {
-                        <div class="col-md-6 pedido-field">
-                            <label asp-for="FechaPedido" class="form-label">
-                                Fecha del pedido
-                            </label>
-
-                            <div class="input-modern">
-                                <i class="fa-solid fa-calendar"></i>
-
-                                <input asp-for="FechaPedido"
-                                       type="datetime-local"
-                                       class="form-control" />
+                        @if (!User.IsInRole("Cliente"))
+                        {
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="FechaPedido" class="form-label">Fecha del pedido</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-calendar"></i>
+                                        <input asp-for="FechaPedido" type="datetime-local" class="form-control" />
+                                    </div>
+                                    <span asp-validation-for="FechaPedido" class="text-danger"></span>
+                                </div>
                             </div>
 
-                            <span asp-validation-for="FechaPedido"
-                                  class="text-danger">
-                            </span>
-                        </div>
-
-                        <div class="col-md-6 pedido-field">
-                            <label asp-for="Estado" class="form-label">
-                                Estado
-                            </label>
-
-                            <div class="input-modern">
-                                <i class="fa-solid fa-circle-info"></i>
-
-                                <select asp-for="Estado"
-                                        class="form-select">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="En proceso">En proceso</option>
-                                    <option value="En camino">En camino</option>
-                                    <option value="Listo para retirar">Listo para retirar</option>
-                                    <option value="Completado">Completado</option>
-                                    <option value="Cancelado">Cancelado</option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Estado" class="form-label">Estado</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <select asp-for="Estado" class="form-select">
+                                            <option value="Pendiente">Pendiente</option>
+                                            <option value="En proceso">En proceso</option>
+                                            <option value="En camino">En camino</option>
+                                            <option value="Listo para retirar">Listo para retirar</option>
+                                            <option value="Completado">Completado</option>
+                                            <option value="Cancelado">Cancelado</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Estado" class="text-danger"></span>
+                                </div>
                             </div>
+                        }
 
-                            <span asp-validation-for="Estado"
-                                  class="text-danger">
-                            </span>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Observacion" class="form-label">Observación</label>
+                                <div class="input-modern textarea-modern">
+                                    <i class="fa-solid fa-comment"></i>
+                                    <textarea asp-for="Observacion"
+                                              class="form-control"
+                                              rows="2"
+                                              placeholder="Digite alguna observación del pedido"></textarea>
+                                </div>
+                                <span asp-validation-for="Observacion" class="text-danger"></span>
+                            </div>
                         </div>
-                    }
-
-                    <div class="col-md-12 pedido-field">
-                        <label asp-for="Observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <div class="input-modern textarea-modern">
-                            <i class="fa-solid fa-comment"></i>
-
-                            <textarea asp-for="Observacion"
-                                      class="form-control"
-                                      rows="5"
-                                      placeholder="Digite alguna observación del pedido"></textarea>
-                        </div>
-
-                        <span asp-validation-for="Observacion"
-                              class="text-danger">
-                        </span>
                     </div>
-
-                </div>
+                </div> 
 
                 <div class="VistaCrear-actions">
-
-                    <a asp-controller="Productos" asp-action="Index"
-                       class="btn-cancelar">
+                    <a asp-controller="Productos" asp-action="Index" class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver a la lista
                     </a>
-
-                    <button type="submit"
-                            class="btn-crear">
+                    <button type="submit" class="btn-crear">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Pagar
                     </button>

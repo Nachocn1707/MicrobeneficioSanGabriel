@@ -1,4 +1,4 @@
-﻿.VistaCrear-page {
+﻿﻿.VistaCrear-page {
     padding: 10px;
 }
 
@@ -34,9 +34,9 @@
 }
 
 .VistaCreaR-card {
-    display: block ;
-    width: 100% ;
-    max-width: 100% ;
+    display: block;
+    width: 100%;
+    max-width: 100%;
     background: #fff;
     border-radius: 28px;
     border: 1px solid #e5e7eb;
@@ -44,9 +44,9 @@
 }
 
 .VistaCreaR-form-container {
-    width: 100% ;
-    max-width: 100% ;
-    padding: 50px 60px ;
+    width: 100%;
+    max-width: 100%;
+    padding: 50px 60px;
 }
 
     .VistaCrear-form-container .alert {
@@ -99,19 +99,30 @@
         z-index: 2;
     }
 
-    .input-modern .form-control, .input-modern .form-select {
+    .input-modern .form-control,
+    .input-modern .form-select {
         min-height: 56px;
         border-radius: 18px;
         border: 1px solid #d8dee8;
         background: #fff;
         padding-left: 48px;
+        font-size: 15px;
         font-weight: 700;
         color: #2b160d;
+        transition: .25s;
+        box-sizing: border-box;
     }
 
-        .input-modern .form-control:focus, .input-modern .form-select:focus {
-            border-color: #d8b36a;
-            box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
+        .input-modern .form-control:focus,
+        .input-modern .form-select:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.12);
+            outline: none;
+        }
+
+        .input-modern .form-control::placeholder {
+            color: #9ca3af;
+            font-weight: 500;
         }
 
 .textarea-modern i {
@@ -119,32 +130,10 @@
     transform: none;
 }
 
-.form-control,
-.form-select {
-    min-height: 58px;
-    border-radius: 18px;
-    border: 1px solid #d1d5db;
-    padding-left: 50px;
-    font-size: 15px;
-    transition: .25s;
-    box-shadow: none;
-}
-
 textarea.form-control {
     min-height: 130px;
     padding-top: 16px;
     resize: vertical;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: #198754;
-    box-shadow: 0 0 0 .25rem rgba(25,135,84,.12);
-}
-
-.form-control::placeholder,
-textarea::placeholder {
-    color: #9ca3af;
 }
 
 .form-switch .form-check-input {
@@ -182,6 +171,15 @@ textarea::placeholder {
     align-items: center;
     gap: 10px;
     transition: .25s;
+    cursor: pointer;
+}
+
+.input-modern input[type="file"].form-control {
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 54px;
 }
 
     .btn-crear:hover {
@@ -201,6 +199,25 @@ textarea::placeholder {
     align-items: center;
     gap: 10px;
     transition: .25s;
+}
+
+.btn-crear, .btn-cancelar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px; 
+    box-sizing: border-box;
+}
+
+.form-check.form-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px; 
+}
+
+.form-switch .form-check-input {
+    margin-top: 0;
 }
 
     .btn-cancelar:hover {
@@ -236,7 +253,11 @@ textarea::placeholder {
 }
 
     .password-toggle-btn:hover {
-        color: #7a5230;
+        color: #198754;
+    }
+
+    .password-toggle-btn:focus {
+        outline: none;
     }
 
 .Mensaje-alert {
@@ -251,9 +272,7 @@ textarea::placeholder {
     gap: 10px;
 }
 
-
 @media (max-width:768px) {
-
     .VistaCrear-form-container {
         padding: 24px;
     }
@@ -263,7 +282,7 @@ textarea::placeholder {
     }
 
     .VistaCrear-actions {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .btn-crear,

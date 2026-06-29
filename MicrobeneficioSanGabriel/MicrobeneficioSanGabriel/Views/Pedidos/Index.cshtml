@@ -107,8 +107,8 @@ else
 
     <section class="sg-page-head">
         <div><h1>Pedidos y Facturación</h1><p>Gestión de pedidos, entregas y facturación.</p></div>
-        <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar pedido, cliente, factura..." /></label></div>
-    </section>
+        @*         <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar pedido, cliente, factura..." /></label></div>  *@
+   </section>
     <section class="sg-kpi-grid">
         <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Pedidos totales</span><strong>@total</strong><div class="sg-trend">Registros reales</div></div></article>

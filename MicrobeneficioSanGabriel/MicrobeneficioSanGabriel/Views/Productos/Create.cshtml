@@ -1,262 +1,166 @@
 @model MicrobeneficioSanGabriel.Models.Producto
-
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
 @section Styles {
     <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
-
 <div class="VistaCrear-page">
     <div class="VistaCrear-top">
-
         <div class="VistaCrear-title">
-
             <span class="VistaCrear-badge">
                 Gestión de productos
             </span>
-
             <h1>Registrar producto</h1>
-
             <p>
-                Agregá un nuevo producto al sistema del
-                Microbeneficio San Gabriel.
+                Agregá un nuevo producto al sistema del Microbeneficio San Gabriel.
             </p>
-
         </div>
-
     </div>
 
     <div class="VistaCreaR-card">
-       
         <div class="VistaCreaR-form-container">
-
             <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
+                <div class="VistaCrear-section">
+                    <h5>
+                        <i class="fa-solid fa-box"></i>
+                        Información del producto
+                    </h5>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="form-label"></label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Ej: Café Monteverde" />
+                                </div>
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Categoria" class="form-label"></label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <input asp-for="Categoria" class="form-control" placeholder="Escriba la categoría del café"/>
+                                </div>
+                                <span asp-validation-for="Categoria" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Precio" class="form-label"></label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-colon-sign"></i>
+                                    <input asp-for="Precio" class="form-control" placeholder="Ej: 1500" />
+                                </div>
+                                <span asp-validation-for="Precio" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Stock" class="form-label"></label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-warehouse"></i>
+                                    <input asp-for="Stock" class="form-control" placeholder="0" />
+                                </div>
+                                <span asp-validation-for="Stock" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Descripcion" class="form-label"></label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-align-left"></i>
+                                    <input asp-for="Descripcion" class="form-control" placeholder="Describa el producto" />
+                                </div>
+                                <span asp-validation-for="Descripcion" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="VistaCrear-section">
+                    <h5>
+                        <i class="fa-solid fa-image"></i>
+                        Imagen
+                    </h5>
+
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="imagenArchivo" class="form-label">
+                                    Imagen del producto
+                                </label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-image"></i>
+                                    <input id="imagenArchivo"
+                                           name="imagenArchivo"
+                                           type="file"
+                                           class="form-control"
+                                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                                </div>
+                                <small class="text-muted">Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: 5 MB.</small>
+                                @Html.ValidationMessage("imagenArchivo", null, new { @class = "text-danger d-block" })
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="row g-4">
+                <div class="VistaCrear-section">
+                    <h5>
+                        <i class="fa-solid fa-gear"></i>
+                        Configuración
+                    </h5>
 
-                    <div class="col-md-6">
-
-                        <div class="form-group">
-
-                            <label asp-for="Nombre"
-                                   class="form-label">
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-box-open"></i>
-
-                                <input asp-for="Nombre"
-                                       class="form-control" />
-
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="Activo" />
+                                    @Html.DisplayNameFor(model => model.Activo)
+                                </label>
                             </div>
-
-                            <span asp-validation-for="Nombre"
-                                  class="text-danger">
-                            </span>
-
                         </div>
 
-                    </div>
-                    <div class="col-md-6">
-
-                        <div class="form-group">
-
-                            <label asp-for="Categoria"
-                                   class="form-label">
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-layer-group"></i>
-
-                                <input asp-for="Categoria"
-                                       class="form-control" />
-
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="FechaRegistro" class="form-label"></label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <input asp-for="FechaRegistro"
+                                           type="datetime-local"
+                                           class="form-control"
+                                           min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
+                                           max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
+                                </div>
+                                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
                             </div>
-
-                            <span asp-validation-for="Categoria"
-                                  class="text-danger">
-                            </span>
-
                         </div>
-
                     </div>
-                    <div class="col-md-6">
+                </div> 
 
-                        <div class="form-group">
-
-                            <label asp-for="Precio"
-                                   class="form-label">
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-colon-sign"></i>
-
-                                <input asp-for="Precio"
-                                       class="form-control" />
-
-                            </div>
-
-                            <span asp-validation-for="Precio"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                    </div>
-                    <div class="col-md-6">
-
-                        <div class="form-group">
-
-                            <label asp-for="Stock"
-                                   class="form-label">
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-warehouse"></i>
-
-                                <input asp-for="Stock"
-                                       class="form-control" />
-
-                            </div>
-
-                            <span asp-validation-for="Stock"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                    </div>
-                    <div class="col-12">
-
-                        <div class="form-group">
-
-                            <label asp-for="Descripcion"
-                                   class="form-label">
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-align-left"></i>
-
-                                <input asp-for="Descripcion"
-                                       class="form-control" />
-
-                            </div>
-
-                            <span asp-validation-for="Descripcion"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                    </div>
-                    <div class="col-12">
-
-                        <div class="form-group">
-
-                            <label for="imagenArchivo"
-                                   class="form-label">
-                                Imagen del producto
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-image"></i>
-
-                                <input id="imagenArchivo"
-                                       name="imagenArchivo"
-                                       type="file"
-                                       class="form-control"
-                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
-
-                            </div>
-
-                            <small class="text-muted">Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: 5 MB.</small>
-                            @Html.ValidationMessage("imagenArchivo", null, new { @class = "text-danger d-block" })
-
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <div class="form-group form-check">
-
-                            <label class="form-check-label">
-
-                                <input class="form-check-input"
-                                       asp-for="Activo" />
-
-                                @Html.DisplayNameFor(model => model.Activo)
-
-                            </label>
-
-                        </div>
-
-                    </div>
-                    <div class="col-md-6">
-
-                        <div class="form-group">
-
-                            <label asp-for="FechaRegistro"
-                                   class="form-label">
-                            </label>
-
-                            <div class="input-modern">
-
-                                <i class="fa-solid fa-calendar"></i>
-
-                                <input asp-for="FechaRegistro"
-                                       type="datetime-local"
-                                       class="form-control"
-                                       min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
-                                       max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
-
-                            </div>
-
-                            <span asp-validation-for="FechaRegistro"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
                 <div class="VistaCrear-actions">
-
-                    <a asp-action="Index"
-                           class="btn-cancelar">
+                    <a asp-action="Index" class="btn-cancelar">
                         Volver
                     </a>
-
-                    <button type="submit"
-                            class="btn-crear">
-
+                    <button type="submit" class="btn-crear">
                         <i class="fa-solid fa-floppy-disk"></i>
-
                         Registrar producto
-
                     </button>
-
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

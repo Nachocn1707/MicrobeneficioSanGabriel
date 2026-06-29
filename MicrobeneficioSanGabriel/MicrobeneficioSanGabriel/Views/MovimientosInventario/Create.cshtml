@@ -10,17 +10,13 @@
     <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
 <div class="VistaCrear-page">
-
     <div class="VistaCrear-top">
         <div class="VistaCrear-title">
             <span class="VistaCrear-badge">
                 <i class="fa-solid fa-boxes-stacked"></i>
                 Control de inventario
             </span>
-
             <h1>Nuevo movimiento</h1>
-            <div class="movimiento-create-line"></div>
-
             <p>
                 Registrá entradas y salidas de inventario del Microbeneficio San Gabriel.
             </p>
@@ -28,15 +24,9 @@
     </div>
 
     <div class="VistaCreaR-card">
-
-
         <div class="VistaCreaR-form-container">
-
             <form asp-action="Create" method="post">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
-                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
                 <div class="Mensaje-alert">
                     <i class="fa-solid fa-circle-info"></i>
@@ -45,103 +35,82 @@
                     </span>
                 </div>
 
-                <div class="row g-4">
+                <div class="VistaCrear-section">
+                    <h5>
+                        <i class="fa-solid fa-right-left"></i>
+                        Detalle del movimiento
+                    </h5>
 
-                    <div class="col-md-6 movimiento-field">
-                        <label asp-for="ProductoId" class="form-label">
-                            Producto
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-box"></i>
-
-                            <select asp-for="ProductoId"
-                                    class="form-select"
-                                    asp-items="ViewBag.ProductoId">
-                                <option value="">Seleccione un producto</option>
-                            </select>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ProductoId" class="form-label">Producto</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-box"></i>
+                                    <select asp-for="ProductoId"
+                                            class="form-select"
+                                            asp-items="ViewBag.ProductoId">
+                                        <option value="">Seleccione un producto</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="ProductoId" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="ProductoId"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6 movimiento-field">
-                        <label asp-for="TipoMovimiento" class="form-label">
-                            Tipo de movimiento
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-right-left"></i>
-
-                            <select asp-for="TipoMovimiento"
-                                    class="form-select">
-                                <option value="">Seleccione una opción</option>
-                                <option value="Entrada">Entrada</option>
-                                <option value="Salida">Salida</option>
-                            </select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="TipoMovimiento" class="form-label">Tipo de movimiento</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-right-left"></i>
+                                    <select asp-for="TipoMovimiento" class="form-select">
+                                        <option value="">Seleccione una opción</option>
+                                        <option value="Entrada">Entrada</option>
+                                        <option value="Salida">Salida</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="TipoMovimiento" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="TipoMovimiento"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-6 movimiento-field">
-                        <label asp-for="Cantidad" class="form-label">
-                            Cantidad en kg
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-weight-scale"></i>
-
-                            <input asp-for="Cantidad"
-                                   class="form-control"
-                                   min="1"
-                                   placeholder="Digite la cantidad en kg" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Cantidad" class="form-label">Cantidad en kg</label>
+                                <div class="input-modern">
+                                    <i class="fa-solid fa-weight-scale"></i>
+                                    <input asp-for="Cantidad"
+                                           class="form-control"
+                                           min="1"
+                                           placeholder="Digite la cantidad en kg" />
+                                </div>
+                                <span asp-validation-for="Cantidad" class="text-danger"></span>
+                            </div>
                         </div>
 
-                        <span asp-validation-for="Cantidad"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="col-md-12 movimiento-field">
-                        <label asp-for="Observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <div class="input-modern textarea-modern">
-                            <i class="fa-solid fa-comment"></i>
-
-                            <textarea asp-for="Observacion"
-                                      class="form-control"
-                                      rows="5"
-                                      placeholder="Digite una observación del movimiento"></textarea>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Observacion" class="form-label">Observación</label>
+                                <div class="input-modern textarea-modern">
+                                    <i class="fa-solid fa-comment"></i>
+                                    <textarea asp-for="Observacion"
+                                              class="form-control"
+                                              rows="1"
+                                              placeholder="Digite una observación del movimiento"></textarea>
+                                </div>
+                                <span asp-validation-for="Observacion" class="text-danger"></span>
+                            </div>
                         </div>
-
-                        <span asp-validation-for="Observacion"
-                              class="text-danger">
-                        </span>
                     </div>
-
-                </div>
+                </div> 
 
                 <div class="VistaCrear-actions">
-
-                    <a asp-action="Index"
-                           class="btn-cancelar">
+                    <a asp-action="Index" class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver
                     </a>
-
-                    <button type="submit"
-                            class="btn-crear">
+                    <button type="submit" class="btn-crear">
                         <i class="fa-solid fa-floppy-disk"></i>
                         Guardar movimiento
                     </button>
-
                 </div>
             </form>
         </div>
