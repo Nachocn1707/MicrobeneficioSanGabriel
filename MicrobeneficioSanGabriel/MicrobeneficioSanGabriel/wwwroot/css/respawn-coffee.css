@@ -19,9 +19,6 @@
 html { scroll-behavior: smooth; }
 body { color: var(--rc-ink); }
 
-/* =========================================================
-   PUBLIC WEBSITE — INSPIRED BY THE REFERENCE, COFFEE IDENTITY
-   ========================================================= */
 .rc-public-body {
     margin: 0;
     background: var(--rc-black);
@@ -124,13 +121,11 @@ body { color: var(--rc-ink); }
 
 .rc-public-hero {
     position: relative;
+    overflow: hidden;
     min-height: 820px;
-    display: grid;
-    place-items: center;
-    padding: 125px clamp(22px, 5vw, 76px) 70px;
-    background:
-        radial-gradient(circle at 78% 24%, rgba(242,100,48,.19), transparent 32%),
-        linear-gradient(135deg, #080809 0%, #141012 55%, #0b0b0c 100%);
+    display: flex;
+    align-items: center;
+    padding: 125px clamp(22px,5vw,76px) 70px;
 }
 
 .rc-public-hero::before {
@@ -148,11 +143,10 @@ body { color: var(--rc-ink); }
 
 .rc-hero-grid {
     position: relative;
-    z-index: 2;
-    width: min(1420px, 100%);
-    display: grid;
-    grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr);
-    gap: clamp(40px, 6vw, 90px);
+    z-index: 5;
+    width: min(1420px,100%);
+    margin: 0 auto;
+    display: flex;
     align-items: center;
 }
 
@@ -166,6 +160,12 @@ body { color: var(--rc-ink); }
     font-weight: 950;
     letter-spacing: .18em;
     text-transform: uppercase;
+}
+
+.rc-hero-copy {
+    position: relative;
+    z-index: 10;
+    max-width: 640px;
 }
 
 .rc-hero-copy h1 {
@@ -227,24 +227,22 @@ body { color: var(--rc-ink); }
 .rc-public-metrics strong { display:block; color:#fff; font-size:1.75rem; line-height:1; }
 .rc-public-metrics span { display:block; margin-top:8px; color:#bfb1aa; font-size:.75rem; font-weight:800; text-transform:uppercase; }
 
-.rc-hero-art { position: relative; min-height: 600px; }
 .rc-hero-photo {
-    position:absolute;
-    inset: 32px 0 20px 38px;
-    border-radius: 60px 8px 60px 8px;
-    background:
-        linear-gradient(180deg,rgba(11,11,12,.04),rgba(11,11,12,.48)),
-        url('/images/dashboard/beneficio-hero.png') center/cover;
-    box-shadow: 0 35px 100px rgba(0,0,0,.48);
-    clip-path: polygon(12% 0,100% 0,100% 88%,88% 100%,0 100%,0 12%);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( 90deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.45) 35%, rgba(0,0,0,.18) 100% ), url('/images/dashboard/beneficio-hero.png') center center/cover no-repeat;
+    border-radius: 0;
+    clip-path: none;
 }
-.rc-hero-photo::before {
-    content:"";
-    position:absolute;
-    inset:18px;
-    border:1px solid rgba(255,255,255,.2);
-    clip-path: inherit;
+
+.rc-hero-art {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    min-height: 100%;
 }
+
 .rc-orbit { position:absolute; border:1px solid rgba(242,100,48,.6); border-radius:50%; }
 .rc-orbit-one { width:330px; height:330px; right:-80px; top:-20px; }
 .rc-orbit-two { width:190px; height:190px; left:-25px; bottom:-20px; border-color:rgba(255,173,54,.35); }
@@ -350,9 +348,7 @@ body { color: var(--rc-ink); }
 .rc-footer-links a { color:#cfc3bd;text-decoration:none;font-size:.75rem;font-weight:800;text-transform:uppercase; }
 .rc-public-footer p { margin:0;text-align:right;color:#807772;font-size:.75rem; }
 
-/* =========================================================
-   AUTHENTICATION
-   ========================================================= */
+
 .rc-public-body .auth-shell,
 .auth-shell {
     min-height:100vh;
@@ -380,9 +376,6 @@ body { color: var(--rc-ink); }
 .validation-box { background:#141314!important;color:#fff!important;border:1px solid rgba(255,255,255,.1)!important; }
 .validation-box-title,.rule-item { color:#eee3dc!important; }
 
-/* =========================================================
-   ADMIN LAYOUT
-   ========================================================= */
 .rc-admin-body { background:#ece8e4!important; }
 .rc-admin-body .demo-app-shell { min-height:100vh;background:linear-gradient(180deg,#ebe8e4,#f7f4f0 30%,#eee9e4)!important; }
 .rc-admin-body .demo-header {
@@ -427,7 +420,7 @@ body { color: var(--rc-ink); }
 .rc-admin-body .demo-context-button.accent { color:#fff!important;background:var(--rc-orange)!important;border-color:var(--rc-orange)!important; }
 .rc-admin-body .demo-content { padding:22px clamp(16px,3vw,42px) 45px!important;background:transparent!important; }
 
-/* Module hero */
+
 .rc-admin-body .sg-visual-hero,
 .rc-client-body .sg-visual-hero {
     position:relative!important;
@@ -467,7 +460,7 @@ body { color: var(--rc-ink); }
 .rc-admin-body .sg-visual-hero p,
 .rc-client-body .sg-visual-hero p { color:#f0e5df!important;font-weight:650!important;line-height:1.65!important; }
 
-/* Generic cards, lists and forms */
+
 .rc-admin-body .card,
 .rc-admin-body .sg-card,
 .rc-admin-body [class$="-card"],
@@ -589,7 +582,7 @@ body { color: var(--rc-ink); }
 .rc-admin-body .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .rc-client-body .dataTables_wrapper .dataTables_paginate .paginate_button.current { color:#fff!important;background:var(--rc-orange)!important;border-color:var(--rc-orange)!important; }
 
-/* Create / Edit / Detail / Delete windows */
+
 .rc-admin-body .VistaCrear-page,
 .rc-admin-body .EstiloEditar-edit-page,
 .rc-admin-body .EstiloDetalle-detalle-page,
@@ -612,9 +605,6 @@ body { color: var(--rc-ink); }
 .rc-admin-body .EstiloEditar-card-header,
 .rc-admin-body .EstiloDetalle-card-header { color:#fff!important;background:#161416!important;border-bottom:3px solid var(--rc-orange)!important; }
 
-/* =========================================================
-   ADMIN DASHBOARD / CATALOG
-   ========================================================= */
 .rc-admin-dashboard { display:grid;gap:24px; }
 .rc-admin-hero {
     position:relative;overflow:hidden;min-height:390px;
@@ -666,9 +656,6 @@ body { color: var(--rc-ink); }
 .rc-module-card strong { font-size:1.22rem;text-transform:uppercase; }
 .rc-module-card small { margin-top:6px;color:#d6cac4; }
 
-/* =========================================================
-   CLIENT LAYOUT & DASHBOARD
-   ========================================================= */
 .rc-client-body { background:#ede9e5!important; }
 .rc-client-body .sg-client-wrapper { background:linear-gradient(180deg,#ebe7e3,#f7f4f0)!important; }
 .rc-client-body .sg-client-sidebar { background:linear-gradient(180deg,#09090a,#1c1210 70%,#2d140d)!important;border-right:1px solid rgba(255,255,255,.08)!important;box-shadow:18px 0 50px rgba(0,0,0,.22)!important; }
@@ -1701,3 +1688,36 @@ html body.rc-admin-body .movimiento-premium-body .movimiento-side-line {
         display: block;
         object-fit: cover;
     }
+
+@media (max-width:1180px) {
+
+    .rc-hero-grid {
+        display: block;
+    }
+
+    .rc-floating-score {
+        top: 70px;
+        right: 35px;
+    }
+
+    .rc-floating-note {
+        right: 35px;
+        bottom: 35px;
+    }
+}
+
+@media (max-width:768px) {
+
+    .rc-public-hero {
+        min-height: 700px;
+    }
+
+    .rc-hero-copy {
+        max-width: 100%;
+    }
+
+    .rc-floating-score,
+    .rc-floating-note {
+        display: none;
+    }
+}

@@ -48,6 +48,39 @@
 </section>
 <section class="sg-grid-2">
     <article class="sg-card sg-panel"><h3 class="mb-4">Ruta de trazabilidad</h3><div class="sg-steps"><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-user-tie"></i></div><b>Productor</b><br/><small>Origen registrado</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-mountain-sun"></i></div><b>Finca</b><br/><small>Ubicación registrada</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-sack-xmark"></i></div><b>Lote</b><br/><small>@lotes lote(s)</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-gear"></i></div><b>Producción</b><br/><small>@producciones proceso(s)</small></div><div class="sg-step-line"></div><div class="sg-step gold"><div class="sg-step-icon"><i class="fa-solid fa-clipboard-check"></i></div><b>Seguimiento</b><br/><small>@total registro(s)</small></div></div></article>
-    <article class="sg-card sg-panel"><h3>Distribución por etapa</h3><div class="sg-donut-wrap mt-3"><div class="sg-donut" style="--p:@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))"><div><b>@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))%</b><br/><span>@(etapaPrincipal?.Key ?? "Sin datos")</span></div></div><div class="sg-legend">@if(etapasConteo.Any()){foreach(var etapa in etapasConteo){<div class="sg-legend-row"><span class="sg-dot"></span><span>@etapa.Key</span><b>@etapa.Count()</b></div>}}else{<div class="text-muted">No hay registros para mostrar.</div>}</div></div></article>
+    <article class="sg-card sg-panel">
+        <h3>Distribución por etapa</h3><div class="sg-donut-wrap mt-3">
+        <div class="sg-donut" style="--p:@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))"><div><b>@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))%</b><br /><span>@(etapaPrincipal?.Key ?? "Sin datos")</span></div></div><div class="sg-legend">
+        @if (etapasConteo.Any())
+        {
+            @foreach (var etapa in etapasConteo)
+            {
+                var color = etapa.Key switch
+                {
+                    "Recepción" => "gold",
+                    "Despulpado" => "green",
+                    "Fermentación" => "brown",
+                    "Lavado" => "tan",
+                    "Secado" => "coffee",
+                    "Tueste" => "green",
+                    "Empaque" => "gold",
+                    _ => "tan"
+                };
+
+                <div class="sg-legend-row">
+                    <span class="sg-dot @color"></span>
+                    <span>@etapa.Key</span>
+                    <b>@etapa.Count()</b>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-muted">
+                No hay registros para mostrar.
+            </div>
+        }
+    </div>
+</article>
 </section>
 <section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Registros de trazabilidad</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaTrazabilidad"><thead><tr><th>Código de lote</th><th>Productor</th><th>Finca</th><th>Etapa</th><th>Fecha</th><th>Producción</th><th>Responsable</th><th>Acciones</th></tr></thead><tbody>@foreach(var t in registros){<tr><td>@(t.Lote?.CodigoLote ?? $"LOTE-{t.LoteId:0000}")</td><td>@t.Lote?.Productor?.Nombre</td><td>@t.Lote?.Finca?.Nombre</td><td><span class="sg-badge">@t.Etapa</span></td><td>@t.FechaRegistro.ToString("dd MMM yyyy")</td><td>@(t.Produccion != null ? $"#{t.Produccion.Id} - {t.Produccion.Estado}" : $"#{t.ProduccionId}")</td><td>@t.Responsable</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@t.Id"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador") || User.IsInRole("Operador")){<a asp-action="Edit" asp-route-id="@t.Id" title="Cambiar/editar" aria-label="Cambiar/editar"><i class="fa-solid fa-pen"></i></a>}@if(User.IsInRole("Administrador")){<a asp-action="Delete" asp-route-id="@t.Id" title="Eliminar" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></a>}</span></td></tr>}</tbody></table></div></section>

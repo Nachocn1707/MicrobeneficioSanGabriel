@@ -108,18 +108,28 @@
         <div class="sg-donut-wrap">
             <div class="sg-donut" style="--p:@(procesosPorEstado.Values.Sum() == 0 ? 0 : Math.Round(produccionesEnProceso * 100m / procesosPorEstado.Values.Sum(), 0));width:138px;height:138px"><div><b>@produccionesEnProceso</b><br/><span>En proceso</span></div></div>
             <div class="sg-legend">
+                @{
+                    var colores = new[] { "green", "gold" };
+                    var i = 0;
+                }
+
                 @foreach (var estado in procesosPorEstado.OrderByDescending(e => e.Value))
                 {
-                    <div class="sg-legend-row"><span class="sg-dot"></span><b>@estado.Value</b><span>@estado.Key</span></div>
+                    <div class="sg-legend-row">
+                        <span class="sg-dot @colores[i]"></span>
+                        <b>@estado.Value</b>
+                        <span>@estado.Key</span>
+                    </div>
+
+                    i++;
                 }
-                <div class="sg-legend-row"><span class="sg-dot gold"></span><b>@produccionesCompletadasHoy</b><span>Completadas hoy</span></div>
             </div>
         </div>
     </article>
     <article class="sg-card sg-panel">
         <div class="sg-panel-head"><h3>Rendimiento de trazabilidad</h3><a class="text-success fw-bold" asp-controller="Trazabilidades" asp-action="Index">Ver detalles</a></div>
         <div class="sg-donut-wrap">
-            <div class="sg-donut" style="--p:@porcentajeTrazabilidad;width:138px;height:138px"><div><b>@porcentajeTrazabilidad%</b><br/><span>Trazabilidad</span></div></div>
+            <div class="sg-donut"><div><b>@porcentajeTrazabilidad%</b><br/><span>Trazabilidad</span></div></div>
             <div class="sg-mini-list">
                 <div class="sg-mini-row"><i class="fa-solid fa-shield-halved text-success"></i><span>Registros de trazabilidad</span><b>@totalRegistrosTrazabilidad</b></div>
                 <div class="sg-mini-row"><i class="fa-solid fa-layer-group text-success"></i><span>Lotes con trazabilidad</span><b>@lotesConTrazabilidad</b></div>
@@ -158,11 +168,12 @@
         type: 'bar',
         data: {
             labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-            datasets: [{
-                data: ventasMensuales,
-                backgroundColor: 'rgba(79,125,67,.75)',
-                borderRadius: 4
-            }]
+        datasets: [{
+        data: ventasMensuales,
+        backgroundColor: "#A15F26",
+        borderRadius: 8,
+        borderSkipped: false
+        }]
         },
         options: {
             responsive: true,
@@ -174,5 +185,8 @@
             }
         }
     });
+
+
+
 </script>
 }
