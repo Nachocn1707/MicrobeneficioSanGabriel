@@ -28,7 +28,6 @@ body {
     font-size: 14px;
 }
 
-/* Layout igual al mockup */
 .admin-shell {
     min-height: 100vh;
     display: flex;

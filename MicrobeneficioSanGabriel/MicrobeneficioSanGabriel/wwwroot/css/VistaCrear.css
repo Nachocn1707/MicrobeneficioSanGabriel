@@ -291,3 +291,45 @@ textarea.form-control {
         justify-content: center;
     }
 }
+
+/*Modo oscuro*/
+
+body.dark .VistaCreaR-card {
+    background: #1E1A18;
+    border-color: #4A4037;
+}
+
+body.dark .VistaCrear-page .form-label {
+    color: #F3E8D8;
+}
+
+body.dark .VistaCrear-page .input-modern .form-control,
+body.dark .VistaCrear-page .input-modern .form-select {
+    background: #2A2421;
+    color: #F3E8D8;
+    border-color: #4A4037;
+}
+
+body.dark .VistaCrear-page .form-control::placeholder {
+    color: #A89A8A;
+}
+
+body.dark .VistaCrear-page textarea.form-control {
+    background: #2A2421;
+    color: #F3E8D8;
+}
+
+body.dark .btn-cancelar {
+    background: #35302C;
+    color: #F3E8D8;
+}
+
+    body.dark .btn-cancelar:hover {
+        background: #45403C;
+    }
+
+body.dark .VistaCrear-page .alert-light {
+    background: #2A2421;
+    border-color: #4A4037;
+    color: #F3E8D8;
+}

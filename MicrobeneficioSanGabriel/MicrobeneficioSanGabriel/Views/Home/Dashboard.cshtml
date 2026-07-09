@@ -160,33 +160,83 @@
     </div>
 </section>
 
-@section Scripts{
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script>
-    const ventasMensuales = @Html.Raw(ventasMensuales);
-    new Chart(document.getElementById('ventasChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-        datasets: [{
-        data: ventasMensuales,
-        backgroundColor: "#A15F26",
-        borderRadius: 8,
-        borderSkipped: false
-        }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false } },
-                y: { grid: { color: 'rgba(43,26,14,.08)' }, ticks: { callback: v => '₡' + Number(v).toLocaleString('es-CR') } }
-            }
+@section Scripts {
+    <script>
+        let ventasChart;
+        const ventasMensuales = @Html.Raw(ventasMensuales);
+
+        crearGrafico();
+
+        function crearGrafico() {
+            const darkMode = localStorage.getItem("theme") === "dark";
+            const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
+            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
+
+            ventasChart = new Chart(document.getElementById("ventasChart"), {
+                type: "bar",
+                data: {
+                    labels: [
+                        "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                        "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+                    ],
+                    datasets: [{
+                        data: ventasMensuales,
+                        backgroundColor: "#A15F26",
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                color: gridColor
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: textColor,
+                                callback: value => "₡" + Number(value).toLocaleString("es-CR")
+                            },
+                            grid: {
+                                color: gridColor
+                            },
+                            border: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
         }
-    });
 
+        function actualizarGraficoTema() {
+            if (!ventasChart) return;
 
+            const darkMode = document.body.classList.contains("dark");
+            const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
+            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
 
-</script>
+            ventasChart.options.scales.x.ticks.color = textColor;
+            ventasChart.options.scales.y.ticks.color = textColor;
+            ventasChart.options.scales.x.border.color = gridColor;
+            ventasChart.options.scales.y.border.color = gridColor;
+            ventasChart.options.scales.y.grid.color = gridColor;
+
+            ventasChart.update();
+        }
+    </script>
 }
