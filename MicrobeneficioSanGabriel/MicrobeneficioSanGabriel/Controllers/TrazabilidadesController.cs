@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +29,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             var trazabilidades = _context.Trazabilidades
                 .Include(t => t.Lote)
                     .ThenInclude(l => l.Productor)
+                .Include(t => t.Lote)
+                    .ThenInclude(l => l.Finca)
                 .Include(t => t.Produccion)
                     .ThenInclude(p => p.Producto)
                 .AsQueryable();
@@ -80,6 +82,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             var trazabilidad = await _context.Trazabilidades
                 .Include(t => t.Lote)
                     .ThenInclude(l => l.Productor)
+                .Include(t => t.Lote)
+                    .ThenInclude(l => l.Finca)
                 .Include(t => t.Produccion)
                     .ThenInclude(p => p.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -342,9 +346,24 @@ namespace MicrobeneficioSanGabriel.Controllers
         private void CargarListas(int? loteId = null, int? produccionId = null)
         {
             ViewData["LoteId"] = new SelectList(
-                _context.Lotes.OrderBy(l => l.CodigoLote),
+                _context.Lotes
+                    .Include(l => l.Finca)
+                    .Include(l => l.Productor)
+                    .OrderBy(l => l.CodigoLote)
+                    .AsEnumerable()
+                    .Select(l => new
+                    {
+                        l.Id,
+                        Descripcion = l.CodigoLote + " - " +
+                            (l.Finca != null && !string.IsNullOrWhiteSpace(l.Finca.Nombre)
+                                ? l.Finca.Nombre
+                                : l.Productor != null && !string.IsNullOrWhiteSpace(l.Productor.Nombre)
+                                    ? l.Productor.Nombre
+                                    : "Sin nombre")
+                    })
+                    .ToList(),
                 "Id",
-                "CodigoLote",
+                "Descripcion",
                 loteId
             );
 

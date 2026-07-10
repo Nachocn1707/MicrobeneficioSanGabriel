@@ -1,3 +1,5 @@
+@using System.Linq
+@using System.Collections.Generic
 @{
     ViewData["Title"] = "Reportes";
     <div class="sg-visual-hero sg-hero-reportes">
@@ -24,6 +26,84 @@
     int productosStockBajo = ViewBag.ProductosStockBajo ?? 0;
 
     int stockPorcentaje = totalStock > 100 ? 100 : (int)totalStock;
+
+    var productosReporte = ViewBag.Productos as IEnumerable<MicrobeneficioSanGabriel.Models.Producto>
+        ?? Enumerable.Empty<MicrobeneficioSanGabriel.Models.Producto>();
+
+    var maxStockProducto = productosReporte.Any()
+        ? productosReporte.Max(p => p.Stock)
+        : 0;
+
+    var coloresStock = new[] { "coffee", "green", "gold", "tan", "brown", "sage" };
+    var indiceColorStock = 0;
+}
+
+@section Styles {
+    <style>
+        .sg-report-progress {
+            height: 28px;
+            border-radius: 999px;
+            background: #f1e3cf;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(65, 39, 20, .12);
+        }
+
+        .sg-report-progress.lg {
+            height: 35px;
+        }
+
+        .sg-report-bar {
+            height: 100%;
+            min-width: 0;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--bar-1), var(--bar-2));
+            color: #fff;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(91, 54, 24, .18);
+        }
+
+        .sg-report-bar.ventas {
+            --bar-1: #5E8450;
+            --bar-2: #A15F26;
+        }
+
+        .sg-stock-bar.coffee {
+            --bar-1: #9f5c22;
+            --bar-2: #c47b32;
+        }
+
+        .sg-stock-bar.green {
+            --bar-1: #5E8450;
+            --bar-2: #7EA36A;
+        }
+
+        .sg-stock-bar.gold {
+            --bar-1: #D89A25;
+            --bar-2: #E8B750;
+        }
+
+        .sg-stock-bar.tan {
+            --bar-1: #B58B51;
+            --bar-2: #D7B97F;
+        }
+
+        .sg-stock-bar.brown {
+            --bar-1: #4A2A18;
+            --bar-2: #7B4A2D;
+        }
+
+        .sg-stock-bar.sage {
+            --bar-1: #758A61;
+            --bar-2: #9BAC82;
+        }
+
+        .sg-report-stock-value {
+            color: #8f531c !important;
+        }
+    </style>
 }
 
 <h1 class="fw-bold"></h1>
@@ -132,7 +212,7 @@
             <h5 class="fw-bold">Ventas totales</h5>
 
             <h2 class="text-success fw-bold">
-                ₡ @totalVentas.ToString("N2")
+                ₡ @totalVentas.ToString("N0")
             </h2>
         </div>
     </div>
@@ -188,13 +268,11 @@
                 Ventas totales
             </h4>
 
-            <div class="progress" style="height: 35px;">
-                <div class="progress-bar bg-success"
+            <div class="sg-report-progress lg">
+                <div class="sg-report-bar ventas"
                      role="progressbar"
                      style="width: 100%;">
-
-                    ₡ @totalVentas.ToString("N2")
-
+                    ₡ @totalVentas.ToString("N0")
                 </div>
             </div>
 
@@ -209,34 +287,57 @@
                 Stock disponible
             </h4>
 
-            @foreach (var producto in ViewBag.Productos)
+            @if (productosReporte.Any())
             {
-                <div class="mb-4">
+                foreach (var producto in productosReporte)
+                {
+                    var claseColor = coloresStock[indiceColorStock % coloresStock.Length];
+                    var porcentajeStock = maxStockProducto <= 0
+                        ? 0
+                        : (int)Math.Round(producto.Stock * 100m / maxStockProducto);
 
-                    <div class="d-flex justify-content-between mb-2">
+                    if (producto.Stock > 0 && porcentajeStock < 6)
+                    {
+                        porcentajeStock = 6;
+                    }
 
-                        <span class="fw-semibold">
-                            @producto.Nombre
-                        </span>
+                    indiceColorStock++;
 
-                        <span class="fw-bold text-primary">
-                            @producto.Stock kg
-                        </span>
+                    <div class="mb-4">
 
-                    </div>
+                        <div class="d-flex justify-content-between mb-2">
 
-                    <div class="progress" style="height: 24px;">
+                            <span class="fw-semibold">
+                                @producto.Nombre
+                            </span>
 
-                        <div class="progress-bar bg-primary"
-                             role="progressbar"
-                             style="width:@(producto.Stock > 100 ? 100 : producto.Stock)%">
+                            <span class="fw-bold sg-report-stock-value">
+                                @producto.Stock kg
+                            </span>
+
+                        </div>
+
+                        <div class="sg-report-progress">
+
+                            <div class="sg-report-bar sg-stock-bar @claseColor"
+                                 role="progressbar"
+                                 aria-valuenow="@producto.Stock"
+                                 aria-valuemin="0"
+                                 aria-valuemax="@maxStockProducto"
+                                 style="width:@porcentajeStock%">
+                            </div>
+
                         </div>
 
                     </div>
-
+                }
+            }
+            else
+            {
+                <div class="text-muted">
+                    No hay productos registrados para mostrar stock.
                 </div>
             }
-
         </div>
 
     </div>

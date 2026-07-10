@@ -8,7 +8,7 @@ using System.IO;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
-    [Authorize(Roles = "Administrador,Vendedor")]
+    [Authorize(Roles = "Administrador,Vendedor,Operador")]
     public class ReportesController : Controller
     {
         private readonly ApplicationDbContext _context;

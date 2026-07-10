@@ -20,11 +20,13 @@
     const userId = root.dataset.userId || "anonimo";
     const canManage = root.dataset.canManage === "true";
 
+    const hoy = new Date().toISOString().slice(0, 10);
+
     const dismissedKey =
-        `san-gabriel-alertas-eliminadas-${userId}`;
+        `san-gabriel-alertas-eliminadas-${userId}-${hoy}`;
 
     const shownKey =
-        `san-gabriel-alertas-mostradas-${userId}`;
+        `san-gabriel-alertas-mostradas-${userId}-${hoy}`;
 
     const enabledKey =
         `san-gabriel-notificaciones-activas-${userId}`;
@@ -48,14 +50,14 @@
 
     function readArray(key) {
         try {
-            return JSON.parse(localStorage.getItem(key)) || [];
+            return JSON.parse(sessionStorage.getItem(key)) || [];
         } catch {
             return [];
         }
     }
 
     function writeArray(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
+        sessionStorage.setItem(key, JSON.stringify(value));
     }
 
     function notificationsEnabled() {

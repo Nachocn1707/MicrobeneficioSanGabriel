@@ -122,7 +122,7 @@ else
                                 </div>
                             </td>
                             <td>@item.Categoria</td>
-                            <td>₡ @item.Precio.ToString("N2")</td>
+                            <td>₡ @item.Precio.ToString("N0")</td>
                             <td><span class="sg-badge @(item.Stock <= item.StockMinimo ? "red" : "")">@item.Stock kg</span></td>
                             <td><span class="sg-badge @(item.Activo ? "" : "red")">@(item.Activo ? "Activo" : "Inactivo")</span></td>
                             <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
@@ -142,24 +142,4 @@ else
             </table>
         </div>
     </section>
-}
-
-@section Scripts {
-    @if (!User.IsInRole("Cliente"))
-    {
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                if (window.jQuery && jQuery.fn.DataTable) {
-                    const table = jQuery('#tablaProductos').DataTable({
-                        language: { url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json' },
-                        pageLength: 5,
-                        lengthMenu: [5, 10, 15, 20],
-                        responsive: true,
-                        dom: 'rt<"d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3"ip>'
-                    });
-                    document.getElementById('sgProductSearch')?.addEventListener('input', e => table.search(e.target.value).draw());
-                }
-            });
-        </script>
-    }
 }

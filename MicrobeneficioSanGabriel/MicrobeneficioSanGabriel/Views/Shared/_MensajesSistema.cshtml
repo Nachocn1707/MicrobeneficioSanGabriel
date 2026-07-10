@@ -19,3 +19,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 }
+
+@if (TempData["Info"] is string mensajeInfo)
+{
+    <div class="sg-system-message alert alert-info alert-dismissible fade show" role="alert" data-auto-dismiss="true">
+        <i class="fa-solid fa-circle-info me-2"></i>@mensajeInfo
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}

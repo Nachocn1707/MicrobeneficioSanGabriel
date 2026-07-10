@@ -52,7 +52,12 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
-            return View();
+            return View(new Producto
+            {
+                Activo = true,
+                StockMinimo = 20,
+                FechaRegistro = DateTime.Now
+            });
         }
 
         // POST: Productos/Create

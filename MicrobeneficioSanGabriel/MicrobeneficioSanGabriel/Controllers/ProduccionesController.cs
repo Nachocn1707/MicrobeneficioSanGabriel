@@ -39,6 +39,9 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var produccion = await _context.Producciones
                 .Include(p => p.Lote)
+                    .ThenInclude(l => l!.Productor)
+                .Include(p => p.Lote)
+                    .ThenInclude(l => l!.Finca)
                 .Include(p => p.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -263,6 +266,9 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var produccion = await _context.Producciones
                 .Include(p => p.Lote)
+                    .ThenInclude(l => l!.Productor)
+                .Include(p => p.Lote)
+                    .ThenInclude(l => l!.Finca)
                 .Include(p => p.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -474,9 +480,24 @@ namespace MicrobeneficioSanGabriel.Controllers
         private void CargarCombos(int? loteId = null, int? productoId = null)
         {
             ViewBag.LoteId = new SelectList(
-                _context.Lotes.OrderBy(l => l.CodigoLote),
+                _context.Lotes
+                    .Include(l => l.Finca)
+                    .Include(l => l.Productor)
+                    .OrderBy(l => l.CodigoLote)
+                    .AsEnumerable()
+                    .Select(l => new
+                    {
+                        l.Id,
+                        Descripcion = l.CodigoLote + " - " +
+                            (l.Finca != null && !string.IsNullOrWhiteSpace(l.Finca.Nombre)
+                                ? l.Finca.Nombre
+                                : l.Productor != null && !string.IsNullOrWhiteSpace(l.Productor.Nombre)
+                                    ? l.Productor.Nombre
+                                    : "Sin nombre")
+                    })
+                    .ToList(),
                 "Id",
-                "CodigoLote",
+                "Descripcion",
                 loteId
             );
 

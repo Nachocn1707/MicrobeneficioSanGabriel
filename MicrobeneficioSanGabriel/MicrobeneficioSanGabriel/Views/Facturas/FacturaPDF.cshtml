@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Factura
+@model MicrobeneficioSanGabriel.Models.Factura
 
 @{
     Layout = null;
@@ -192,7 +192,7 @@
                 <tr>
                     <td>@Model.Pedido?.Producto?.Nombre</td>
                     <td>@Model.Pedido?.Cantidad kg</td>
-                    <td>₡ @Model.Subtotal.ToString("N2")</td>
+                    <td>₡ @Model.Subtotal.ToString("N0")</td>
                 </tr>
             </tbody>
         </table>
@@ -201,12 +201,12 @@
 
             <div class="total-row">
                 <span class="total-label">IVA:</span>
-                <span class="total-value">₡ @Model.IVA.ToString("N2")</span>
+                <span class="total-value">₡ @Model.IVA.ToString("N0")</span>
             </div>
 
             <div class="total-row">
                 <span class="total-label">TOTAL:</span>
-                <span class="total-value">₡ @Model.Total.ToString("N2")</span>
+                <span class="total-value">₡ @Model.Total.ToString("N0")</span>
             </div>
 
         </div>

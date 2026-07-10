@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.ViewModels.ReporteIAViewModel
+@model MicrobeneficioSanGabriel.ViewModels.ReporteIAViewModel
 
 @{
     ViewData["Title"] = "Análisis con IA";
@@ -198,7 +198,7 @@
 
         <div class="ia-card ia-metric">
             <span>Ventas totales</span>
-            <strong>₡ @Model.VentasTotales.ToString("N2")</strong>
+            <strong>₡ @Model.VentasTotales.ToString("N0")</strong>
         </div>
 
         <div class="ia-card ia-metric">
@@ -231,7 +231,7 @@
                         <div class="ia-list-item">
                             <strong>@producto.Producto</strong>
                             <span>Cantidad vendida: @producto.Cantidad kg</span>
-                            <span>Total generado: ₡ @producto.TotalVentas.ToString("N2")</span>
+                            <span>Total generado: ₡ @producto.TotalVentas.ToString("N0")</span>
                         </div>
                     }
                 }
@@ -256,7 +256,7 @@
                         <div class="ia-list-item">
                             <strong>@cliente.Cliente</strong>
                             <span>Pedidos realizados: @cliente.Pedidos</span>
-                            <span>Total comprado: ₡ @cliente.TotalComprado.ToString("N2")</span>
+                            <span>Total comprado: ₡ @cliente.TotalComprado.ToString("N0")</span>
                         </div>
                     }
                 }

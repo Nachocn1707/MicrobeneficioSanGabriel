@@ -35,13 +35,12 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (User.IsInRole("Cliente"))
             {
                 var usuario = await _userManager.GetUserAsync(User);
-
-                var correo = usuario?.Email;
-                var nombre = usuario?.NombreCompleto;
+                var correo = (usuario?.Email ?? User.Identity?.Name ?? string.Empty)
+                    .Trim()
+                    .ToLowerInvariant();
 
                 pedidos = pedidos.Where(p =>
-                    p.ClienteCorreo == correo 
-                );
+                    p.ClienteCorreo != null && p.ClienteCorreo.ToLower() == correo);
             }
 
             return View(await pedidos
@@ -49,6 +48,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .ToListAsync());
         }
 
+        [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Create(int? productoId)
         {
             var pedido = new Pedido
@@ -58,22 +58,31 @@ namespace MicrobeneficioSanGabriel.Controllers
                 FechaPedido = DateTime.Now
             };
 
+            CargarProductos(productoId);
+
             if (productoId.HasValue)
             {
                 var producto = await _context.Productos
-                    .FindAsync(productoId.Value);
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.Id == productoId.Value && p.Activo && p.Stock > 0);
 
                 if (producto != null)
                 {
                     pedido.ProductoId = producto.Id;
                     ViewBag.ProductoNombre = producto.Nombre;
                 }
+                else
+                {
+                    TempData["Warning"] = "El producto seleccionado no está disponible. Seleccione otro producto activo con stock.";
+                }
             }
+
             return View(pedido);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Create(Pedido pedido)
         {
             if (User.IsInRole("Cliente"))
@@ -84,10 +93,16 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     pedido.ClienteNombre = usuario.NombreCompleto;
                     pedido.ClienteCorreo = usuario.Email;
-                    pedido.ClienteTelefono = usuario.PhoneNumber ?? string.Empty;
+
+                    if (string.IsNullOrWhiteSpace(pedido.ClienteTelefono) &&
+                        !string.IsNullOrWhiteSpace(usuario.PhoneNumber))
+                    {
+                        pedido.ClienteTelefono = usuario.PhoneNumber;
+                        ModelState.Remove(nameof(Pedido.ClienteTelefono));
+                    }
+
                     ModelState.Remove(nameof(Pedido.ClienteNombre));
                     ModelState.Remove(nameof(Pedido.ClienteCorreo));
-                    ModelState.Remove(nameof(Pedido.ClienteTelefono));
                 }
 
                 pedido.Estado = "Pendiente";
@@ -98,6 +113,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ? null
                 : pedido.ClienteCorreo.Trim().ToLowerInvariant();
             pedido.ClienteTelefono = new string((pedido.ClienteTelefono ?? string.Empty).Where(char.IsDigit).ToArray());
+            ModelState.Remove(nameof(Pedido.ClienteTelefono));
+
+            if (pedido.ClienteTelefono.Length != 8)
+            {
+                ModelState.AddModelError(nameof(Pedido.ClienteTelefono),
+                    "El teléfono debe tener 8 dígitos, por ejemplo 8888-8888.");
+            }
 
             if (string.IsNullOrWhiteSpace(pedido.Estado))
             {
@@ -448,10 +470,16 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             ViewBag.ProductoId = new SelectList(
                 _context.Productos
-                    .Where(p => p.Activo)
-                    .OrderBy(p => p.Nombre),
+                    .Where(p => p.Activo && p.Stock > 0)
+                    .OrderBy(p => p.Nombre)
+                    .AsEnumerable()
+                    .Select(p => new
+                    {
+                        p.Id,
+                        Texto = p.Nombre + " — ₡" + p.Precio.ToString("N0") + " / " + p.Stock + " kg"
+                    }),
                 "Id",
-                "Nombre",
+                "Texto",
                 productoSeleccionado
             );
         }
@@ -463,10 +491,13 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         private bool PedidoPerteneceAlCliente(Pedido pedido)
         {
-            return pedido.ClienteCorreo == User.Identity?.Name;
+            var correoPedido = (pedido.ClienteCorreo ?? string.Empty).Trim();
+            var correoUsuario = (User.Identity?.Name ?? string.Empty).Trim();
+
+            return string.Equals(correoPedido, correoUsuario, StringComparison.OrdinalIgnoreCase);
         }
 
-        [Authorize(Roles = "Administrador,Vendedor")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(int? id)
         {
             if (id == null) return NotFound();
@@ -482,7 +513,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador,Vendedor")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(int id, string estado)
         {
             var pedido = await _context.Pedidos
@@ -549,6 +580,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Pago(int id)
         {
             var pedido = await _context.Pedidos
@@ -565,6 +597,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Pago(
          int pedidoId,
          string metodoPago,
@@ -674,6 +707,26 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             return "Pendiente de pago";
+        }
+
+        [Authorize(Roles = "Administrador,Vendedor")]
+        public async Task<IActionResult> CambiarEstadoPago(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            return View(pedido);
         }
 
         [HttpPost]

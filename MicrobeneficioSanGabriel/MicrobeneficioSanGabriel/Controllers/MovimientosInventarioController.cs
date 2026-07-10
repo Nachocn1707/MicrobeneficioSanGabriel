@@ -20,11 +20,18 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var movimientos = _context.MovimientosInventario
+            var movimientos = await _context.MovimientosInventario
                 .Include(m => m.Producto)
-                .OrderByDescending(m => m.FechaMovimiento);
+                .OrderByDescending(m => m.FechaMovimiento)
+                .ToListAsync();
 
-            return View(await movimientos.ToListAsync());
+            ViewBag.ProductosStock = await _context.Productos
+                .Where(p => p.Activo)
+                .OrderByDescending(p => p.Stock)
+                .ThenBy(p => p.Nombre)
+                .ToListAsync();
+
+            return View(movimientos);
         }
 
         public async Task<IActionResult> Details(int? id)

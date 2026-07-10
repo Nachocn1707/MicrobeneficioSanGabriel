@@ -1,7 +1,8 @@
-﻿@model MicrobeneficioSanGabriel.Models.Pedido
+@model MicrobeneficioSanGabriel.Models.Pedido
 
 @{
     ViewData["Title"] = "Nuevo Pedido";
+    var productoNombre = ViewBag.ProductoNombre as string;
 
     if (User.IsInRole("Cliente"))
     {
@@ -88,11 +89,23 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label asp-for="ProductoId" class="form-label">Producto</label>
-                                <div class="input-modern readonly-product">
-                                    <i class="fa-solid fa-box"></i>
-                                    <span>@ViewBag.ProductoNombre</span>
-                                    <input type="hidden" asp-for="ProductoId" />
-                                </div>
+                                @if (!string.IsNullOrWhiteSpace(productoNombre))
+                                {
+                                    <div class="input-modern readonly-product">
+                                        <i class="fa-solid fa-box"></i>
+                                        <span>@productoNombre</span>
+                                        <input type="hidden" asp-for="ProductoId" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-box"></i>
+                                        <select asp-for="ProductoId" asp-items="ViewBag.ProductoId" class="form-select">
+                                            <option value="">Seleccione un producto disponible</option>
+                                        </select>
+                                    </div>
+                                }
                                 <span asp-validation-for="ProductoId" class="text-danger"></span>
                             </div>
                         </div>

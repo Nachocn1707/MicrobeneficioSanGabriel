@@ -1,178 +1,87 @@
-﻿@model MicrobeneficioSanGabriel.Models.Trazabilidad
+@model MicrobeneficioSanGabriel.Models.Trazabilidad
 
 @{
-    ViewData["Title"] = "Editar trazabilidad";
+    ViewData["Title"] = "Detalle de trazabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var loteCodigo = Model.Lote?.CodigoLote ?? $"LOTE-{Model.LoteId:0000}";
+    var productor = Model.Lote?.Productor?.Nombre ?? "Sin productor asociado";
+    var finca = Model.Lote?.Finca?.Nombre ?? "Sin finca asociada";
+    var produccionTexto = Model.Produccion != null
+        ? $"Producción #{Model.Produccion.Id} · {Model.Produccion.TipoProceso}"
+        : $"Producción #{Model.ProduccionId}";
+    var producto = Model.Produccion?.Producto?.Nombre ?? "Sin producto resultante";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/VistaEditar.css" />
-}
+<section class="sg-page-head">
+    <div>
+        <h1>Detalle de trazabilidad</h1>
+        <p>Consulta el seguimiento del lote, su etapa actual y la producción asociada.</p>
+    </div>
+    <div class="sg-actions">
+        <span class="sg-badge gold">@Model.Etapa</span>
+    </div>
+</section>
 
-<div class="EstiloEditar-edit-page">
+<section class="sg-visual-hero sg-hero-trazabilidad">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge"><i class="fa-solid fa-route"></i> Seguimiento del café</span>
+        <h1>@loteCodigo</h1>
+        <div class="sg-visual-line"></div>
+        <p>@productor · @finca</p>
+    </div>
+</section>
 
-    <div class="EstiloEditar-header">
-        <h1>Editar trazabilidad</h1>
-        <p>Actualizá la información registrada del seguimiento del lote.</p>
+<section class="sg-card sg-panel">
+    <div class="sg-panel-head">
+        <h3>Información del registro</h3>
+        <span class="sg-badge">Registro #@Model.Id</span>
     </div>
 
-    <div class="EstiloEditar-card">
-
-        <div class="EstiloEditar-card-header">
-            <h2>
-                @(Model.Lote != null ? Model.Lote.CodigoLote : $"Registro #{Model.Id}")
-            </h2>
-            <span>Microbeneficio San Gabriel</span>
+    <div class="row g-4 mt-1">
+        <div class="col-md-4">
+            <small class="text-muted">Código de lote</small>
+            <h5>@loteCodigo</h5>
         </div>
-
-        <div class="EstiloEditar-card-body">
-
-            <form asp-action="Edit" method="post">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
-                </div>
-
-                <input type="hidden" asp-for="Id" />
-
-                <div class="row g-4">
-
-                    <div class="col-md-6">
-
-                        <label asp-for="LoteId" class="form-label">
-                            Lote
-                        </label>
-
-                        <select asp-for="LoteId"
-                                class="form-select"
-                                asp-items="ViewBag.LoteId">
-                            <option value="">Seleccione un lote</option>
-                        </select>
-
-                        <span asp-validation-for="LoteId"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="ProduccionId" class="form-label">
-                            Producción asociada
-                        </label>
-
-                        <select asp-for="ProduccionId"
-                                class="form-select"
-                                asp-items="ViewBag.ProduccionId">
-                            <option value="">Seleccione una producción</option>
-                        </select>
-
-                        <span asp-validation-for="ProduccionId"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Etapa" class="form-label">
-                            Etapa
-                        </label>
-
-                        <select asp-for="Etapa"
-                                class="form-select">
-                            <option value="">Seleccione una etapa</option>
-                            <option value="Recepción">Recepción</option>
-                            <option value="Producción">Producción</option>
-                            <option value="Secado">Secado</option>
-                            <option value="Tostado">Tostado</option>
-                            <option value="Molido">Molido</option>
-                            <option value="Empaque">Empaque</option>
-                        </select>
-
-                        <span asp-validation-for="Etapa"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="FechaRegistro" class="form-label">
-                            Fecha de registro
-                        </label>
-
-                        <input asp-for="FechaRegistro"
-                               type="datetime-local"
-                               class="form-control" />
-
-                        <span asp-validation-for="FechaRegistro"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label asp-for="Responsable" class="form-label">
-                            Responsable
-                        </label>
-
-                        <input asp-for="Responsable"
-                               class="form-control"
-                               placeholder="Nombre del responsable" />
-
-                        <span asp-validation-for="Responsable"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="col-12">
-
-                        <label asp-for="Observacion" class="form-label">
-                            Observación
-                        </label>
-
-                        <textarea asp-for="Observacion"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Detalle adicional del seguimiento"></textarea>
-
-                        <span asp-validation-for="Observacion"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="EstiloEditar-actions">
-
-                    <a asp-action="Index"
-                           class="btn-volver">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la lista
-                    </a>
-
-                    <button type="submit"
-                            class="btn-guardar">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Guardar cambios
-                    </button>
-
-                </div>
-
-            </form>
-
+        <div class="col-md-4">
+            <small class="text-muted">Productor</small>
+            <h5>@productor</h5>
         </div>
-
+        <div class="col-md-4">
+            <small class="text-muted">Finca</small>
+            <h5>@finca</h5>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Etapa</small>
+            <p class="mb-0"><span class="sg-badge gold">@Model.Etapa</span></p>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Fecha de registro</small>
+            <p class="fw-bold mb-0">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Responsable</small>
+            <p class="fw-bold mb-0">@(string.IsNullOrWhiteSpace(Model.Responsable) ? "Sin responsable registrado" : Model.Responsable)</p>
+        </div>
+        <div class="col-md-6">
+            <small class="text-muted">Producción asociada</small>
+            <p class="fw-bold mb-0">@produccionTexto</p>
+        </div>
+        <div class="col-md-6">
+            <small class="text-muted">Producto resultante</small>
+            <p class="fw-bold mb-0">@producto</p>
+        </div>
+        <div class="col-12">
+            <small class="text-muted">Observación</small>
+            <p class="mb-0">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación registrada." : Model.Observacion)</p>
+        </div>
     </div>
 
-</div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-arrow-left"></i>Volver</a>
+        @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="sg-btn gold"><i class="fa-solid fa-pen"></i>Editar</a>
+        }
+    </div>
+</section>

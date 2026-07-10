@@ -469,11 +469,33 @@
 
                     @if (User.IsInRole("Administrador"))
                     {
+                        <a asp-action="CambiarEstadoPago"
+                               asp-route-id="@Model.Id"
+                               class="btn-pedido btn-pedido-primary">
+                            <i class="fa-solid fa-wallet"></i>
+                            Cambiar pago
+                        </a>
+
                         <a asp-action="Edit"
                                asp-route-id="@Model.Id"
                                class="btn-pedido btn-pedido-warning">
                             <i class="fa-solid fa-pen-to-square"></i>
                             Editar
+                        </a>
+
+                        <a asp-action="Index"
+                               class="btn-pedido btn-pedido-primary">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Volver
+                        </a>
+                    }
+                    else if (User.IsInRole("Vendedor"))
+                    {
+                        <a asp-action="CambiarEstadoPago"
+                               asp-route-id="@Model.Id"
+                               class="btn-pedido btn-pedido-primary">
+                            <i class="fa-solid fa-wallet"></i>
+                            Cambiar pago
                         </a>
 
                         <a asp-action="Index"

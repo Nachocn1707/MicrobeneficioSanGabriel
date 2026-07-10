@@ -1,4 +1,4 @@
-@using System.Text.Json
+﻿@using System.Text.Json
 @using MicrobeneficioSanGabriel.Models
 @{
     ViewData["Title"] = "Dashboard Ejecutivo";
@@ -28,6 +28,98 @@
     var canceladosPedidos = estadosPedidos.ContainsKey("Cancelado") ? estadosPedidos["Cancelado"] : 0;
     var totalPedidosEstados = estadosPedidos.Values.Sum();
     decimal Porcentaje(int valor) => totalPedidosEstados == 0 ? 0 : Math.Round(valor * 100m / totalPedidosEstados, 0);
+
+    var coloresPedidos = new[]
+    {
+        new { Clase = "green", Hex = "#5E8450", Label = "Completados", Valor = completados },
+        new { Clase = "gold", Hex = "#C98D25", Label = "En proceso", Valor = enProcesoPedidos },
+        new { Clase = "tan", Hex = "#D8B98A", Label = "Pendientes", Valor = pendientesPedidos },
+        new { Clase = "brown", Hex = "#3A2416", Label = "Cancelados", Valor = canceladosPedidos }
+    };
+
+    string FormatoPorcentaje(decimal valor) =>
+        valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    string CrearDonutPedidos()
+    {
+        if (totalPedidosEstados <= 0)
+        {
+            return "conic-gradient(#eadfce 0% 100%)";
+        }
+
+        var segmentos = new List<string>();
+        decimal acumulado = 0m;
+
+        foreach (var estado in coloresPedidos)
+        {
+            if (estado.Valor <= 0)
+            {
+                continue;
+            }
+
+            var inicio = acumulado;
+            acumulado += estado.Valor * 100m / totalPedidosEstados;
+            segmentos.Add($"{estado.Hex} {FormatoPorcentaje(inicio)}% {FormatoPorcentaje(acumulado)}%");
+        }
+
+        return segmentos.Any()
+            ? $"conic-gradient({string.Join(", ", segmentos)})"
+            : "conic-gradient(#eadfce 0% 100%)";
+    }
+
+    var donutPedidos = CrearDonutPedidos();
+
+    int ValorProceso(params string[] nombres)
+    {
+        return procesosPorEstado
+            .Where(e => nombres.Any(n => string.Equals(e.Key, n, StringComparison.OrdinalIgnoreCase)))
+            .Sum(e => e.Value);
+    }
+
+    var procesosCompletados = ValorProceso("Completado", "Completada", "Completados", "Completadas");
+    var procesosCancelados = ValorProceso("Cancelado", "Cancelada", "Cancelados", "Canceladas");
+    var procesosPendientes = ValorProceso("Pendiente", "Pendientes");
+    var procesosEnProceso = ValorProceso("En proceso", "En Proceso", "Proceso");
+    var totalProcesosEstados = procesosPorEstado.Values.Sum();
+    var procesosOtros = Math.Max(0, totalProcesosEstados - procesosCompletados - procesosEnProceso - procesosPendientes - procesosCancelados);
+
+    var coloresProduccion = new[]
+    {
+        new { Clase = "green", Hex = "#5E8450", Label = "Completado", Valor = procesosCompletados },
+        new { Clase = "gold", Hex = "#C98D25", Label = "En proceso", Valor = procesosEnProceso },
+        new { Clase = "tan", Hex = "#D8B98A", Label = "Pendiente", Valor = procesosPendientes },
+        new { Clase = "brown", Hex = "#3A2416", Label = "Cancelado", Valor = procesosCancelados },
+        new { Clase = "coffee", Hex = "#A66321", Label = "Otros", Valor = procesosOtros }
+    };
+
+    string CrearDonutProduccion()
+    {
+        if (totalProcesosEstados <= 0)
+        {
+            return "conic-gradient(#eadfce 0% 100%)";
+        }
+
+        var segmentos = new List<string>();
+        decimal acumulado = 0m;
+
+        foreach (var estado in coloresProduccion)
+        {
+            if (estado.Valor <= 0)
+            {
+                continue;
+            }
+
+            var inicio = acumulado;
+            acumulado += estado.Valor * 100m / totalProcesosEstados;
+            segmentos.Add($"{estado.Hex} {FormatoPorcentaje(inicio)}% {FormatoPorcentaje(acumulado)}%");
+        }
+
+        return segmentos.Any()
+            ? $"conic-gradient({string.Join(", ", segmentos)})"
+            : "conic-gradient(#eadfce 0% 100%)";
+    }
+
+    var donutProduccion = CrearDonutProduccion();
 
     var ventasMensuales = JsonSerializer.Serialize(ViewBag.VentasMensuales ?? new List<decimal>());
 
@@ -70,12 +162,16 @@
     <article class="sg-card sg-panel">
         <div class="sg-panel-head"><h2>Estado de pedidos</h2></div>
         <div class="sg-donut-wrap">
-            <div class="sg-donut" style="--p:@Porcentaje(completados)"><div><b>@Porcentaje(completados)%</b><br/><span>Completados</span></div></div>
+            <div class="sg-donut" style="--donut-bg: @donutPedidos;"><div><b>@Porcentaje(completados)%</b><br/><span>Completados</span></div></div>
             <div class="sg-legend">
-                <div class="sg-legend-row"><span class="sg-dot"></span><span>Completados</span><b>@completados (@Porcentaje(completados)%)</b></div>
-                <div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@enProcesoPedidos (@Porcentaje(enProcesoPedidos)%)</b></div>
-                <div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pendientes</span><b>@pendientesPedidos (@Porcentaje(pendientesPedidos)%)</b></div>
-                <div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@canceladosPedidos (@Porcentaje(canceladosPedidos)%)</b></div>
+                @foreach (var estado in coloresPedidos)
+                {
+                    <div class="sg-legend-row">
+                        <span class="sg-dot @estado.Clase"></span>
+                        <span>@estado.Label</span>
+                        <b>@estado.Valor (@Porcentaje(estado.Valor)%)</b>
+                    </div>
+                }
             </div>
         </div>
     </article>
@@ -106,22 +202,22 @@
     <article class="sg-card sg-panel">
         <div class="sg-panel-head"><h3>Procesos de producción</h3><a class="text-success fw-bold" asp-controller="Producciones" asp-action="Index">Ver detalles</a></div>
         <div class="sg-donut-wrap">
-            <div class="sg-donut" style="--p:@(procesosPorEstado.Values.Sum() == 0 ? 0 : Math.Round(produccionesEnProceso * 100m / procesosPorEstado.Values.Sum(), 0));width:138px;height:138px"><div><b>@produccionesEnProceso</b><br/><span>En proceso</span></div></div>
+            <div class="sg-donut" style="--donut-bg: @donutProduccion; width:138px;height:138px"><div><b>@totalProcesosEstados</b><br/><span>Procesos</span></div></div>
             <div class="sg-legend">
-                @{
-                    var colores = new[] { "green", "gold" };
-                    var i = 0;
-                }
-
-                @foreach (var estado in procesosPorEstado.OrderByDescending(e => e.Value))
+                @if (coloresProduccion.Any(e => e.Valor > 0))
                 {
-                    <div class="sg-legend-row">
-                        <span class="sg-dot @colores[i]"></span>
-                        <b>@estado.Value</b>
-                        <span>@estado.Key</span>
-                    </div>
-
-                    i++;
+                    foreach (var estado in coloresProduccion.Where(e => e.Valor > 0))
+                    {
+                        <div class="sg-legend-row">
+                            <span class="sg-dot @estado.Clase"></span>
+                            <b>@estado.Valor</b>
+                            <span>@estado.Label</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted">No hay procesos registrados.</div>
                 }
             </div>
         </div>
@@ -160,33 +256,83 @@
     </div>
 </section>
 
-@section Scripts{
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script>
-    const ventasMensuales = @Html.Raw(ventasMensuales);
-    new Chart(document.getElementById('ventasChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-        datasets: [{
-        data: ventasMensuales,
-        backgroundColor: "#A15F26",
-        borderRadius: 8,
-        borderSkipped: false
-        }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false } },
-                y: { grid: { color: 'rgba(43,26,14,.08)' }, ticks: { callback: v => '₡' + Number(v).toLocaleString('es-CR') } }
-            }
+@section Scripts {
+    <script>
+        let ventasChart;
+        const ventasMensuales = @Html.Raw(ventasMensuales);
+
+        crearGrafico();
+
+        function crearGrafico() {
+            const darkMode = localStorage.getItem("theme") === "dark";
+            const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
+            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
+
+            ventasChart = new Chart(document.getElementById("ventasChart"), {
+                type: "bar",
+                data: {
+                    labels: [
+                        "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                        "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+                    ],
+                    datasets: [{
+                        data: ventasMensuales,
+                        backgroundColor: "#A15F26",
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                color: gridColor
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: textColor,
+                                callback: value => "₡" + Number(value).toLocaleString("es-CR")
+                            },
+                            grid: {
+                                color: gridColor
+                            },
+                            border: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
         }
-    });
 
+        function actualizarGraficoTema() {
+            if (!ventasChart) return;
 
+            const darkMode = document.body.classList.contains("dark");
+            const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
+            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
 
-</script>
+            ventasChart.options.scales.x.ticks.color = textColor;
+            ventasChart.options.scales.y.ticks.color = textColor;
+            ventasChart.options.scales.x.border.color = gridColor;
+            ventasChart.options.scales.y.border.color = gridColor;
+            ventasChart.options.scales.y.grid.color = gridColor;
+
+            ventasChart.update();
+        }
+    </script>
 }

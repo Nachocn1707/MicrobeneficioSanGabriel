@@ -29,6 +29,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(await facturas.ToListAsync());
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             CargarPedidos();
@@ -37,6 +38,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create(Factura factura)
         {
             var pedido = await _context.Pedidos

@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Pedido
+@model MicrobeneficioSanGabriel.Models.Pedido
 
 @{
     Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
@@ -33,12 +33,12 @@
 
             <div class="summary-row">
                 <span>Precio por kg</span>
-                <strong>₡@Model.Producto?.Precio.ToString("N2")</strong>
+                <strong>₡@Model.Producto?.Precio.ToString("N0")</strong>
             </div>
 
             <div class="summary-row total-row">
                 <span>Total</span>
-                <strong>₡@Convert.ToDecimal(total).ToString("N2")</strong>
+                <strong>₡@Convert.ToDecimal(total).ToString("N0")</strong>
             </div>
 
         </div>

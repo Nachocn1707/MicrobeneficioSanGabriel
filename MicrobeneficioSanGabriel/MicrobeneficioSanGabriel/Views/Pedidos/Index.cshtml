@@ -11,6 +11,49 @@
     var cancelados = pedidos.Count(p => (p.Estado ?? string.Empty).Contains("Cancel"));
     var pagosPendientes = pedidos.Count(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago");
     var ventas = pedidos.Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
+    var enProceso = pedidos.Count(p => p.Estado == "En proceso");
+    var pendientesSolo = pedidos.Count(p => p.Estado == "Pendiente");
+    var porcentajeCompletados = total == 0 ? 0 : Math.Round(completados * 100m / total, 0);
+
+    var coloresEstadoPedido = new[]
+    {
+        new { Clase = "green", Hex = "#5E8450", Label = "Completados", Valor = completados },
+        new { Clase = "gold", Hex = "#C98D25", Label = "En proceso", Valor = enProceso },
+        new { Clase = "tan", Hex = "#D8B98A", Label = "Pendientes", Valor = pendientesSolo },
+        new { Clase = "brown", Hex = "#3A2416", Label = "Cancelados", Valor = cancelados }
+    };
+
+    string FormatoPorcentaje(decimal valor) =>
+        valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    string CrearDonutEstadoPedidos()
+    {
+        if (total <= 0)
+        {
+            return "conic-gradient(#eadfce 0% 100%)";
+        }
+
+        var segmentos = new List<string>();
+        decimal acumulado = 0m;
+
+        foreach (var estado in coloresEstadoPedido)
+        {
+            if (estado.Valor <= 0)
+            {
+                continue;
+            }
+
+            var inicio = acumulado;
+            acumulado += estado.Valor * 100m / total;
+            segmentos.Add($"{estado.Hex} {FormatoPorcentaje(inicio)}% {FormatoPorcentaje(acumulado)}%");
+        }
+
+        return segmentos.Any()
+            ? $"conic-gradient({string.Join(", ", segmentos)})"
+            : "conic-gradient(#eadfce 0% 100%)";
+    }
+
+    var donutEstadoPedidos = CrearDonutEstadoPedidos();
 
     string EstadoClase(string estado)
     {
@@ -31,6 +74,10 @@
             <p>Consultá el estado de tus compras, pagos y entregas desde tu portal.</p>
         </div>
         <div class="sg-actions">
+            <label class="sg-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" data-table-target="tablaMisPedidos" placeholder="Buscar en mis pedidos..." />
+            </label>
             <a asp-controller="Productos" asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-mug-hot"></i>Ver catálogo</a>
             <a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a>
         </div>
@@ -102,12 +149,10 @@ else
     var inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
     var finMes = inicioMes.AddMonths(1);
     var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes).Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
-    var enProceso = pedidos.Count(p => p.Estado == "En proceso");
-    decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
 
     <section class="sg-page-head">
         <div><h1>Pedidos y Facturación</h1><p>Gestión de pedidos, entregas y facturación.</p></div>
-        @*         <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar pedido, cliente, factura..." /></label></div>  *@
+        <div class="sg-actions"><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaPedidos" placeholder="Buscar pedido, cliente, producto o pago..." /></label></div>
    </section>
     <section class="sg-kpi-grid">
         <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
@@ -116,15 +161,34 @@ else
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Completados</span><strong>@completados</strong><div class="sg-trend">Según estado actual</div></div></article>
     </section>
     <section class="sg-grid-2">
-        <article class="sg-card sg-panel"><h3>Estado de pedidos</h3><div class="sg-donut-wrap mt-3"><div class="sg-donut" style="--p:@Porcentaje(completados)"><div><b>@Porcentaje(completados)%</b><br /><span>Completados</span></div></div><div class="sg-legend"><div class="sg-legend-row"><span class="sg-dot"></span><span>Completados</span><b>@completados</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@enProceso</b></div><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pendientes</span><b>@pedidos.Count(p => p.Estado == "Pendiente")</b></div><div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@cancelados</b></div></div></div></article>
+        <article class="sg-card sg-panel">
+            <h3>Estado de pedidos</h3>
+            <div class="sg-donut-wrap mt-3">
+                <div class="sg-donut" style="--donut-bg: @donutEstadoPedidos;">
+                    <div>
+                        <b>@porcentajeCompletados%</b><br />
+                        <span>Completados</span>
+                    </div>
+                </div>
+                <div class="sg-legend">
+                    <div class="sg-legend-row"><span class="sg-dot green"></span><span>Completados</span><b>@completados</b></div>
+                    <div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@enProceso</b></div>
+                    <div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pendientes</span><b>@pendientesSolo</b></div>
+                    <div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@cancelados</b></div>
+                </div>
+            </div>
+        </article>
         <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => !string.IsNullOrWhiteSpace(p.EstadoPago) && (p.EstadoPago.Contains("completado", StringComparison.OrdinalIgnoreCase) || p.EstadoPago.Contains("Pag", StringComparison.OrdinalIgnoreCase)))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto total en pedidos</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
     </section>
     <section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaPedidos"><thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Total</th><th>Acciones</th></tr></thead><tbody>@foreach(var p in pedidos){
-        <tr><td>PP-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td><td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador")||User.IsInRole("Vendedor")){
-            <a asp-action="Edit" asp-route-id="@p.Id" title="Editar pedido" aria-label="Editar pedido"><i class="fa-solid fa-pen"></i></a>
+        <tr><td>PP-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td><td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+        {
+            <a asp-action="CambiarEstadoPago" asp-route-id="@p.Id" title="Cambiar estado de pago" aria-label="Cambiar estado de pago"><i class="fa-solid fa-wallet"></i></a>
         }
         @if (User.IsInRole("Administrador"))
         {
+            <a asp-action="Edit" asp-route-id="@p.Id" title="Editar pedido" aria-label="Editar pedido"><i class="fa-solid fa-pen"></i></a>
+            <a asp-action="CambiarEstado" asp-route-id="@p.Id" title="Cambiar estado del pedido" aria-label="Cambiar estado del pedido"><i class="fa-solid fa-list-check"></i></a>
             <a asp-action="Delete" asp-route-id="@p.Id" title="Eliminar pedido" aria-label="Eliminar pedido"><i class="fa-solid fa-trash"></i></a>
         }
     </span></td></tr>

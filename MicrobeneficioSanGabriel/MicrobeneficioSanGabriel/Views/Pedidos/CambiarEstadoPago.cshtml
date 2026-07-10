@@ -1,0 +1,82 @@
+@model MicrobeneficioSanGabriel.Models.Pedido
+
+@{
+    ViewData["Title"] = "Cambiar estado de pago";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
+
+<div class="EstiloEditar-edit-page">
+
+    <div class="EstiloEditar-header">
+        <h1>Cambiar estado de pago</h1>
+        <p>Actualizá únicamente el estado de pago del pedido seleccionado.</p>
+    </div>
+
+    <div class="EstiloEditar-card">
+
+        <div class="EstiloEditar-card-header">
+            <h2>Pedido #@Model.Id</h2>
+            <span>Microbeneficio San Gabriel</span>
+        </div>
+
+        <div class="EstiloEditar-card-body">
+
+            <form asp-action="CambiarEstadoPago" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Cliente</label>
+                        <input value="@Model.ClienteNombre" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Producto</label>
+                        <input value="@(Model.Producto?.Nombre ?? "Producto no disponible")" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Estado del pedido</label>
+                        <input value="@Model.Estado" class="form-control" readonly />
+                        <small class="text-muted d-block mt-2">
+                            Este formulario no modifica el estado operativo del pedido.
+                        </small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Estado de pago</label>
+                        <select name="estadoPago" class="form-select" required>
+                            <option value="Pendiente" selected="@(Model.EstadoPago == "Pendiente" || string.IsNullOrWhiteSpace(Model.EstadoPago))">Pendiente</option>
+                            <option value="Pendiente de pago" selected="@(Model.EstadoPago == "Pendiente de pago")">Pendiente de pago</option>
+                            <option value="Pago completado" selected="@(Model.EstadoPago == "Pago completado")">Pago completado</option>
+                        </select>
+                        <small class="text-muted d-block mt-2">
+                            Este cambio también sincroniza la factura asociada si existe.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="EstiloEditar-actions">
+                    <a asp-action="Index" class="btn-volver">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver a la lista
+                    </a>
+
+                    <button type="submit" class="btn-guardar">
+                        <i class="fa-solid fa-wallet"></i>
+                        Guardar estado de pago
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

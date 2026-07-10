@@ -4,16 +4,25 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var lotes = Model.ToList();
     var total = lotes.Count;
-    var activos = lotes.Count(l => l.Estado != "Cancelado" && l.Estado != "Finalizado");
-    var finalizados = lotes.Count(l => l.Estado == "Finalizado");
-    var cancelados = lotes.Count(l => l.Estado == "Cancelado");
-    var enProceso = lotes.Count(l => (l.Estado ?? string.Empty).Contains("proceso", StringComparison.OrdinalIgnoreCase));
+    var finalizados = lotes.Count(l =>
+        (l.Estado ?? string.Empty).Contains("finalizado", StringComparison.OrdinalIgnoreCase));
+    var cancelados = lotes.Count(l =>
+        (l.Estado ?? string.Empty).Contains("cancelado", StringComparison.OrdinalIgnoreCase));
+    var enProceso = lotes.Count(l =>
+        (l.Estado ?? string.Empty).Contains("proceso", StringComparison.OrdinalIgnoreCase));
+    var activos = lotes.Count(l =>
+    {
+        var estado = (l.Estado ?? string.Empty).Trim();
+        return !estado.Contains("finalizado", StringComparison.OrdinalIgnoreCase)
+            && !estado.Contains("cancelado", StringComparison.OrdinalIgnoreCase)
+            && !estado.Contains("proceso", StringComparison.OrdinalIgnoreCase);
+    });
     var peso = lotes.Sum(l => l.PesoKg);
     decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
 }
 <section class="sg-page-head">
     <div><h1>Lotes y Producción</h1><p>Gestión integral de lotes y procesos de producción con datos reales del sistema.</p></div>
-    <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo lote</a><a asp-controller="Producciones" asp-action="Create" class="sg-btn ghost"><i class="fa-solid fa-plus"></i>Registrar producción</a></div>
+    <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo lote</a><a asp-controller="Producciones" asp-action="Create" class="sg-btn ghost"><i class="fa-solid fa-plus"></i>Registrar producción</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaLotes" placeholder="Buscar lote, productor o finca..." /></label></div>
 </section>
 <section class="sg-kpi-grid">
     <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Lotes totales</span><strong>@total</strong><div class="sg-trend">Registros en base de datos</div></div></article>
@@ -27,9 +36,9 @@
         <div class="sg-donut-wrap">
             <div class="sg-donut" style="--p:@Porcentaje(finalizados)"><div><b>@Porcentaje(finalizados)%</b><br/><span>Finalizados</span></div></div>
             <div class="sg-legend">
-                <div class="sg-legend-row"><span class="sg-dot"></span><span>Finalizados</span><b>@finalizados</b></div>
-                <div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@enProceso</b></div>
-                <div class="sg-legend-row"><span class="sg-dot tan"></span><span>Activos</span><b>@activos</b></div>
+                <div class="sg-legend-row"><span class="sg-dot gold"></span><span>Finalizados</span><b>@finalizados</b></div>
+                <div class="sg-legend-row"><span class="sg-dot green"></span><span>En proceso</span><b>@enProceso</b></div>
+                <div class="sg-legend-row"><span class="sg-dot coffee"></span><span>Activos</span><b>@activos</b></div>
                 <div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@cancelados</b></div>
             </div>
         </div>
