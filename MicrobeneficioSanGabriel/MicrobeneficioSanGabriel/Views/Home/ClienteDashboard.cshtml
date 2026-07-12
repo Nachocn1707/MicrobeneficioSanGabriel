@@ -1,118 +1,380 @@
 @using MicrobeneficioSanGabriel.Models
+
 @{
     ViewData["Title"] = "Inicio";
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
 
-    var nombreCliente = ViewBag.ClienteNombre as string ?? "Cliente";
-    var productosDestacados = ViewBag.ProductosDestacados as List<Producto> ?? new List<Producto>();
-    var ultimosPedidos = ViewBag.UltimosPedidosCliente as List<Pedido> ?? new List<Pedido>();
-    var totalProductos = (int?)ViewBag.TotalProductos ?? 0;
-    var totalPedidos = (int?)ViewBag.TotalPedidosCliente ?? 0;
-    var pedidosPendientes = (int?)ViewBag.PedidosPendientesCliente ?? 0;
-    var pedidosCompletados = (int?)ViewBag.PedidosCompletadosCliente ?? 0;
-    var totalKgDisponibles = (int?)ViewBag.TotalKgDisponibles ?? 0;
+    var productosDestacados =
+        ViewBag.ProductosDestacados as List<Producto>
+        ?? new List<Producto>();
+
+    var ultimosPedidos =
+        ViewBag.UltimosPedidosCliente as List<Pedido>
+        ?? new List<Pedido>();
+
+    var totalProductos =
+        (int?)ViewBag.TotalProductos ?? 0;
+
+    var totalPedidos =
+        (int?)ViewBag.TotalPedidosCliente ?? 0;
+
+    var pedidosPendientes =
+        (int?)ViewBag.PedidosPendientesCliente ?? 0;
+
+    var pedidosCompletados =
+        (int?)ViewBag.PedidosCompletadosCliente ?? 0;
+
+    var totalKgDisponibles =
+        (int?)ViewBag.TotalKgDisponibles ?? 0;
 
     string ImagenProducto(Producto producto)
     {
-        if (!string.IsNullOrWhiteSpace(producto.ImagenUrl)) return producto.ImagenUrl;
+        if (!string.IsNullOrWhiteSpace(producto.ImagenUrl))
+        {
+            return producto.ImagenUrl;
+        }
 
         var valor = (producto.Nombre ?? string.Empty).ToLowerInvariant();
-        if (valor.Contains("premium")) return "/images/products/cafe-premium.jpg";
-        if (valor.Contains("normal")) return "/images/products/cafe-normal.jpg";
+
+        if (valor.Contains("premium"))
+        {
+            return "/images/products/cafe-premium.jpg";
+        }
+
+        if (valor.Contains("normal"))
+        {
+            return "/images/products/cafe-normal.jpg";
+        }
+
         return "/images/products/default-coffee.jpg";
     }
 }
 
-<div class="rc-client-dashboard">
-    <section class="rc-client-hero">
-        <div>
-            <span class="rc-kicker"><i class="fa-solid fa-circle-check"></i> Coffee Club activo</span>
-            <h1>Hola, @nombreCliente</h1>
+<div class="cafe-client-home">
+
+    <section class="cafe-welcome">
+        <div class="cafe-welcome-content">
+            <span class="cafe-eyebrow">
+                <i class="fa-solid fa-leaf"></i>
+                Café de origen San Gabriel
+            </span>
+
+            <h1>
+                El sabor perfecto<br />
+                para tu mañana
+            </h1>
+
             <p>
-                Descubrí cafés disponibles, realizá pedidos y consultá el estado de tus compras
-                dentro de una experiencia más visual y organizada.
+                Descubrí cafés seleccionados, realizá tus pedidos y consultá
+                cada etapa de tu compra desde un solo lugar.
             </p>
-            <div class="rc-client-hero-actions">
-                <a asp-controller="Productos" asp-action="Index" class="rc-button rc-button-primary"><i class="fa-solid fa-mug-hot"></i> Ver catálogo</a>
-                <a asp-controller="Pedidos" asp-action="Create" class="rc-button rc-button-ghost"><i class="fa-solid fa-cart-plus"></i> Nuevo pedido</a>
+
+            <div class="cafe-welcome-actions">
+                <a asp-controller="Productos"
+                   asp-action="Index"
+                   class="cafe-primary-button">
+                    <i class="fa-solid fa-mug-hot"></i>
+                    Ver catálogo
+                </a>
+
+                <a asp-controller="Pedidos"
+                   asp-action="Create"
+                   class="cafe-secondary-button">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    Nuevo pedido
+                </a>
+            </div>
+
+            <div class="cafe-benefits">
+                <span>
+                    <i class="fa-solid fa-seedling"></i>
+                    Café de origen
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-route"></i>
+                    Trazabilidad
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-box"></i>
+                    Compra organizada
+                </span>
             </div>
         </div>
-        <div class="rc-client-hero-stats">
-            <article class="rc-client-stat-dark"><i class="fa-solid fa-store"></i><strong>@totalProductos</strong><span>Productos activos</span></article>
-            <article class="rc-client-stat-dark"><i class="fa-solid fa-boxes-stacked"></i><strong>@totalKgDisponibles kg</strong><span>Stock disponible</span></article>
-            <article class="rc-client-stat-dark"><i class="fa-solid fa-bag-shopping"></i><strong>@totalPedidos</strong><span>Pedidos realizados</span></article>
-            <article class="rc-client-stat-dark"><i class="fa-solid fa-award"></i><strong>@pedidosCompletados</strong><span>Compras completadas</span></article>
+
+        <div class="cafe-welcome-visual">
+            <img src="/images/visual/coffee-banner.jpg"
+                 alt="Café producido por San Gabriel" />
+
+            <div class="cafe-stock-badge">
+                <i class="fa-solid fa-boxes-stacked"></i>
+
+                <div>
+                    <strong>@totalKgDisponibles kg</strong>
+                    <span>Stock disponible</span>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="rc-client-kpis">
-        <article class="rc-client-kpi"><i class="fa-solid fa-mug-hot"></i><strong>@totalProductos</strong><span>Cafés disponibles</span></article>
-        <article class="rc-client-kpi"><i class="fa-solid fa-cart-shopping"></i><strong>@totalPedidos</strong><span>Total de pedidos</span></article>
-        <article class="rc-client-kpi"><i class="fa-solid fa-hourglass-half"></i><strong>@pedidosPendientes</strong><span>En seguimiento</span></article>
-        <article class="rc-client-kpi"><i class="fa-solid fa-circle-check"></i><strong>@pedidosCompletados</strong><span>Completados</span></article>
+    <section class="cafe-summary-grid">
+        <article class="cafe-summary-card">
+            <i class="fa-solid fa-mug-hot"></i>
+
+            <div>
+                <span>Cafés disponibles</span>
+                <strong>@totalProductos</strong>
+            </div>
+        </article>
+
+        <article class="cafe-summary-card">
+            <i class="fa-solid fa-bag-shopping"></i>
+
+            <div>
+                <span>Total de pedidos</span>
+                <strong>@totalPedidos</strong>
+            </div>
+        </article>
+
+        <article class="cafe-summary-card">
+            <i class="fa-solid fa-hourglass-half"></i>
+
+            <div>
+                <span>En seguimiento</span>
+                <strong>@pedidosPendientes</strong>
+            </div>
+        </article>
+
+        <article class="cafe-summary-card">
+            <i class="fa-solid fa-circle-check"></i>
+
+            <div>
+                <span>Completados</span>
+                <strong>@pedidosCompletados</strong>
+            </div>
+        </article>
     </section>
 
-    <section class="rc-client-content-grid">
-        <article class="rc-client-panel">
-            <div class="rc-panel-head">
-                <div><span class="rc-section-label">Catálogo destacado</span><h3>Elegidos para vos</h3><p>Productos activos con mayor disponibilidad.</p></div>
-                <a asp-controller="Productos" asp-action="Index" class="btn btn-sm btn-outline-dark">Ver catálogo</a>
-            </div>
-            <div class="rc-client-products">
+    <section class="cafe-main-grid">
+
+        <article class="cafe-section-card cafe-products-section">
+            <header class="cafe-section-header">
+                <div>
+                    <span class="cafe-section-label">
+                        Nuestras especialidades
+                    </span>
+
+                    <h2>Cafés elegidos para vos</h2>
+
+                    <p>
+                        Productos disponibles con mayor existencia.
+                    </p>
+                </div>
+
+                <a asp-controller="Productos"
+                   asp-action="Index"
+                   class="cafe-small-button">
+                    Ver catálogo
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </header>
+
+            <div class="cafe-products-grid">
                 @if (productosDestacados.Any())
                 {
-                    foreach (var producto in productosDestacados)
+                    foreach (var producto in productosDestacados.Take(3))
                     {
-                        <article class="rc-client-product">
-                            <img src="@ImagenProducto(producto)" alt="@producto.Nombre" />
-                            <div class="rc-client-product-body">
-                                <span class="rc-product-category">@producto.Categoria</span>
+                        <article class="cafe-product-card">
+                            <div class="cafe-product-image">
+                                <img src="@ImagenProducto(producto)"
+                                     alt="@producto.Nombre" />
+
+                                <span>
+                                    @producto.Categoria
+                                </span>
+                            </div>
+
+                            <div class="cafe-product-info">
                                 <h3>@producto.Nombre</h3>
-                                <p>@(string.IsNullOrWhiteSpace(producto.Descripcion) ? "Café de origen con calidad artesanal y trazabilidad." : producto.Descripcion)</p>
-                                <div class="rc-client-product-footer"><strong>₡ @producto.Precio.ToString("N0")</strong><span class="rc-status-tag">@producto.Stock kg</span></div>
+
+                                <p>
+                                    @(string.IsNullOrWhiteSpace(producto.Descripcion)
+                                        ? "Café de origen con calidad artesanal y trazabilidad."
+                                        : producto.Descripcion)
+                                </p>
+
+                                <div class="cafe-product-footer">
+                                    <strong>
+                                        &#8353; @producto.Precio.ToString("N0")
+                                    </strong>
+
+                                    <span>
+                                        @producto.Stock kg
+                                    </span>
+                                </div>
                             </div>
                         </article>
                     }
                 }
                 else
                 {
-                    <div class="text-muted py-4">No hay productos destacados disponibles.</div>
+                    <div class="cafe-empty-state">
+                        <i class="fa-solid fa-mug-saucer"></i>
+
+                        <p>
+                            No hay productos destacados disponibles.
+                        </p>
+                    </div>
                 }
             </div>
         </article>
 
-        <aside class="rc-client-panel">
-            <div class="rc-panel-head">
-                <div><span class="rc-section-label">Actividad</span><h3>Últimos pedidos</h3><p>Estado de tus compras recientes.</p></div>
-                <a asp-controller="Pedidos" asp-action="Index" class="btn btn-sm btn-outline-dark">Historial</a>
-            </div>
-            <div class="rc-client-orders">
+        <aside class="cafe-section-card cafe-orders-section">
+            <header class="cafe-section-header">
+                <div>
+                    <span class="cafe-section-label">
+                        Tu actividad
+                    </span>
+
+                    <h2>Pedidos recientes</h2>
+
+                    <p>
+                        Consultá el estado de tus compras.
+                    </p>
+                </div>
+
+                <a asp-controller="Pedidos"
+                   asp-action="Index"
+                   class="cafe-icon-link"
+                   title="Ver historial"
+                   aria-label="Ver historial">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </header>
+
+            <div class="cafe-orders-list">
                 @if (ultimosPedidos.Any())
                 {
                     foreach (var pedido in ultimosPedidos.Take(5))
                     {
-                        <article class="rc-client-order">
-                            <div class="rc-client-order-top"><h4>Pedido #@pedido.Id</h4><span class="rc-status-tag">@pedido.Estado</span></div>
-                            <p>@(pedido.Producto?.Nombre ?? "Producto") · @pedido.Cantidad kg · @pedido.FechaPedido.ToString("dd/MM/yyyy")</p>
+                        <article class="cafe-order-item">
+                            <div class="cafe-order-icon">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </div>
+
+                            <div class="cafe-order-data">
+                                <strong>
+                                    Pedido #@pedido.Id
+                                </strong>
+
+                                <span>
+                                    @(pedido.Producto?.Nombre ?? "Producto")
+                                    · @pedido.Cantidad kg
+                                </span>
+
+                                <small>
+                                    @pedido.FechaPedido.ToString("dd/MM/yyyy")
+                                </small>
+                            </div>
+
+                            <span class="cafe-order-status">
+                                @pedido.Estado
+                            </span>
                         </article>
                     }
                 }
                 else
                 {
-                    <div class="text-muted py-4">Todavía no hay pedidos registrados.</div>
+                    <div class="cafe-empty-state">
+                        <i class="fa-solid fa-clipboard-list"></i>
+
+                        <p>
+                            Todavía no hay pedidos registrados.
+                        </p>
+                    </div>
                 }
             </div>
+
+            <a asp-controller="Pedidos"
+               asp-action="Create"
+               class="cafe-order-button">
+                <i class="fa-solid fa-plus"></i>
+                Realizar un nuevo pedido
+            </a>
         </aside>
+
     </section>
 
-    <section>
-        <div class="rc-module-heading">
-            <div><span class="rc-section-label">Tu portal</span><h3>Accesos rápidos</h3></div>
-        </div>
-        <div class="rc-module-grid mt-3">
-            <a asp-controller="Productos" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/visual/productos.jpg')"><i class="fa-solid fa-store"></i><strong>Productos</strong><small>Explorá cafés, precios y disponibilidad.</small></a>
-            <a asp-controller="Pedidos" asp-action="Create" class="rc-module-card" style="--module-image:url('/images/visual/pedidos.jpg')"><i class="fa-solid fa-cart-plus"></i><strong>Nuevo pedido</strong><small>Solicitá tu café desde el portal.</small></a>
-            <a asp-controller="Pedidos" asp-action="Index" class="rc-module-card" style="--module-image:url('/images/orders/order-detail-coffee.jpg')"><i class="fa-solid fa-clipboard-list"></i><strong>Mis pedidos</strong><small>Consultá estados y pagos.</small></a>
+    <section class="cafe-quick-section">
+        <header class="cafe-section-header">
+            <div>
+                <span class="cafe-section-label">
+                    Tu portal
+                </span>
+
+                <h2>Accesos rápidos</h2>
+
+                <p>
+                    Todo lo necesario para gestionar tus compras.
+                </p>
+            </div>
+        </header>
+
+        <div class="cafe-quick-grid">
+            <a asp-controller="Productos"
+               asp-action="Index"
+               class="cafe-quick-card">
+
+                <span class="cafe-quick-icon">
+                    <i class="fa-solid fa-store"></i>
+                </span>
+
+                <div>
+                    <strong>Productos</strong>
+                    <small>
+                        Explorá cafés, precios y disponibilidad.
+                    </small>
+                </div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <a asp-controller="Pedidos"
+               asp-action="Create"
+               class="cafe-quick-card">
+
+                <span class="cafe-quick-icon">
+                    <i class="fa-solid fa-cart-plus"></i>
+                </span>
+
+                <div>
+                    <strong>Nuevo pedido</strong>
+                    <small>
+                        Solicitá tu café desde el portal.
+                    </small>
+                </div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <a asp-controller="Pedidos"
+               asp-action="Index"
+               class="cafe-quick-card">
+
+                <span class="cafe-quick-icon">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                </span>
+
+                <div>
+                    <strong>Mis pedidos</strong>
+                    <small>
+                        Consultá estados, pagos y entregas.
+                    </small>
+                </div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
     </section>
 </div>

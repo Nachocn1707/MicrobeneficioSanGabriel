@@ -68,81 +68,186 @@
 
 @if (esCliente)
 {
-    <section class="sg-page-head">
-        <div>
-            <h1>Mis pedidos</h1>
-            <p>Consultá el estado de tus compras, pagos y entregas desde tu portal.</p>
-        </div>
-        <div class="sg-actions">
-            <label class="sg-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="search" data-table-target="tablaMisPedidos" placeholder="Buscar en mis pedidos..." />
-            </label>
-            <a asp-controller="Productos" asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-mug-hot"></i>Ver catálogo</a>
-            <a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo pedido</a>
-        </div>
-    </section>
+    <div class="client-orders-page">
+        <section class="client-orders-hero">
+            <div class="client-orders-hero-copy">
+                <span class="client-orders-kicker">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    Tu experiencia de compra
+                </span>
 
-    <section class="sg-kpi-grid">
-        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-bag-shopping"></i></span><div><span>Total de pedidos</span><strong>@total</strong><div class="sg-trend">Historial personal</div></div></article>
-        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-hourglass-half"></i></span><div><span>En seguimiento</span><strong>@pendientes</strong><div class="sg-trend warn">Pendientes o en proceso</div></div></article>
-        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Completados</span><strong>@completados</strong><div class="sg-trend">Compras finalizadas</div></div></article>
-        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-wallet"></i></span><div><span>Pagos pendientes</span><strong>@pagosPendientes</strong><div class="sg-trend @(pagosPendientes > 0 ? "warn" : "")">@(pagosPendientes > 0 ? "Revisar pago" : "Al día")</div></div></article>
-    </section>
+                <h1>Mis pedidos</h1>
 
-    <section class="sg-card sg-table-card">
-        <div class="sg-panel-head">
-            <div>
-                <h3>Historial de pedidos</h3>
-                <small>Estados, pagos y acciones disponibles para tus compras.</small>
+                <p>
+                    Revisá tus compras, consultá su avance y administrá los pedidos
+                    que todavía se encuentran pendientes.
+                </p>
+
+                <div class="client-orders-hero-actions">
+                    <a asp-controller="Productos"
+                       asp-action="Index"
+                       class="client-orders-button secondary">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        Explorar cafés
+                    </a>
+
+                    <a asp-action="Create"
+                       class="client-orders-button primary">
+                        <i class="fa-solid fa-plus"></i>
+                        Hacer un pedido
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="table-responsive">
-            <table class="sg-table" id="tablaMisPedidos">
-                <thead>
-                    <tr>
-                        <th>Pedido</th>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Estado</th>
-                        <th>Pago</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+
+            <div class="client-orders-hero-visual">
+                <div class="client-orders-hero-circle">
+                    <i class="fa-solid fa-mug-saucer"></i>
+                </div>
+
+                <div>
+                    <strong>@total</strong>
+                    <span>compras registradas</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="client-orders-summary">
+            <article>
+                <span class="client-orders-summary-icon amber">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </span>
+                <div><small>Total de pedidos</small><strong>@total</strong></div>
+            </article>
+
+            <article>
+                <span class="client-orders-summary-icon orange">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </span>
+                <div><small>En seguimiento</small><strong>@pendientes</strong></div>
+            </article>
+
+            <article>
+                <span class="client-orders-summary-icon green">
+                    <i class="fa-solid fa-circle-check"></i>
+                </span>
+                <div><small>Completados</small><strong>@completados</strong></div>
+            </article>
+
+            <article>
+                <span class="client-orders-summary-icon brown">
+                    <i class="fa-solid fa-wallet"></i>
+                </span>
+                <div><small>Pagos pendientes</small><strong>@pagosPendientes</strong></div>
+            </article>
+        </section>
+
+        <section class="client-orders-section">
+            <header class="client-orders-section-head">
+                <div>
+                    <span>Historial personal</span>
+                    <h2>Tus compras recientes</h2>
+                    <p>Encontrá los detalles y acciones disponibles para cada pedido.</p>
+                </div>
+
+                <a asp-action="Create" class="client-orders-new-link">
+                    Nuevo pedido
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </header>
+
+            @if (pedidos.Any())
+            {
+                <div class="client-orders-list">
                     @foreach (var p in pedidos)
                     {
                         var totalPedido = (p.Producto?.Precio ?? 0) * p.Cantidad;
-                        <tr>
-                            <td>PP-@p.Id.ToString("0000")</td>
-                            <td>@(p.Producto?.Nombre ?? "Producto")</td>
-                            <td>@p.Cantidad kg</td>
-                            <td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td>
-                            <td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td>
-                            <td>@p.FechaPedido.ToString("dd MMM yyyy")</td>
-                            <td>₡@totalPedido.ToString("N0")</td>
-                            <td>
-                                <span class="sg-action-icons">
-                                    <a asp-action="Details" asp-route-id="@p.Id" title="Ver" aria-label="Ver"><i class="fa-solid fa-eye"></i></a>
-                                    @if (p.Estado == "Pendiente")
-                                    {
-                                        <a asp-action="EditCliente" asp-route-id="@p.Id" title="Editar" aria-label="Editar"><i class="fa-solid fa-pen"></i></a>
-                                        <a asp-action="Cancelar" asp-route-id="@p.Id" title="Cancelar pedido" aria-label="Cancelar pedido"><i class="fa-solid fa-ban"></i></a>
-                                    }
-                                    @if (p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago")
-                                    {
-                                        <a asp-action="Pago" asp-route-id="@p.Id" title="Pagar" aria-label="Pagar"><i class="fa-solid fa-wallet"></i></a>
-                                    }
-                                </span>
-                            </td>
-                        </tr>
+                        var pagoPendiente = p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago";
+
+                        <article class="client-purchase-card">
+                            <div class="client-purchase-main">
+                                <div class="client-purchase-number">
+                                    <span>Pedido</span>
+                                    <strong>PP-@p.Id.ToString("0000")</strong>
+                                </div>
+
+                                <div class="client-purchase-product-icon">
+                                    <i class="fa-solid fa-mug-hot"></i>
+                                </div>
+
+                                <div class="client-purchase-product">
+                                    <small>Producto seleccionado</small>
+                                    <h3>@(p.Producto?.Nombre ?? "Producto")</h3>
+                                    <span>@p.Cantidad kg · @p.FechaPedido.ToString("dd MMM yyyy")</span>
+                                </div>
+
+                                <div class="client-purchase-total">
+                                    <small>Total</small>
+                                    <strong>₡@totalPedido.ToString("N0")</strong>
+                                </div>
+
+                                <div class="client-purchase-statuses">
+                                    <span class="client-status-pill @EstadoClase(p.Estado)">
+                                        <i class="fa-solid fa-box"></i>
+                                        @p.Estado
+                                    </span>
+
+                                    <span class="client-payment-pill @(pagoPendiente ? "pending" : "paid")">
+                                        <i class="fa-solid fa-wallet"></i>
+                                        @(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="client-purchase-actions">
+                                <a asp-action="Details"
+                                   asp-route-id="@p.Id"
+                                   class="client-purchase-action details">
+                                    <i class="fa-solid fa-eye"></i>
+                                    Ver detalles
+                                </a>
+
+                                @if (p.Estado == "Pendiente")
+                                {
+                                    <a asp-action="EditCliente"
+                                       asp-route-id="@p.Id"
+                                       class="client-purchase-action edit">
+                                        <i class="fa-solid fa-pen"></i>
+                                        Editar
+                                    </a>
+
+                                    <a asp-action="Cancelar"
+                                       asp-route-id="@p.Id"
+                                       class="client-purchase-action cancel">
+                                        <i class="fa-solid fa-ban"></i>
+                                        Cancelar
+                                    </a>
+                                }
+
+                                @if (pagoPendiente)
+                                {
+                                    <a asp-action="Pago"
+                                       asp-route-id="@p.Id"
+                                       class="client-purchase-action pay">
+                                        <i class="fa-solid fa-credit-card"></i>
+                                        Realizar pago
+                                    </a>
+                                }
+                            </div>
+                        </article>
                     }
-                </tbody>
-            </table>
-        </div>
-    </section>
+                </div>
+            }
+            else
+            {
+                <div class="client-orders-empty">
+                    <span><i class="fa-solid fa-mug-saucer"></i></span>
+                    <h3>Todavía no tenés pedidos</h3>
+                    <p>Explorá el catálogo y elegí el café que más te guste.</p>
+                    <a asp-controller="Productos" asp-action="Index">Ver catálogo</a>
+                </div>
+            }
+        </section>
+    </div>
 }
 else
 {
@@ -153,7 +258,7 @@ else
     <section class="sg-page-head">
         <div><h1>Pedidos y Facturación</h1><p>Gestión de pedidos, entregas y facturación.</p></div>
         <div class="sg-actions"><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaPedidos" placeholder="Buscar pedido, cliente, producto o pago..." /></label></div>
-   </section>
+    </section>
     <section class="sg-kpi-grid">
         <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Pedidos totales</span><strong>@total</strong><div class="sg-trend">Registros reales</div></div></article>
@@ -180,18 +285,40 @@ else
         </article>
         <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => !string.IsNullOrWhiteSpace(p.EstadoPago) && (p.EstadoPago.Contains("completado", StringComparison.OrdinalIgnoreCase) || p.EstadoPago.Contains("Pag", StringComparison.OrdinalIgnoreCase)))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto total en pedidos</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
     </section>
-    <section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaPedidos"><thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Total</th><th>Acciones</th></tr></thead><tbody>@foreach(var p in pedidos){
-        <tr><td>PP-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td><td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
-        {
-            <a asp-action="CambiarEstadoPago" asp-route-id="@p.Id" title="Cambiar estado de pago" aria-label="Cambiar estado de pago"><i class="fa-solid fa-wallet"></i></a>
-        }
-        @if (User.IsInRole("Administrador"))
-        {
-            <a asp-action="Edit" asp-route-id="@p.Id" title="Editar pedido" aria-label="Editar pedido"><i class="fa-solid fa-pen"></i></a>
-            <a asp-action="CambiarEstado" asp-route-id="@p.Id" title="Cambiar estado del pedido" aria-label="Cambiar estado del pedido"><i class="fa-solid fa-list-check"></i></a>
-            <a asp-action="Delete" asp-route-id="@p.Id" title="Eliminar pedido" aria-label="Eliminar pedido"><i class="fa-solid fa-trash"></i></a>
-        }
-    </span></td></tr>
-}
-</tbody></table></div></section>
+    <section class="sg-card sg-table-card">
+        <div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive">
+        <table class="sg-table" id="tablaPedidos">
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Total</th><th>Acciones</th></tr></thead>
+            <tbody>
+                @foreach (var p in pedidos)
+                {
+                    <tr>
+                        <td>PP-@p.Id.ToString("0000")</td>
+                        <td>@p.ClienteNombre</td>
+                        <td>@(p.Producto?.Nombre ?? "Producto")</td>
+                        <td>@p.Cantidad kg</td>
+                        <td>@p.FechaPedido.ToString("dd MMM yyyy")</td>
+                        <td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td>
+                        <td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td>
+                        <td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td>
+                        <td>
+                            <span class="sg-action-icons">
+                                <a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+                                {
+                                    <a asp-action="CambiarEstadoPago" asp-route-id="@p.Id" title="Cambiar estado de pago" aria-label="Cambiar estado de pago"><i class="fa-solid fa-wallet"></i></a>
+                                }
+                                @if (User.IsInRole("Administrador"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@p.Id" title="Editar pedido" aria-label="Editar pedido"><i class="fa-solid fa-pen"></i></a>
+                                    <a asp-action="CambiarEstado" asp-route-id="@p.Id" title="Cambiar estado del pedido" aria-label="Cambiar estado del pedido"><i class="fa-solid fa-list-check"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@p.Id" title="Eliminar pedido" aria-label="Eliminar pedido"><i class="fa-solid fa-trash"></i></a>
+                                }
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
 }

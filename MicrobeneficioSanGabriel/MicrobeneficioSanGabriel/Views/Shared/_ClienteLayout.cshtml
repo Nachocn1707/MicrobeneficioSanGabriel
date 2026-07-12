@@ -3,12 +3,6 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    var usuarioActual = await UserManager.GetUserAsync(User);
-
-    var nombreCliente = usuarioActual != null
-        ? usuarioActual.NombreCompleto
-        : "Cliente";
-
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
 
     string Active(string keyword)
@@ -35,86 +29,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     @await RenderSectionAsync("Styles", required: false)
+
     <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/notificaciones.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sg-coffee-ui.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/css/cliente-estetico.css" asp-append-version="true" />
 </head>
 
-<body class="sg-coffee-bg rc-client-body">
-    <div class="sg-client-wrapper">
-
-        <aside class="sg-client-sidebar">
-            <div class="sg-sidebar-brand">
-                <div class="sg-brand-mark">
+<body class="sg-coffee-bg rc-client-body cafe-portal-body">
+    <div class="cafe-portal-shell">
+        <header class="cafe-portal-header">
+            <a asp-controller="Home"
+               asp-action="ClienteDashboard"
+               class="cafe-portal-brand"
+               aria-label="Ir al inicio">
+                <span class="cafe-portal-brand-icon">
                     <i class="fa-solid fa-mug-hot"></i>
-                </div>
+                </span>
 
-                <div>
-                    <h4>San Gabriel</h4>
-                    <span>Coffee Club</span>
-                </div>
-            </div>
+                <span class="cafe-portal-brand-text">
+                    <strong>San Gabriel</strong>
+                    <small>Coffee Club</small>
+                </span>
+            </a>
 
-            <nav class="sg-sidebar-menu">
+            <nav class="cafe-portal-nav" aria-label="Navegacion principal">
                 <a asp-controller="Home"
                    asp-action="ClienteDashboard"
                    class="@Active("/home/clientedashboard")">
-                    <i class="fa-solid fa-house"></i>
                     Inicio
                 </a>
 
                 <a asp-controller="Productos"
                    asp-action="Index"
                    class="@Active("/productos")">
-                    <i class="fa-solid fa-mug-hot"></i>
                     Productos
                 </a>
 
                 <a asp-controller="Pedidos"
                    asp-action="Index"
                    class="@(currentPath == "/pedidos" || currentPath.Contains("/pedidos/index") ? "active" : "")">
-                    <i class="fa-solid fa-clipboard-list"></i>
                     Mis pedidos
                 </a>
-
             </nav>
-        </aside>
 
-        <main class="sg-client-main">
-            <header class="sg-topbar">
-                <div class="sg-topbar-title">
-                    <h5>@ViewData["Title"]</h5>
-                    <small>Sistema de compras del microbeneficio</small>
-                </div>
+            <div class="cafe-portal-actions">
+                <partial name="_CentroNotificaciones" />
 
-                <div class="sg-topbar-actions ">
-                    <partial name="_CentroNotificaciones" />
-                    <span class="sg-user-pill" title="Usuario activo">
-                        <i class="fa-solid fa-user"></i>
-                        <div class="sg-user-info">
-                            <strong>@nombreCliente</strong>
-                            <small>Cliente</small>
-                        </div>
-                    </span>
+                <a asp-controller="Pedidos"
+                   asp-action="Create"
+                   class="cafe-header-order-button">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    Pedir ahora
+                </a>
 
-                    <form asp-area="Identity"
-                          asp-page="/Account/Logout"
-                          asp-route-returnUrl="/Identity/Account/Login"
-                          method="post">
-                        <button type="submit" class="sg-logout-btn">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            Cerrar sesion
-                        </button>
-                    </form>
-                </div>
-            </header>
+                <form asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="/Identity/Account/Login"
+                      method="post">
+                    <button type="submit" class="cafe-header-logout" title="Cerrar sesion">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Salir</span>
+                    </button>
+                </form>
+            </div>
+        </header>
 
-            <section class="sg-content sg-bg-page sg-client-content">
-                <partial name="_MensajesSistema" />
-                @RenderBody()
-            </section>
+        <main class="cafe-portal-main">
+            <partial name="_MensajesSistema" />
+            @RenderBody()
         </main>
     </div>
 
@@ -133,9 +117,8 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
     <script src="~/js/sg-datatables.js" asp-append-version="true"></script>
     <script src="~/js/notificaciones.js" asp-append-version="true"></script>
 </body>
 </html>
-
-

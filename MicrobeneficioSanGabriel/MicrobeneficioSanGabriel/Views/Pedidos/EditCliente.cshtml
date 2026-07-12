@@ -5,453 +5,222 @@
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
 }
 
-@section Styles {
-    <style>
-        .pedido-edit-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 14px;
-        }
-
-        .pedido-edit-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-        .pedido-edit-title h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #2b160d;
-        }
-
-        .pedido-edit-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #d8b36a;
-            margin: 12px 0;
-        }
-
-        .pedido-edit-title p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .pedido-edit-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #fff4d3;
-            color: #8a6500;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-weight: 900;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .pedido-edit-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 0.38fr 0.62fr;
-            min-height: 520px;
-        }
-
-        .pedido-edit-side {
-            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/orders/order-detail-coffee.jpg");
-            background-size: cover;
-            background-position: center;
-            padding: 36px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
-        }
-
-        .pedido-edit-side-content {
-            max-width: 360px;
-        }
-
-        .pedido-edit-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 26px;
-        }
-
-        .pedido-edit-side h2 {
-            color: #fff3c4;
-            font-size: 2rem;
-            font-weight: 950;
-            margin: 0;
-        }
-
-        .pedido-side-line {
-            width: 70px;
-            height: 4px;
-            border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
-        }
-
-        .pedido-edit-side p {
-            color: #fff8df;
-            opacity: 0.95;
-            font-weight: 650;
-            line-height: 1.55;
-            margin-bottom: 28px;
-        }
-
-        .pedido-edit-info {
-            display: grid;
-            gap: 16px;
-        }
-
-        .pedido-edit-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff8df;
-            font-weight: 800;
-        }
-
-            .pedido-edit-info-item i {
-                color: #f3d27a;
-                width: 18px;
-            }
-
-        .pedido-edit-form-container {
-            padding: 38px;
-        }
-
-        .pedido-edit-alert {
-            background: #fff4d3;
-            color: #7a5230;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 15px 18px;
-            font-weight: 750;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            .pedido-edit-alert i {
-                color: #a66b20;
-            }
-
-        .pedido-field label {
-            color: #2b160d;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-
-        .input-modern {
-            position: relative;
-        }
-
-            .input-modern i {
-                position: absolute;
-                left: 17px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #a1a8b3;
-                z-index: 2;
-            }
-
-            .input-modern .form-control,
-            .input-modern .form-select {
-                min-height: 56px;
-                border-radius: 18px;
-                border: 1px solid #d8dee8;
-                background: #fff;
-                padding-left: 48px;
-                font-weight: 700;
-                color: #2b160d;
-            }
-
-                .input-modern .form-control:focus,
-                .input-modern .form-select:focus {
-                    border-color: #d8b36a;
-                    box-shadow: 0 0 0 0.2rem rgba(216, 179, 106, 0.22);
-                }
-
-        .textarea-modern i {
-            top: 25px;
-            transform: none;
-        }
-
-        .textarea-modern textarea.form-control {
-            min-height: 115px;
-            padding-top: 17px;
-            resize: vertical;
-        }
-
-        .pedido-edit-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 26px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-pedido-edit {
-            border: none;
-            border-radius: 14px;
-            padding: 12px 20px;
-            font-weight: 950;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.18s ease;
-        }
-
-            .btn-pedido-edit:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-pedido-volver {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-            .btn-pedido-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
-            }
-
-        .btn-pedido-guardar {
-            background: #4a2c1a;
-            color: #fff8df;
-        }
-
-            .btn-pedido-guardar:hover {
-                background: #7a5230;
-                color: #fff8df;
-            }
-
-        @@media (max-width: 1100px) {
-            .pedido-edit-card {
-                grid-template-columns: 1fr;
-            }
-
-            .pedido-edit-side {
-                min-height: 300px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .pedido-edit-header {
-                flex-direction: column;
-            }
-
-            .pedido-edit-form-container {
-                padding: 24px;
-            }
-
-            .pedido-edit-side {
-                padding: 28px;
-            }
-
-            .pedido-edit-title h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
-}
-
-<div class="pedido-edit-page">
-
-    <div class="pedido-edit-header">
-        <div class="pedido-edit-title">
-            <span class="pedido-edit-badge">
+<div class="client-edit-page">
+    <section class="client-edit-hero">
+        <div>
+            <span class="client-edit-kicker">
                 <i class="fa-solid fa-pen-to-square"></i>
                 Pedido pendiente
             </span>
 
-            <h1>Actualizar pedido</h1>
-            <div class="pedido-edit-line"></div>
+            <h1>Actualizá tu pedido</h1>
 
             <p>
-                Solo podés modificar pedidos que estén en estado Pendiente.
+                Cambiá los datos necesarios antes de que el microbeneficio
+                comience a procesar tu compra.
             </p>
         </div>
-    </div>
 
-    <div class="pedido-edit-card">
+        <div class="client-edit-hero-number">
+            <small>Número de pedido</small>
+            <strong>PP-@Model.Id.ToString("0000")</strong>
+        </div>
+    </section>
 
-        <div class="pedido-edit-side">
-            <div class="pedido-edit-side-content">
+    <form asp-action="EditCliente"
+          method="post"
+          class="client-edit-form">
 
-                <div class="pedido-edit-icon">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                </div>
-
-                <h2>Edición de pedido</h2>
-                <div class="pedido-side-line"></div>
-
-                <p>
-                    Actualizá los datos necesarios de tu solicitud antes de que
-                    sea procesada por el microbeneficio.
-                </p>
-
-                <div class="pedido-edit-info">
-                    <div class="pedido-edit-info-item">
-                        <i class="fa-solid fa-phone"></i>
-                        Actualizá tu teléfono
-                    </div>
-
-                    <div class="pedido-edit-info-item">
-                        <i class="fa-solid fa-mug-hot"></i>
-                        Cambiá el producto
-                    </div>
-
-                    <div class="pedido-edit-info-item">
-                        <i class="fa-solid fa-weight-scale"></i>
-                        Ajustá la cantidad
-                    </div>
-                </div>
-
-            </div>
+        <div asp-validation-summary="ModelOnly"
+             class="client-edit-validation">
         </div>
 
-        <div class="pedido-edit-form-container">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ClienteNombre" />
+        <input type="hidden" asp-for="Estado" />
+        <input type="hidden" asp-for="FechaPedido" />
 
-            <form asp-action="EditCliente" method="post">
+        <div class="client-edit-layout">
+            <main class="client-edit-fields-card">
+                <header class="client-edit-section-head">
+                    <span class="client-edit-section-icon">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </span>
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
-                </div>
+                    <div>
+                        <small>Información editable</small>
+                        <h2>Detalles de tu compra</h2>
+                        <p>Revisá cuidadosamente los datos antes de guardar.</p>
+                    </div>
+                </header>
 
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="ClienteNombre" />
-                <input type="hidden" asp-for="Estado" />
-                <input type="hidden" asp-for="FechaPedido" />
-
-                <div class="pedido-edit-alert">
+                <div class="client-edit-notice">
                     <i class="fa-solid fa-circle-info"></i>
                     <span>
-                        El estado del pedido no puede modificarse desde el portal cliente.
+                        El estado permanece como <strong>Pendiente</strong> y no puede
+                        modificarse desde el portal cliente.
                     </span>
                 </div>
 
-                <div class="row g-4">
-
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="ClienteTelefono" class="form-label">
-                            Teléfono
-                        </label>
-
-                        <div class="input-modern">
-                            <i class="fa-solid fa-phone"></i>
-
-                            <input asp-for="ClienteTelefono"
-                                   class="form-control"
-                                   placeholder="Digite el número de teléfono" />
+                <section class="client-edit-form-section">
+                    <div class="client-edit-form-title">
+                        <span>01</span>
+                        <div>
+                            <h3>Datos de contacto</h3>
+                            <p>El microbeneficio utilizará este número para comunicarse con vos.</p>
                         </div>
-
-                        <span asp-validation-for="ClienteTelefono"
-                              class="text-danger">
-                        </span>
                     </div>
 
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="ProductoId" class="form-label">
-                            Producto
-                        </label>
+                    <div class="client-edit-field-grid single">
+                        <div class="client-edit-field">
+                            <label asp-for="ClienteTelefono">
+                                Teléfono de contacto
+                            </label>
 
-                        <div class="input-modern">
-                            <i class="fa-solid fa-mug-hot"></i>
+                            <div class="client-edit-control">
+                                <i class="fa-solid fa-phone"></i>
+                                <input asp-for="ClienteTelefono"
+                                       class="form-control"
+                                       placeholder="Digite el número de teléfono" />
+                            </div>
 
-                            <select asp-for="ProductoId"
-                                    class="form-select"
-                                    asp-items="ViewBag.ProductoId">
-                            </select>
+                            <span asp-validation-for="ClienteTelefono"
+                                  class="text-danger">
+                            </span>
                         </div>
+                    </div>
+                </section>
 
-                        <span asp-validation-for="ProductoId"
-                              class="text-danger">
-                        </span>
+                <section class="client-edit-form-section">
+                    <div class="client-edit-form-title">
+                        <span>02</span>
+                        <div>
+                            <h3>Tu selección</h3>
+                            <p>Elegí el producto y la cantidad que necesitás.</p>
+                        </div>
                     </div>
 
-                    <div class="col-md-6 pedido-field">
-                        <label asp-for="Cantidad" class="form-label">
-                            Cantidad en kg
-                        </label>
+                    <div class="client-edit-field-grid">
+                        <div class="client-edit-field">
+                            <label asp-for="ProductoId">
+                                Producto
+                            </label>
 
-                        <div class="input-modern">
-                            <i class="fa-solid fa-weight-scale"></i>
+                            <div class="client-edit-control">
+                                <i class="fa-solid fa-mug-hot"></i>
+                                <select asp-for="ProductoId"
+                                        class="form-select"
+                                        asp-items="ViewBag.ProductoId">
+                                </select>
+                            </div>
 
-                            <input asp-for="Cantidad"
-                                   class="form-control"
-                                   min="1" />
+                            <span asp-validation-for="ProductoId"
+                                  class="text-danger">
+                            </span>
                         </div>
 
-                        <span asp-validation-for="Cantidad"
-                              class="text-danger">
-                        </span>
+                        <div class="client-edit-field">
+                            <label asp-for="Cantidad">
+                                Cantidad en kilogramos
+                            </label>
+
+                            <div class="client-edit-control">
+                                <i class="fa-solid fa-weight-scale"></i>
+                                <input asp-for="Cantidad"
+                                       class="form-control"
+                                       min="1" />
+                                <span class="client-edit-unit">kg</span>
+                            </div>
+
+                            <span asp-validation-for="Cantidad"
+                                  class="text-danger">
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="client-edit-form-section last">
+                    <div class="client-edit-form-title">
+                        <span>03</span>
+                        <div>
+                            <h3>Información adicional</h3>
+                            <p>Agregá cualquier detalle importante para preparar tu pedido.</p>
+                        </div>
                     </div>
 
-                    <div class="col-md-12 pedido-field">
-                        <label asp-for="Observacion" class="form-label">
+                    <div class="client-edit-field">
+                        <label asp-for="Observacion">
                             Observación
                         </label>
 
-                        <div class="input-modern textarea-modern">
+                        <div class="client-edit-control textarea">
                             <i class="fa-solid fa-comment"></i>
-
                             <textarea asp-for="Observacion"
                                       class="form-control"
                                       rows="5"
-                                      placeholder="Digite alguna observación del pedido"></textarea>
+                                      placeholder="Escribí alguna observación para tu pedido"></textarea>
                         </div>
 
                         <span asp-validation-for="Observacion"
                               class="text-danger">
                         </span>
                     </div>
+                </section>
+            </main>
 
+            <aside class="client-edit-summary-card">
+                <div class="client-edit-summary-image">
+                    <span><i class="fa-solid fa-mug-hot"></i></span>
                 </div>
 
-                <div class="pedido-edit-actions">
+                <div class="client-edit-summary-content">
+                    <span class="client-edit-summary-label">Resumen del pedido</span>
+                    <h2>PP-@Model.Id.ToString("0000")</h2>
 
-                    <a asp-action="Index"
-                           class="btn-pedido-edit btn-pedido-volver">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver
-                    </a>
+                    <dl class="client-edit-summary-list">
+                        <div>
+                            <dt>Estado</dt>
+                            <dd><span class="pending">@Model.Estado</span></dd>
+                        </div>
 
-                    <button type="submit"
-                            class="btn-pedido-edit btn-pedido-guardar">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Guardar cambios
-                    </button>
+                        <div>
+                            <dt>Fecha de solicitud</dt>
+                            <dd>@Model.FechaPedido.ToString("dd/MM/yyyy")</dd>
+                        </div>
 
+                        <div>
+                            <dt>Producto actual</dt>
+                            <dd>@(Model.Producto?.Nombre ?? "Producto seleccionado")</dd>
+                        </div>
+
+                        <div>
+                            <dt>Cantidad actual</dt>
+                            <dd>@Model.Cantidad kg</dd>
+                        </div>
+                    </dl>
+
+                    <div class="client-edit-tip">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <p>
+                            Podés editar este pedido mientras continúe en estado Pendiente.
+                        </p>
+                    </div>
                 </div>
-
-            </form>
-
+            </aside>
         </div>
 
-    </div>
+        <div class="client-edit-actions">
+            <a asp-action="Index" class="client-edit-back">
+                <i class="fa-solid fa-arrow-left"></i>
+                Volver a mis pedidos
+            </a>
 
+            <button type="submit" class="client-edit-save">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Guardar cambios
+            </button>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
