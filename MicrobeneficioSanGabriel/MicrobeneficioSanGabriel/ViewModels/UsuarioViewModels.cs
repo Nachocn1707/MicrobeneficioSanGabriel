@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MicrobeneficioSanGabriel.ViewModels
@@ -53,7 +53,7 @@ namespace MicrobeneficioSanGabriel.ViewModels
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         [DataType(DataType.Password)]
-        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres.")]
+        [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
         [Display(Name = "Contraseña")]
         public string Password { get; set; } = string.Empty;
 
@@ -64,6 +64,7 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public string ConfirmPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El teléfono es obligatorio.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888.")]
         [Display(Name = "Teléfono")]
         public string PhoneNumber { get; set; } = string.Empty;
 
@@ -92,6 +93,7 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El teléfono es obligatorio.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888.")]
         [Display(Name = "Teléfono")]
         public string PhoneNumber { get; set; } = string.Empty;
 

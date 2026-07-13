@@ -1,0 +1,63 @@
+/* Fondo fotográfico translúcido global.
+   Solo modifica el fondo; no altera tamaños, posiciones ni componentes. */
+:root {
+    --sg-bg-image: url('/images/visual/coffee-farm.jpg');
+    --sg-bg-overlay: linear-gradient(rgba(247, 243, 234, .90), rgba(247, 243, 234, .86));
+    --sg-bg-overlay-client: linear-gradient(rgba(250, 247, 239, .88), rgba(244, 237, 224, .84));
+}
+
+.sg-main {
+    background-color: #f4efe6 !important;
+    background-image: var(--sg-bg-overlay), var(--sg-bg-image) !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+.cafe-portal-main {
+    background-color: #f7f2e9 !important;
+    background-image: var(--sg-bg-overlay-client), var(--sg-bg-image) !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+/* En las pantallas públicas se mantiene el diseño actual y solo se agrega profundidad. */
+.rc-public-body {
+    background-color: #f4efe6;
+    background-image: linear-gradient(rgba(247, 242, 232, .82), rgba(247, 242, 232, .78)), var(--sg-bg-image);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Conserva la legibilidad de tablas, formularios y tarjetas existentes. */
+.sg-content,
+.cafe-portal-main > * {
+    position: relative;
+    z-index: 1;
+}
+
+html.dark {
+    --sg-bg-overlay: linear-gradient(rgba(25, 25, 22, .90), rgba(25, 25, 22, .86));
+    --sg-bg-overlay-client: linear-gradient(rgba(27, 27, 23, .90), rgba(27, 27, 23, .86));
+}
+
+@media (max-width: 991.98px) {
+    .sg-main,
+    .cafe-portal-main,
+    .rc-public-body {
+        background-attachment: scroll !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sg-main,
+    .cafe-portal-main,
+    .rc-public-body {
+        background-attachment: scroll !important;
+    }
+}

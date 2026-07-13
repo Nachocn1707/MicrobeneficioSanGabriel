@@ -1,46 +1,59 @@
-using MicrobeneficioSanGabriel.Data;
-using MicrobeneficioSanGabriel.Models;
-using MicrobeneficioSanGabriel.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MicrobeneficioSanGabriel.Constants;
+using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
-using System.Globalization;
-
+using MicrobeneficioSanGabriel.ViewModels;
+using System.Text.Json;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
     [Authorize(Roles = "Administrador,Vendedor,Cliente")]
     public class PedidosController : Controller
     {
+        private const string PedidoPendienteSessionKey = "PedidoPendienteConfirmacion";
+
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IPedidoInventarioService _pedidoInventarioService;
+        private readonly ILogger<PedidosController> _logger;
 
         public PedidosController(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IPedidoInventarioService pedidoInventarioService,
+            ILogger<PedidosController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _pedidoInventarioService = pedidoInventarioService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
             var pedidos = _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .AsQueryable();
 
             if (User.IsInRole("Cliente"))
             {
                 var usuario = await _userManager.GetUserAsync(User);
-                var correo = (usuario?.Email ?? User.Identity?.Name ?? string.Empty)
-                    .Trim()
-                    .ToLowerInvariant();
+                if (usuario == null)
+                {
+                    return Challenge();
+                }
 
+                var correo = (usuario.Email ?? string.Empty).Trim().ToLowerInvariant();
                 pedidos = pedidos.Where(p =>
-                    p.ClienteCorreo != null && p.ClienteCorreo.ToLower() == correo);
+                    p.ClienteId == usuario.Id ||
+                    (p.ClienteId == null && p.ClienteCorreo != null && p.ClienteCorreo.ToLower() == correo));
             }
 
             return View(await pedidos
@@ -53,8 +66,9 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             var pedido = new Pedido
             {
-                Cantidad = 1,
-                Estado = "Pendiente",
+                Cantidad = 1m,
+                Estado = EstadosPedido.Pendiente,
+                EstadoPago = EstadosPago.Pendiente,
                 FechaPedido = DateTime.Now
             };
 
@@ -85,98 +99,85 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Create(Pedido pedido)
         {
-            if (User.IsInRole("Cliente"))
-            {
-                var usuario = await _userManager.GetUserAsync(User);
-
-                if (usuario != null)
-                {
-                    pedido.ClienteNombre = usuario.NombreCompleto;
-                    pedido.ClienteCorreo = usuario.Email;
-
-                    if (string.IsNullOrWhiteSpace(pedido.ClienteTelefono) &&
-                        !string.IsNullOrWhiteSpace(usuario.PhoneNumber))
-                    {
-                        pedido.ClienteTelefono = usuario.PhoneNumber;
-                        ModelState.Remove(nameof(Pedido.ClienteTelefono));
-                    }
-
-                    ModelState.Remove(nameof(Pedido.ClienteNombre));
-                    ModelState.Remove(nameof(Pedido.ClienteCorreo));
-                }
-
-                pedido.Estado = "Pendiente";
-                pedido.FechaPedido = DateTime.Now;
-            }
             pedido.ClienteNombre = pedido.ClienteNombre?.Trim() ?? string.Empty;
             pedido.ClienteCorreo = string.IsNullOrWhiteSpace(pedido.ClienteCorreo)
                 ? null
                 : pedido.ClienteCorreo.Trim().ToLowerInvariant();
-            pedido.ClienteTelefono = new string((pedido.ClienteTelefono ?? string.Empty).Where(char.IsDigit).ToArray());
-            ModelState.Remove(nameof(Pedido.ClienteTelefono));
+            pedido.ClienteTelefono = SoloDigitos(pedido.ClienteTelefono);
+            pedido.Estado = EstadosPedido.Pendiente;
+            pedido.EstadoPago = EstadosPago.Pendiente;
+            pedido.MetodoPago = "Sin definir";
+            pedido.FechaPedido = DateTime.Now;
+            pedido.InventarioAplicado = false;
+
+            if (User.IsInRole("Cliente"))
+            {
+                var usuario = await _userManager.GetUserAsync(User);
+                if (usuario == null)
+                {
+                    return Challenge();
+                }
+
+                pedido.ClienteId = usuario.Id;
+                pedido.ClienteNombre = usuario.NombreCompleto;
+                pedido.ClienteCorreo = usuario.Email?.Trim().ToLowerInvariant();
+
+                if (string.IsNullOrWhiteSpace(pedido.ClienteTelefono) && !string.IsNullOrWhiteSpace(usuario.PhoneNumber))
+                {
+                    pedido.ClienteTelefono = SoloDigitos(usuario.PhoneNumber);
+                }
+
+                ModelState.Remove(nameof(Pedido.ClienteId));
+                ModelState.Remove(nameof(Pedido.ClienteNombre));
+                ModelState.Remove(nameof(Pedido.ClienteCorreo));
+                ModelState.Remove(nameof(Pedido.ClienteTelefono));
+                ModelState.Remove(nameof(Pedido.Estado));
+                ModelState.Remove(nameof(Pedido.EstadoPago));
+                ModelState.Remove(nameof(Pedido.MetodoPago));
+            }
 
             if (pedido.ClienteTelefono.Length != 8)
             {
                 ModelState.AddModelError(nameof(Pedido.ClienteTelefono),
-                    "El teléfono debe tener 8 dígitos, por ejemplo 8888-8888.");
+                    "El teléfono debe tener 8 dígitos, por ejemplo 88888888.");
             }
 
-            if (string.IsNullOrWhiteSpace(pedido.Estado))
+            var producto = await _context.Productos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == pedido.ProductoId && p.Activo);
+
+            if (producto == null)
             {
-                pedido.Estado = "Pendiente";
+                ModelState.AddModelError(nameof(Pedido.ProductoId), "El producto seleccionado no existe o está inactivo.");
             }
-
-            if (ModelState.IsValid)
+            else if (pedido.Cantidad > producto.Stock)
             {
-                var producto = await _context.Productos.FindAsync(pedido.ProductoId);
-
-                if (producto == null)
-                {
-                    ModelState.AddModelError("", "El producto seleccionado no existe.");
-                    CargarProductos(pedido.ProductoId);
-                    return View(pedido);
-                }
-
-                if (pedido.Cantidad > producto.Stock)
-                {
-                    ModelState.AddModelError("", "No hay suficiente stock disponible para realizar el pedido.");
-                    CargarProductos(pedido.ProductoId);
-                    return View(pedido);
-                }
-
-                if (pedido.Estado == "Completado")
-                {
-                    producto.Stock -= pedido.Cantidad;
-
-                    var movimiento = new MovimientoInventario
-                    {
-                        ProductoId = producto.Id,
-                        TipoMovimiento = "Salida",
-                        Cantidad = pedido.Cantidad,
-                        FechaMovimiento = DateTime.Now,
-                        Observacion = $"Salida por pedido del cliente {pedido.ClienteNombre}"
-                    };
-
-                    _context.MovimientosInventario.Add(movimiento);
-                    _context.Productos.Update(producto);
-                }
-
-                pedido.Estado = "Pendiente";
-                pedido.EstadoPago = "Pendiente";
-                pedido.MetodoPago = "Sin definir";
-
-                _context.Pedidos.Add(pedido);
-                await _context.SaveChangesAsync();
-                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Crear", pedido.Id,
-                    $"Se registró el pedido #{pedido.Id} para {pedido.ClienteNombre}.");
-                TempData["Success"] = "Pedido registrado correctamente. Complete la información de pago.";
-
-                return RedirectToAction(nameof(Pago),
-                    new { id = pedido.Id });
+                ModelState.AddModelError(nameof(Pedido.Cantidad),
+                    $"No hay suficiente stock disponible. Máximo: {producto.Stock:N2} kg.");
             }
 
-            CargarProductos(pedido.ProductoId);
-            return View(pedido);
+            if (!ModelState.IsValid)
+            {
+                CargarProductos(pedido.ProductoId);
+                return View(pedido);
+            }
+
+            // El pedido aún no se almacena. Se conserva temporalmente en la sesión
+            // hasta que el usuario confirme el método de pago.
+            GuardarPedidoPendiente(new PedidoPendienteSession
+            {
+                ClienteNombre = pedido.ClienteNombre,
+                ClienteId = pedido.ClienteId,
+                ClienteCorreo = pedido.ClienteCorreo,
+                ClienteTelefono = pedido.ClienteTelefono,
+                ProductoId = pedido.ProductoId,
+                Cantidad = pedido.Cantidad,
+                Observacion = pedido.Observacion,
+                FechaCreacion = DateTime.Now
+            });
+
+            TempData["Info"] = "Revise el resumen y confirme el método de pago. El pedido todavía no ha sido almacenado.";
+            return RedirectToAction(nameof(Pago));
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -185,14 +186,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var pedido = await _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pedido == null) return NotFound();
-
-            if (User.IsInRole("Cliente") && !PedidoPerteneceAlCliente(pedido))
-            {
-                return Forbid();
-            }
+            if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
             return View(pedido);
         }
@@ -201,104 +199,92 @@ namespace MicrobeneficioSanGabriel.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
-            var pedido = await _context.Pedidos.FindAsync(id);
-
+            var pedido = await _context.Pedidos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
             if (pedido == null) return NotFound();
+            pedido.ClienteTelefono = SoloDigitos(pedido.ClienteTelefono);
 
-            CargarProductos(pedido.ProductoId);
+            CargarProductos(pedido.ProductoId, incluirInactivo: true);
             return View(pedido);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int id, Pedido pedido)
+        public async Task<IActionResult> Edit(int id, Pedido datos)
         {
-            if (id != pedido.Id)
+            if (id != datos.Id) return NotFound();
+
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null) return NotFound();
+
+            if (datos.RowVersion.Length > 0)
             {
-                return NotFound();
+                _context.Entry(pedido).Property(p => p.RowVersion).OriginalValue = datos.RowVersion;
             }
 
-            var pedidoOriginal = await _context.Pedidos
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
+            datos.ClienteNombre = datos.ClienteNombre?.Trim() ?? string.Empty;
+            datos.ClienteTelefono = SoloDigitos(datos.ClienteTelefono);
 
-            if (pedidoOriginal == null)
+            if (!EstadosPedido.EsValido(datos.Estado))
             {
-                return NotFound();
+                ModelState.AddModelError(nameof(Pedido.Estado), "Seleccione un estado válido.");
             }
 
-            if (ModelState.IsValid)
+            if (datos.ClienteTelefono.Length != 8)
             {
-                try
+                ModelState.AddModelError(nameof(Pedido.ClienteTelefono), "El teléfono debe contener 8 dígitos.");
+            }
+
+            var tieneFactura = await _context.Facturas.AnyAsync(f => f.PedidoId == id);
+            if (tieneFactura && (pedido.ProductoId != datos.ProductoId || pedido.Cantidad != datos.Cantidad))
+            {
+                ModelState.AddModelError(string.Empty,
+                    "No se puede cambiar el producto o la cantidad porque el pedido ya tiene una factura asociada.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                CargarProductos(datos.ProductoId, incluirInactivo: true);
+                return View(datos);
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var estadoAnterior = pedido.Estado;
+                var errorInventario = await _pedidoInventarioService.ActualizarPedidoAsync(
+                    pedido, datos.ProductoId, datos.Cantidad, datos.Estado);
+
+                if (errorInventario != null)
                 {
-                    // Si el pedido pasa a Completado por primera vez, se descuenta stock.
-                    if (pedidoOriginal.Estado != "Completado" && pedido.Estado == "Completado")
-                    {
-                        var producto = await _context.Productos.FindAsync(pedido.ProductoId);
-
-                        if (producto == null)
-                        {
-                            ModelState.AddModelError("", "El producto seleccionado no existe.");
-                            CargarProductos(pedido.ProductoId);
-                            return View(pedido);
-                        }
-
-                        if (pedido.Cantidad > producto.Stock)
-                        {
-                            ModelState.AddModelError("", "No hay suficiente stock disponible para completar el pedido.");
-                            CargarProductos(pedido.ProductoId);
-                            return View(pedido);
-                        }
-
-                        producto.Stock -= pedido.Cantidad;
-
-                        var movimiento = new MovimientoInventario
-                        {
-                            ProductoId = producto.Id,
-                            TipoMovimiento = "Salida",
-                            Cantidad = pedido.Cantidad,
-                            FechaMovimiento = DateTime.Now,
-                            Observacion = $"Salida por pedido completado del cliente {pedido.ClienteNombre}"
-                        };
-
-                        _context.MovimientosInventario.Add(movimiento);
-                        _context.Productos.Update(producto);
-                    }
-
-                    pedido.ClienteCorreo = pedidoOriginal.ClienteCorreo;
-                    pedido.MetodoPago = pedidoOriginal.MetodoPago;
-
-                    // El estado de pago se sincroniza automáticamente según el estado del pedido.
-                    pedido.EstadoPago = ObtenerEstadoPagoAutomatico(
-                        pedido.Estado,
-                        pedidoOriginal.EstadoPago,
-                        pedido.MetodoPago);
-
-                    await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
-
-                    _context.Update(pedido);
-                    await _context.SaveChangesAsync();
-                    await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Editar", pedido.Id,
-                        $"Se actualizó el pedido #{pedido.Id}.");
-
-                    TempData["Success"] = "Pedido actualizado correctamente.";
-                    return RedirectToAction(nameof(Index));
+                    await transaction.RollbackAsync();
+                    ModelState.AddModelError(string.Empty, errorInventario);
+                    CargarProductos(datos.ProductoId, incluirInactivo: true);
+                    return View(datos);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PedidoExists(pedido.Id))
-                    {
-                        return NotFound();
-                    }
 
-                    throw;
-                }
+                pedido.ClienteNombre = datos.ClienteNombre;
+                pedido.ClienteTelefono = datos.ClienteTelefono;
+                pedido.FechaPedido = datos.FechaPedido;
+                pedido.Observacion = string.IsNullOrWhiteSpace(datos.Observacion) ? null : datos.Observacion.Trim();
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Editar", pedido.Id,
+                    $"Se actualizó el pedido #{pedido.Id}. Estado: {estadoAnterior} a {pedido.Estado}.", _logger);
+                TempData["Success"] = "Pedido actualizado correctamente.";
+                return RedirectToAction(nameof(Index));
             }
-
-            CargarProductos(pedido.ProductoId);
-            return View(pedido);
+            catch (DbUpdateConcurrencyException ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogWarning(ex, "Conflicto de concurrencia al editar el pedido {PedidoId}.", id);
+                ModelState.AddModelError(string.Empty,
+                    "El inventario cambió mientras se procesaba la solicitud. Revise los datos e inténtelo nuevamente.");
+                CargarProductos(datos.ProductoId, incluirInactivo: true);
+                return View(datos);
+            }
         }
 
         [Authorize(Roles = "Cliente")]
@@ -308,21 +294,19 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var pedido = await _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pedido == null) return NotFound();
+            if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (!PedidoPerteneceAlCliente(pedido))
-            {
-                return Forbid();
-            }
-
-            if (pedido.Estado != "Pendiente")
+            if (pedido.Estado != EstadosPedido.Pendiente)
             {
                 TempData["Error"] = "Solo puede modificar pedidos en estado Pendiente.";
                 return RedirectToAction(nameof(Index));
             }
 
+            pedido.ClienteTelefono = SoloDigitos(pedido.ClienteTelefono);
             CargarProductos(pedido.ProductoId);
             return View(pedido);
         }
@@ -330,55 +314,63 @@ namespace MicrobeneficioSanGabriel.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Cliente")]
-        public async Task<IActionResult> EditCliente(int id, Pedido pedido)
+        public async Task<IActionResult> EditCliente(int id, Pedido datos)
         {
-            var pedidoOriginal = await _context.Pedidos.FindAsync(id);
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null) return NotFound();
+            if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (pedidoOriginal == null) return NotFound();
-
-            if (!PedidoPerteneceAlCliente(pedidoOriginal))
-            {
-                return Forbid();
-            }
-
-            if (pedidoOriginal.Estado != "Pendiente")
+            if (pedido.Estado != EstadosPedido.Pendiente)
             {
                 TempData["Error"] = "Solo puede modificar pedidos en estado Pendiente.";
                 return RedirectToAction(nameof(Index));
             }
 
-            var producto = await _context.Productos.FindAsync(pedido.ProductoId);
+            var producto = await _context.Productos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == datos.ProductoId && p.Activo);
 
             if (producto == null)
             {
-                ModelState.AddModelError("", "El producto seleccionado no existe.");
+                ModelState.AddModelError(nameof(Pedido.ProductoId), "El producto seleccionado no está disponible.");
             }
-            else if (pedido.Cantidad > producto.Stock)
+            else if (datos.Cantidad > producto.Stock)
             {
-                ModelState.AddModelError("", "No hay suficiente stock disponible para actualizar el pedido.");
+                ModelState.AddModelError(nameof(Pedido.Cantidad),
+                    $"No hay suficiente stock. Disponible: {producto.Stock:N2} kg.");
             }
+
+            var telefono = SoloDigitos(datos.ClienteTelefono);
+            if (telefono.Length != 8)
+            {
+                ModelState.AddModelError(nameof(Pedido.ClienteTelefono), "El teléfono debe contener 8 dígitos.");
+            }
+
+            ModelState.Remove(nameof(Pedido.ClienteNombre));
+            ModelState.Remove(nameof(Pedido.ClienteCorreo));
+            ModelState.Remove(nameof(Pedido.Estado));
+            ModelState.Remove(nameof(Pedido.EstadoPago));
+            ModelState.Remove(nameof(Pedido.MetodoPago));
 
             if (ModelState.IsValid)
             {
-                pedidoOriginal.ProductoId = pedido.ProductoId;
-                pedidoOriginal.Cantidad = pedido.Cantidad;
-                pedidoOriginal.ClienteTelefono = pedido.ClienteTelefono;
-                pedidoOriginal.Observacion = pedido.Observacion;
+                pedido.ProductoId = datos.ProductoId;
+                pedido.Cantidad = datos.Cantidad;
+                pedido.ClienteTelefono = telefono;
+                pedido.Observacion = string.IsNullOrWhiteSpace(datos.Observacion) ? null : datos.Observacion.Trim();
 
                 await _context.SaveChangesAsync();
-
                 TempData["Success"] = "Pedido actualizado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
 
-            pedido.ClienteNombre = pedidoOriginal.ClienteNombre;
-            pedido.ClienteCorreo = pedidoOriginal.ClienteCorreo;
-            pedido.ClienteTelefono = pedidoOriginal.ClienteTelefono;
-            pedido.Estado = pedidoOriginal.Estado;
-            pedido.FechaPedido = pedidoOriginal.FechaPedido;
-
-            CargarProductos(pedido.ProductoId);
-            return View(pedido);
+            datos.ClienteNombre = pedido.ClienteNombre;
+            datos.ClienteCorreo = pedido.ClienteCorreo;
+            datos.ClienteTelefono = telefono;
+            datos.Estado = pedido.Estado;
+            datos.FechaPedido = pedido.FechaPedido;
+            CargarProductos(datos.ProductoId);
+            return View(datos);
         }
 
         [Authorize(Roles = "Cliente")]
@@ -388,16 +380,13 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var pedido = await _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pedido == null) return NotFound();
+            if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (!PedidoPerteneceAlCliente(pedido))
-            {
-                return Forbid();
-            }
-
-            if (pedido.Estado != "Pendiente")
+            if (pedido.Estado != EstadosPedido.Pendiente)
             {
                 TempData["Error"] = "Solo puede cancelar pedidos en estado Pendiente.";
                 return RedirectToAction(nameof(Index));
@@ -411,24 +400,18 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> CancelarConfirmado(int id)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
-
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
             if (pedido == null) return NotFound();
+            if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (!PedidoPerteneceAlCliente(pedido))
-            {
-                return Forbid();
-            }
-
-            if (pedido.Estado != "Pendiente")
+            if (pedido.Estado != EstadosPedido.Pendiente)
             {
                 TempData["Error"] = "Solo puede cancelar pedidos en estado Pendiente.";
                 return RedirectToAction(nameof(Index));
             }
 
-            pedido.Estado = "Cancelado";
+            pedido.Estado = EstadosPedido.Cancelado;
             await _context.SaveChangesAsync();
-
             TempData["Success"] = "Pedido cancelado correctamente.";
             return RedirectToAction(nameof(Index));
         }
@@ -437,14 +420,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var pedido = await _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pedido == null) return NotFound();
-
-            return View(pedido);
+            return pedido == null ? NotFound() : View(pedido);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -452,63 +432,53 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null) return RedirectToAction(nameof(Index));
 
-            if (pedido != null)
+            if (await _context.Facturas.AnyAsync(f => f.PedidoId == id))
             {
-                _context.Pedidos.Remove(pedido);
-                await _context.SaveChangesAsync();
+                TempData["Error"] = "No se puede eliminar el pedido porque tiene una factura asociada. Anule la factura y conserve el historial.";
+                return RedirectToAction(nameof(Index));
             }
 
-            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Eliminar", id,
-                $"Se eliminó el pedido #{id}.");
-            TempData["Success"] = "Pedido eliminado correctamente.";
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var error = await _pedidoInventarioService.PrepararEliminacionAsync(pedido);
+                if (error != null)
+                {
+                    await transaction.RollbackAsync();
+                    TempData["Error"] = error;
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _context.Pedidos.Remove(pedido);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Eliminar", id,
+                    $"Se eliminó el pedido #{id} y se ajustó el inventario cuando correspondía.", _logger);
+                TempData["Success"] = "Pedido eliminado correctamente.";
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogWarning(ex, "Conflicto de concurrencia al eliminar el pedido {PedidoId}.", id);
+                TempData["Error"] = "El inventario cambió. Actualice la página antes de intentar eliminar nuevamente.";
+            }
+
             return RedirectToAction(nameof(Index));
-        }
-
-        private void CargarProductos(int? productoSeleccionado = null)
-        {
-            ViewBag.ProductoId = new SelectList(
-                _context.Productos
-                    .Where(p => p.Activo && p.Stock > 0)
-                    .OrderBy(p => p.Nombre)
-                    .AsEnumerable()
-                    .Select(p => new
-                    {
-                        p.Id,
-                        Texto = p.Nombre + " — ₡" + p.Precio.ToString("N0") + " / " + p.Stock + " kg"
-                    }),
-                "Id",
-                "Texto",
-                productoSeleccionado
-            );
-        }
-
-        private bool PedidoExists(int id)
-        {
-            return _context.Pedidos.Any(e => e.Id == id);
-        }
-
-        private bool PedidoPerteneceAlCliente(Pedido pedido)
-        {
-            var correoPedido = (pedido.ClienteCorreo ?? string.Empty).Trim();
-            var correoUsuario = (User.Identity?.Name ?? string.Empty).Trim();
-
-            return string.Equals(correoPedido, correoUsuario, StringComparison.OrdinalIgnoreCase);
         }
 
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(int? id)
         {
             if (id == null) return NotFound();
-
             var pedido = await _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pedido == null) return NotFound();
-
-            return View(pedido);
+            return pedido == null ? NotFound() : View(pedido);
         }
 
         [HttpPost]
@@ -516,79 +486,226 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(int id, string estado)
         {
-            var pedido = await _context.Pedidos
-                .Include(p => p.Producto)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
             if (pedido == null) return NotFound();
 
+            if (!EstadosPedido.EsValido(estado))
+            {
+                TempData["Error"] = "El estado seleccionado no es válido.";
+                return RedirectToAction(nameof(CambiarEstado), new { id });
+            }
+
             var estadoAnterior = pedido.Estado;
+            await using var transaction = await _context.Database.BeginTransactionAsync();
 
-            if (string.IsNullOrWhiteSpace(estado))
+            try
             {
-                ModelState.AddModelError("", "Debe seleccionar un estado.");
-                return View(pedido);
-            }
-
-            if (estadoAnterior != "Completado" && estado == "Completado")
-            {
-                var producto = await _context.Productos.FindAsync(pedido.ProductoId);
-
-                if (producto == null)
+                var error = await _pedidoInventarioService.CambiarEstadoAsync(pedido, estado);
+                if (error != null)
                 {
-                    ModelState.AddModelError("", "El producto seleccionado no existe.");
-                    return View(pedido);
+                    await transaction.RollbackAsync();
+                    TempData["Error"] = error;
+                    return RedirectToAction(nameof(CambiarEstado), new { id });
                 }
 
-                if (pedido.Cantidad > producto.Stock)
-                {
-                    ModelState.AddModelError("", "No hay suficiente stock disponible para completar el pedido.");
-                    return View(pedido);
-                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-                producto.Stock -= pedido.Cantidad;
-
-                var movimiento = new MovimientoInventario
-                {
-                    ProductoId = producto.Id,
-                    TipoMovimiento = "Salida",
-                    Cantidad = pedido.Cantidad,
-                    FechaMovimiento = DateTime.Now,
-                    Observacion = $"Salida por pedido completado del cliente {pedido.ClienteNombre}"
-                };
-
-                _context.MovimientosInventario.Add(movimiento);
-                _context.Productos.Update(producto);
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Cambiar estado", pedido.Id,
+                    $"El pedido cambió de {estadoAnterior} a {pedido.Estado}. El pago se mantiene en {pedido.EstadoPago}.", _logger);
+                TempData["Success"] = "Estado del pedido actualizado correctamente.";
             }
-
-            pedido.Estado = estado;
-            pedido.EstadoPago = ObtenerEstadoPagoAutomatico(
-                pedido.Estado,
-                pedido.EstadoPago,
-                pedido.MetodoPago);
-
-            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
-
-            await _context.SaveChangesAsync();
-            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Cambiar estado", pedido.Id,
-                $"El pedido cambió de {estadoAnterior} a {estado}. Estado de pago: {pedido.EstadoPago}.");
-
-            TempData["Success"] = estado == "Completado"
-                ? "Pedido completado y pago marcado automáticamente como completado."
-                : "Estado del pedido actualizado correctamente.";
+            catch (DbUpdateConcurrencyException ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogWarning(ex, "Conflicto de inventario al cambiar el estado del pedido {PedidoId}.", id);
+                TempData["Error"] = "El stock cambió mientras se procesaba el pedido. Inténtelo nuevamente.";
+            }
 
             return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "Administrador,Cliente")]
-        public async Task<IActionResult> Pago(int id)
+        public async Task<IActionResult> Pago(int? id)
+        {
+            // Cuando se llega desde "Mis pedidos", el registro ya existe y solo se
+            // actualizará el método de pago. Cuando no hay id, se usa el pedido temporal.
+            if (id.HasValue)
+            {
+                var pedidoExistente = await _context.Pedidos
+                    .Include(p => p.Producto)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.Id == id.Value);
+
+                if (pedidoExistente == null) return NotFound();
+                if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedidoExistente)) return Forbid();
+                if (pedidoExistente.Estado == EstadosPedido.Cancelado)
+                {
+                    TempData["Error"] = "No se puede registrar pago para un pedido cancelado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewBag.EsPedidoPendiente = false;
+                ViewBag.Total = pedidoExistente.Producto?.Precio * pedidoExistente.Cantidad;
+                return View(pedidoExistente);
+            }
+
+            var pendiente = ObtenerPedidoPendiente();
+            if (pendiente == null)
+            {
+                TempData["Warning"] = "No hay un pedido pendiente de confirmación.";
+                return RedirectToAction("Index", "Productos");
+            }
+
+            if (User.IsInRole("Cliente"))
+            {
+                var usuario = await _userManager.GetUserAsync(User);
+                if (usuario == null) return Challenge();
+                if (!string.Equals(pendiente.ClienteId, usuario.Id, StringComparison.Ordinal)) return Forbid();
+            }
+
+            var producto = await _context.Productos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == pendiente.ProductoId && p.Activo);
+
+            if (producto == null || producto.Stock < pendiente.Cantidad)
+            {
+                EliminarPedidoPendiente();
+                TempData["Error"] = "El producto ya no está disponible o no tiene suficiente inventario. Vuelva a realizar el pedido.";
+                return RedirectToAction("Index", "Productos");
+            }
+
+            var pedidoTemporal = new Pedido
+            {
+                Id = 0,
+                ClienteNombre = pendiente.ClienteNombre,
+                ClienteId = pendiente.ClienteId,
+                ClienteCorreo = pendiente.ClienteCorreo,
+                ClienteTelefono = pendiente.ClienteTelefono,
+                ProductoId = pendiente.ProductoId,
+                Producto = producto,
+                Cantidad = pendiente.Cantidad,
+                Observacion = pendiente.Observacion,
+                FechaPedido = pendiente.FechaCreacion,
+                Estado = EstadosPedido.Pendiente,
+                EstadoPago = EstadosPago.Pendiente,
+                MetodoPago = "Sin definir",
+                InventarioAplicado = false
+            };
+
+            ViewBag.EsPedidoPendiente = true;
+            ViewBag.Total = producto.Precio * pendiente.Cantidad;
+            return View(pedidoTemporal);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Cliente")]
+        public async Task<IActionResult> Pago(int? pedidoId, string metodoPago)
+        {
+            var metodosPermitidos = new[] { "SINPE Móvil", "Efectivo" };
+            if (!metodosPermitidos.Contains(metodoPago))
+            {
+                TempData["Error"] = "Seleccione un método de pago válido.";
+                return pedidoId.HasValue
+                    ? RedirectToAction(nameof(Pago), new { id = pedidoId.Value })
+                    : RedirectToAction(nameof(Pago));
+            }
+
+            // Pedido existente: conserva el flujo para la opción "Realizar pago"
+            // que aparece en la lista de pedidos del cliente.
+            if (pedidoId.HasValue && pedidoId.Value > 0)
+            {
+                var pedidoExistente = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == pedidoId.Value);
+                if (pedidoExistente == null) return NotFound();
+                if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedidoExistente)) return Forbid();
+
+                if (pedidoExistente.Estado == EstadosPedido.Cancelado)
+                {
+                    TempData["Error"] = "No se puede registrar pago para un pedido cancelado.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                pedidoExistente.MetodoPago = metodoPago;
+                pedidoExistente.EstadoPago = EstadosPago.PendientePago;
+                await SincronizarEstadoPagoFacturasAsync(pedidoExistente.Id, pedidoExistente.EstadoPago);
+                await _context.SaveChangesAsync();
+
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Registrar método de pago",
+                    pedidoExistente.Id, $"Método: {metodoPago}. Estado: {pedidoExistente.EstadoPago}.", _logger);
+
+                return metodoPago == "SINPE Móvil"
+                    ? RedirectToAction(nameof(PagoConfirmado), new { id = pedidoExistente.Id })
+                    : RedirectToAction(nameof(Details), new { id = pedidoExistente.Id });
+            }
+
+            // Pedido nuevo: se lee de la sesión y recién aquí se inserta en la base de datos.
+            var pendiente = ObtenerPedidoPendiente();
+            if (pendiente == null)
+            {
+                TempData["Error"] = "La información temporal del pedido venció. Vuelva a realizarlo.";
+                return RedirectToAction("Index", "Productos");
+            }
+
+            if (User.IsInRole("Cliente"))
+            {
+                var usuario = await _userManager.GetUserAsync(User);
+                if (usuario == null) return Challenge();
+                if (!string.Equals(pendiente.ClienteId, usuario.Id, StringComparison.Ordinal)) return Forbid();
+            }
+
+            var producto = await _context.Productos
+                .FirstOrDefaultAsync(p => p.Id == pendiente.ProductoId && p.Activo);
+
+            if (producto == null || producto.Stock < pendiente.Cantidad)
+            {
+                EliminarPedidoPendiente();
+                TempData["Error"] = "El producto ya no está disponible o no cuenta con suficiente inventario.";
+                return RedirectToAction("Index", "Productos");
+            }
+
+            var pedido = new Pedido
+            {
+                ClienteNombre = pendiente.ClienteNombre,
+                ClienteId = pendiente.ClienteId,
+                ClienteCorreo = pendiente.ClienteCorreo,
+                ClienteTelefono = pendiente.ClienteTelefono,
+                ProductoId = pendiente.ProductoId,
+                Cantidad = pendiente.Cantidad,
+                Observacion = pendiente.Observacion,
+                FechaPedido = DateTime.Now,
+                Estado = EstadosPedido.Pendiente,
+                EstadoPago = EstadosPago.PendientePago,
+                MetodoPago = metodoPago,
+                InventarioAplicado = false
+            };
+
+            _context.Pedidos.Add(pedido);
+            await _context.SaveChangesAsync();
+            EliminarPedidoPendiente();
+
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Crear", pedido.Id,
+                $"Se registró el pedido PP-{pedido.Id:0000} para {pedido.ClienteNombre}, con método {metodoPago}.", _logger);
+
+            return metodoPago == "SINPE Móvil"
+                ? RedirectToAction(nameof(PagoConfirmado), new { id = pedido.Id })
+                : RedirectToAction(nameof(Details), new { id = pedido.Id });
+        }
+
+        [Authorize(Roles = "Administrador,Cliente")]
+        public async Task<IActionResult> PagoConfirmado(int id)
         {
             var pedido = await _context.Pedidos
                 .Include(p => p.Producto)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
-            if (pedido == null)
+
+            if (pedido == null) return NotFound();
+            if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
+
+            if (!string.Equals(pedido.MetodoPago, "SINPE Móvil", StringComparison.OrdinalIgnoreCase))
             {
-                return NotFound();
+                return RedirectToAction(nameof(Details), new { id = pedido.Id });
             }
 
             ViewBag.Total = pedido.Producto?.Precio * pedido.Cantidad;
@@ -598,81 +715,95 @@ namespace MicrobeneficioSanGabriel.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador,Cliente")]
-        public async Task<IActionResult> Pago(
-         int pedidoId,
-         string metodoPago,
-         string? numeroTarjeta,
-         string? fechaVencimiento,
-         string? numeroSecreto)
+        public async Task<IActionResult> NoContinuarPago(int? pedidoId)
         {
+            // Si el pedido todavía está en sesión, basta con descartarlo: nunca llegó
+            // a insertarse en la base de datos.
+            if (!pedidoId.HasValue || pedidoId.Value <= 0)
+            {
+                EliminarPedidoPendiente();
+                TempData["Info"] = "La solicitud fue descartada. El pedido no se almacenó.";
+                return RedirectToAction("Index", "Productos");
+            }
+
+            // Compatibilidad con pedidos antiguos o con la opción "Realizar pago".
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == pedidoId.Value);
+            if (pedido == null) return NotFound();
+            if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
+
+            if (pedido.Estado == EstadosPedido.Pendiente && !pedido.InventarioAplicado)
+            {
+                pedido.Estado = EstadosPedido.Cancelado;
+                await _context.SaveChangesAsync();
+                await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Cancelar",
+                    pedido.Id, "El pedido se canceló desde la pantalla de método de pago.", _logger);
+                TempData["Success"] = $"El pedido PP-{pedido.Id:0000} fue cancelado.";
+            }
+            else
+            {
+                TempData["Warning"] = "El pedido ya no puede cancelarse desde esta pantalla.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Administrador,Vendedor")]
+        public async Task<IActionResult> CambiarEstadoPago(int? id)
+        {
+            if (id == null) return NotFound();
             var pedido = await _context.Pedidos
-                .FirstOrDefaultAsync(p => p.Id == pedidoId);
+                .Include(p => p.Producto)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+            return pedido == null ? NotFound() : View(pedido);
+        }
 
-            if (pedido == null)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Vendedor")]
+        public async Task<IActionResult> CambiarEstadoPago(int id, string estadoPago)
+        {
+            if (!EstadosPago.Editables.Contains(estadoPago))
             {
-                return NotFound();
+                TempData["Error"] = "El estado de pago seleccionado no es válido.";
+                return RedirectToAction(nameof(Index));
             }
-            if (metodoPago == "Tarjeta")
-            {
-                var tarjetaLimpia = new string((numeroTarjeta ?? string.Empty)
-                    .Where(char.IsDigit)
-                    .ToArray());
 
-                if (tarjetaLimpia.Length != 16)
-                {
-                    TempData["Error"] = "La tarjeta debe contener exactamente 16 dígitos.";
-                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
-                }
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null) return NotFound();
 
-                if (string.IsNullOrWhiteSpace(fechaVencimiento) ||
-                    !DateTime.TryParseExact(
-                        fechaVencimiento.Trim(),
-                        "MM/yy",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out var fechaTarjeta))
-                {
-                    TempData["Error"] = "Ingrese la fecha de vencimiento en formato MM/AA.";
-                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
-                }
+            var estadoAnterior = pedido.EstadoPago;
+            pedido.EstadoPago = estadoPago;
+            await SincronizarEstadoPagoFacturasAsync(pedido.Id, estadoPago);
+            await _context.SaveChangesAsync();
 
-                var ultimoDiaVigencia = new DateTime(
-                    fechaTarjeta.Year,
-                    fechaTarjeta.Month,
-                    DateTime.DaysInMonth(fechaTarjeta.Year, fechaTarjeta.Month));
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Cambiar estado de pago", pedido.Id,
+                $"El estado de pago cambió de {estadoAnterior} a {estadoPago}.", _logger);
+            TempData["Success"] = $"El estado de pago del pedido #{pedido.Id} se actualizó a {estadoPago}.";
+            return RedirectToAction(nameof(Index));
+        }
 
-                if (ultimoDiaVigencia < DateTime.Today)
-                {
-                    TempData["Error"] = "La tarjeta indicada está vencida.";
-                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
-                }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> ConfirmarPago(int id)
+        {
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido == null) return NotFound();
 
-                if (string.IsNullOrWhiteSpace(numeroSecreto) ||
-                    numeroSecreto.Length != 3 ||
-                    !numeroSecreto.All(char.IsDigit))
-                {
-                    TempData["Error"] = "El CVV debe contener exactamente 3 dígitos.";
-                    return RedirectToAction(nameof(Pago), new { id = pedidoId });
-                }
-            }
-            pedido.MetodoPago = metodoPago;
-            pedido.EstadoPago = metodoPago == "Tarjeta"
-                ? "Pago completado"
-                : "Pendiente de pago";
-
+            pedido.EstadoPago = EstadosPago.PagoCompletado;
             await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
             await _context.SaveChangesAsync();
-            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Registrar pago", pedido.Id,
-                $"Método: {metodoPago}. Estado: {pedido.EstadoPago}.");
-            TempData["Success"] =
-                "Pago registrado correctamente.";
-            return RedirectToAction(nameof(Details), new { id = pedido.Id });
+            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Confirmar pago", pedido.Id,
+                "El pago se marcó como completado.", _logger);
+            TempData["Success"] = "Pago confirmado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task SincronizarEstadoPagoFacturasAsync(int pedidoId, string estadoPago)
         {
             var facturas = await _context.Facturas
-                .Where(f => f.PedidoId == pedidoId && f.EstadoPago != "Anulada")
+                .Where(f => f.PedidoId == pedidoId && f.EstadoPago != EstadosPago.Anulada)
                 .ToListAsync();
 
             foreach (var factura in facturas)
@@ -681,114 +812,69 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
         }
 
-        private string ObtenerEstadoPagoAutomatico(string? estadoPedido, string? estadoPagoActual, string? metodoPago)
+        private async Task<bool> PedidoPerteneceAlClienteAsync(Pedido pedido)
         {
-            var estadoNormalizado = (estadoPedido ?? string.Empty).Trim().ToLowerInvariant();
-            var metodoNormalizado = (metodoPago ?? string.Empty).Trim().ToLowerInvariant();
+            var usuario = await _userManager.GetUserAsync(User);
+            if (usuario == null) return false;
 
-            if (estadoNormalizado == "completado")
+            if (!string.IsNullOrWhiteSpace(pedido.ClienteId))
             {
-                return "Pago completado";
+                return pedido.ClienteId == usuario.Id;
             }
 
-            if (estadoNormalizado == "cancelado")
-            {
-                return "Pendiente";
-            }
-
-            if (metodoNormalizado == "tarjeta")
-            {
-                return "Pago completado";
-            }
-
-            if (string.IsNullOrWhiteSpace(metodoPago) || metodoNormalizado == "sin definir")
-            {
-                return "Pendiente";
-            }
-
-            return "Pendiente de pago";
+            return string.Equals(
+                pedido.ClienteCorreo?.Trim(),
+                usuario.Email?.Trim(),
+                StringComparison.OrdinalIgnoreCase);
         }
 
-        [Authorize(Roles = "Administrador,Vendedor")]
-        public async Task<IActionResult> CambiarEstadoPago(int? id)
+        private void CargarProductos(int? productoSeleccionado = null, bool incluirInactivo = false)
         {
-            if (id == null)
+            var query = _context.Productos.AsNoTracking().AsQueryable();
+            if (!incluirInactivo)
             {
-                return NotFound();
+                query = query.Where(p => p.Activo && p.Stock > 0);
             }
 
-            var pedido = await _context.Pedidos
-                .Include(p => p.Producto)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pedido == null)
-            {
-                return NotFound();
-            }
-
-            return View(pedido);
+            ViewBag.ProductoId = new SelectList(
+                query.OrderBy(p => p.Nombre)
+                    .AsEnumerable()
+                    .Select(p => new
+                    {
+                        p.Id,
+                        Texto = $"{p.Nombre} — ₡{p.Precio:N0} / {p.Stock:N2} kg"
+                    }),
+                "Id", "Texto", productoSeleccionado);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador,Vendedor")]
-        public async Task<IActionResult> CambiarEstadoPago(int id, string estadoPago)
+        private void GuardarPedidoPendiente(PedidoPendienteSession pedido)
         {
-            var estadosPermitidos = new[]
-            {
-                "Pendiente",
-                "Pendiente de pago",
-                "Pago completado"
-            };
-
-            if (!estadosPermitidos.Contains(estadoPago))
-            {
-                TempData["Error"] = "El estado de pago seleccionado no es válido.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var pedido = await _context.Pedidos
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pedido == null)
-            {
-                return NotFound();
-            }
-
-            var estadoAnterior = pedido.EstadoPago;
-            pedido.EstadoPago = estadoPago;
-
-            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
-            await _context.SaveChangesAsync();
-
-            await AuditoriaHelper.RegistrarAsync(
-                _context,
-                User,
-                "Pedidos",
-                "Cambiar estado de pago",
-                pedido.Id,
-                $"El estado de pago cambió de {estadoAnterior} a {estadoPago}.");
-
-            TempData["Success"] = $"El estado de pago del pedido #{pedido.Id} se actualizó a {estadoPago}.";
-            return RedirectToAction(nameof(Index));
+            HttpContext.Session.SetString(
+                PedidoPendienteSessionKey,
+                JsonSerializer.Serialize(pedido));
         }
 
-        [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> ConfirmarPago(int id)
+        private PedidoPendienteSession? ObtenerPedidoPendiente()
         {
-            var pedido = await _context.Pedidos
-                .FirstOrDefaultAsync(p => p.Id == id);
-            if (pedido == null)
+            var json = HttpContext.Session.GetString(PedidoPendienteSessionKey);
+            if (string.IsNullOrWhiteSpace(json)) return null;
+
+            try
             {
-                return NotFound();
+                return JsonSerializer.Deserialize<PedidoPendienteSession>(json);
             }
-            pedido.EstadoPago = "Pago completado";
-            await SincronizarEstadoPagoFacturasAsync(pedido.Id, pedido.EstadoPago);
-            await _context.SaveChangesAsync();
-            await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Confirmar pago", pedido.Id,
-                "El pago se marcó como completado.");
-            TempData["Success"] = "Pago confirmado correctamente.";
-            return RedirectToAction(nameof(Index));
+            catch (JsonException ex)
+            {
+                _logger.LogWarning(ex, "No se pudo leer el pedido temporal de la sesión.");
+                EliminarPedidoPendiente();
+                return null;
+            }
         }
+
+        private void EliminarPedidoPendiente() =>
+            HttpContext.Session.Remove(PedidoPendienteSessionKey);
+
+        private static string SoloDigitos(string? valor) =>
+            new((valor ?? string.Empty).Where(char.IsDigit).ToArray());
     }
 }

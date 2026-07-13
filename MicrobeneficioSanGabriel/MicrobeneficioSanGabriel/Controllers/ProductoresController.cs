@@ -25,6 +25,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .OrderByDescending(p => p.FechaRegistro)
                 .ToListAsync();
 
+            foreach (var productor in productores)
+            {
+                productor.Telefono = SoloDigitos(productor.Telefono);
+            }
+
             return View(productores);
         }
 
@@ -37,7 +42,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(p => p.Lotes)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            return productor == null ? NotFound() : View(productor);
+            if (productor == null) return NotFound();
+            productor.Telefono = SoloDigitos(productor.Telefono);
+            return View(productor);
         }
 
         public IActionResult Create()
@@ -90,7 +97,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (id == null) return NotFound();
 
             var productor = await _context.Productores.FindAsync(id);
-            return productor == null ? NotFound() : View(productor);
+            if (productor == null) return NotFound();
+            productor.Telefono = SoloDigitos(productor.Telefono);
+            return View(productor);
         }
 
         [HttpPost]
@@ -221,11 +230,16 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
         }
 
+        private static string SoloDigitos(string? valor)
+        {
+            return new string((valor ?? string.Empty).Where(char.IsDigit).ToArray());
+        }
+
         private static void Normalizar(Productor productor)
         {
             productor.Nombre = productor.Nombre?.Trim() ?? string.Empty;
             productor.Cedula = new string((productor.Cedula ?? string.Empty).Where(char.IsDigit).ToArray());
-            productor.Telefono = new string((productor.Telefono ?? string.Empty).Where(char.IsDigit).ToArray());
+            productor.Telefono = SoloDigitos(productor.Telefono);
             productor.Correo = string.IsNullOrWhiteSpace(productor.Correo)
                 ? null
                 : productor.Correo.Trim().ToLowerInvariant();

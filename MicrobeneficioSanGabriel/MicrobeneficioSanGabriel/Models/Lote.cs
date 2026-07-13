@@ -1,3 +1,4 @@
+using MicrobeneficioSanGabriel.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,9 +27,10 @@ namespace MicrobeneficioSanGabriel.Models
         public Finca? Finca { get; set; }
 
         [Required(ErrorMessage = "El peso es obligatorio")]
-        [Range(0.01, 999999, ErrorMessage = "El peso debe ser mayor a 0")]
+        [Range(1, 999999, ErrorMessage = "El peso debe ser mayor a 0")]
+        [WholeNumber]
         [Display(Name = "Peso (kg)")]
-        public double PesoKg { get; set; }
+        public decimal PesoKg { get; set; }
 
         [Required(ErrorMessage = "La fecha de recepción es obligatoria")]
         [Display(Name = "Fecha de recepción")]

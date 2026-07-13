@@ -16,7 +16,7 @@
 
     var stockTotal = productosStock.Sum(p => p.Stock);
     var coloresStock = new[] { "coffee", "green", "gold", "tan", "brown", "sage" };
-    var coloresStockHex = new[] { "#A66321", "#5E8450", "#C98D25", "#D8B98A", "#3A2416", "#7B8D62" };
+    var coloresStockHex = new[] { "#74320D", "#9B470F", "#C46816", "#E8B66F", "#3B180B", "#C59063" };
 
     string FormatoPorcentaje(decimal valor) =>
         valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
@@ -105,7 +105,7 @@
         <span class="sg-icon green"><i class="fa-solid fa-boxes-stacked"></i></span>
         <div>
             <span>Stock actual</span>
-            <strong>@stockTotal.ToString("N0") kg</strong>
+            <strong>@stockTotal.ToString("N2") kg</strong>
             <div class="sg-trend">Desde productos registrados</div>
         </div>
     </article>
@@ -114,7 +114,7 @@
         <span class="sg-icon green"><i class="fa-solid fa-arrow-trend-up"></i></span>
         <div>
             <span>Entradas</span>
-            <strong>@entradas.ToString("N0") kg</strong>
+            <strong>@entradas.ToString("N2") kg</strong>
             <div class="sg-trend">Movimientos reales</div>
         </div>
     </article>
@@ -123,7 +123,7 @@
         <span class="sg-icon gold"><i class="fa-solid fa-arrow-trend-down"></i></span>
         <div>
             <span>Salidas</span>
-            <strong>@salidas.ToString("N0") kg</strong>
+            <strong>@salidas.ToString("N2") kg</strong>
             <div class="sg-trend">Movimientos reales</div>
         </div>
     </article>
@@ -132,7 +132,7 @@
         <span class="sg-icon tan"><i class="fa-solid fa-scale-balanced"></i></span>
         <div>
             <span>Saldo movimientos</span>
-            <strong>@saldoMovimientos.ToString("N0") kg</strong>
+            <strong>@saldoMovimientos.ToString("N2") kg</strong>
             <div class="sg-trend">Entradas - salidas</div>
         </div>
     </article>
@@ -225,7 +225,7 @@
                         <div class="sg-legend-row">
                             <span class="sg-dot @claseColor"></span>
                             <span>@item.Nombre</span>
-                            <b>@item.Stock.ToString("N0") kg</b>
+                            <b>@item.Stock.ToString("N2") kg</b>
                         </div>
                     }
                 }
@@ -249,22 +249,22 @@
                     {
                         label: 'Entradas',
                         data: @Html.Raw(JsonSerializer.Serialize(entradasSerie)),
-                        borderColor: '#4f7d43',
-                        backgroundColor: 'rgba(79,125,67,.10)',
+                        borderColor: '#9B470F',
+                        backgroundColor: 'rgba(155,71,15,.10)',
                         fill: true,
                         tension: .35,
                         pointBackgroundColor: '#fff',
-                        pointBorderColor: '#4f7d43'
+                        pointBorderColor: '#9B470F'
                     },
                     {
                         label: 'Salidas',
                         data: @Html.Raw(JsonSerializer.Serialize(salidasSerie)),
-                        borderColor: '#d8b36a',
-                        backgroundColor: 'rgba(216,179,106,.10)',
+                        borderColor: '#D77A1D',
+                        backgroundColor: 'rgba(215,122,29,.10)',
                         fill: true,
                         tension: .35,
                         pointBackgroundColor: '#fff',
-                        pointBorderColor: '#d8b36a'
+                        pointBorderColor: '#D77A1D'
                     }
                 ]
             },

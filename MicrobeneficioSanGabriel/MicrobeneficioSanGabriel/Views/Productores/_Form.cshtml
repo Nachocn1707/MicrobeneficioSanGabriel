@@ -14,7 +14,9 @@
     </div>
     <div class="col-md-3">
         <label asp-for="Telefono" class="form-label"></label>
-        <input asp-for="Telefono" class="form-control" inputmode="tel" placeholder="8888-8888" />
+        <input asp-for="Telefono" class="form-control" type="tel" inputmode="numeric"
+               maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
         <span asp-validation-for="Telefono" class="text-danger"></span>
     </div>
     <div class="col-md-6">

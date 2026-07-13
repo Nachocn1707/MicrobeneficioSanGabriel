@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Produccion
+@model MicrobeneficioSanGabriel.Models.Produccion
 
 @{
     ViewData["Title"] = "Editar producción";
@@ -143,7 +143,9 @@
                                     <label asp-for="CantidadProcesadaKg" class="form-label">Cantidad procesada en kg</label>
                                     <div class="input-modern">
                                         <i class="fa-solid fa-weight-scale"></i>
-                                        <input asp-for="CantidadProcesadaKg" class="form-control" min="1" />
+                                        <input asp-for="CantidadProcesadaKg" asp-format="{0:0}" class="form-control"
+                                               type="text" inputmode="numeric" pattern="[0-9]+"
+                                               oninput="this.value=(this.value.match(/\d+/)||[''])[0]" />
                                     </div>
                                     <span asp-validation-for="CantidadProcesadaKg" class="text-danger"></span>
                                 </div>
@@ -154,7 +156,9 @@
                                     <label asp-for="CantidadResultanteKg" class="form-label">Cantidad resultante en kg</label>
                                     <div class="input-modern">
                                         <i class="fa-solid fa-scale-balanced"></i>
-                                        <input asp-for="CantidadResultanteKg" class="form-control" min="1" />
+                                        <input asp-for="CantidadResultanteKg" asp-format="{0:0}" class="form-control"
+                                               type="text" inputmode="numeric" pattern="[0-9]+"
+                                               oninput="this.value=(this.value.match(/\d+/)||[''])[0]" />
                                     </div>
                                     <span asp-validation-for="CantidadResultanteKg" class="text-danger"></span>
                                 </div>

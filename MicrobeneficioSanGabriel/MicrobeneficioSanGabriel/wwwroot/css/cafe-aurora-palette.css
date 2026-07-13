@@ -1,0 +1,537 @@
+/* =========================================================
+   PALETA CAFÉ AURORA — MICROBENEFICIO SAN GABRIEL
+   Capa visual global. No modifica estructura, tamaños ni lógica.
+   ========================================================= */
+:root {
+    --aurora-coffee-950: #2d1007;
+    --aurora-coffee-900: #3b180b;
+    --aurora-coffee-800: #54220b;
+    --aurora-coffee-700: #74320d;
+    --aurora-copper-600: #9b470f;
+    --aurora-copper-500: #c46816;
+    --aurora-copper-400: #d77a1d;
+    --aurora-gold-300: #e8b66f;
+    --aurora-gold-200: #f1d3aa;
+    --aurora-cream-100: #f6eadb;
+    --aurora-cream-50: #fff8ef;
+    --aurora-surface: #fffdf9;
+    --aurora-surface-soft: #fffaf4;
+    --aurora-text: #32180d;
+    --aurora-muted: #75665c;
+    --aurora-line: #ecd8c1;
+    --aurora-success: #5f7f57;
+    --aurora-danger: #ad4939;
+    --aurora-shadow: 0 14px 34px rgba(72, 34, 12, .10);
+
+    /* Variables existentes del proyecto */
+    --sg-cream: var(--aurora-cream-50);
+    --sg-card: var(--aurora-surface);
+    --sg-sidebar: #fff9f1;
+    --sg-espresso: var(--aurora-coffee-900);
+    --sg-espresso-2: var(--aurora-coffee-800);
+    --sg-text: var(--aurora-text);
+    --sg-muted: var(--aurora-muted);
+    --sg-gold: var(--aurora-copper-500);
+    --sg-gold-2: var(--aurora-copper-400);
+    --sg-green: var(--aurora-success);
+    --sg-green-2: #4f7049;
+    --sg-danger: var(--aurora-danger);
+    --sg-line: var(--aurora-line);
+    --sg-shadow: var(--aurora-shadow);
+
+    --cafe-oscuro: var(--aurora-coffee-900);
+    --cafe: var(--aurora-coffee-800);
+    --cafe-medio: var(--aurora-copper-600);
+    --amarillo-suave: var(--aurora-gold-300);
+    --amarillo-crema: #fff1da;
+    --crema: var(--aurora-cream-50);
+    --crema-card: var(--aurora-surface);
+    --dorado: var(--aurora-copper-500);
+    --texto: var(--aurora-text);
+}
+
+html,
+body {
+    color: var(--aurora-text) !important;
+}
+
+/* ---------- Fondo translúcido ---------- */
+:root {
+    --sg-bg-overlay: linear-gradient(rgba(255, 248, 239, .88), rgba(246, 234, 219, .85));
+    --sg-bg-overlay-client: linear-gradient(rgba(255, 250, 244, .88), rgba(246, 234, 219, .84));
+}
+
+.sg-main,
+.cafe-portal-main,
+.rc-public-body {
+    background-color: var(--aurora-cream-100) !important;
+}
+
+/* ---------- Panel administrativo ---------- */
+.sg-sidebar {
+    background: rgba(255, 249, 241, .97) !important;
+    border-right-color: var(--aurora-line) !important;
+    box-shadow: 14px 0 34px rgba(69, 31, 10, .10) !important;
+}
+
+.sg-brand,
+.sg-brand strong,
+.sg-user,
+.sg-logout {
+    color: var(--aurora-text) !important;
+}
+
+.sg-brand-mark,
+.sg-user .avatar {
+    color: var(--aurora-copper-500) !important;
+    border-color: var(--aurora-copper-500) !important;
+    background: linear-gradient(145deg, #fff4e4, #f7dec0) !important;
+}
+
+.sg-brand small,
+.sg-nav i,
+.sg-subnav i {
+    color: var(--aurora-copper-600) !important;
+}
+
+.sg-nav a,
+.sg-nav summary {
+    color: #5d493d !important;
+}
+
+.sg-nav a:hover,
+.sg-nav summary:hover,
+.sg-nav a.active,
+.sg-nav summary.active,
+.sg-nav details[open] > summary {
+    color: var(--aurora-coffee-900) !important;
+    background: linear-gradient(135deg, #fff5e8, #f6e3ca) !important;
+    box-shadow: 0 11px 25px rgba(173, 92, 20, .13) !important;
+}
+
+.sg-subnav {
+    border-left-color: #e6caa8 !important;
+}
+
+.sg-subnav a:hover,
+.sg-subnav a.active {
+    color: var(--aurora-coffee-900) !important;
+    background: #f3dfc6 !important;
+}
+
+.sg-user small {
+    color: var(--aurora-copper-600) !important;
+}
+
+.sg-logout {
+    background: var(--aurora-surface) !important;
+    border-color: var(--aurora-line) !important;
+}
+
+.sg-logout:hover {
+    background: #f7e5cf !important;
+    border-color: #d7ad7b !important;
+}
+
+/* ---------- Tarjetas y contenedores ---------- */
+.sg-card,
+.card,
+.sg-table-card,
+.sg-panel,
+.finanzas-summary-card,
+.finanzas-filter-card,
+.finanzas-table-card,
+.cafe-section-card,
+.cafe-summary-card,
+.cafe-product-card,
+.cafe-order-item,
+.VistaCrear-form-card,
+.EstiloEditar-card,
+.EstiloDetalle-card,
+.delete-card,
+.payment-card {
+    background: rgba(255, 253, 249, .96) !important;
+    border-color: var(--aurora-line) !important;
+    box-shadow: var(--aurora-shadow) !important;
+}
+
+.sg-page-head h1,
+.sg-panel-head h2,
+.sg-panel-head h3,
+.card-title,
+.cafe-section-header h2,
+.cafe-product-info h3,
+.finanzas-summary-value,
+.finanzas-categoria {
+    color: var(--aurora-text) !important;
+}
+
+.sg-page-head p,
+.sg-panel-head small,
+.text-muted,
+.cafe-section-header p,
+.cafe-product-info p,
+.finanzas-summary-label,
+.finanzas-descripcion,
+.finanzas-observacion {
+    color: var(--aurora-muted) !important;
+}
+
+/* ---------- KPI e iconos ---------- */
+.sg-icon,
+.finanzas-summary-icon,
+.cafe-summary-card > i,
+.cafe-order-icon {
+    color: #fff !important;
+    background: linear-gradient(145deg, var(--aurora-copper-400), var(--aurora-copper-600)) !important;
+}
+
+.sg-icon.gold {
+    background: linear-gradient(145deg, var(--aurora-copper-400), var(--aurora-copper-600)) !important;
+}
+
+.sg-icon.green {
+    background: linear-gradient(145deg, #8b551d, var(--aurora-copper-500)) !important;
+}
+
+.sg-kpi::after,
+.finanzas-summary-card::after {
+    background: rgba(232, 182, 111, .20) !important;
+}
+
+/* ---------- Botones: café/cobre; verde solo para estados ---------- */
+.sg-btn.green,
+.sg-btn.gold,
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-dark,
+button[type="submit"]:not(.sg-logout):not(.cafe-header-logout),
+input[type="submit"],
+.btn-finanzas-excel,
+.btn-finanzas-nuevo,
+.cafe-primary-button,
+.cafe-order-button,
+.cafe-header-order-button,
+.rc-button-primary,
+.rc-header-cta {
+    color: #fff !important;
+    border-color: var(--aurora-coffee-800) !important;
+    background: linear-gradient(135deg, var(--aurora-copper-600), var(--aurora-coffee-800)) !important;
+    box-shadow: 0 10px 22px rgba(94, 39, 10, .18) !important;
+}
+
+.sg-btn.green:hover,
+.sg-btn.gold:hover,
+.btn-primary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-dark:hover,
+button[type="submit"]:not(.sg-logout):not(.cafe-header-logout):hover,
+input[type="submit"]:hover,
+.btn-finanzas-excel:hover,
+.btn-finanzas-nuevo:hover,
+.cafe-primary-button:hover,
+.cafe-order-button:hover,
+.cafe-header-order-button:hover,
+.rc-button-primary:hover,
+.rc-header-cta:hover {
+    color: #fff !important;
+    border-color: var(--aurora-coffee-950) !important;
+    background: linear-gradient(135deg, var(--aurora-copper-500), var(--aurora-coffee-900)) !important;
+    filter: none !important;
+}
+
+.btn-secondary,
+.sg-btn.ghost,
+.cafe-secondary-button,
+.cafe-small-button,
+.btn-outline-secondary,
+.btn-outline-dark {
+    color: var(--aurora-coffee-800) !important;
+    border-color: #ddbea0 !important;
+    background: var(--aurora-surface-soft) !important;
+}
+
+.btn-secondary:hover,
+.sg-btn.ghost:hover,
+.cafe-secondary-button:hover,
+.cafe-small-button:hover,
+.btn-outline-secondary:hover,
+.btn-outline-dark:hover {
+    color: var(--aurora-coffee-950) !important;
+    border-color: #c99158 !important;
+    background: #f4dfc5 !important;
+}
+
+.sg-panel-head a.text-success,
+.sg-panel-head a:not(.sg-btn),
+.text-primary:not(.badge),
+a.text-success.fw-bold {
+    color: var(--aurora-copper-600) !important;
+}
+
+/* Semántica: conservar verde solo para éxito/activo/pagado */
+.text-success:not(a),
+.finanzas-summary-value.success {
+    color: var(--aurora-success) !important;
+}
+
+.bg-success,
+.badge.bg-success,
+.sg-badge:not(.gold):not(.tan):not(.brown):not(.red),
+.cafe-product-footer span {
+    color: #365130 !important;
+    background: #e8f0e2 !important;
+}
+
+/* ---------- Tablas: encabezado crema como la referencia ---------- */
+.sg-table thead th,
+.table thead th,
+table.dataTable thead th,
+.finanzas-table-card table thead th {
+    color: var(--aurora-coffee-900) !important;
+    background: linear-gradient(180deg, #fbefdf, #f4dfc5) !important;
+    border-top: 1px solid var(--aurora-line) !important;
+    border-bottom: 1px solid #ddb98f !important;
+}
+
+.sg-table tbody td,
+.table tbody td,
+table.dataTable tbody td,
+.finanzas-table-card table tbody td {
+    color: #4f3d32 !important;
+    border-bottom-color: #eee0d2 !important;
+}
+
+.sg-table tbody tr:hover,
+.table tbody tr:hover,
+table.dataTable tbody tr:hover,
+.finanzas-table-card table tbody tr:hover {
+    background: #fff4e7 !important;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select,
+.dt-container .dt-input,
+.dt-container select {
+    color: var(--aurora-text) !important;
+    border-color: var(--aurora-line) !important;
+    background: var(--aurora-surface) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dt-container .dt-paging .dt-paging-button.current {
+    color: #fff !important;
+    border-color: var(--aurora-copper-600) !important;
+    background: var(--aurora-copper-600) !important;
+}
+
+/* ---------- Formularios ---------- */
+.form-control,
+.form-select,
+input,
+select,
+textarea {
+    color: var(--aurora-text);
+    border-color: #dec6ae !important;
+    background-color: rgba(255, 253, 249, .98) !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--aurora-copper-500) !important;
+    box-shadow: 0 0 0 .2rem rgba(196, 104, 22, .16) !important;
+}
+
+.form-label,
+label {
+    color: var(--aurora-text);
+}
+
+/* ---------- Badges, estados y leyendas ---------- */
+.sg-badge.gold,
+.cafe-order-status {
+    color: #7a3a0c !important;
+    background: #f8dfbf !important;
+}
+
+.sg-badge.tan {
+    color: #73583e !important;
+    background: #f4e8d9 !important;
+}
+
+.sg-badge.brown {
+    color: #fff5e9 !important;
+    background: var(--aurora-coffee-800) !important;
+}
+
+.sg-badge.red,
+.bg-danger,
+.badge.bg-danger {
+    color: #fff !important;
+    background: var(--aurora-danger) !important;
+}
+
+.sg-dot.coffee { background: var(--aurora-copper-600) !important; }
+.sg-dot.gold { background: var(--aurora-copper-400) !important; }
+.sg-dot.tan { background: var(--aurora-gold-300) !important; }
+.sg-dot.brown { background: var(--aurora-coffee-900) !important; }
+.sg-dot.sage { background: #a36f43 !important; }
+.sg-dot.green { background: var(--aurora-success) !important; }
+
+.sg-bar,
+.sg-report-progress {
+    background: #f3e4d2 !important;
+}
+
+.sg-bar > span {
+    background: linear-gradient(90deg, var(--aurora-copper-500), var(--aurora-copper-400)) !important;
+}
+
+.sg-report-bar.ventas {
+    --bar-1: var(--aurora-copper-600) !important;
+    --bar-2: var(--aurora-copper-400) !important;
+}
+
+.sg-stock-bar.coffee { --bar-1: #71310d !important; --bar-2: #a74e11 !important; }
+.sg-stock-bar.green  { --bar-1: #9b470f !important; --bar-2: #c46816 !important; }
+.sg-stock-bar.gold   { --bar-1: #c46816 !important; --bar-2: #df913a !important; }
+.sg-stock-bar.tan    { --bar-1: #d89b55 !important; --bar-2: #edc38c !important; }
+.sg-stock-bar.brown  { --bar-1: #3b180b !important; --bar-2: #74320d !important; }
+.sg-stock-bar.sage   { --bar-1: #a26737 !important; --bar-2: #c59063 !important; }
+.sg-report-stock-value { color: var(--aurora-copper-600) !important; }
+
+/* ---------- Portal del cliente ---------- */
+.cafe-portal-body {
+    color: var(--aurora-text) !important;
+}
+
+.cafe-portal-header {
+    border-color: var(--aurora-line) !important;
+    background: rgba(255, 249, 241, .96) !important;
+    box-shadow: 0 14px 38px rgba(72, 34, 12, .11) !important;
+}
+
+.cafe-portal-brand,
+.cafe-portal-brand:hover,
+.cafe-portal-brand-text strong,
+.cafe-client-session-text strong {
+    color: var(--aurora-text) !important;
+}
+
+.cafe-portal-brand-icon,
+.cafe-client-session-icon {
+    background: linear-gradient(145deg, var(--aurora-copper-400), var(--aurora-copper-600)) !important;
+}
+
+.cafe-portal-brand-text small,
+.cafe-client-session-text small,
+.cafe-portal-nav a.active {
+    color: var(--aurora-copper-600) !important;
+}
+
+.cafe-portal-nav a {
+    color: #5e473a !important;
+}
+
+.cafe-portal-nav a::after {
+    background: var(--aurora-copper-500) !important;
+}
+
+.cafe-client-session,
+.cafe-header-logout {
+    color: var(--aurora-coffee-800) !important;
+    border-color: var(--aurora-line) !important;
+    background: var(--aurora-surface-soft) !important;
+}
+
+.cafe-welcome,
+.cafe-welcome-content {
+    border-color: var(--aurora-line) !important;
+    background: radial-gradient(circle at 10% 10%, rgba(232, 182, 111, .20), transparent 38%), #f8ead9 !important;
+}
+
+.cafe-welcome h1,
+.cafe-summary-card strong,
+.cafe-section-header h2,
+.cafe-product-info h3 {
+    color: var(--aurora-text) !important;
+}
+
+.cafe-welcome h1 em,
+.cafe-eyebrow,
+.cafe-section-label,
+.cafe-benefits i {
+    color: var(--aurora-copper-600) !important;
+}
+
+/* ---------- Páginas públicas, login y registro ---------- */
+.rc-public-body {
+    --rc-orange: var(--aurora-copper-500);
+    --rc-amber: var(--aurora-gold-300);
+}
+
+.login-container,
+.register-container,
+.auth-card,
+.login-card,
+.register-card {
+    border-color: var(--aurora-line) !important;
+    background: rgba(255, 253, 249, .96) !important;
+    box-shadow: var(--aurora-shadow) !important;
+}
+
+/* ---------- Notificaciones ---------- */
+.sg-notification-bell,
+.notification-bell,
+.cafe-notification-button {
+    color: var(--aurora-copper-600) !important;
+    border-color: var(--aurora-line) !important;
+    background: var(--aurora-surface) !important;
+}
+
+/* ---------- Modo oscuro cálido ---------- */
+html.dark {
+    --sg-cream: #17110e;
+    --sg-card: #241a15;
+    --sg-sidebar: #1d1511;
+    --sg-text: #fff5e9;
+    --sg-muted: #d2c2b5;
+    --sg-line: #493326;
+    --sg-gold: #df913a;
+    --sg-gold-2: #efad5c;
+    --sg-green: #78976f;
+    --sg-green-2: #688760;
+    --sg-danger: #ce7060;
+    --sg-bg-overlay: linear-gradient(rgba(24, 17, 13, .91), rgba(31, 21, 16, .88));
+}
+
+html.dark .sg-sidebar,
+html.dark .sg-card,
+html.dark .sg-table-card,
+html.dark .sg-panel {
+    background: rgba(36, 26, 21, .97) !important;
+    border-color: #493326 !important;
+}
+
+html.dark .sg-table thead th,
+html.dark .table thead th,
+html.dark table.dataTable thead th {
+    color: #fff2e3 !important;
+    background: linear-gradient(180deg, #4b2a19, #351d12) !important;
+    border-color: #60402e !important;
+}
+
+html.dark .form-control,
+html.dark .form-select,
+html.dark input,
+html.dark select,
+html.dark textarea {
+    color: #fff5e9 !important;
+    border-color: #594031 !important;
+    background: #2b1e18 !important;
+}

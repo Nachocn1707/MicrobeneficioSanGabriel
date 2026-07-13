@@ -851,6 +851,57 @@
         margin: 0;
     }
 
+.cafe-client-session {
+    min-width: 158px;
+    max-width: 230px;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 13px 6px 7px;
+    border: 1px solid rgba(177, 116, 73, .22);
+    border-radius: 23px;
+    color: #4a2b20;
+    background: rgba(255, 250, 244, .86);
+    box-shadow: 0 8px 20px rgba(76, 42, 27, .08);
+}
+
+.cafe-client-session-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: linear-gradient(145deg, #c97836, #9e5227);
+}
+
+.cafe-client-session-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.cafe-client-session-text small {
+    margin-bottom: 3px;
+    color: #a66435;
+    font-size: .58rem;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.cafe-client-session-text strong {
+    overflow: hidden;
+    color: #3b2117;
+    font-size: .76rem;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .cafe-header-order-button,
 .cafe-header-logout {
     min-height: 46px;
@@ -959,6 +1010,16 @@
         gap: 16px;
     }
 
+    .cafe-client-session {
+        min-width: 46px;
+        width: 46px;
+        padding: 6px;
+    }
+
+    .cafe-client-session-text {
+        display: none;
+    }
+
     .cafe-portal-main .cafe-welcome {
         grid-template-columns: 1fr;
     }
@@ -969,6 +1030,10 @@
 }
 
 @media (max-width: 780px) {
+    .cafe-client-session {
+        display: none;
+    }
+
     .cafe-portal-header {
         position: relative;
         top: 0;

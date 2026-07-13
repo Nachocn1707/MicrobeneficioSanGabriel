@@ -61,6 +61,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             public string Apellidos { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "El teléfono es obligatorio.")]
+            [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888.")]
             [Display(Name = "Teléfono")]
             public string PhoneNumber { get; set; } = string.Empty;
             [Required(ErrorMessage = "El correo es obligatorio.")]
@@ -96,6 +97,14 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager
                 .GetExternalAuthenticationSchemesAsync())
                 .ToList();
+
+            Input.PhoneNumber = SoloDigitos(Input.PhoneNumber);
+            ModelState.Remove("Input.PhoneNumber");
+            if (Input.PhoneNumber.Length != 8)
+            {
+                ModelState.AddModelError("Input.PhoneNumber",
+                    "El teléfono debe contener exactamente 8 dígitos.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -186,6 +195,11 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             }
 
             return Page();
+        }
+
+        private static string SoloDigitos(string? valor)
+        {
+            return new string((valor ?? string.Empty).Where(char.IsDigit).ToArray());
         }
 
         private ApplicationUser CreateUser()

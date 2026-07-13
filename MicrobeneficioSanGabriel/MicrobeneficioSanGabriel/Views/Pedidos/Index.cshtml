@@ -9,8 +9,8 @@
     var pendientes = pedidos.Count(p => p.Estado == "Pendiente" || p.Estado == "En proceso");
     var completados = pedidos.Count(p => p.Estado == "Completado");
     var cancelados = pedidos.Count(p => (p.Estado ?? string.Empty).Contains("Cancel"));
-    var pagosPendientes = pedidos.Count(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago");
-    var ventas = pedidos.Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
+    var pagosPendientes = pedidos.Count(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Pendiente de pago" || p.EstadoPago == "Sin pago");
+    var ventas = pedidos.Where(p => p.EstadoPago == "Pago completado").Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
     var enProceso = pedidos.Count(p => p.Estado == "En proceso");
     var pendientesSolo = pedidos.Count(p => p.Estado == "Pendiente");
     var porcentajeCompletados = total == 0 ? 0 : Math.Round(completados * 100m / total, 0);
@@ -161,7 +161,7 @@
                     @foreach (var p in pedidos)
                     {
                         var totalPedido = (p.Producto?.Precio ?? 0) * p.Cantidad;
-                        var pagoPendiente = p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago";
+                        var pagoPendiente = p.EstadoPago == "Pendiente" || p.EstadoPago == "Pendiente de pago" || p.EstadoPago == "Sin pago";
 
                         <article class="client-purchase-card">
                             <div class="client-purchase-main">
@@ -253,14 +253,14 @@ else
 {
     var inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
     var finMes = inicioMes.AddMonths(1);
-    var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes).Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
+    var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes && p.EstadoPago == "Pago completado").Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
 
     <section class="sg-page-head">
         <div><h1>Pedidos y Facturación</h1><p>Gestión de pedidos, entregas y facturación.</p></div>
         <div class="sg-actions"><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaPedidos" placeholder="Buscar pedido, cliente, producto o pago..." /></label></div>
     </section>
     <section class="sg-kpi-grid">
-        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Según pedidos del mes</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Solo pagos completados</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Pedidos totales</span><strong>@total</strong><div class="sg-trend">Registros reales</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-clipboard-list"></i></span><div><span>Pedidos pendientes</span><strong>@pendientes</strong><div class="sg-trend warn">Pendiente / En proceso</div></div></article>
         <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-circle-check"></i></span><div><span>Completados</span><strong>@completados</strong><div class="sg-trend">Según estado actual</div></div></article>
@@ -283,7 +283,7 @@ else
                 </div>
             </div>
         </article>
-        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => !string.IsNullOrWhiteSpace(p.EstadoPago) && (p.EstadoPago.Contains("completado", StringComparison.OrdinalIgnoreCase) || p.EstadoPago.Contains("Pag", StringComparison.OrdinalIgnoreCase)))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto total en pedidos</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
+        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => string.Equals(p.EstadoPago, "Pago completado", StringComparison.OrdinalIgnoreCase))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto cobrado</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
     </section>
     <section class="sg-card sg-table-card">
         <div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive">

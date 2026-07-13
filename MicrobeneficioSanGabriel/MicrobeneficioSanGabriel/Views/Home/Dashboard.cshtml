@@ -1,4 +1,4 @@
-﻿@using System.Text.Json
+@using System.Text.Json
 @using MicrobeneficioSanGabriel.Models
 @{
     ViewData["Title"] = "Dashboard Ejecutivo";
@@ -13,7 +13,9 @@
     var produccionMesKg = Convert.ToDouble(ViewBag.ProduccionMesKg ?? 0d);
     var lotesActivos = Convert.ToInt32(ViewBag.LotesActivos ?? 0);
     var pedidosPendientes = Convert.ToInt32(ViewBag.PedidosPendientes ?? 0);
-    var totalStockKg = Convert.ToInt32(ViewBag.TotalStockKg ?? 0);
+    var totalStockKg = Convert.ToDecimal(ViewBag.TotalStockKg ?? 0m);
+    var puedeVerOperacion = User.IsInRole("Administrador") || User.IsInRole("Operador");
+    var puedeVerComercial = User.IsInRole("Administrador") || User.IsInRole("Vendedor");
     var produccionesEnProceso = Convert.ToInt32(ViewBag.ProduccionesEnProceso ?? 0);
     var produccionesCompletadasHoy = Convert.ToInt32(ViewBag.ProduccionesCompletadasHoy ?? 0);
     var totalRegistrosTrazabilidad = Convert.ToInt32(ViewBag.TotalRegistrosTrazabilidad ?? 0);
@@ -31,10 +33,10 @@
 
     var coloresPedidos = new[]
     {
-        new { Clase = "green", Hex = "#5E8450", Label = "Completados", Valor = completados },
-        new { Clase = "gold", Hex = "#C98D25", Label = "En proceso", Valor = enProcesoPedidos },
-        new { Clase = "tan", Hex = "#D8B98A", Label = "Pendientes", Valor = pendientesPedidos },
-        new { Clase = "brown", Hex = "#3A2416", Label = "Cancelados", Valor = canceladosPedidos }
+        new { Clase = "green", Hex = "#5F7F57", Label = "Completados", Valor = completados },
+        new { Clase = "gold", Hex = "#C46816", Label = "En proceso", Valor = enProcesoPedidos },
+        new { Clase = "tan", Hex = "#E8B66F", Label = "Pendientes", Valor = pendientesPedidos },
+        new { Clase = "brown", Hex = "#AD4939", Label = "Cancelados", Valor = canceladosPedidos }
     };
 
     string FormatoPorcentaje(decimal valor) =>
@@ -85,11 +87,11 @@
 
     var coloresProduccion = new[]
     {
-        new { Clase = "green", Hex = "#5E8450", Label = "Completado", Valor = procesosCompletados },
-        new { Clase = "gold", Hex = "#C98D25", Label = "En proceso", Valor = procesosEnProceso },
-        new { Clase = "tan", Hex = "#D8B98A", Label = "Pendiente", Valor = procesosPendientes },
-        new { Clase = "brown", Hex = "#3A2416", Label = "Cancelado", Valor = procesosCancelados },
-        new { Clase = "coffee", Hex = "#A66321", Label = "Otros", Valor = procesosOtros }
+        new { Clase = "green", Hex = "#5F7F57", Label = "Completado", Valor = procesosCompletados },
+        new { Clase = "gold", Hex = "#C46816", Label = "En proceso", Valor = procesosEnProceso },
+        new { Clase = "tan", Hex = "#E8B66F", Label = "Pendiente", Valor = procesosPendientes },
+        new { Clase = "brown", Hex = "#AD4939", Label = "Cancelado", Valor = procesosCancelados },
+        new { Clase = "coffee", Hex = "#74320D", Label = "Otros", Valor = procesosOtros }
     };
 
     string CrearDonutProduccion()
@@ -145,16 +147,24 @@
 </section>
 
 <section class="sg-kpi-grid">
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-seedling"></i></span><div><span>Producción del mes</span><strong>@produccionMesKg.ToString("N1") kg</strong><div class="sg-trend">Dato real del mes actual</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Facturas no anuladas</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Lotes activos</span><strong>@lotesActivos</strong><div class="sg-trend">Según estado del lote</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-clipboard-list"></i></span><div><span>Pedidos pendientes</span><strong>@pedidosPendientes</strong><div class="sg-trend warn">Pendiente / En proceso</div></div></article>
+    @if (puedeVerOperacion)
+    {
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-seedling"></i></span><div><span>Producción del mes</span><strong>@produccionMesKg.ToString("N1") kg</strong><div class="sg-trend">Dato real del mes actual</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-layer-group"></i></span><div><span>Lotes activos</span><strong>@lotesActivos</strong><div class="sg-trend">Según estado del lote</div></div></article>
+    }
+    @if (puedeVerComercial)
+    {
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Ventas del mes</span><strong>₡@ventasMes.ToString("N0")</strong><div class="sg-trend">Pagos completados</div></div></article>
+        <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-clipboard-list"></i></span><div><span>Pedidos pendientes</span><strong>@pedidosPendientes</strong><div class="sg-trend warn">Pendiente / En proceso</div></div></article>
+    }
 </section>
 
+@if (puedeVerComercial)
+{
 <section class="sg-grid-2">
     <article class="sg-card sg-panel">
         <div class="sg-panel-head">
-            <div><h2>Ventas mensuales</h2><small><span class="sg-dot"></span> Facturación real @anioActual</small></div>
+            <div><h2>Ventas mensuales</h2><small><span class="sg-dot"></span> Cobros confirmados @anioActual</small></div>
             <span class="sg-btn ghost">@anioActual</span>
         </div>
         <div class="sg-chart"><canvas id="ventasChart"></canvas></div>
@@ -176,7 +186,10 @@
         </div>
     </article>
 </section>
+}
 
+@if (puedeVerOperacion)
+{
 <section class="sg-grid-3">
     <article class="sg-card sg-panel">
         <div class="sg-panel-head"><h3>Inventario por producto</h3><a class="text-success fw-bold" asp-controller="MovimientosInventario" asp-action="Index">Ver detalles</a></div>
@@ -233,7 +246,10 @@
         </div>
     </article>
 </section>
+}
 
+@if (puedeVerComercial)
+{
 <section class="sg-card sg-table-card">
     <div class="sg-panel-head"><h3>Pedidos recientes</h3><a class="text-success fw-bold" asp-controller="Pedidos" asp-action="Index">Ver todos</a></div>
     <div class="table-responsive">
@@ -255,6 +271,7 @@
         </table>
     </div>
 </section>
+}
 
 @section Scripts {
     <script>
@@ -264,11 +281,14 @@
         crearGrafico();
 
         function crearGrafico() {
+            const canvas = document.getElementById("ventasChart");
+            if (!canvas) return;
+
             const darkMode = localStorage.getItem("theme") === "dark";
             const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
             const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
 
-            ventasChart = new Chart(document.getElementById("ventasChart"), {
+            ventasChart = new Chart(canvas, {
                 type: "bar",
                 data: {
                     labels: [
@@ -277,7 +297,7 @@
                     ],
                     datasets: [{
                         data: ventasMensuales,
-                        backgroundColor: "#A15F26",
+                        backgroundColor: "#C46816",
                         borderRadius: 8,
                         borderSkipped: false
                     }]

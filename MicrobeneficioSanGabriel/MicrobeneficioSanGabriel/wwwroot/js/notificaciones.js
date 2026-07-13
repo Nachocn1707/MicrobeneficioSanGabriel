@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
     "use strict";
 
     const root = document.getElementById("notificationRoot");
@@ -16,6 +16,9 @@
     const toggle = document.getElementById("notificationsToggle");
     const statusText = document.getElementById("notificationStatusText");
     const dataElement = document.getElementById("notificationData");
+    const antiforgeryToken = document.querySelector(
+        "#notificationAntiforgery input[name='__RequestVerificationToken']"
+    )?.value;
 
     const userId = root.dataset.userId || "anonimo";
     const canManage = root.dataset.canManage === "true";
@@ -145,6 +148,26 @@
         updateToggle();
     }
 
+    async function persistDismissedAlert(key) {
+        if (!antiforgeryToken || !key) {
+            return;
+        }
+
+        try {
+            await fetch("/Notificaciones/Descartar", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": antiforgeryToken
+                },
+                body: JSON.stringify({ clave: key })
+            });
+        } catch {
+            // Se conserva el descarte local para no interrumpir la interfaz.
+        }
+    }
+
     function dismissAlert(key) {
         const dismissed = readArray(dismissedKey);
 
@@ -153,7 +176,9 @@
             writeArray(dismissedKey, dismissed);
         }
 
+        root.querySelector(`[data-alert-key="${CSS.escape(key)}"]`)?.remove();
         refresh();
+        void persistDismissedAlert(key);
     }
 
     root.querySelectorAll("[data-alert-dismiss]")

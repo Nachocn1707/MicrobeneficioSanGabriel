@@ -250,3 +250,165 @@
     }
 }
 
+
+/* Pago mediante SINPE Móvil */
+#sinpeSection {
+    margin-top: 20px;
+}
+
+.sinpe-message {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #eefaf1 0%, #f8fff9 100%);
+    border: 1px solid #b9dfc2;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 18px;
+    color: #214f2e;
+}
+
+.sinpe-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #d7f2de;
+    color: #18743a;
+    font-size: 1.35rem;
+}
+
+.sinpe-content {
+    min-width: 0;
+}
+
+.sinpe-label {
+    display: block;
+    color: #4f6855;
+    font-size: .88rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.sinpe-number {
+    display: block;
+    color: #174f2a;
+    font-size: 1.8rem;
+    line-height: 1.15;
+    letter-spacing: .08em;
+    margin-bottom: 10px;
+}
+
+.sinpe-content p {
+    margin: 0 0 15px;
+    line-height: 1.55;
+}
+
+.btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    background: #1f9d55;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 800;
+    transition: transform .2s ease, background-color .2s ease;
+}
+
+.btn-whatsapp:hover {
+    background: #187c43;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 576px) {
+    .sinpe-message {
+        flex-direction: column;
+    }
+
+    .btn-whatsapp {
+        width: 100%;
+    }
+}
+
+/* Pedido temporal: no se guarda hasta confirmar el método de pago */
+.pending-order-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border: 1px solid #e4c978;
+    border-radius: 14px;
+    background: #fff8dc;
+    color: #65451f;
+    line-height: 1.5;
+}
+
+.pending-order-notice i {
+    margin-top: 3px;
+    color: #b87922;
+}
+
+.cancel-payment-form {
+    margin: 0;
+}
+
+button.btn-cancel {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.payment-confirmed-card {
+    max-width: 760px;
+}
+
+.confirmed-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 14px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e4f6e8;
+    color: #198754;
+    font-size: 2.2rem;
+}
+
+.confirmed-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.confirmed-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.confirmed-link:hover {
+    color: #fff;
+}
+
+.secondary-link {
+    display: block;
+    text-align: center;
+    color: #6c757d;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.secondary-link:hover {
+    color: #3d2a1e;
+    text-decoration: underline;
+}

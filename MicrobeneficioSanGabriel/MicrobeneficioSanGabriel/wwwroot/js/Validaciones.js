@@ -1,125 +1,91 @@
-﻿function soloNumeros(id, maximo) {
-
+function soloNumeros(id, maximo = 12) {
     const input = document.getElementById(id);
-
     if (!input) return;
 
     input.addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").substring(0, maximo);
+    });
+}
 
-        this.value = this.value
-            .replace(/\D/g, '')
-            .substring(0, maximo);
+function soloDecimales(id, enterosMaximos = 9, decimalesMaximos = 2) {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    input.setAttribute("inputmode", "decimal");
+    input.addEventListener("input", function () {
+        let valor = this.value.replace(",", ".").replace(/[^0-9.]/g, "");
+        const partes = valor.split(".");
+        const entero = (partes.shift() || "").substring(0, enterosMaximos);
+        const decimal = partes.join("").substring(0, decimalesMaximos);
+        this.value = partes.length > 0 ? `${entero}.${decimal}` : entero;
     });
 }
 
 function soloLetras(id, maximo) {
-
     const input = document.getElementById(id);
-
     if (!input) return;
 
     input.addEventListener("input", function () {
-
         this.value = this.value
-            .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')
+            .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "")
             .substring(0, maximo);
     });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
-    // Usuarios
     soloLetras("Nombre", 50);
-    soloLetras("Apellidos", 25);
+    soloLetras("Apellidos", 50);
     soloNumeros("PhoneNumber", 8);
 
-    // Productores
-    soloNumeros("Cedula", 9);
+    soloNumeros("Cedula", 12);
     soloNumeros("Telefono", 8);
-    soloLetras("Finca", 11)
-    soloNumeros("Precio", 5)
-    soloLetras("Canton", 12)
-    soloLetras("Distrito", 12)
-    
-    //Inventario
-    soloNumeros("Cantidad", 5)
+    soloLetras("Canton", 80);
+    soloLetras("Distrito", 80);
 
-    //Lote
-    soloNumeros("PesoKg", 5)
+    ["Precio", "Cantidad", "PesoKg", "CantidadProcesadaKg", "CantidadResultanteKg", "Monto", "Subtotal", "IVA", "Total", "Stock", "StockMinimo"]
+        .forEach(id => soloDecimales(id));
 
-    //Producción
-    soloNumeros("CantidadProcesadaKg", 5)
-    soloNumeros("CantidadResultanteKg", 5)
+    soloLetras("Responsable", 100);
+    soloLetras("ClienteNombre", 100);
+    soloNumeros("ClienteTelefono", 8);
 
-    //Trazabilidad
-    soloLetras("Responsable", 10)
+    const form = document.querySelector("form");
+    const password = document.getElementById("usuarioPassword");
+    const confirmPassword = document.getElementById("usuarioConfirmPassword");
 
-    //Pedidos
-    soloLetras("ClienteNombre", 35)
-    soloNumeros("ClienteTelefono", 8)
-    soloNumeros("Cantidad", 5)
+    if (form && password && confirmPassword) {
+        form.addEventListener("submit", function (e) {
+            const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
-    //Movimiento finacniero
-    soloNumeros("Monto")
+            if (!regex.test(password.value)) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Contraseña inválida",
+                    text: "Debe contener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo."
+                });
+                e.preventDefault();
+                return;
+            }
 
-    //Facturas
-    soloNumeros("Subtotal")
-    soloNumeros("IVA")
-    soloNumeros("Total")
-
-
+            if (password.value !== confirmPassword.value) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Contraseñas diferentes",
+                    text: "Las contraseñas no coinciden."
+                });
+                e.preventDefault();
+            }
+        });
+    }
 });
 
-document.querySelector("form")
-    .addEventListener("submit", function (e) {
-
-        const password =
-            document.getElementById("usuarioPassword").value;
-
-        const confirmPassword =
-            document.getElementById("usuarioConfirmPassword").value;
-
-        const regex =
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
-        if (!regex.test(password)) {
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Contraseña inválida',
-                text: 'Debe contener mínimo 8 caracteres, una mayúscula, un número y un símbolo.'
-            });
-
-            e.preventDefault();
-            return;
-        }
-
-        if (password !== confirmPassword) {
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Contraseñas diferentes',
-                text: 'Las contraseñas no coinciden.'
-            });
-
-            e.preventDefault();
-        }
-    });
 function toggleUsuarioPassword(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
+    if (!input || !icon) return;
 
-    if (!input || !icon) {
-        return;
-    }
-
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-    } else {
-        input.type = "password";
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-    }
+    const mostrar = input.type === "password";
+    input.type = mostrar ? "text" : "password";
+    icon.classList.toggle("fa-eye", !mostrar);
+    icon.classList.toggle("fa-eye-slash", mostrar);
 }

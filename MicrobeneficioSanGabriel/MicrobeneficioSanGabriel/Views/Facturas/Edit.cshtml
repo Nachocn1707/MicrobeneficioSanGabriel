@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Factura
+@model MicrobeneficioSanGabriel.Models.Factura
 
 @{
     ViewData["Title"] = "Editar factura";
@@ -67,6 +67,7 @@
                                     <i class="fa-solid fa-wallet"></i>
                                     <select asp-for="EstadoPago" class="form-select">
                                         <option value="Pendiente">Pendiente</option>
+                                        <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Pago completado">Pago completado</option>
                                         <option value="Anulada">Anulada</option>
                                     </select>
@@ -83,12 +84,11 @@
                                     <input asp-for="Subtotal"
                                            type="number"
                                            min="0"
-                                           step="1"
-                                           inputmode="numeric"
-                                           pattern="[0-9]*"
-                                           data-whole-number="true"
-                                           value="@Model.Subtotal.ToString("0")"
-                                           class="form-control" />
+                                           step="0.01"
+                                           inputmode="decimal"
+                                           value="@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                           class="form-control"
+                                           readonly />
                                 </div>
                                 <span asp-validation-for="Subtotal" class="text-danger"></span>
                             </div>
@@ -102,12 +102,11 @@
                                     <input asp-for="IVA"
                                            type="number"
                                            min="0"
-                                           step="1"
-                                           inputmode="numeric"
-                                           pattern="[0-9]*"
-                                           data-whole-number="true"
-                                           value="@Model.IVA.ToString("0")"
-                                           class="form-control" />
+                                           step="0.01"
+                                           inputmode="decimal"
+                                           value="@Model.IVA.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                           class="form-control"
+                                           readonly />
                                 </div>
                                 <span asp-validation-for="IVA" class="text-danger"></span>
                             </div>
@@ -121,12 +120,11 @@
                                     <input asp-for="Total"
                                            type="number"
                                            min="0"
-                                           step="1"
-                                           inputmode="numeric"
-                                           pattern="[0-9]*"
-                                           data-whole-number="true"
-                                           value="@Model.Total.ToString("0")"
-                                           class="form-control" />
+                                           step="0.01"
+                                           inputmode="decimal"
+                                           value="@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                           class="form-control"
+                                           readonly />
                                 </div>
                                 <span asp-validation-for="Total" class="text-danger"></span>
                             </div>
@@ -167,17 +165,5 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('[data-whole-number="true"]').forEach(input => {
-                const clean = () => {
-                    const raw = (input.value || '').replace(/[^0-9]/g, '');
-                    input.value = raw;
-                };
-                input.addEventListener('input', clean);
-                input.addEventListener('blur', clean);
-                clean();
-            });
-        });
-    </script>
+
 }

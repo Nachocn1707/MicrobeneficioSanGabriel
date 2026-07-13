@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using MicrobeneficioSanGabriel.Infrastructure;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrobeneficioSanGabriel.Models
@@ -23,14 +24,16 @@ namespace MicrobeneficioSanGabriel.Models
         public string TipoProceso { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La cantidad procesada es obligatoria")]
-        [Range(0.01, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
+        [Range(1, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
+        [WholeNumber]
         [Display(Name = "Cantidad procesada (Kg)")]
-        public double CantidadProcesadaKg { get; set; }
+        public decimal CantidadProcesadaKg { get; set; }
 
         [Required(ErrorMessage = "La cantidad resultante es obligatoria")]
-        [Range(0.01, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
+        [Range(1, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
+        [WholeNumber]
         [Display(Name = "Cantidad resultante (Kg)")]
-        public double CantidadResultanteKg { get; set; }
+        public decimal CantidadResultanteKg { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio")]
         public string Estado { get; set; } = string.Empty;

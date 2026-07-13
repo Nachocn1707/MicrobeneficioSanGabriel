@@ -35,6 +35,7 @@
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="RowVersion" />
 
                 <div class="EstiloEditar-section">
                     <div class="row g-4">
@@ -52,19 +53,26 @@
 
                         <div class="col-md-6">
                             <label asp-for="Precio" class="form-label">Precio</label>
-                            <input asp-for="Precio" class="form-control" min="0" placeholder="Ej: 1500" />
+                            <input asp-for="Precio" asp-format="{0:0}" class="form-control"
+                                   type="text" inputmode="numeric" pattern="[0-9]+"
+                                   oninput="this.value=(this.value.match(/\d+/)||[''])[0]"
+                                   placeholder="Ej: 1500" />
                             <span asp-validation-for="Precio" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-6">
                             <label asp-for="Stock" class="form-label">Stock disponible</label>
-                            <input asp-for="Stock" class="form-control" min="0" placeholder="0" />
+                            <input asp-for="Stock" asp-format="{0:0}" class="form-control"
+                                   type="text" inputmode="numeric" pattern="[0-9]+"
+                                   oninput="this.value=(this.value.match(/\d+/)||[''])[0]" placeholder="0" />
                             <span asp-validation-for="Stock" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-6">
                             <label asp-for="StockMinimo" class="form-label">Stock mínimo</label>
-                            <input asp-for="StockMinimo" class="form-control" min="0" placeholder="Cantidad mínima" />
+                            <input asp-for="StockMinimo" asp-format="{0:0}" class="form-control"
+                                   type="text" inputmode="numeric" pattern="[0-9]+"
+                                   oninput="this.value=(this.value.match(/\d+/)||[''])[0]" placeholder="Cantidad mínima" />
                             <span asp-validation-for="StockMinimo" class="text-danger"></span>
                         </div>
 

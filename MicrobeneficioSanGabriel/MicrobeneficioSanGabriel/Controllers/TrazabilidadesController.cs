@@ -28,11 +28,11 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
             var trazabilidades = _context.Trazabilidades
                 .Include(t => t.Lote)
-                    .ThenInclude(l => l.Productor)
+                    .ThenInclude(l => l!.Productor)
                 .Include(t => t.Lote)
-                    .ThenInclude(l => l.Finca)
+                    .ThenInclude(l => l!.Finca)
                 .Include(t => t.Produccion)
-                    .ThenInclude(p => p.Producto)
+                    .ThenInclude(p => p!.Producto)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(codigoLote))
@@ -81,11 +81,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var trazabilidad = await _context.Trazabilidades
                 .Include(t => t.Lote)
-                    .ThenInclude(l => l.Productor)
+                    .ThenInclude(l => l!.Productor)
                 .Include(t => t.Lote)
-                    .ThenInclude(l => l.Finca)
+                    .ThenInclude(l => l!.Finca)
                 .Include(t => t.Produccion)
-                    .ThenInclude(p => p.Producto)
+                    .ThenInclude(p => p!.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (trazabilidad == null)
@@ -109,6 +109,8 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var lote = await _context.Lotes
                 .Include(l => l.Productor)
+                .Include(l => l.Finca)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(l => l.Id == loteId);
 
             if (lote == null)
@@ -124,7 +126,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var trazabilidades = await _context.Trazabilidades
                 .Include(t => t.Produccion)
-                    .ThenInclude(p => p.Producto)
+                    .ThenInclude(p => p!.Producto)
                 .Where(t => t.LoteId == lote.Id)
                 .OrderBy(t => t.FechaRegistro)
                 .ToListAsync();
@@ -152,6 +154,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Create([Bind("LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
         {
+            if (!EtapaValida(trazabilidad.Etapa))
+            {
+                ModelState.AddModelError(nameof(Trazabilidad.Etapa), "Seleccione una etapa válida.");
+            }
+
             await ValidarRelacionAsync(trazabilidad);
 
             if (ModelState.IsValid)

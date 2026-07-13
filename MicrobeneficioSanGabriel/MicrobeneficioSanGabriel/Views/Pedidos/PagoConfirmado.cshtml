@@ -1,0 +1,76 @@
+@model MicrobeneficioSanGabriel.Models.Pedido
+
+@{
+    Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Pedido confirmado";
+
+    var total = Convert.ToDecimal(ViewBag.Total ?? 0m);
+    var codigoPedido = $"PP-{Model.Id:0000}";
+    var whatsappMessage = Uri.EscapeDataString($"Hola, envío el comprobante de pago por SINPE Móvil correspondiente al pedido {codigoPedido}.");
+    var whatsappUrl = $"https://wa.me/50689546434?text={whatsappMessage}";
+}
+
+<link rel="stylesheet" href="~/css/pago.css" asp-append-version="true" />
+
+<div class="payment-page">
+    <div class="payment-card payment-confirmed-card">
+        <div class="payment-header">
+            <div class="confirmed-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2>Pedido creado correctamente</h2>
+            <p>El pedido ya fue almacenado y quedó pendiente de confirmación del pago.</p>
+        </div>
+
+        <div class="payment-summary">
+            <h4>Resumen del pedido</h4>
+
+            <div class="summary-row">
+                <span>Número de pedido</span>
+                <strong>@codigoPedido</strong>
+            </div>
+            <div class="summary-row">
+                <span>Producto</span>
+                <strong>@Model.Producto?.Nombre</strong>
+            </div>
+            <div class="summary-row">
+                <span>Cantidad</span>
+                <strong>@Model.Cantidad.ToString("0") kg</strong>
+            </div>
+            <div class="summary-row total-row">
+                <span>Total</span>
+                <strong>₡@total.ToString("N0")</strong>
+            </div>
+        </div>
+
+        <div class="sinpe-message">
+            <div class="sinpe-icon" aria-hidden="true">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <div class="sinpe-content">
+                <span class="sinpe-label">Número para SINPE Móvil</span>
+                <strong class="sinpe-number">89546434</strong>
+                <p>
+                    Enviá el comprobante por WhatsApp e indicá que corresponde al
+                    <strong>pedido @codigoPedido</strong>.
+                </p>
+                <a href="@whatsappUrl"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Enviar comprobante por WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <div class="confirmed-actions">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn-pay confirmed-link">
+                Ver detalle del pedido
+            </a>
+            <a asp-action="Index" class="secondary-link">
+                Ir a mis pedidos
+            </a>
+        </div>
+    </div>
+</div>

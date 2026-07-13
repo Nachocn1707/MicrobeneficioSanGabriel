@@ -4,6 +4,12 @@
 
 @{
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var currentUser = User.Identity?.IsAuthenticated == true
+        ? await UserManager.GetUserAsync(User)
+        : null;
+    var clientName = currentUser?.NombreCompleto
+        ?? User.Identity?.Name
+        ?? "Cliente";
 
     string Active(string keyword)
     {
@@ -35,6 +41,8 @@
     <link rel="stylesheet" href="~/css/sg-coffee-ui.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cliente-estetico.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/translucent-coffee-background.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/cafe-aurora-palette.css" asp-append-version="true" />
 </head>
 
 <body class="sg-coffee-bg rc-client-body cafe-portal-body">
@@ -75,6 +83,16 @@
             </nav>
 
             <div class="cafe-portal-actions">
+                <div class="cafe-client-session" title="Cliente en sesión: @clientName">
+                    <span class="cafe-client-session-icon" aria-hidden="true">
+                        <i class="fa-regular fa-user"></i>
+                    </span>
+                    <span class="cafe-client-session-text">
+                        <small>Cliente</small>
+                        <strong>@clientName</strong>
+                    </span>
+                </div>
+
                 <partial name="_CentroNotificaciones" />
 
                 <a asp-controller="Pedidos"

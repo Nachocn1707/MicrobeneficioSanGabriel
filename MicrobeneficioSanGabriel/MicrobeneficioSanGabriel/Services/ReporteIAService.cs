@@ -1,4 +1,5 @@
-﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Constants;
+using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ namespace MicrobeneficioSanGabriel.Services
 
             var facturasQuery = _context.Facturas
                 .Include(f => f.Pedido)
-                .ThenInclude(p => p.Producto)
+                .ThenInclude(p => p!.Producto)
                 .AsQueryable();
 
             if (inicio.HasValue)
@@ -44,7 +45,7 @@ namespace MicrobeneficioSanGabriel.Services
             var productos = await _context.Productos.ToListAsync();
 
             var facturasValidas = facturas
-                .Where(f => f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .Where(f => f.EstadoPago == EstadosPago.PagoCompletado)
                 .ToList();
 
             var modelo = new ReporteIAViewModel
@@ -56,13 +57,13 @@ namespace MicrobeneficioSanGabriel.Services
                 TotalFacturas = facturas.Count,
                 PedidosPendientes = pedidos.Count(p => p.Estado == "Pendiente" || p.Estado == "En proceso"),
                 PedidosCompletados = pedidos.Count(p => p.Estado == "Completado"),
-                FacturasPendientes = facturas.Count(f => f.EstadoPago == "Pendiente"),
+                FacturasPendientes = facturas.Count(f => EstadosPago.EsPendiente(f.EstadoPago)),
                 ProductosStockBajo = productos.Count(p => p.Stock <= p.StockMinimo),
                 StockTotal = productos.Sum(p => p.Stock)
             };
 
             modelo.ProductosMasVendidos = pedidos
-                .Where(p => p.Producto != null)
+                .Where(p => p.Producto != null && p.Estado == EstadosPedido.Completado)
                 .GroupBy(p => p.Producto!.Nombre)
                 .Select(g => new ProductoVendidoIAItem
                 {

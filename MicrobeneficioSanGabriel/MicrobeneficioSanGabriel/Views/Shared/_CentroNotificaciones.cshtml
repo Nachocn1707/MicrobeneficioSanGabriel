@@ -1,4 +1,4 @@
-﻿@using System.Security.Claims
+@using System.Security.Claims
 @using System.Text.Json
 @using Microsoft.AspNetCore.Identity
 @using MicrobeneficioSanGabriel.Models
@@ -21,8 +21,7 @@
 
     var esCliente = User.IsInRole("Cliente");
 
-    var puedeAdministrar = User.IsInRole("Administrador")
-        || esCliente;
+    var puedeAdministrar = User.Identity?.IsAuthenticated == true;
 
     var tituloPanel = esCliente
         ? "Estado de mis pedidos"
@@ -48,6 +47,9 @@
      id="notificationRoot"
      data-user-id="@usuarioId"
      data-can-manage="@puedeAdministrar.ToString().ToLowerInvariant()">
+    <form id="notificationAntiforgery" class="d-none">
+        @Html.AntiForgeryToken()
+    </form>
 
     <button type="button"
             class="demo-icon-button"

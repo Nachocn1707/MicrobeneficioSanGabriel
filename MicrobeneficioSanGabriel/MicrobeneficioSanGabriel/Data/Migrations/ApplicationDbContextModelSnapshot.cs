@@ -190,7 +190,8 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductorId");
+                    b.HasIndex("ProductorId", "Nombre")
+                        .IsUnique();
 
                     b.ToTable("Fincas");
                 });
@@ -230,7 +231,9 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("PedidoId")
+                        .IsUnique()
+                        .HasFilter("[EstadoPago] <> N'Anulada'");
 
                     b.ToTable("Facturas");
                 });
@@ -263,8 +266,9 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<double>("PesoKg")
-                        .HasColumnType("float");
+                    b.Property<decimal>("PesoKg")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductorId")
                         .HasColumnType("int");
@@ -289,15 +293,26 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Cantidad")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("FechaMovimiento")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("EsAutomatico")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Observacion")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
+
+                    b.Property<int?>("OrigenId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrigenTipo")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
@@ -309,9 +324,40 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrigenTipo", "OrigenId");
+
                     b.HasIndex("ProductoId");
 
                     b.ToTable("MovimientosInventario");
+                });
+
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.NotificacionUsuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Clave")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("FechaDescartada")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId", "Clave")
+                        .IsUnique();
+
+                    b.ToTable("NotificacionesUsuarios");
                 });
 
             modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Pedido", b =>
@@ -322,11 +368,15 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Cantidad")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ClienteCorreo")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClienteId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClienteNombre")
                         .IsRequired()
@@ -347,6 +397,9 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Property<DateTime>("FechaPedido")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("InventarioAplicado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MetodoPago")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -357,7 +410,15 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsRequired()
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
 
                     b.HasIndex("ProductoId");
 
@@ -372,11 +433,13 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("CantidadProcesadaKg")
-                        .HasColumnType("float");
+                    b.Property<decimal>("CantidadProcesadaKg")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("CantidadResultanteKg")
-                        .HasColumnType("float");
+                    b.Property<decimal>("CantidadResultanteKg")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -442,11 +505,19 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Stock")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("StockMinimo")
-                        .HasColumnType("int");
+                    b.Property<decimal>("StockMinimo")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsRequired()
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -787,13 +858,31 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("MicrobeneficioSanGabriel.Models.NotificacionUsuario", b =>
+                {
+                    b.HasOne("MicrobeneficioSanGabriel.Models.ApplicationUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("MicrobeneficioSanGabriel.Models.Pedido", b =>
                 {
+                    b.HasOne("MicrobeneficioSanGabriel.Models.ApplicationUser", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("MicrobeneficioSanGabriel.Models.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cliente");
 
                     b.Navigation("Producto");
                 });

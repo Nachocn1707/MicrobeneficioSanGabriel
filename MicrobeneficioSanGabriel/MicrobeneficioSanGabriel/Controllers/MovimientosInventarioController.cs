@@ -81,6 +81,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 movimiento.FechaMovimiento = DateTime.Now;
                 movimiento.Observacion = movimiento.Observacion?.Trim();
+                movimiento.EsAutomatico = false;
+                movimiento.OrigenTipo = null;
+                movimiento.OrigenId = null;
 
                 AplicarMovimiento(producto, movimiento.TipoMovimiento, movimiento.Cantidad);
                 _context.MovimientosInventario.Add(movimiento);
@@ -105,6 +108,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var movimiento = await _context.MovimientosInventario.FindAsync(id);
             if (movimiento == null) return NotFound();
+            if (movimiento.EsAutomatico)
+            {
+                TempData["Error"] = "Los movimientos automáticos se administran desde el pedido o la producción que los originó.";
+                return RedirectToAction(nameof(Index));
+            }
 
             CargarProductos(movimiento.ProductoId);
             return View(movimiento);
@@ -125,6 +133,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (original == null) return NotFound();
+            if (original.EsAutomatico)
+            {
+                TempData["Error"] = "Los movimientos automáticos no se pueden editar manualmente.";
+                return RedirectToAction(nameof(Index));
+            }
 
             if (!EsTipoValido(movimiento.TipoMovimiento))
             {
@@ -220,6 +233,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movimiento == null) return NotFound();
+            if (movimiento.EsAutomatico)
+            {
+                TempData["Error"] = "Los movimientos automáticos se revierten desde el pedido o la producción que los originó.";
+                return RedirectToAction(nameof(Index));
+            }
             if (movimiento.Producto == null)
             {
                 TempData["Error"] = "El movimiento no tiene un producto válido asociado.";
@@ -266,16 +284,16 @@ namespace MicrobeneficioSanGabriel.Controllers
         private static bool EsTipoValido(string tipo) =>
             tipo == "Entrada" || tipo == "Salida";
 
-        private static void AplicarMovimiento(Producto producto, string tipo, int cantidad)
+        private static void AplicarMovimiento(Producto producto, string tipo, decimal cantidad)
         {
             if (tipo == "Entrada") producto.Stock += cantidad;
             else producto.Stock -= cantidad;
         }
 
-        private static bool PuedeRevertir(Producto producto, string tipo, int cantidad) =>
+        private static bool PuedeRevertir(Producto producto, string tipo, decimal cantidad) =>
             tipo != "Entrada" || producto.Stock >= cantidad;
 
-        private static void RevertirMovimiento(Producto producto, string tipo, int cantidad)
+        private static void RevertirMovimiento(Producto producto, string tipo, decimal cantidad)
         {
             if (tipo == "Entrada") producto.Stock -= cantidad;
             else producto.Stock += cantidad;

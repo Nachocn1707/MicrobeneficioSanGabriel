@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MicrobeneficioSanGabriel.Constants;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Services;
 using ClosedXML.Excel;
@@ -51,7 +52,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             ViewBag.TotalFacturas = await facturasQuery.CountAsync();
 
             ViewBag.TotalVentas = await facturasQuery
-                .Where(f => f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .Where(f => f.EstadoPago == EstadosPago.PagoCompletado)
                 .SumAsync(f => (decimal?)f.Total) ?? 0;
 
             ViewBag.TotalStock = await _context.Productos
@@ -61,7 +62,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .CountAsync(p => p.Estado == "Pendiente" || p.Estado == "En proceso");
 
             ViewBag.FacturasPendientes = await facturasQuery
-                .CountAsync(f => f.EstadoPago == "Pendiente");
+                .CountAsync(f => f.EstadoPago == EstadosPago.Pendiente || f.EstadoPago == EstadosPago.PendientePago);
 
             ViewBag.ProductosStockBajo = await _context.Productos
                 .CountAsync(p => p.Stock <= p.StockMinimo);
@@ -102,7 +103,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             var totalFacturas = facturasQuery.Count();
 
             var totalVentas = facturasQuery
-                .Where(f => f.EstadoPago != "Anulada" && f.EstadoPago != "Cancelado")
+                .Where(f => f.EstadoPago == EstadosPago.PagoCompletado)
                 .Sum(f => (decimal?)f.Total) ?? 0;
 
             using (var workbook = new XLWorkbook())

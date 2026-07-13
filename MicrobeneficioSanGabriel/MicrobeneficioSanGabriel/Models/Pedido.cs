@@ -1,3 +1,4 @@
+using MicrobeneficioSanGabriel.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,13 +12,19 @@ namespace MicrobeneficioSanGabriel.Models
         [Display(Name = "Cliente")]
         public string ClienteNombre { get; set; } = string.Empty;
 
+        [Display(Name = "Cliente registrado")]
+        public string? ClienteId { get; set; }
+
+        [ForeignKey(nameof(ClienteId))]
+        public ApplicationUser? Cliente { get; set; }
+
         [Display(Name = "Correo del cliente")]
         [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido")]
         [StringLength(150)]
         public string? ClienteCorreo { get; set; }
 
         [Required(ErrorMessage = "El teléfono del cliente es obligatorio")]
-        [RegularExpression(@"^\d{4}-?\d{4}$", ErrorMessage = "El teléfono debe tener 8 dígitos, por ejemplo 8888-8888")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888")]
         [Display(Name = "Teléfono del cliente")]
         public string ClienteTelefono { get; set; } = string.Empty;
 
@@ -30,7 +37,8 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "La cantidad es obligatoria")]
         [Range(1, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
-        public int Cantidad { get; set; }
+        [WholeNumber]
+        public decimal Cantidad { get; set; }
 
         [Required(ErrorMessage = "La fecha del pedido es obligatoria")]
         [Display(Name = "Fecha Pedido")]
@@ -45,5 +53,10 @@ namespace MicrobeneficioSanGabriel.Models
         public string MetodoPago { get; set; } = string.Empty;
 
         public string EstadoPago { get; set; } = string.Empty;
+
+        public bool InventarioAplicado { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
     }
 }

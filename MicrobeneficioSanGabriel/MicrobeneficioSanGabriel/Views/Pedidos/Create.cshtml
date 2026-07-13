@@ -79,8 +79,9 @@
                                 <div class="input-modern">
                                     <i class="fa-solid fa-phone"></i>
                                     <input asp-for="ClienteTelefono"
-                                           class="form-control"
-                                           placeholder="Digite el número de teléfono" />
+                                           class="form-control" type="tel" inputmode="numeric"
+                                           maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+                                           oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
                                 </div>
                                 <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
                             </div>
@@ -115,7 +116,9 @@
                                 <label asp-for="Cantidad" class="form-label">Cantidad en kg</label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-weight-scale"></i>
-                                    <input asp-for="Cantidad" class="form-control" min="1" />
+                                    <input asp-for="Cantidad" asp-format="{0:0}" class="form-control"
+                                           type="text" inputmode="numeric" pattern="[0-9]+"
+                                           oninput="this.value=(this.value.match(/\d+/)||[''])[0]" />
                                 </div>
                                 <span asp-validation-for="Cantidad" class="text-danger"></span>
                             </div>

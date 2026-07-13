@@ -13,7 +13,8 @@ namespace MicrobeneficioSanGabriel.Services
             string modulo,
             string accion,
             int? registroId = null,
-            string? detalle = null)
+            string? detalle = null,
+            ILogger? logger = null)
         {
             try
             {
@@ -49,9 +50,19 @@ namespace MicrobeneficioSanGabriel.Services
 
                 await context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
-                // La auditoría nunca debe interrumpir la operación principal.
+                if (logger != null)
+                {
+                    logger.LogError(ex,
+                        "No se pudo registrar la auditoría del módulo {Modulo}, acción {Accion}, registro {RegistroId}.",
+                        modulo, accion, registroId);
+                }
+                else
+                {
+                    System.Diagnostics.Trace.TraceError(
+                        $"Error de auditoría en {modulo}/{accion}/{registroId}: {ex}");
+                }
             }
         }
     }

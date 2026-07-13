@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MicrobeneficioSanGabriel.Constants;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
@@ -268,10 +269,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                     .Where(p => p.LoteId == id)
                     .ToListAsync();
 
-                var cantidadesPorProducto = producciones
-                    .Where(p => p.Estado == "Completado" && p.ProductoId.HasValue)
+                var produccionesCompletadas = producciones
+                    .Where(p => p.Estado == EstadosProduccion.Completado && p.ProductoId.HasValue)
+                    .ToList();
+
+                var cantidadesPorProducto = produccionesCompletadas
                     .GroupBy(p => p.ProductoId!.Value)
-                    .ToDictionary(g => g.Key, g => g.Sum(p => (int)p.CantidadResultanteKg));
+                    .ToDictionary(g => g.Key, g => g.Sum(p => p.CantidadResultanteKg));
 
                 foreach (var item in cantidadesPorProducto)
                 {
@@ -292,28 +296,31 @@ namespace MicrobeneficioSanGabriel.Controllers
                     producto.Stock -= item.Value;
                 }
 
+                foreach (var produccion in produccionesCompletadas)
+                {
+                    _context.MovimientosInventario.Add(new MovimientoInventario
+                    {
+                        ProductoId = produccion.ProductoId!.Value,
+                        TipoMovimiento = "Salida",
+                        Cantidad = produccion.CantidadResultanteKg,
+                        FechaMovimiento = DateTime.Now,
+                        Observacion = $"Reversión automática al eliminar el lote {lote.CodigoLote}; producción #{produccion.Id}",
+                        OrigenTipo = OrigenMovimiento.ReversionProduccion,
+                        OrigenId = produccion.Id,
+                        EsAutomatico = true
+                    });
+                }
+
                 var idsProducciones = producciones.Select(p => p.Id).ToList();
 
                 var trazabilidades = await _context.Trazabilidades
                     .Where(t => t.LoteId == id || idsProducciones.Contains(t.ProduccionId))
                     .ToListAsync();
 
-                var referencias = producciones
-                    .Select(p => $"Entrada automática por producción #{p.Id}")
-                    .ToList();
-
-                var movimientos = referencias.Count == 0
-                    ? new List<MovimientoInventario>()
-                    : await _context.MovimientosInventario
-                        .Where(m => m.TipoMovimiento == "Entrada" &&
-                                    m.Observacion != null &&
-                                    referencias.Contains(m.Observacion))
-                        .ToListAsync();
-
                 var codigo = lote.CodigoLote;
 
                 _context.Trazabilidades.RemoveRange(trazabilidades);
-                _context.MovimientosInventario.RemoveRange(movimientos);
+                // Los movimientos automáticos se conservan como historial contable del inventario.
                 _context.Producciones.RemoveRange(producciones);
                 _context.Lotes.Remove(lote);
 

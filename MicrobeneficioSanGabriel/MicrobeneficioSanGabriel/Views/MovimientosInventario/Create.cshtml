@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.MovimientoInventario
+@model MicrobeneficioSanGabriel.Models.MovimientoInventario
 
 @{
     ViewData["Title"] = "Nuevo Movimiento";
@@ -77,9 +77,10 @@
                                 <label asp-for="Cantidad" class="form-label">Cantidad en kg</label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-weight-scale"></i>
-                                    <input asp-for="Cantidad"
+                                    <input asp-for="Cantidad" asp-format="{0:0}"
                                            class="form-control"
-                                           min="1"
+                                           type="text" inputmode="numeric" pattern="[0-9]+"
+                                           oninput="this.value=(this.value.match(/\d+/)||[''])[0]"
                                            placeholder="Digite la cantidad en kg" />
                                 </div>
                                 <span asp-validation-for="Cantidad" class="text-danger"></span>

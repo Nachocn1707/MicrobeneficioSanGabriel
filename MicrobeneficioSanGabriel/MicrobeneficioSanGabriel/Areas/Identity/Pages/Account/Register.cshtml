@@ -103,7 +103,9 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" placeholder="Teléfono" />
+                        <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" type="tel"
+                               inputmode="numeric" maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
                         <label asp-for="Input.PhoneNumber">Teléfono</label>
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>

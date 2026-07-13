@@ -58,7 +58,10 @@
                                 <label asp-for="Precio" class="form-label"></label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-colon-sign"></i>
-                                    <input asp-for="Precio" class="form-control" placeholder="Ej: 1500" />
+                                    <input asp-for="Precio" asp-format="{0:0}" class="form-control"
+                                           type="text" inputmode="numeric" pattern="[0-9]+"
+                                           oninput="this.value=(this.value.match(/\d+/)||[''])[0]"
+                                           placeholder="Ej: 1500" />
                                 </div>
                                 <span asp-validation-for="Precio" class="text-danger"></span>
                             </div>
@@ -69,7 +72,9 @@
                                 <label asp-for="Stock" class="form-label"></label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-warehouse"></i>
-                                    <input asp-for="Stock" class="form-control" placeholder="0" />
+                                    <input asp-for="Stock" asp-format="{0:0}" class="form-control"
+                                           type="text" inputmode="numeric" pattern="[0-9]+"
+                                           oninput="this.value=(this.value.match(/\d+/)||[''])[0]" placeholder="0" />
                                 </div>
                                 <span asp-validation-for="Stock" class="text-danger"></span>
                             </div>

@@ -3,23 +3,52 @@
 @{
     Layout = User.IsInRole("Cliente") ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "Pago del pedido";
-    var total = ViewBag.Total;
+
+    var total = Convert.ToDecimal(ViewBag.Total ?? 0m);
+    var esPedidoPendiente = ViewBag.EsPedidoPendiente is bool pendiente && pendiente;
+    var codigoPedido = esPedidoPendiente ? "Se asignará al confirmar" : $"PP-{Model.Id:0000}";
+    var whatsappMessage = esPedidoPendiente
+        ? string.Empty
+        : Uri.EscapeDataString($"Hola, envío el comprobante de pago por SINPE Móvil correspondiente al pedido {codigoPedido}.");
+    var whatsappUrl = esPedidoPendiente
+        ? string.Empty
+        : $"https://wa.me/50689546434?text={whatsappMessage}";
 }
 
 <link rel="stylesheet" href="~/css/pago.css" asp-append-version="true" />
 
 <div class="payment-page">
-
     <div class="payment-card">
-
         <div class="payment-header">
             <h2>Confirmar compra</h2>
-            <p>Revisá los datos antes de completar el pedido.</p>
+            @if (esPedidoPendiente)
+            {
+                <p>Revisá los datos. El pedido se guardará únicamente cuando confirmés el método de pago.</p>
+            }
+            else
+            {
+                <p>Revisá los datos antes de registrar el método de pago.</p>
+            }
         </div>
 
-        <div class="payment-summary">
+        @if (esPedidoPendiente)
+        {
+            <div class="pending-order-notice">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>
+                    Todavía no existe un pedido almacenado. Si seleccionás <strong>No deseo continuar</strong>,
+                    la solicitud se descartará sin guardar información.
+                </span>
+            </div>
+        }
 
+        <div class="payment-summary">
             <h4>Resumen del pedido</h4>
+
+            <div class="summary-row">
+                <span>Número de pedido</span>
+                <strong>@codigoPedido</strong>
+            </div>
 
             <div class="summary-row">
                 <span>Producto</span>
@@ -28,7 +57,7 @@
 
             <div class="summary-row">
                 <span>Cantidad</span>
-                <strong>@Model.Cantidad kg</strong>
+                <strong>@Model.Cantidad.ToString("0") kg</strong>
             </div>
 
             <div class="summary-row">
@@ -38,27 +67,28 @@
 
             <div class="summary-row total-row">
                 <span>Total</span>
-                <strong>₡@Convert.ToDecimal(total).ToString("N0")</strong>
+                <strong>₡@total.ToString("N0")</strong>
             </div>
-
         </div>
 
-        <form asp-action="Pago" method="post">
+        <form asp-action="Pago"
+              method="post"
+              id="paymentForm"
+              data-pending-order="@esPedidoPendiente.ToString().ToLowerInvariant()">
 
-            <input type="hidden"
-                   name="pedidoId"
-                   value="@Model.Id" />
+            @if (!esPedidoPendiente)
+            {
+                <input type="hidden" name="pedidoId" value="@Model.Id" />
+            }
 
             <div class="customer-info">
                 <input type="text"
                        id="nombreCompleto"
-                       name="nombreCompleto"
                        class="form-control"
                        maxlength="50"
                        placeholder="Nombre completo" />
 
-                <select class="form-select" name="provincia">
-
+                <select class="form-select" id="provincia">
                     <option value="">--Seleccione la provincia--</option>
                     <option>San José</option>
                     <option>Alajuela</option>
@@ -67,112 +97,93 @@
                     <option>Guanacaste</option>
                     <option>Puntarenas</option>
                     <option>Limón</option>
-
                 </select>
             </div>
 
             <div class="payment-methods">
-
                 <h4>Forma de pago</h4>
 
                 <label class="payment-option">
                     <input type="radio"
                            name="metodoPago"
-                           value="Tarjeta"
+                           value="SINPE Móvil"
                            checked />
-
-                    <span>Tarjeta</span>
-
+                    <span>SINPE Móvil</span>
                 </label>
+
                 <label class="payment-option">
                     <input type="radio"
                            name="metodoPago"
                            value="Efectivo" />
                     <span>Pago en efectivo en el establecimiento</span>
                 </label>
-
             </div>
 
-            <div id="cardSection">
-
-                <div class="card-input-wrapper">
-
-                    <label>Número de tarjeta</label>
-
-                    <div class="card-input-wrapper">
-                        <input type="text"
-                               id="numeroTarjeta"
-                               name="numeroTarjeta"
-                               class="form-control"
-                               maxlength="19"
-                               placeholder="0000 0000 0000 0000"
-                               required />
-
-                        <img id="cardLogo"
-                             class="card-logo"
-                             src=""
-                             alt="logo tarjeta" />
-
+            <div id="sinpeSection">
+                <div class="sinpe-message">
+                    <div class="sinpe-icon" aria-hidden="true">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
                     </div>
+                    <div class="sinpe-content">
+                        <span class="sinpe-label">Número para SINPE Móvil</span>
+                        <strong class="sinpe-number">89546434</strong>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Fecha vencimiento</label>
-                            <input type="text"
-                                   id="fechaVencimiento"
-                                   name="fechaVencimiento"
-                                   class="form-control payment-small"
-                                   placeholder="MM/AA"
-                                   maxlength="5"
-                                   required />
-                        </div>
-
-                        <div class="col-md-3">
-                            <label>CVV</label>
-                            <input type="password"
-                                   id="numeroSecreto"
-                                   name="numeroSecreto"
-                                   maxlength="3"
-                                   inputmode="numeric"
-                                   class="form-control payment-small"
-                                   placeholder=" 123"
-                                   required />
-                        </div>
+                        @if (esPedidoPendiente)
+                        {
+                            <p>
+                                Al confirmar el método de pago se creará el pedido y se generará su código
+                                <strong>PP-0000</strong>. En la siguiente pantalla podrás enviar el comprobante
+                                por WhatsApp con el código correcto.
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                Realizá el pago por el monto total y enviá el comprobante por WhatsApp al mismo número.
+                                Indicá que corresponde al <strong>pedido @codigoPedido</strong>.
+                            </p>
+                            <a href="@whatsappUrl"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="btn-whatsapp">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                Enviar comprobante por WhatsApp
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
-            <div id="cashSection" style="display:none;">
 
+            <div id="cashSection" style="display:none;">
                 <div class="cash-message">
                     El pago se realizará al retirar el pedido en el establecimiento.
                 </div>
             </div>
 
-            <div class="paymente-actions">
-
-            <button type="submit" class="btn-pay">
-                Confirmar compra
-            </button>
-
-            <a asp-controller="Productos" asp-action="Index"
-                   class="btn-cancel"> No deseo continuar </a>
+            <div class="payment-actions">
+                <button type="submit" class="btn-pay">
+                    @(esPedidoPendiente ? "Confirmar método de pago y crear pedido" : "Confirmar método de pago")
+                </button>
             </div>
+        </form>
+
+        <form asp-action="NoContinuarPago" method="post" class="cancel-payment-form">
+            @if (!esPedidoPendiente)
+            {
+                <input type="hidden" name="pedidoId" value="@Model.Id" />
+            }
+
+            <button type="submit" class="btn-cancel">
+                No deseo continuar
+            </button>
         </form>
     </div>
 
     <div id="loadingOverlay">
-
         <div class="loading-box">
-
             <div class="spinner"></div>
-
-            <h4 id="loadingTitle">
-                Procesando compra...
-            </h4>
-
-            <p id="loadingMessage">
-                Por favor espere.
-            </p>
+            <h4 id="loadingTitle">Procesando solicitud...</h4>
+            <p id="loadingMessage">Por favor espere.</p>
         </div>
     </div>
 </div>

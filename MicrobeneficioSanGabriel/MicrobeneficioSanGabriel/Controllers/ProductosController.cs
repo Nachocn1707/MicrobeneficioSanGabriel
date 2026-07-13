@@ -64,9 +64,9 @@ namespace MicrobeneficioSanGabriel.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto, IFormFile? imagenArchivo)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro,RowVersion")] Producto producto, IFormFile? imagenArchivo)
         {
-            if (!ValidarImagenProducto(imagenArchivo))
+            if (!await ValidarImagenProductoAsync(imagenArchivo))
             {
                 return View(producto);
             }
@@ -119,7 +119,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro")] Producto producto, IFormFile? imagenArchivo, bool eliminarImagenActual = false)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro,RowVersion")] Producto producto, IFormFile? imagenArchivo, bool eliminarImagenActual = false)
         {
             if (id != producto.Id)
             {
@@ -132,10 +132,15 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
-            if (!ValidarImagenProducto(imagenArchivo))
+            if (!await ValidarImagenProductoAsync(imagenArchivo))
             {
                 producto.ImagenUrl = productoDb.ImagenUrl;
                 return View(producto);
+            }
+
+            if (producto.RowVersion.Length > 0)
+            {
+                _context.Entry(productoDb).Property(p => p.RowVersion).OriginalValue = producto.RowVersion;
             }
 
             if (ModelState.IsValid)
@@ -186,7 +191,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                         return NotFound();
                     }
 
-                    throw;
+                    ModelState.AddModelError(string.Empty,
+                        "El producto o su inventario fue actualizado por otro usuario. Recargue la página e inténtelo nuevamente.");
+                    producto.ImagenUrl = productoDb.ImagenUrl;
+                    return View(producto);
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -250,7 +258,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return _context.Productos.Any(e => e.Id == id);
         }
 
-        private bool ValidarImagenProducto(IFormFile? imagenArchivo)
+        private async Task<bool> ValidarImagenProductoAsync(IFormFile? imagenArchivo)
         {
             if (imagenArchivo == null || imagenArchivo.Length == 0)
             {
@@ -267,6 +275,31 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (imagenArchivo.Length > TamanoMaximoImagenBytes)
             {
                 ModelState.AddModelError("imagenArchivo", "La imagen no puede pesar más de 5 MB.");
+                return false;
+            }
+
+            var firma = new byte[12];
+            await using var stream = imagenArchivo.OpenReadStream();
+            var leidos = await stream.ReadAsync(firma.AsMemory(0, firma.Length));
+
+            var esJpeg = leidos >= 3 && firma[0] == 0xFF && firma[1] == 0xD8 && firma[2] == 0xFF;
+            var esPng = leidos >= 8 && firma.AsSpan(0, 8).SequenceEqual(new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A });
+            var esWebp = leidos >= 12 &&
+                         firma.AsSpan(0, 4).SequenceEqual("RIFF"u8) &&
+                         firma.AsSpan(8, 4).SequenceEqual("WEBP"u8);
+
+            var firmaValida = extension switch
+            {
+                ".jpg" or ".jpeg" => esJpeg,
+                ".png" => esPng,
+                ".webp" => esWebp,
+                _ => false
+            };
+
+            if (!firmaValida)
+            {
+                ModelState.AddModelError("imagenArchivo",
+                    "El contenido del archivo no corresponde a una imagen válida del tipo seleccionado.");
                 return false;
             }
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Controllers
@@ -45,7 +46,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                     Apellidos = usuario.Apellidos,
                     Email = usuario.Email ?? "",
                     UserName = usuario.UserName ?? "",
-                    PhoneNumber = usuario.PhoneNumber,
+                    PhoneNumber = SoloDigitos(usuario.PhoneNumber),
                     Rol = roles.FirstOrDefault() ?? "Sin rol"
                 });
             }
@@ -76,7 +77,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 Apellidos = usuario.Apellidos,
                 Email = usuario.Email ?? "",
                 UserName = usuario.UserName ?? "",
-                PhoneNumber = usuario.PhoneNumber,
+                PhoneNumber = SoloDigitos(usuario.PhoneNumber),
                 Rol = roles.FirstOrDefault() ?? "Sin rol"
             };
 
@@ -98,6 +99,13 @@ namespace MicrobeneficioSanGabriel.Controllers
         public async Task<IActionResult> Create(UsuarioCrearViewModel model)
         {
             model.Roles = await ObtenerRolesAsync();
+            model.PhoneNumber = SoloDigitos(model.PhoneNumber);
+            ModelState.Remove(nameof(model.PhoneNumber));
+            if (model.PhoneNumber.Length != 8)
+            {
+                ModelState.AddModelError(nameof(model.PhoneNumber),
+                    "El teléfono debe contener exactamente 8 dígitos.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -128,7 +136,16 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 if (!string.IsNullOrWhiteSpace(model.Rol))
                 {
-                    await _userManager.AddToRoleAsync(usuario, model.Rol);
+                    var resultadoRol = await _userManager.AddToRoleAsync(usuario, model.Rol);
+                    if (!resultadoRol.Succeeded)
+                    {
+                        await _userManager.DeleteAsync(usuario);
+                        foreach (var error in resultadoRol.Errors)
+                        {
+                            ModelState.AddModelError(nameof(model.Rol), error.Description);
+                        }
+                        return View(model);
+                    }
                 }
 
                 await AuditoriaHelper.RegistrarAsync(_context, User, "Usuarios", "Crear", null,
@@ -167,7 +184,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 Nombre = usuario.Nombre,
                 Apellidos = usuario.Apellidos,
                 Email = usuario.Email ?? "",
-                PhoneNumber = usuario.PhoneNumber ?? "",
+                PhoneNumber = SoloDigitos(usuario.PhoneNumber),
                 Rol = rolesUsuario.FirstOrDefault() ?? "",
                 Roles = await ObtenerRolesAsync()
             };
@@ -185,6 +202,13 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             model.Roles = await ObtenerRolesAsync();
+            model.PhoneNumber = SoloDigitos(model.PhoneNumber);
+            ModelState.Remove(nameof(model.PhoneNumber));
+            if (model.PhoneNumber.Length != 8)
+            {
+                ModelState.AddModelError(nameof(model.PhoneNumber),
+                    "El teléfono debe contener exactamente 8 dígitos.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -206,6 +230,17 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return View(model);
             }
 
+            var rolesActuales = await _userManager.GetRolesAsync(usuario);
+            var esAdministradorActual = rolesActuales.Contains("Administrador");
+            var dejaraDeSerAdministrador = esAdministradorActual && model.Rol != "Administrador";
+
+            if (dejaraDeSerAdministrador && await ContarAdministradoresAsync() <= 1)
+            {
+                ModelState.AddModelError(nameof(model.Rol),
+                    "No se puede retirar el rol al último administrador del sistema.");
+                return View(model);
+            }
+
             usuario.Nombre = model.Nombre;
             usuario.Apellidos = model.Apellidos;
             usuario.Email = model.Email;
@@ -224,12 +259,39 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return View(model);
             }
 
-            var rolesActuales = await _userManager.GetRolesAsync(usuario);
-            await _userManager.RemoveFromRolesAsync(usuario, rolesActuales);
-
-            if (!string.IsNullOrWhiteSpace(model.Rol))
+            var seAgregoRolNuevo = false;
+            if (!string.IsNullOrWhiteSpace(model.Rol) && !rolesActuales.Contains(model.Rol))
             {
-                await _userManager.AddToRoleAsync(usuario, model.Rol);
+                var agregarRol = await _userManager.AddToRoleAsync(usuario, model.Rol);
+                if (!agregarRol.Succeeded)
+                {
+                    foreach (var error in agregarRol.Errors)
+                    {
+                        ModelState.AddModelError(nameof(model.Rol), error.Description);
+                    }
+                    return View(model);
+                }
+
+                seAgregoRolNuevo = true;
+            }
+
+            var rolesARemover = rolesActuales.Where(r => r != model.Rol).ToList();
+            if (rolesARemover.Count > 0)
+            {
+                var removerRoles = await _userManager.RemoveFromRolesAsync(usuario, rolesARemover);
+                if (!removerRoles.Succeeded)
+                {
+                    if (seAgregoRolNuevo && !string.IsNullOrWhiteSpace(model.Rol))
+                    {
+                        await _userManager.RemoveFromRoleAsync(usuario, model.Rol);
+                    }
+
+                    foreach (var error in removerRoles.Errors)
+                    {
+                        ModelState.AddModelError(nameof(model.Rol), error.Description);
+                    }
+                    return View(model);
+                }
             }
 
             await AuditoriaHelper.RegistrarAsync(_context, User, "Usuarios", "Editar", null,
@@ -261,7 +323,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 Apellidos = usuario.Apellidos,
                 Email = usuario.Email ?? "",
                 UserName = usuario.UserName ?? "",
-                PhoneNumber = usuario.PhoneNumber,
+                PhoneNumber = SoloDigitos(usuario.PhoneNumber),
                 Rol = roles.FirstOrDefault() ?? "Sin rol"
             };
 
@@ -287,6 +349,19 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            if (await _userManager.IsInRoleAsync(usuario, "Administrador") &&
+                await ContarAdministradoresAsync() <= 1)
+            {
+                TempData["Error"] = "No se puede eliminar el último administrador del sistema.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (await _context.Pedidos.AnyAsync(p => p.ClienteId == usuario.Id))
+            {
+                TempData["Error"] = "No se puede eliminar el usuario porque tiene pedidos asociados y debe conservarse el historial.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var resultado = await _userManager.DeleteAsync(usuario);
 
             if (resultado.Succeeded)
@@ -305,6 +380,20 @@ namespace MicrobeneficioSanGabriel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        private static string SoloDigitos(string? valor)
+        {
+            return new string((valor ?? string.Empty).Where(char.IsDigit).ToArray());
+        }
+
+        private async Task<int> ContarAdministradoresAsync()
+        {
+            var rol = await _roleManager.FindByNameAsync("Administrador");
+            if (rol == null) return 0;
+            var usuarios = await _userManager.GetUsersInRoleAsync("Administrador");
+            return usuarios.Count;
+        }
+
         private async Task<List<SelectListItem>> ObtenerRolesAsync()
         {
             return await Task.FromResult(
@@ -319,7 +408,6 @@ namespace MicrobeneficioSanGabriel.Controllers
             );
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<JsonResult> CheckEmail(string email)
         {

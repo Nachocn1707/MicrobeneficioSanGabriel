@@ -1,3 +1,4 @@
+using MicrobeneficioSanGabriel.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 
 namespace MicrobeneficioSanGabriel.Models
@@ -8,22 +9,26 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
         [StringLength(100)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La categoría es obligatoria")]
         [StringLength(50)]
-        public string Categoria { get; set; }
+        public string Categoria { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El precio es obligatorio")]
-        [Range(0.01, 9999999, ErrorMessage = "El precio debe ser mayor a 0")]
+        [Range(1, 9999999, ErrorMessage = "El precio debe ser un número entero mayor a 0")]
+        [WholeNumber]
         public decimal Precio { get; set; }
 
         [Required(ErrorMessage = "El stock es obligatorio")]
         [Range(0, 999999, ErrorMessage = "El stock no puede ser negativo")]
-        public int Stock { get; set; }
+        [WholeNumber]
+        public decimal Stock { get; set; }
 
         [Display(Name = "Stock mínimo")]
-        public int StockMinimo { get; set; } = 20;
+        [Range(0, 999999, ErrorMessage = "El stock mínimo no puede ser negativo")]
+        [WholeNumber]
+        public decimal StockMinimo { get; set; } = 20;
 
         [StringLength(300)]
         public string? Descripcion { get; set; }
@@ -35,5 +40,8 @@ namespace MicrobeneficioSanGabriel.Models
         public bool Activo { get; set; } = true;
 
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
     }
 }

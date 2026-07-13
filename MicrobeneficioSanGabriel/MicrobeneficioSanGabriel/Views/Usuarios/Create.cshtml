@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.ViewModels.UsuarioCrearViewModel
+@model MicrobeneficioSanGabriel.ViewModels.UsuarioCrearViewModel
 
 @{
     ViewData["Title"] = "Registrar usuario";
@@ -73,7 +73,9 @@
                                 <label asp-for="PhoneNumber" class="form-label">Teléfono</label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-phone"></i>
-                                    <input asp-for="PhoneNumber" class="form-control" placeholder="8888-8888" />
+                                    <input asp-for="PhoneNumber" class="form-control" type="tel" inputmode="numeric"
+                                           maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+                                           oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
                                 </div>
                                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </div>

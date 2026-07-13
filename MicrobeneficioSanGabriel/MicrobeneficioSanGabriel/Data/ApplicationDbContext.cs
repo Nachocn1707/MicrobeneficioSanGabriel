@@ -22,6 +22,7 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<RegistroFinanciero> RegistrosFinancieros { get; set; }
         public DbSet<AuditoriaRegistro> Auditorias { get; set; }
+        public DbSet<NotificacionUsuario> NotificacionesUsuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,6 +42,21 @@ namespace MicrobeneficioSanGabriel.Data
 
             builder.Entity<AuditoriaRegistro>()
                 .HasIndex(a => a.Modulo);
+
+            builder.Entity<NotificacionUsuario>()
+                .HasIndex(n => new { n.UsuarioId, n.Clave })
+                .IsUnique();
+
+            builder.Entity<NotificacionUsuario>()
+                .HasOne(n => n.Usuario)
+                .WithMany()
+                .HasForeignKey(n => n.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<Finca>()
+                .HasIndex(f => new { f.ProductorId, f.Nombre })
+                .IsUnique();
 
             builder.Entity<Finca>()
                 .HasOne(f => f.Productor)
@@ -76,6 +92,57 @@ namespace MicrobeneficioSanGabriel.Data
                 .WithMany()
                 .HasForeignKey(t => t.ProduccionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<Pedido>()
+                .HasOne(p => p.Cliente)
+                .WithMany()
+                .HasForeignKey(p => p.ClienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Factura>()
+                .HasIndex(f => f.PedidoId)
+                .IsUnique()
+                .HasFilter("[EstadoPago] <> N'Anulada'");
+
+            builder.Entity<Producto>()
+                .Property(p => p.Precio)
+                .HasPrecision(18, 2);
+
+            builder.Entity<RegistroFinanciero>()
+                .Property(r => r.Monto)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Producto>()
+                .Property(p => p.Stock)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Producto>()
+                .Property(p => p.StockMinimo)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Pedido>()
+                .Property(p => p.Cantidad)
+                .HasPrecision(18, 2);
+
+            builder.Entity<MovimientoInventario>()
+                .Property(m => m.Cantidad)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Lote>()
+                .Property(l => l.PesoKg)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Produccion>()
+                .Property(p => p.CantidadProcesadaKg)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Produccion>()
+                .Property(p => p.CantidadResultanteKg)
+                .HasPrecision(18, 2);
+
+            builder.Entity<MovimientoInventario>()
+                .HasIndex(m => new { m.OrigenTipo, m.OrigenId });
 
             builder.Entity<Factura>()
                 .Property(f => f.Subtotal)

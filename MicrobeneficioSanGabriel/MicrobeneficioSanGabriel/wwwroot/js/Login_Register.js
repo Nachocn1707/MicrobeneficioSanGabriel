@@ -1,4 +1,4 @@
-﻿const email = document.getElementById("email");
+const email = document.getElementById("email");
 const password = document.getElementById("password");
 const confirmPassword = document.getElementById("confirmPassword");
 
@@ -74,21 +74,6 @@ if (form) {
                 return;
             }
         }
-        const email = emailInput.value;
-        const response = await fetch(
-            `/Usuarios/CheckEmail?email=${email}`
-        );
-        const data = await response.json();
-        if (data.exists) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Correo ya registrado',
-                text: 'Este correo ya está en uso.',
-                confirmButtonColor: '#5c3317'
-            });
-            return;
-        }
-
         await Swal.fire({
             html: `
             <div style="padding:10px 5px;">

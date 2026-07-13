@@ -1,4 +1,5 @@
-﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Constants;
+using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -26,13 +27,16 @@ namespace MicrobeneficioSanGabriel.Services
 
             if (user.IsInRole("Cliente"))
             {
-                var correoCliente = user.FindFirst(ClaimTypes.Email)?.Value
+                var clienteId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                var correoCliente = (user.FindFirst(ClaimTypes.Email)?.Value
                     ?? user.Identity?.Name
-                    ?? string.Empty;
+                    ?? string.Empty).Trim().ToLowerInvariant();
 
                 var pedidosCliente = await _context.Pedidos
                     .Include(p => p.Producto)
-                    .Where(p => !string.IsNullOrWhiteSpace(p.ClienteCorreo) && p.ClienteCorreo == correoCliente)
+                    .AsNoTracking()
+                    .Where(p => p.ClienteId == clienteId ||
+                                (p.ClienteId == null && p.ClienteCorreo != null && p.ClienteCorreo.ToLower() == correoCliente))
                     .OrderByDescending(p => p.FechaPedido)
                     .ToListAsync();
 
@@ -85,7 +89,7 @@ namespace MicrobeneficioSanGabriel.Services
                 }
 
                 var pagosPendientesCliente = pedidosCliente
-                    .Where(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Sin pago")
+                    .Where(p => EstadosPago.EsPendiente(p.EstadoPago))
                     .ToList();
 
                 if (pagosPendientesCliente.Any())
@@ -126,10 +130,7 @@ namespace MicrobeneficioSanGabriel.Services
                     });
                 }
 
-                return alertas
-                    .OrderBy(a => a.Prioridad)
-                    .ThenByDescending(a => a.FechaReferencia)
-                    .ToList();
+                return await FiltrarDescartadasAsync(user, alertas);
             }
 
             if (user.IsInRole("Administrador") || user.IsInRole("Operador") || user.IsInRole("Vendedor"))
@@ -170,7 +171,7 @@ namespace MicrobeneficioSanGabriel.Services
                     alertas.Add(new AlertaSistemaViewModel
                     {
                         Clave = $"ia-inventario-{alertaIA.ProductoId}-{alertaIA.NivelRiesgo}",
-                        Modulo = "IA Inventario",
+                        Modulo = "Análisis de inventario",
                         Titulo = alertaIA.NivelRiesgo,
                         Mensaje = alertaIA.Mensaje,
                         Tipo = alertaIA.Color,
@@ -359,7 +360,9 @@ namespace MicrobeneficioSanGabriel.Services
                 }
 
                 var facturasPendientes = await _context.Facturas
-                    .Where(f => f.EstadoPago == "Pendiente")
+                    .Where(f => f.EstadoPago == EstadosPago.Pendiente ||
+                                f.EstadoPago == EstadosPago.PendientePago ||
+                                f.EstadoPago == "Sin pago")
                     .OrderByDescending(f => f.FechaFactura)
                     .ToListAsync();
 
@@ -434,10 +437,35 @@ namespace MicrobeneficioSanGabriel.Services
                 }
             }
 
-            return alertas
+            return await FiltrarDescartadasAsync(user, alertas);
+        }
+
+        private async Task<List<AlertaSistemaViewModel>> FiltrarDescartadasAsync(
+            ClaimsPrincipal user,
+            IEnumerable<AlertaSistemaViewModel> alertas)
+        {
+            var usuarioId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var ordenadas = alertas
                 .OrderBy(a => a.Prioridad)
-                .ThenBy(a => a.Modulo)
+                .ThenByDescending(a => a.FechaReferencia)
                 .ToList();
+
+            if (string.IsNullOrWhiteSpace(usuarioId) || ordenadas.Count == 0)
+            {
+                return ordenadas;
+            }
+
+            var limite = DateTime.Now.AddDays(-30);
+            var claves = ordenadas.Select(a => a.Clave).Distinct().ToList();
+            var descartadas = await _context.NotificacionesUsuarios
+                .AsNoTracking()
+                .Where(n => n.UsuarioId == usuarioId &&
+                            n.FechaDescartada >= limite &&
+                            claves.Contains(n.Clave))
+                .Select(n => n.Clave)
+                .ToListAsync();
+
+            return ordenadas.Where(a => !descartadas.Contains(a.Clave)).ToList();
         }
 
         private static string TiempoRelativo(DateTime fecha)

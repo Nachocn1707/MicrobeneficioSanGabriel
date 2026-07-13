@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
@@ -28,7 +29,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (fechaFin.HasValue)
             {
-                registros = registros.Where(r => r.Fecha <= fechaFin.Value);
+                registros = registros.Where(r => r.Fecha < fechaFin.Value.Date.AddDays(1));
             }
 
             if (!string.IsNullOrWhiteSpace(tipo))
@@ -59,16 +60,19 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         public async Task<IActionResult> ExportarExcel(DateTime? fechaInicio, DateTime? fechaFin, string? tipo)
         {
-            var registros = _context.RegistrosFinancieros.AsQueryable();
+            var registros = _context.RegistrosFinancieros
+                .AsNoTracking()
+                .AsQueryable();
 
             if (fechaInicio.HasValue)
             {
-                registros = registros.Where(r => r.Fecha >= fechaInicio.Value);
+                registros = registros.Where(r => r.Fecha >= fechaInicio.Value.Date);
             }
 
             if (fechaFin.HasValue)
             {
-                registros = registros.Where(r => r.Fecha <= fechaFin.Value);
+                var limite = fechaFin.Value.Date.AddDays(1);
+                registros = registros.Where(r => r.Fecha < limite);
             }
 
             if (!string.IsNullOrWhiteSpace(tipo))
@@ -76,52 +80,65 @@ namespace MicrobeneficioSanGabriel.Controllers
                 registros = registros.Where(r => r.Tipo == tipo);
             }
 
-            var lista = await registros
-                .OrderByDescending(r => r.Fecha)
-                .ToListAsync();
-
-            var totalIngresos = lista
-                .Where(r => r.Tipo == "Ingreso")
-                .Sum(r => r.Monto);
-
-            var totalGastos = lista
-                .Where(r => r.Tipo == "Gasto")
-                .Sum(r => r.Monto);
-
+            var lista = await registros.OrderByDescending(r => r.Fecha).ToListAsync();
+            var totalIngresos = lista.Where(r => r.Tipo == "Ingreso").Sum(r => r.Monto);
+            var totalGastos = lista.Where(r => r.Tipo == "Gasto").Sum(r => r.Monto);
             var balance = totalIngresos - totalGastos;
 
-            var csv = new System.Text.StringBuilder();
+            using var libro = new XLWorkbook();
+            var hoja = libro.Worksheets.Add("Finanzas");
 
-            csv.AppendLine("REPORTE FINANCIERO");
-            csv.AppendLine($"Fecha de generación;{DateTime.Now:dd/MM/yyyy}");
-            csv.AppendLine();
+            hoja.Cell("A1").Value = "REPORTE FINANCIERO";
+            hoja.Range("A1:F1").Merge().Style.Font.SetBold().Font.SetFontSize(16);
+            hoja.Cell("A2").Value = "Fecha de generación";
+            hoja.Cell("B2").Value = DateTime.Now;
+            hoja.Cell("B2").Style.DateFormat.Format = "dd/MM/yyyy HH:mm";
 
-            csv.AppendLine($"Total ingresos;₡ {totalIngresos:N2}");
-            csv.AppendLine($"Total gastos;₡ {totalGastos:N2}");
-            csv.AppendLine($"Balance;₡ {balance:N2}");
-            csv.AppendLine();
+            hoja.Cell("A4").Value = "Total ingresos";
+            hoja.Cell("B4").Value = totalIngresos;
+            hoja.Cell("A5").Value = "Total gastos";
+            hoja.Cell("B5").Value = totalGastos;
+            hoja.Cell("A6").Value = "Balance";
+            hoja.Cell("B6").Value = balance;
+            hoja.Range("B4:B6").Style.NumberFormat.Format = "₡ #,##0.00";
 
-            csv.AppendLine("Fecha;Tipo;Categoría;Descripción;Monto;Observación");
+            var encabezados = new[] { "Fecha", "Tipo", "Categoría", "Descripción", "Monto", "Observación" };
+            for (var columna = 0; columna < encabezados.Length; columna++)
+            {
+                hoja.Cell(8, columna + 1).Value = encabezados[columna];
+            }
+            hoja.Range("A8:F8").Style.Font.SetBold();
 
+            var fila = 9;
             foreach (var item in lista)
             {
-                csv.AppendLine(
-                    $"{item.Fecha:dd/MM/yyyy};" +
-                    $"{item.Tipo};" +
-                    $"{item.Categoria};" +
-                    $"{item.Descripcion};" +
-                    $"₡ {item.Monto:N2};" +
-                    $"{item.Observacion}"
-                );
+                hoja.Cell(fila, 1).Value = item.Fecha;
+                hoja.Cell(fila, 1).Style.DateFormat.Format = "dd/MM/yyyy";
+                hoja.Cell(fila, 2).Value = item.Tipo;
+                hoja.Cell(fila, 3).Value = item.Categoria;
+                hoja.Cell(fila, 4).Value = ProtegerFormulaExcel(item.Descripcion);
+                hoja.Cell(fila, 5).Value = item.Monto;
+                hoja.Cell(fila, 5).Style.NumberFormat.Format = "₡ #,##0.00";
+                hoja.Cell(fila, 6).Value = ProtegerFormulaExcel(item.Observacion);
+                fila++;
             }
 
-            var bytes = System.Text.Encoding.UTF8.GetPreamble()
-                .Concat(System.Text.Encoding.UTF8.GetBytes(csv.ToString()))
-                .ToArray();
+            hoja.Columns().AdjustToContents();
+            hoja.SheetView.FreezeRows(8);
+            hoja.RangeUsed()?.SetAutoFilter();
 
-            var nombreArchivo = $"Reporte_Financiero_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+            using var memoria = new MemoryStream();
+            libro.SaveAs(memoria);
+            return File(
+                memoria.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Reporte_Financiero_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+        }
 
-            return File(bytes, "text/csv", nombreArchivo);
+        private static string ProtegerFormulaExcel(string? valor)
+        {
+            var texto = valor ?? string.Empty;
+            return texto.Length > 0 && "=+-@".Contains(texto[0]) ? "'" + texto : texto;
         }
 
         public IActionResult Create()
