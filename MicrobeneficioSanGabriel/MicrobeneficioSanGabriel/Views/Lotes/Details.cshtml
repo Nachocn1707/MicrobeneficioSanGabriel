@@ -1,4 +1,69 @@
 @model MicrobeneficioSanGabriel.Models.Lote
-@{ ViewData["Title"]="Detalle del lote"; Layout="~/Views/Shared/_AdminLayout.cshtml"; }
-<div class="sg-visual-hero sg-hero-lotes"><div class="sg-visual-hero-content"><span class="sg-visual-badge"><i class="fa-solid fa-barcode"></i> Trazabilidad</span><h1>@Model.CodigoLote</h1><div class="sg-visual-line"></div><p>@Model.Productor?.Nombre · @Model.Finca?.Nombre</p></div></div>
-<div class="sg-card"><div class="row g-4"><div class="col-md-4"><small class="text-muted">Productor</small><h5>@Model.Productor?.Nombre</h5></div><div class="col-md-4"><small class="text-muted">Finca</small><h5>@(Model.Finca?.Nombre ?? "Sin finca asociada")</h5></div><div class="col-md-4"><small class="text-muted">Peso</small><h5>@Model.PesoKg.ToString("N2") kg</h5></div><div class="col-md-4"><small class="text-muted">Fecha de recepción</small><p>@Model.FechaRecepcion.ToString("dd/MM/yyyy HH:mm")</p></div><div class="col-md-4"><small class="text-muted">Estado</small><p>@Model.Estado</p></div><div class="col-12"><small class="text-muted">Observación</small><p>@(Model.Observacion ?? "Sin observación")</p></div></div><div class="d-flex justify-content-end gap-2"><a asp-action="Index" class="btn btn-outline-secondary">Volver</a>@if(User.IsInRole("Administrador")){<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>}</div></div>
+@{
+    ViewData["Title"] = "Detalle del lote";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<section class="sg-page-head">
+    <div>
+        <h1>Detalle del lote</h1>
+        <p>Consultá la información del lote </p>
+    </div>
+    <div class="sg-actions">
+    </div>
+</section>
+
+<div class="sg-visual-hero sg-hero-lotes">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-barcode"></i> Trazabilidad
+        </span>
+        <h1>@Model.CodigoLote</h1>
+        <div class="sg-visual-line"></div>
+        <p>@Model.Productor?.Nombre · @Model.Finca?.Nombre</p>
+    </div>
+</div>
+
+<div class="sg-card">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <small class="text-muted">Productor</small>
+            <h5>@Model.Productor?.Nombre</h5>
+        </div>
+
+        <div class="col-md-4">
+            <small class="text-muted">Finca</small>
+            <h5>@(Model.Finca?.Nombre ?? "Sin finca asociada")</h5>
+        </div>
+
+        <div class="col-md-4">
+            <small class="text-muted">Peso</small>
+            <h5>@Model.PesoKg.ToString("N2") kg</h5>
+        </div>
+
+        <div class="col-md-4">
+            <small class="text-muted">Fecha de recepción</small>
+            <p>@Model.FechaRecepcion.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+
+        <div class="col-md-4">
+            <small class="text-muted">Estado</small>
+            <p>@Model.Estado</p>
+        </div>
+
+        <div class="col-12">
+            <small class="text-muted">Observación</small>
+            <p>@(Model.Observacion ?? "Sin observación")</p>
+        </div>
+    </div>
+
+    <!-- Acciones / Botones -->
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+
+        @if (User.IsInRole("Administrador"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+        }
+    </div>
+</div>

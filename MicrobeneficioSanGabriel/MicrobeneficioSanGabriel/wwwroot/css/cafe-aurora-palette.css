@@ -155,7 +155,7 @@ body {
     box-shadow: var(--aurora-shadow) !important;
 }
 
-.sg-page-head h1,
+. h1,
 .sg-panel-head h2,
 .sg-panel-head h3,
 .card-title,

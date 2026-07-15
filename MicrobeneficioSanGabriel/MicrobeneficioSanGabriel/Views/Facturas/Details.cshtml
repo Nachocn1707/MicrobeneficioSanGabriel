@@ -14,516 +14,146 @@
 
     string estadoClase = Model.EstadoPago switch
     {
-        "Pago completado" => "factura-estado factura-estado-pagado",
-        "Pagado" => "factura-estado factura-estado-pagado",
-        "Pendiente" => "factura-estado factura-estado-pendiente",
-        "Anulada" => "factura-estado factura-estado-anulada",
-        _ => "factura-estado factura-estado-otro"
+        "Pago completado" => "movimiento-estado estado-pagado",
+        "Pagado" => "movimiento-estado estado-pagado",
+        "Pendiente" => "movimiento-estado estado-pendiente",
+        "Anulada" => "movimiento-estado estado-anulada",
+        _ => "movimiento-estado estado-neutral"
     };
 }
 
 @section Styles {
-    <style>
-        .factura-detalle-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 14px;
-        }
 
-        .factura-detalle-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-        .factura-detalle-title h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #2b160d;
-        }
-
-        .factura-detalle-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #d8b36a;
-            margin: 12px 0;
-        }
-
-        .factura-detalle-title p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .factura-status-top {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 14px 18px;
-            box-shadow: 0 12px 28px rgba(58, 33, 20, 0.08);
-            min-width: 190px;
-            text-align: center;
-        }
-
-            .factura-status-top small {
-                display: block;
-                color: #7a6a5d;
-                font-weight: 800;
-                margin-bottom: 8px;
-            }
-
-        .factura-premium-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-        }
-
-        .factura-premium-header {
-            background: linear-gradient(135deg, #3a1f12, #7a5230);
-            padding: 24px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 18px;
-            border-top: 5px solid #f3d27a;
-        }
-
-            .factura-premium-header h2 {
-                margin: 0;
-                color: #fff3c4;
-                font-size: 1.8rem;
-                font-weight: 950;
-            }
-
-            .factura-premium-header span {
-                color: #fff8df;
-                font-weight: 700;
-                opacity: 0.92;
-            }
-
-        .factura-premium-body {
-            display: grid;
-            grid-template-columns: 1fr 0.48fr;
-            gap: 0;
-            min-height: 430px;
-        }
-
-        .factura-info-panel {
-            padding: 30px;
-        }
-
-        .factura-summary-panel {
-            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/orders/order-detail-coffee.jpg");
-            background-size: cover;
-            background-position: center;
-            padding: 30px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
-        }
-
-        .factura-summary-box {
-            width: 100%;
-            background: rgba(255, 253, 248, 0.11);
-            border: 1px solid rgba(255, 243, 196, 0.22);
-            border-radius: 24px;
-            padding: 24px;
-            backdrop-filter: blur(4px);
-        }
-
-            .factura-summary-box h3 {
-                color: #fff3c4;
-                font-size: 1.35rem;
-                font-weight: 950;
-                margin: 0;
-            }
-
-        .factura-summary-line {
-            width: 70px;
-            height: 4px;
-            border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
-        }
-
-        .factura-total-box {
-            background: rgba(255, 253, 248, 0.94);
-            color: #2b160d;
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 18px;
-        }
-
-            .factura-total-box span {
-                display: block;
-                color: #7a5230;
-                font-weight: 900;
-                margin-bottom: 4px;
-            }
-
-            .factura-total-box strong {
-                font-size: 2rem;
-                font-weight: 950;
-                color: #198754;
-            }
-
-        .factura-summary-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            color: #fff8df;
-            font-weight: 800;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 243, 196, 0.18);
-        }
-
-            .factura-summary-item:last-child {
-                border-bottom: none;
-            }
-
-        .factura-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .factura-detail-item {
-            background: #fff8df;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 17px;
-            min-height: 92px;
-        }
-
-            .factura-detail-item.full {
-                grid-column: 1 / -1;
-            }
-
-        .factura-detail-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #7a5230;
-            font-size: 0.78rem;
-            font-weight: 950;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 8px;
-        }
-
-            .factura-detail-label i {
-                color: #a66b20;
-            }
-
-        .factura-detail-value {
-            display: block;
-            color: #2b160d;
-            font-size: 1rem;
-            font-weight: 800;
-            line-height: 1.45;
-            word-break: break-word;
-        }
-
-        .factura-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 22px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn-factura {
-            border: none;
-            border-radius: 13px;
-            padding: 11px 18px;
-            font-weight: 900;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: 0.18s ease;
-        }
-
-            .btn-factura:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-factura-primary {
-            background: #4a2c1a;
-            color: #fff8df;
-        }
-
-            .btn-factura-primary:hover {
-                background: #7a5230;
-                color: #fff8df;
-            }
-
-        .btn-factura-warning {
-            background: #f3b23f;
-            color: #2b160d;
-        }
-
-            .btn-factura-warning:hover {
-                background: #e5a22e;
-                color: #2b160d;
-            }
-
-        .btn-factura-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-            .btn-factura-secondary:hover {
-                background: #5c636a;
-                color: white;
-            }
-
-        .factura-estado {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            padding: 7px 13px;
-            font-size: 0.82rem;
-            font-weight: 950;
-            width: fit-content;
-        }
-
-        .factura-estado-pagado {
-            background: #dff5e3;
-            color: #1e7d32;
-        }
-
-        .factura-estado-pendiente {
-            background: #fff4d3;
-            color: #8a6500;
-        }
-
-        .factura-estado-anulada {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .factura-estado-otro {
-            background: #fde1df;
-            color: #b42318;
-        }
-
-        @@media (max-width: 1100px) {
-            .factura-premium-body {
-                grid-template-columns: 1fr;
-            }
-
-            .factura-summary-panel {
-                min-height: 320px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .factura-detalle-header {
-                flex-direction: column;
-            }
-
-            .factura-detail-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .factura-premium-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .factura-actions {
-                justify-content: flex-start;
-            }
-
-            .factura-detalle-title h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<div class="factura-detalle-page">
-
-    <div class="factura-detalle-header">
-        <div class="factura-detalle-title">
-            <h1>Detalles de factura</h1>
-            <div class="factura-detalle-line"></div>
-            <p>Información registrada para esta factura del microbeneficio.</p>
-        </div>
-
-        <div class="factura-status-top">
-            <small>Estado de pago</small>
-            <span class="@estadoClase">@Model.EstadoPago</span>
-        </div>
+<section class="sg-page-head">
+    <div>
+        <h1>Detalle de factura</h1>
+        <p>Consultá la información registrada para esta factura.</p>
     </div>
+    <div class="sg-actions">
+    </div>
+</section>
 
-    <div class="factura-premium-card">
+<section class="sg-visual-hero sg-hero-facturas">
+    <div class="sg-visual-hero-content">
+        <h1>Cliente: @cliente</h1>
+        <div class="sg-visual-line"></div>
+        <span class="sg-visual-badge"><i class="fa-solid fa-file-invoice-dollar"></i> Comprobante de venta</span>
+    </div>
+</section>
 
-        <div class="factura-premium-header">
-            <div>
-                <h2>Factura #@Model.Id</h2>
-                <span>Microbeneficio San Gabriel</span>
-            </div>
+<div class="EstiloDetalle-detalle-page">
+    <div class="EstiloDetalle-premium-card">
 
-            <span>
-                <i class="fa-solid fa-file-invoice-dollar"></i>
-                Comprobante de venta
-            </span>
+        <div class="EstiloDetalle-premium-header">
+            <h2>Información general</h2>
+            <span class="movimiento-badge-top">Factura #@Model.Id</span>
         </div>
 
-        <div class="factura-premium-body">
+        <div class="EstiloDetalle-premium-body">
 
-            <div class="factura-info-panel">
+            <div class="EstiloDetalle-detail-grid">
 
-                <div class="factura-detail-grid">
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">CLIENTE</span>
+                    <span class="EstiloDetalle-detail-value">
+                        @cliente
+                    </span>
+                </div>
 
-                    <div class="factura-detail-item">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-user"></i>
-                            Cliente
-                        </span>
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">TELÉFONO</span>
+                    <span class="EstiloDetalle-detail-value">
+                        @telefono
+                    </span>
+                </div>
 
-                        <span class="factura-detail-value">
-                            @cliente
-                        </span>
-                    </div>
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">PRODUCTO</span>
+                    <span class="EstiloDetalle-detail-value">
+                        @producto
+                    </span>
+                </div>
 
-                    <div class="factura-detail-item">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-phone"></i>
-                            Teléfono
-                        </span>
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">CANTIDAD</span>
+                    <span class="EstiloDetalle-detail-value">
+                        @cantidad
+                    </span>
+                </div>
 
-                        <span class="factura-detail-value">
-                            @telefono
-                        </span>
-                    </div>
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">FECHA DE FACTURA</span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.FechaFactura.ToString("dd/MM/yyyy hh:mm tt")
+                    </span>
+                </div>
 
-                    <div class="factura-detail-item">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-mug-hot"></i>
-                            Producto
-                        </span>
-
-                        <span class="factura-detail-value">
-                            @producto
-                        </span>
-                    </div>
-
-                    <div class="factura-detail-item">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-weight-hanging"></i>
-                            Cantidad
-                        </span>
-
-                        <span class="factura-detail-value">
-                            @cantidad
-                        </span>
-                    </div>
-
-                    <div class="factura-detail-item">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            Fecha de factura
-                        </span>
-
-                        <span class="factura-detail-value">
-                            @Model.FechaFactura.ToString("dd/MM/yyyy hh:mm tt")
-                        </span>
-                    </div>
-
-                    <div class="factura-detail-item">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-circle-info"></i>
-                            Estado
-                        </span>
-
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">ESTADO</span>
+                    <div>
                         <span class="@estadoClase">
                             @Model.EstadoPago
                         </span>
                     </div>
-
-                    <div class="factura-detail-item full">
-                        <span class="factura-detail-label">
-                            <i class="fa-solid fa-comment-dots"></i>
-                            Observación
-                        </span>
-
-                        <span class="factura-detail-value">
-                            @observacion
-                        </span>
-                    </div>
-
                 </div>
 
-                <div class="factura-actions">
-
-                    <a asp-action="Index"
-                           class="btn-factura btn-factura-primary">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la lista
-                    </a>
-
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <a asp-action="Edit"
-                               asp-route-id="@Model.Id"
-                               class="btn-factura btn-factura-warning">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                            Editar
-                        </a>
-                    }
-
-                    <a asp-action="Imprimir"
-                           asp-route-id="@Model.Id"
-                           class="btn-factura btn-factura-secondary">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        PDF
-                    </a>
-
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">SUBTOTAL</span>
+                    <span class="EstiloDetalle-detail-value">
+                        ₡ @Model.Subtotal.ToString("N0")
+                    </span>
                 </div>
 
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">IVA</span>
+                    <span class="EstiloDetalle-detail-value">
+                        ₡ @Model.IVA.ToString("N0")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">TOTAL</span>
+                    <span class="EstiloDetalle-detail-value EstiloDetalle-detail-value-total">
+                        ₡ @Model.Total.ToString("N0")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">OBSERVACIÓN</span>
+                    <span class="EstiloDetalle-detail-value">
+                        @observacion
+                    </span>
+                </div>
             </div>
 
-            <div class="factura-summary-panel">
-                <div class="factura-summary-box">
-                    <h3>Resumen de pago</h3>
-                    <div class="factura-summary-line"></div>
+            <div class="EstiloDetalle-actions">
 
-                    <div class="factura-total-box">
-                        <span>Total</span>
-                        <strong>₡ @Model.Total.ToString("N0")</strong>
-                    </div>
+                <a asp-action="Index"
+                   class="btn-EstiloDetalle btn-EstiloDetalle-primary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver a la lista
+                </a>
 
-                    <div class="factura-summary-item">
-                        <span>Subtotal</span>
-                        <strong>₡ @Model.Subtotal.ToString("N0")</strong>
-                    </div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn-EstiloDetalle btn-EstiloDetalle-warning">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Editar
+                    </a>
+                }
 
-                    <div class="factura-summary-item">
-                        <span>IVA</span>
-                        <strong>₡ @Model.IVA.ToString("N0")</strong>
-                    </div>
+                <a asp-action="Imprimir"
+                   asp-route-id="@Model.Id"
+                   class="btn-EstiloDetalle btn-EstiloDetalle-secondary">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    PDF
+                </a>
 
-                    <div class="factura-summary-item">
-                        <span>Estado</span>
-                        <strong>@Model.EstadoPago</strong>
-                    </div>
-
-                    <div class="factura-summary-item">
-                        <span>Factura</span>
-                        <strong>#@Model.Id</strong>
-                    </div>
-                </div>
             </div>
 
         </div>
