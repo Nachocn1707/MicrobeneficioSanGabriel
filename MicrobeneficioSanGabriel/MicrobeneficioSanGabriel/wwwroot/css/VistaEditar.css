@@ -1,33 +1,35 @@
-﻿body, .admin-main, .admin-content {
-    background: #ffffff !important; 
+﻿/* ===========================================================
+   VistaEditar.css
+   =========================================================== */
+
+body, .admin-main, .admin-content {
+    background: #ffffff !important;
 }
 
-.EstiloEditar-edit-page {
-    padding: 10px;
+.EstiloEditaR-edit-page {
+    padding: 32px;
 }
 
-.EstiloEditar-header {
-    margin-bottom: 30px;
+.EstiloEditaR-header {
+    margin-bottom: 24px;
 }
 
-    .EstiloEditar-header h1 {
-        font-size: 40px;
+    .EstiloEditaR-header h1 {
+        color: #2b160d;
         font-weight: 800;
-        color: #111827;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        font-size: 32px;
     }
 
-    .EstiloEditar-header p {
-        color: #6b7280;
-        font-size: 16px;
+    .EstiloEditaR-header p {
+        color: #6f5b4a;
         margin: 0;
-        max-width: 650px;
     }
 
 .EstiloEditaR-form-container {
-    padding: 40px !important; 
-    background: #ffff !important; 
-    border-radius: 24px !important; 
+    padding: 40px !important;
+    background: #ffff;
+    border-radius: 24px !important;
     box-sizing: border-box;
 }
 
@@ -35,11 +37,20 @@
     display: block;
     width: 100%;
     max-width: 100%;
-    background: #ffffff !important; 
-    border-radius: 28px !important; 
+    background: #ffffff !important;
+    border-radius: 28px !important;
     border: 1px solid #e5e7eb !important;
     box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08) !important;
     overflow: visible;
+}
+
+.EstiloEditaR-card {
+    max-width: 100%;
+    background: #fffdf2 !important;
+    border: 1px solid #ead8a2 !important;
+    border-radius: 24px !important;
+    box-shadow: 0 12px 30px rgba(74, 44, 26, 0.06) !important;
+    overflow: hidden;
 }
 
 .Estilo-alert {
@@ -55,135 +66,15 @@
     gap: 10px;
 }
 
-.EstiloEditar-card-header {
+.EstiloEditaR-card-header {
     display: none !important;
 }
 
-.EstiloEditar-card-body {
-    padding: 50px 60px !important;
-}
-
-    .EstiloEditar-card-body h5,
-    .EstiloEditar-card-body label[for="imagenArchivo"],
-    .EstiloEditar-card-body .col-12:has(.form-switch) {
-    }
-
-.form-label {
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 10px;
-    display: block;
-}
-
-.col-md-6, .col-12 {
-    position: relative;
-}
-
-.form-control, .form-select {
-    min-height: 56px !important;
-    border-radius: 18px !important;
-    border: 1px solid #d8dee8 !important;
-    background: #ffffff !important;
-    font-size: 15px;
-    font-weight: 700;
-    color: #2b160d;
-    transition: .25s;
-    padding: 10px 16px !important;
-    box-sizing: border-box;
-}
-
-    .form-control:focus, .form-select:focus {
-        border-color: #198754 !important;
-        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.12) !important;
-        outline: none;
-        background: #fff !important;
-    }
-
-textarea.form-control {
-    min-height: 130px !important;
-    padding-top: 16px !important;
-    resize: vertical;
-}
-
-.d-flex.flex-wrap.align-items-center.gap-3.p-3.rounded-4.border.bg-light {
-    background-color: #f8fafc !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 24px !important;
-    padding: 24px !important;
-}
-
-.d-flex.flex-wrap.align-items-center img {
-    border-radius: 16px !important;
-    border: 1px solid #e5e7eb !important;
-    object-fit: cover;
-}
-
-input[type="file"].form-control {
-    display: flex;
-    align-items: center;
-    padding: 0 !important;
-    min-height: 56px !important;
-    overflow: hidden;
-}
-
-input[type="file"]::file-selector-button {
-    height: 100% !important;
-    padding: 0 24px !important;
-    margin-right: 16px !important;
-    border: none !important;
-    background: #e5e7eb !important;
-    color: #1f2937 !important;
-    font-weight: 700 !important;
-    transition: 0.2s;
-    cursor: pointer;
-}
-
-    input[type="file"]::file-selector-button:hover {
-        background: #d1d5db !important;
-    }
-
-body, .admin-main, .admin-content {
-    background: #ffff !important; 
-}
-
-.EstiloEditar-edit-page {
-    padding: 32px;
-}
-
-.EstiloEditar-header {
-    margin-bottom: 24px;
-}
-
-    .EstiloEditar-header h1 {
-        color: #2b160d;
-        font-weight: 800;
-        margin-bottom: 6px;
-        font-size: 32px;
-    }
-
-    .EstiloEditar-header p {
-        color: #6f5b4a;
-        margin: 0;
-    }
-
-.EstiloEditar-card {
-    max-width: 100%;
-    background: #fffdf2 !important; 
-    border: 1px solid #ead8a2 !important;
-    border-radius: 24px !important; 
-    box-shadow: 0 12px 30px rgba(74, 44, 26, 0.06) !important;
-    overflow: hidden;
-}
-
-.EstiloEditar-card-header {
-    display: none !important;
-}
-
-.EstiloEditar-card-body {
+.EstiloEditaR-card-body {
     padding: 40px !important;
 }
 
-.EstiloEditar-section h5 {
+.EstiloEditaR-section h5 {
     margin: 25px 0 15px 0;
     padding-top: 15px;
     border-top: 1px solid #ead8a2;
@@ -195,7 +86,7 @@ body, .admin-main, .admin-content {
     gap: 8px;
 }
 
-.EstiloEditar-section:first-of-type h5 {
+.EstiloEditaR-section:first-of-type h5 {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
@@ -206,6 +97,10 @@ body, .admin-main, .admin-content {
     font-weight: 700;
     margin-bottom: 8px;
     display: block;
+}
+
+.col-md-6, .col-12 {
+    position: relative;
 }
 
 .form-control, .form-select {
@@ -229,6 +124,7 @@ body, .admin-main, .admin-content {
 
 textarea.form-control {
     min-height: 110px !important;
+    resize: vertical;
 }
 
 .d-flex.flex-wrap.align-items-center.gap-3.p-3.rounded-4.border.bg-light {
@@ -251,10 +147,27 @@ textarea.form-control {
 input[type="file"].form-control {
     display: flex;
     align-items: center;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0 !important;
+    min-height: 56px !important;
     line-height: 54px;
+    overflow: hidden;
 }
+
+input[type="file"]::file-selector-button {
+    height: 100% !important;
+    padding: 0 24px !important;
+    margin-right: 16px !important;
+    border: none !important;
+    background: #e5e7eb !important;
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+    input[type="file"]::file-selector-button:hover {
+        background: #d1d5db !important;
+    }
 
 .form-check.form-switch {
     background: rgba(25, 135, 84, 0.05) !important;
@@ -292,7 +205,7 @@ input[type="file"].form-control {
     cursor: pointer;
 }
 
-.EstiloEditar-actions {
+.EstiloEditaR-actions {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
@@ -315,7 +228,7 @@ input[type="file"].form-control {
 }
 
 .btn-guardar {
-    background: #2e5933 !important; 
+    background: #2e5933 !important;
     border: 1px solid #2e5933 !important;
     color: #ffffff !important;
     cursor: pointer;
@@ -344,19 +257,141 @@ input[type="file"].form-control {
 }
 
 @media (max-width: 768px) {
-    .EstiloEditar-edit-page {
+    .EstiloEditaR-edit-page {
         padding: 16px;
     }
 
-    .EstiloEditar-card-body {
+    .EstiloEditaR-card-body {
         padding: 20px !important;
     }
 
-    .EstiloEditar-actions {
+    .EstiloEditaR-actions {
         flex-direction: column-reverse;
     }
 
     .btn-guardar, .btn-volver {
         width: 100%;
     }
+}
+
+/* ===========================================================
+   Modo oscuro
+   =========================================================== */
+
+html.dark body,
+html.dark .admin-main,
+html.dark .admin-content {
+    background: #241a12 !important;
+}
+
+html.dark .EstiloEditaR-header h1 {
+    color: #f1e6d8;
+}
+
+html.dark .EstiloEditaR-header p {
+    color: #b4a08a;
+}
+
+html.dark .Estilo-alert {
+    background: #1c2f36;
+    color: #7cc6e8;
+    border-color: #2c4a54;
+}
+
+html.dark .EstiloEditaR-card,
+html.dark .EstiloEditaR-card {
+    background: #2c2116 !important;
+    border-color: #4a3826 !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+html.dark .EstiloEditaR-form-container {
+    background: #2c2116 !important;
+}
+
+html.dark .EstiloEditaR-section h5 {
+    color: #7fd996;
+    border-top-color: #4a3826;
+}
+
+html.dark .form-label {
+    color: #f1e6d8;
+}
+
+html.dark .form-control,
+html.dark .form-select {
+    background: #362a1c !important;
+    border-color: #4a3826 !important;
+    color: #f1e6d8;
+}
+
+    html.dark .form-control:focus,
+    html.dark .form-select:focus {
+        background: #362a1c !important;
+        border-color: #7fd996 !important;
+        box-shadow: 0 0 0 0.25rem rgba(127, 217, 150, 0.15) !important;
+    }
+
+    html.dark .form-control::placeholder {
+        color: #8a7a68;
+    }
+
+html.dark .d-flex.flex-wrap.align-items-center.gap-3.p-3.rounded-4.border.bg-light {
+    background: #2c2116 !important;
+    border-color: #4a3826 !important;
+}
+
+html.dark .d-flex.flex-wrap.align-items-center img,
+html.dark .img-preview-modern {
+    border-color: #4a3826 !important;
+}
+
+html.dark input[type="file"]::file-selector-button {
+    background: #4a3826 !important;
+    color: #f1e6d8 !important;
+}
+
+    html.dark input[type="file"]::file-selector-button:hover {
+        background: #5c4630 !important;
+    }
+
+html.dark .form-check.form-switch {
+    background: rgba(127, 217, 150, 0.08) !important;
+    border-color: rgba(216, 168, 102, 0.35) !important;
+}
+
+html.dark .form-check-label {
+    color: #f1e6d8 !important;
+}
+
+html.dark .form-check-input:checked {
+    background-color: #2f7d3c !important;
+    border-color: #2f7d3c !important;
+}
+
+html.dark .EstiloEditaR-actions {
+    border-top-color: #4a3826;
+}
+
+html.dark .btn-guardar {
+    background: #2f7d3c !important;
+    border-color: #2f7d3c !important;
+}
+
+    html.dark .btn-guardar:hover {
+        background: #256330 !important;
+    }
+
+html.dark .btn-volver {
+    background: #362a1c !important;
+    border-color: #4a3826 !important;
+    color: #f1e6d8 !important;
+}
+
+    html.dark .btn-volver:hover {
+        background: #4a3826 !important;
+    }
+
+html.dark .text-danger {
+    color: #ef9494 !important;
 }

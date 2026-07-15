@@ -1358,13 +1358,13 @@ html.dark {
     html.dark .sg-card {
         background: #261b07;
         border: 1px solid rgba(255,255,255,.04);
-        color: var(--sg-text);
+        color: #FFFFFF;
         box-shadow: 0 6px 18px rgba(0,0,0,.35);
     }
 
     html.dark .sg-panel,
     html.dark .sg-panel-head {
-        color: var(--sg-text);
+        color: var(--sg-text) !important;
     }
 
         html.dark .sg-panel-head a,

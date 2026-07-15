@@ -1,0 +1,254 @@
+﻿.ia-report-page {
+    display: grid;
+    gap: 22px;
+}
+
+.ia-report-header h1 {
+    color: #2b160d;
+    font-size: 34px;
+    font-weight: 950;
+    margin: 0;
+}
+
+.ia-report-header p {
+    color: #7a6a5d;
+    font-weight: 600;
+    margin: 6px 0 0;
+}
+
+.ia-card {
+    background: #fffdf8;
+    border: 1px solid #ead8a2;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 18px 42px rgba(74, 44, 26, 0.10);
+}
+
+    .ia-card h2 {
+        color: #2b160d;
+        font-size: 20px;
+        font-weight: 950;
+        margin-bottom: 14px;
+    }
+
+.ia-summary {
+    border-left: 6px solid #d9a44a;
+    background: #fff8df;
+}
+
+    .ia-summary p {
+        color: #3a2114;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+.ia-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ia-metric strong {
+    display: block;
+    color: #2b160d;
+    font-size: 28px;
+    font-weight: 950;
+}
+
+.ia-metric span {
+    color: #7a6a5d;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ia-two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.ia-list {
+    display: grid;
+    gap: 10px;
+}
+
+.ia-list-item {
+    border: 1px solid #ead8a2;
+    border-radius: 14px;
+    padding: 14px;
+    background: #fffaf2;
+}
+
+    .ia-list-item strong {
+        color: #2b160d;
+        font-weight: 950;
+    }
+
+    .ia-list-item span {
+        display: block;
+        color: #7a6a5d;
+        font-size: 13px;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+
+.ia-recommendation {
+    border-radius: 14px;
+    padding: 15px;
+    border: 1px solid #ead8a2;
+    background: #fffaf2;
+    display: flex;
+    gap: 12px;
+}
+
+    .ia-recommendation i {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: #4a2c1a;
+        color: #fff3c4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .ia-recommendation h3 {
+        margin: 0;
+        color: #2b160d;
+        font-size: 15px;
+        font-weight: 950;
+    }
+
+    .ia-recommendation p {
+        margin: 4px 0 0;
+        color: #4d3c31;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+.ia-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-ia-primary {
+    background: #4a2c1a;
+    color: #fff8df;
+    border: 1px solid #4a2c1a;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.btn-ia-secondary {
+    background: #fff3c4;
+    color: #4a2c1a;
+    border: 1px solid #d9a44a;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+@media (max-width: 1000px) {
+    .ia-grid,
+    .ia-two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===========================================================
+   Modo oscuro
+   =========================================================== */
+
+html.dark .ia-report-header h1 {
+    color: #f1e6d8;
+}
+
+html.dark .ia-report-header p {
+    color: #b4a08a;
+}
+
+html.dark .ia-card {
+    background: #2c2116;
+    border-color: #4a3826;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
+}
+
+    html.dark .ia-card h2 {
+        color: #f1e6d8;
+    }
+
+html.dark .ia-summary {
+    border-left-color: #e0ac52;
+    background: #3a2b18;
+}
+
+    html.dark .ia-summary p {
+        color: #f1e6d8;
+    }
+
+html.dark .ia-metric strong {
+    color: #f1e6d8;
+}
+
+html.dark .ia-metric span {
+    color: #b4a08a;
+}
+
+html.dark .ia-list-item {
+    border-color: #4a3826;
+    background: #362a1c;
+}
+
+    html.dark .ia-list-item strong {
+        color: #f1e6d8;
+    }
+
+    html.dark .ia-list-item span {
+        color: #b4a08a;
+    }
+
+html.dark .ia-recommendation {
+    border-color: #4a3826;
+    background: #362a1c;
+}
+
+    html.dark .ia-recommendation i {
+        background: #e0ac52;
+        color: #241a12;
+    }
+
+    html.dark .ia-recommendation h3 {
+        color: #f1e6d8;
+    }
+
+    html.dark .ia-recommendation p {
+        color: #c3ac96;
+    }
+
+html.dark .btn-ia-primary {
+    background: #e0ac52;
+    color: #241a12;
+    border-color: #e0ac52;
+}
+
+    html.dark .btn-ia-primary:hover {
+        background: #f0c078;
+        border-color: #f0c078;
+    }
+
+html.dark .btn-ia-secondary {
+    background: #423114;
+    color: #f0c078;
+    border-color: #5c4726;
+}
+
+    html.dark .btn-ia-secondary:hover {
+        background: #5c4726;
+    }
