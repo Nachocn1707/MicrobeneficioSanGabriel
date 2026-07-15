@@ -6,431 +6,64 @@
 
     string rolClase = Model.Rol switch
     {
-        "Administrador" => "delete-estado delete-estado-admin",
-        "Cliente" => "delete-estado delete-estado-cliente",
-        "Vendedor" => "delete-estado delete-estado-vendedor",
-        _ => "delete-estado delete-estado-neutral"
+        "Administrador" => "text-danger",
+        "Cliente" => "text-success",
+        "Vendedor" => "text-primary",
+        _ => "text-secondary"
     };
 }
 
 @section Styles {
-    <style>
-        .delete-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 14px;
-        }
-
-        .delete-header h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #b42318;
-        }
-
-        .delete-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #dc3545;
-            margin: 12px 0;
-        }
-
-        .delete-header p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .delete-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #fde1df;
-            color: #b42318;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-weight: 900;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .delete-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 0.38fr 0.62fr;
-            min-height: 520px;
-        }
-
-        .delete-side {
-            background: linear-gradient(180deg, rgba(80, 19, 19, 0.88), rgba(45, 14, 14, 0.94)), url("/images/dashboard/client-hero.jpg");
-            background-size: cover;
-            background-position: center;
-            padding: 36px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
-        }
-
-        .delete-side-content {
-            max-width: 360px;
-        }
-
-        .delete-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 26px;
-        }
-
-        .delete-side h2 {
-            color: #fff3c4;
-            font-size: 2rem;
-            font-weight: 950;
-            margin: 0;
-        }
-
-        .delete-side-line {
-            width: 70px;
-            height: 4px;
-            border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
-        }
-
-        .delete-side p {
-            color: #fff8df;
-            opacity: 0.95;
-            font-weight: 650;
-            line-height: 1.55;
-            margin-bottom: 28px;
-        }
-
-        .delete-info-list {
-            display: grid;
-            gap: 16px;
-        }
-
-        .delete-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff8df;
-            font-weight: 800;
-        }
-
-            .delete-info-item i {
-                color: #f3d27a;
-                width: 18px;
-            }
-
-        .delete-body {
-            padding: 38px;
-        }
-
-        .delete-warning {
-            background: #fde1df;
-            color: #b42318;
-            border: 1px solid #f5b5ae;
-            border-radius: 18px;
-            padding: 15px 18px;
-            font-weight: 750;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .delete-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .delete-item {
-            background: #fff8df;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 17px;
-            min-height: 90px;
-        }
-
-            .delete-item.full {
-                grid-column: 1 / -1;
-            }
-
-        .delete-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #7a5230;
-            font-size: 0.78rem;
-            font-weight: 950;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 8px;
-        }
-
-        .delete-value {
-            display: block;
-            color: #2b160d;
-            font-size: 1rem;
-            font-weight: 800;
-            line-height: 1.45;
-            word-break: break-word;
-        }
-
-        .delete-estado {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            padding: 7px 13px;
-            font-size: 0.82rem;
-            font-weight: 950;
-            width: fit-content;
-        }
-
-        .delete-estado-admin {
-            background: #e9e0ff;
-            color: #5636a3;
-        }
-
-        .delete-estado-cliente {
-            background: #dff5e3;
-            color: #1e7d32;
-        }
-
-        .delete-estado-vendedor {
-            background: #dff6fd;
-            color: #0369a1;
-        }
-
-        .delete-estado-neutral {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .delete-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 26px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-delete {
-            border: none;
-            border-radius: 14px;
-            padding: 12px 20px;
-            font-weight: 950;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.18s ease;
-        }
-
-            .btn-delete:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-delete-volver {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-            .btn-delete-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
-            }
-
-        .btn-delete-confirmar {
-            background: #dc3545;
-            color: #ffffff;
-        }
-
-            .btn-delete-confirmar:hover {
-                background: #bb2d3b;
-                color: #ffffff;
-            }
-
-        @@media (max-width: 1100px) {
-            .delete-card {
-                grid-template-columns: 1fr;
-            }
-
-            .delete-side {
-                min-height: 300px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .delete-body {
-                padding: 24px;
-            }
-
-            .delete-side {
-                padding: 28px;
-            }
-
-            .delete-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .delete-header h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/VistaEliminar.css" />
 }
 
-<div class="delete-page">
+<div class="sg-card border-danger">
+    <h1 class="text-danger">
+        <i class="fa-solid fa-user-xmark"></i>
+        Eliminar usuario
+    </h1>
 
-    <div class="delete-header">
-        <span class="delete-badge">
+    <p>
+        <strong>Usuario:</strong> @Model.UserName<br />
+        <strong>Correo:</strong> @Model.Email<br />
+        <strong>Teléfono:</strong> @(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "Sin teléfono" : Model.PhoneNumber)<br />
+        <strong>Rol:</strong> <span class="@rolClase">@Model.Rol</span>
+    </p>
+
+    <div class="alert alert-warning">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        Esta acción eliminará al usuario del sistema de forma <strong>permanente</strong>.
+        El usuario perderá el acceso al sistema y no podrá iniciar sesión.
+    </div>
+
+    @if (Model.Rol == "Administrador")
+    {
+        <div class="alert alert-danger">
             <i class="fa-solid fa-triangle-exclamation"></i>
-            Acción irreversible
-        </span>
-
-        <h1>Eliminar usuario</h1>
-        <div class="delete-line"></div>
-
-        <p>
-            Esta acción eliminará el usuario seleccionado del sistema.
-        </p>
-    </div>
-
-    <div class="delete-card">
-
-        <div class="delete-side">
-            <div class="delete-side-content">
-
-                <div class="delete-icon">
-                    <i class="fa-solid fa-user-xmark"></i>
-                </div>
-
-                <h2>@Model.UserName</h2>
-                <div class="delete-side-line"></div>
-
-                <p>
-                    Verificá la información antes de confirmar la eliminación.
-                    El usuario perderá el acceso al sistema.
-                </p>
-
-                <div class="delete-info-list">
-                    <div class="delete-info-item">
-                        <i class="fa-solid fa-user"></i>
-                        Cuenta registrada
-                    </div>
-
-                    <div class="delete-info-item">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Rol asignado
-                    </div>
-
-                    <div class="delete-info-item">
-                        <i class="fa-solid fa-trash"></i>
-                        Eliminación definitiva
-                    </div>
-                </div>
-
-            </div>
+            <strong>¡Advertencia!</strong> Estás eliminando un usuario con rol de <strong>Administrador</strong>.
+            Asegúrate de que haya otro administrador activo en el sistema.
         </div>
+    }
 
-        <div class="delete-body">
-
-            <div class="delete-warning">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>
-                    Confirme si desea eliminar este usuario. Esta acción puede impedir que la persona vuelva a ingresar al sistema.
-                </span>
-            </div>
-
-            <div class="delete-grid">
-
-                <div class="delete-item full">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-envelope"></i>
-                        Correo
-                    </span>
-
-                    <span class="delete-value">
-                        @Model.Email
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-user"></i>
-                        Usuario
-                    </span>
-
-                    <span class="delete-value">
-                        @Model.UserName
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-phone"></i>
-                        Teléfono
-                    </span>
-
-                    <span class="delete-value">
-                        @(string.IsNullOrWhiteSpace(Model.PhoneNumber)
-                            ? "Sin teléfono"
-                            : Model.PhoneNumber)
-                    </span>
-                </div>
-
-                <div class="delete-item full">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Rol
-                    </span>
-
-                    <span class="@rolClase">
-                        @Model.Rol
-                    </span>
-                </div>
-
-            </div>
-
-            <form asp-action="Delete" method="post">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="delete-actions">
-
-                    <a asp-action="Index"
-                           class="btn-delete btn-delete-volver">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver
-                    </a>
-
-                    <button type="submit"
-                            class="btn-delete btn-delete-confirmar">
-                        <i class="fa-solid fa-trash"></i>
-                        Confirmar eliminación
-                    </button>
-
-                </div>
-            </form>
-
+    @if (Model.Rol == "Vendedor")
+    {
+        <div class="alert alert-info">
+            <i class="fa-solid fa-circle-info"></i>
+            <strong>Vendedor:</strong> Este usuario tiene permisos de ventas.
+            Eliminarlo puede afectar los registros de pedidos asociados.
         </div>
+    }
 
-    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
 
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Cancelar
+            </a>
+            <button class="btn btn-danger" type="submit">
+                <i class="fa-solid fa-trash"></i> Confirmar eliminación
+            </button>
+        </div>
+    </form>
 </div>

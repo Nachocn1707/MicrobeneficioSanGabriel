@@ -3,4 +3,25 @@
     ViewData["Title"] = "Eliminar productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="sg-card border-danger"><h1 class="text-danger">Eliminar productor</h1><p>Confirme la eliminación de <strong>@Model.Nombre</strong>.</p>@if(Model.Lotes.Any() || Model.Fincas.Any()){<div class="alert alert-warning">El productor tiene @Model.Fincas.Count finca(s) y @Model.Lotes.Count lote(s) relacionados. El sistema impedirá la eliminación hasta resolver estas relaciones.</div>}<form asp-action="Delete" method="post"><input type="hidden" asp-for="Id"/><div class="d-flex justify-content-end gap-2"><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a><button class="btn btn-danger" type="submit">Confirmar eliminación</button></div></form></div>
+
+<div class="sg-card border-danger">
+    <h1 class="text-danger">Eliminar productor</h1>
+    <p>Confirme la eliminación de <strong>@Model.Nombre</strong>.</p>
+
+    @if (Model.Lotes.Any() || Model.Fincas.Any())
+    {
+        <div class="alert alert-warning">
+            El productor tiene @Model.Fincas.Count finca(s) y @Model.Lotes.Count lote(s) relacionados.
+            El sistema impedirá la eliminación hasta resolver estas relaciones.
+        </div>
+    }
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button class="btn btn-danger" type="submit">Confirmar eliminación</button>
+        </div>
+    </form>
+</div>

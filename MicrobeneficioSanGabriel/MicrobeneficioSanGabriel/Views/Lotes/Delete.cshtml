@@ -1,3 +1,25 @@
 @model MicrobeneficioSanGabriel.Models.Lote
 @{ ViewData["Title"]="Eliminar lote"; Layout="~/Views/Shared/_AdminLayout.cshtml"; }
-<div class="sg-card border-danger"><h1 class="text-danger">Eliminar lote @Model.CodigoLote</h1><p>Productor: <strong>@Model.Productor?.Nombre</strong><br/>Finca: <strong>@(Model.Finca?.Nombre ?? "Sin finca")</strong></p><div class="alert alert-warning">También se eliminarán las producciones y trazabilidades dependientes. Si el inventario generado ya fue utilizado, la operación será bloqueada.</div><form asp-action="Delete" method="post"><input type="hidden" asp-for="Id"/><div class="d-flex justify-content-end gap-2"><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a><button class="btn btn-danger">Confirmar eliminación</button></div></form></div>
+
+<div class="sg-card border-danger">
+    <h1 class="text-danger">Eliminar lote @Model.CodigoLote</h1>
+
+    <p>
+        Productor: <strong>@Model.Productor?.Nombre</strong><br />
+        Finca: <strong>@(Model.Finca?.Nombre ?? "Sin finca")</strong>
+    </p>
+
+    <div class="alert alert-warning">
+        También se eliminarán las producciones y trazabilidades dependientes.
+        Si el inventario generado ya fue utilizado, la operación será bloqueada.
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button class="btn btn-danger" type="submit">Confirmar eliminación</button>
+        </div>
+    </form>
+</div>

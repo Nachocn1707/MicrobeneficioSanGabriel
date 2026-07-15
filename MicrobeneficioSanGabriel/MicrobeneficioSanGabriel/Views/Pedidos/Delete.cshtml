@@ -6,484 +6,59 @@
 
     string estadoClase = Model.Estado switch
     {
-        "Pendiente" => "delete-estado delete-estado-pendiente",
-        "En proceso" => "delete-estado delete-estado-proceso",
-        "En camino" => "delete-estado delete-estado-camino",
-        "Listo para retirar" => "delete-estado delete-estado-retiro",
-        "Completado" => "delete-estado delete-estado-completado",
-        "Cancelado" => "delete-estado delete-estado-cancelado",
-        _ => "delete-estado delete-estado-neutral"
+        "Pendiente" => "text-warning",
+        "En proceso" => "text-primary",
+        "En camino" => "text-info",
+        "Listo para retirar" => "text-success",
+        "Completado" => "text-success",
+        "Cancelado" => "text-danger",
+        _ => "text-secondary"
     };
 }
 
 @section Styles {
-    <style>
-        .delete-page {
-            display: grid;
-            gap: 24px;
-            padding-top: 14px;
-        }
-
-        .delete-header h1 {
-            font-size: 2.4rem;
-            font-weight: 950;
-            margin: 0;
-            color: #b42318;
-        }
-
-        .delete-line {
-            width: 78px;
-            height: 4px;
-            border-radius: 999px;
-            background: #dc3545;
-            margin: 12px 0;
-        }
-
-        .delete-header p {
-            color: #6f5b4a;
-            font-weight: 650;
-            margin: 0;
-        }
-
-        .delete-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #fde1df;
-            color: #b42318;
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-weight: 900;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .delete-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 0.38fr 0.62fr;
-            min-height: 520px;
-        }
-
-        .delete-side {
-            background: linear-gradient(180deg, rgba(80, 19, 19, 0.90), rgba(45, 14, 14, 0.94)), url("/images/orders/order-detail-coffee.jpg");
-            background-size: cover;
-            background-position: center;
-            padding: 36px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
-        }
-
-        .delete-side-content {
-            max-width: 360px;
-        }
-
-        .delete-icon {
-            width: 72px;
-            height: 72px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 26px;
-        }
-
-        .delete-side h2 {
-            color: #fff3c4;
-            font-size: 2rem;
-            font-weight: 950;
-            margin: 0;
-        }
-
-        .delete-side-line {
-            width: 70px;
-            height: 4px;
-            border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
-        }
-
-        .delete-side p {
-            color: #fff8df;
-            opacity: 0.95;
-            font-weight: 650;
-            line-height: 1.55;
-            margin-bottom: 28px;
-        }
-
-        .delete-info-list {
-            display: grid;
-            gap: 16px;
-        }
-
-        .delete-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff8df;
-            font-weight: 800;
-        }
-
-            .delete-info-item i {
-                color: #f3d27a;
-                width: 18px;
-            }
-
-        .delete-body {
-            padding: 38px;
-        }
-
-        .delete-warning {
-            background: #fde1df;
-            color: #b42318;
-            border: 1px solid #f5b5ae;
-            border-radius: 18px;
-            padding: 15px 18px;
-            font-weight: 750;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .delete-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .delete-item {
-            background: #fff8df;
-            border: 1px solid #ead8a2;
-            border-radius: 18px;
-            padding: 17px;
-            min-height: 90px;
-        }
-
-            .delete-item.full {
-                grid-column: 1 / -1;
-            }
-
-        .delete-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #7a5230;
-            font-size: 0.78rem;
-            font-weight: 950;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 8px;
-        }
-
-        .delete-value {
-            display: block;
-            color: #2b160d;
-            font-size: 1rem;
-            font-weight: 800;
-            line-height: 1.45;
-            word-break: break-word;
-        }
-
-        .delete-estado {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            padding: 7px 13px;
-            font-size: 0.82rem;
-            font-weight: 950;
-            width: fit-content;
-        }
-
-        .delete-estado-pendiente {
-            background: #fff4d3;
-            color: #8a6500;
-        }
-
-        .delete-estado-proceso {
-            background: #dff6fd;
-            color: #0369a1;
-        }
-
-        .delete-estado-camino {
-            background: #e9e0ff;
-            color: #5636a3;
-        }
-
-        .delete-estado-retiro {
-            background: #e8edf3;
-            color: #495057;
-        }
-
-        .delete-estado-completado {
-            background: #dff5e3;
-            color: #1e7d32;
-        }
-
-        .delete-estado-cancelado {
-            background: #fde1df;
-            color: #b42318;
-        }
-
-        .delete-estado-neutral {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .delete-actions {
-            border-top: 1px solid #ead8a2;
-            margin-top: 26px;
-            padding-top: 22px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-delete {
-            border: none;
-            border-radius: 14px;
-            padding: 12px 20px;
-            font-weight: 950;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.18s ease;
-        }
-
-            .btn-delete:hover {
-                transform: translateY(-1px);
-            }
-
-        .btn-delete-volver {
-            background: #f3f4f6;
-            color: #111827;
-        }
-
-            .btn-delete-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
-            }
-
-        .btn-delete-confirmar {
-            background: #dc3545;
-            color: #ffffff;
-        }
-
-            .btn-delete-confirmar:hover {
-                background: #bb2d3b;
-                color: #ffffff;
-            }
-
-        @@media (max-width: 1100px) {
-            .delete-card {
-                grid-template-columns: 1fr;
-            }
-
-            .delete-side {
-                min-height: 300px;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .delete-body {
-                padding: 24px;
-            }
-
-            .delete-side {
-                padding: 28px;
-            }
-
-            .delete-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .delete-header h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/VistaEliminar.css" />
 }
 
-<div class="delete-page">
+<div class="sg-card border-danger">
+    <h1 class="text-danger">
+        <i class="fa-solid fa-trash"></i>
+        Eliminar pedido #@Model.Id
+    </h1>
 
-    <div class="delete-header">
-        <span class="delete-badge">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            Acción irreversible
-        </span>
+    <p>
+        <strong>Cliente:</strong> @Model.ClienteNombre<br />
+        <strong>Teléfono:</strong> @(string.IsNullOrWhiteSpace(Model.ClienteTelefono) ? "Sin teléfono" : Model.ClienteTelefono)<br />
+        <strong>Producto:</strong> @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")<br />
+        <strong>Cantidad:</strong> @Model.Cantidad kg<br />
+        <strong>Fecha:</strong> @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")<br />
+        <strong>Estado:</strong> <span class="@estadoClase">@Model.Estado</span>
+    </p>
 
-        <h1>Eliminar pedido</h1>
-        <div class="delete-line"></div>
-
-        <p>
-            Esta acción eliminará el registro seleccionado del sistema.
-        </p>
+    <div class="alert alert-warning">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        Esta acción eliminará el pedido del sistema de forma <strong>permanente</strong>.
+        Esta operación no se puede deshacer y el pedido no aparecerá en el listado.
     </div>
 
-    <div class="delete-card">
-
-        <div class="delete-side">
-            <div class="delete-side-content">
-
-                <div class="delete-icon">
-                    <i class="fa-solid fa-trash"></i>
-                </div>
-
-                <h2>Pedido #@Model.Id</h2>
-                <div class="delete-side-line"></div>
-
-                <p>
-                    Verificá la información antes de confirmar la eliminación.
-                    Una vez eliminado, el registro no aparecerá en el listado.
-                </p>
-
-                <div class="delete-info-list">
-                    <div class="delete-info-item">
-                        <i class="fa-solid fa-user"></i>
-                        Cliente registrado
-                    </div>
-
-                    <div class="delete-info-item">
-                        <i class="fa-solid fa-mug-hot"></i>
-                        Producto solicitado
-                    </div>
-
-                    <div class="delete-info-item">
-                        <i class="fa-solid fa-trash"></i>
-                        Eliminación definitiva
-                    </div>
-                </div>
-
-            </div>
+    @if (Model.Estado == "Cancelado")
+    {
+        <div class="alert alert-info">
+            <i class="fa-solid fa-check-circle"></i>
+            Este pedido ya se encuentra cancelado. Puedes eliminarlo sin restricciones.
         </div>
+    }
 
-        <div class="delete-body">
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
 
-            <div class="delete-warning">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>
-                    Confirme si desea eliminar este pedido. Esta acción no es una cancelación, eliminará el registro.
-                </span>
-            </div>
-
-            <div class="delete-grid">
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-user"></i>
-                        Cliente
-                    </span>
-
-                    <span class="delete-value">
-                        @Model.ClienteNombre
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-phone"></i>
-                        Teléfono
-                    </span>
-
-                    <span class="delete-value">
-                        @(string.IsNullOrWhiteSpace(Model.ClienteTelefono)
-                            ? "Sin teléfono"
-                            : Model.ClienteTelefono)
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-mug-hot"></i>
-                        Producto
-                    </span>
-
-                    <span class="delete-value">
-                        @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-weight-hanging"></i>
-                        Cantidad
-                    </span>
-
-                    <span class="delete-value">
-                        @Model.Cantidad kg
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        Fecha
-                    </span>
-
-                    <span class="delete-value">
-                        @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")
-                    </span>
-                </div>
-
-                <div class="delete-item">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-circle-info"></i>
-                        Estado
-                    </span>
-
-                    <span class="@estadoClase">
-                        @Model.Estado
-                    </span>
-                </div>
-
-                <div class="delete-item full">
-                    <span class="delete-label">
-                        <i class="fa-solid fa-comment-dots"></i>
-                        Observación
-                    </span>
-
-                    <span class="delete-value">
-                        @(string.IsNullOrWhiteSpace(Model.Observacion)
-                            ? "Sin observación"
-                            : Model.Observacion)
-                    </span>
-                </div>
-
-            </div>
-
-            <form asp-action="Delete" method="post">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="delete-actions">
-
-                    <a asp-action="Index"
-                           class="btn-delete btn-delete-volver">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver
-                    </a>
-
-                    <button type="submit"
-                            class="btn-delete btn-delete-confirmar">
-                        <i class="fa-solid fa-trash"></i>
-                        Confirmar eliminación
-                    </button>
-
-                </div>
-            </form>
-
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Cancelar
+            </a>
+            <button class="btn btn-danger" type="submit">
+                <i class="fa-solid fa-trash"></i> Confirmar eliminación
+            </button>
         </div>
-
-    </div>
-
+    </form>
 </div>

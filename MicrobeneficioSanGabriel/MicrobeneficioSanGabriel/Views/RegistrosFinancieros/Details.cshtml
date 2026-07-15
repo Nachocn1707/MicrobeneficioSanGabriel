@@ -7,108 +7,92 @@
     bool esIngreso = Model.Tipo == "Ingreso";
 
     string estadoClase = esIngreso
-        ? "estado-activo"
-        : "estado-inactivo";
+        ? "movimiento-estado estado-activo"
+        : "movimiento-estado estado-inactivo";
 
     string montoClase = esIngreso
-        ? "detalle-monto-ingreso"
-        : "detalle-monto-gasto";
+        ? "EstiloDetalle-detail-value EstiloDetalle-monto-ingreso"
+        : "EstiloDetalle-detail-value EstiloDetalle-monto-gasto";
 }
 
 @section Styles {
+
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
-
-    <style>
-        .detalle-monto-ingreso {
-            color: #1e7d32;
-            font-weight: 950;
-        }
-
-        .detalle-monto-gasto {
-            color: #b42318;
-            font-weight: 950;
-        }
-    </style>
 }
 
-<div class="EstiloDetalle-detalle-page">
-
-    <div class="EstiloDetalle-header">
+<section class="sg-page-head">
+    <div>
         <h1>Detalle financiero</h1>
-        <p>Información detallada del registro financiero.</p>
+        <p>Consultá la información registrada para este movimiento financiero.</p>
     </div>
+    <div class="sg-actions">
+    </div>
+</section>
 
-    <div class="EstiloDetalle-card">
+<section class="sg-visual-hero sg-hero-financiero">
+    <div class="sg-visual-hero-content">
+        <h1>@Model.Tipo: ₡ @Model.Monto.ToString("N2")</h1>
+        <div class="sg-visual-line"></div>
+        <span class="sg-visual-badge"><i class="fa-solid fa-sack-dollar"></i> Registro financiero</span>
+    </div>
+</section>
 
-        <div class="EstiloDetalle-card-header">
-            <h2>@Model.Tipo</h2>
-            <span>Microbeneficio San Gabriel</span>
+<div class="EstiloDetalle-detalle-page">
+    <div class="EstiloDetalle-premium-card">
+
+        <div class="EstiloDetalle-premium-header">
+            <h2>Información general</h2>
+            <span class="movimiento-badge-top">Registro #@Model.Id</span>
         </div>
 
-        <div class="EstiloDetalle-card-body">
+        <div class="EstiloDetalle-premium-body">
 
-            <div class="detalle-grid">
+            <div class="EstiloDetalle-detail-grid">
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Fecha
-                    </span>
-
-                    <span class="detalle-value">
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">FECHA</span>
+                    <span class="EstiloDetalle-detail-value">
                         @Model.Fecha.ToString("dd/MM/yyyy")
                     </span>
                 </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Tipo
-                    </span>
-
-                    <span class="@estadoClase">
-                        @Model.Tipo
-                    </span>
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">TIPO</span>
+                    <div>
+                        <span class="@estadoClase">
+                            @Model.Tipo
+                        </span>
+                    </div>
                 </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Categoría
-                    </span>
-
-                    <span class="detalle-value">
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">CATEGORÍA</span>
+                    <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Categoria)
                             ? "Sin categoría"
                             : Model.Categoria)
                     </span>
                 </div>
 
-                <div class="detalle-item">
-                    <span class="detalle-label">
-                        Monto
-                    </span>
-
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">MONTO</span>
                     <span class="@montoClase">
                         ₡ @Model.Monto.ToString("N2")
                     </span>
                 </div>
 
-                <div class="detalle-item full">
-                    <span class="detalle-label">
-                        Descripción
-                    </span>
-
-                    <span class="detalle-value">
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">DESCRIPCIÓN</span>
+                    <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Descripcion)
                             ? "Sin descripción"
                             : Model.Descripcion)
                     </span>
                 </div>
 
-                <div class="detalle-item full">
-                    <span class="detalle-label">
-                        Observación
-                    </span>
-
-                    <span class="detalle-value">
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">OBSERVACIÓN</span>
+                    <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Observacion)
                             ? "Sin observación"
                             : Model.Observacion)
@@ -120,7 +104,7 @@
             <div class="EstiloDetalle-actions">
 
                 <a asp-action="Index"
-                       class="btn-volver">
+                   class="btn-EstiloDetalle btn-EstiloDetalle-primary">
                     <i class="fa-solid fa-arrow-left"></i>
                     Volver a la lista
                 </a>
@@ -128,8 +112,8 @@
                 @if (User.IsInRole("Administrador"))
                 {
                     <a asp-action="Edit"
-                           asp-route-id="@Model.Id"
-                           class="btn-editar">
+                       asp-route-id="@Model.Id"
+                       class="btn-EstiloDetalle btn-EstiloDetalle-warning">
                         <i class="fa-solid fa-pen-to-square"></i>
                         Editar
                     </a>
@@ -138,7 +122,5 @@
             </div>
 
         </div>
-
     </div>
-
 </div>
