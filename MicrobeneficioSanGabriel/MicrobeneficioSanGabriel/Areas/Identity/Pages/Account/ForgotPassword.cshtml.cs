@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -21,11 +20,16 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
+        private readonly ILogger<ForgotPasswordModel> _logger;
 
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailService emailService)
+        public ForgotPasswordModel(
+            UserManager<ApplicationUser> userManager,
+            IEmailService emailService,
+            ILogger<ForgotPasswordModel> logger)
         {
             _userManager = userManager;
             _emailService = emailService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -71,15 +75,33 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailService.SendEmailAsync(
-                    Input.Email,
-                    "Recuperación de contraseña",
-                    EmailTemplate.BaseTemplate(
-                    "Recuperación",
-                    "Recibimos una solicitud para restablecer tu contraseña.",
-                    "Restablecer contraseña",
-                    HtmlEncoder.Default.Encode(callbackUrl)
-                                                    ));
+                if (!_emailService.IsConfigured)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "La recuperación por correo no está habilitada. Solicite al administrador que restablezca su contraseña.");
+                    return Page();
+                }
+
+                try
+                {
+                    await _emailService.SendEmailAsync(
+                        Input.Email,
+                        "Recuperación de contraseña",
+                        EmailTemplate.BaseTemplate(
+                            "Recuperación",
+                            "Recibimos una solicitud para restablecer tu contraseña.",
+                            "Restablecer contraseña",
+                            HtmlEncoder.Default.Encode(callbackUrl)));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex,
+                        "No se pudo enviar el correo de recuperación a {Email}.", Input.Email);
+                    ModelState.AddModelError(string.Empty,
+                        "No fue posible enviar el correo en este momento. Inténtelo nuevamente o contacte al administrador.");
+                    return Page();
+                }
+
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
 

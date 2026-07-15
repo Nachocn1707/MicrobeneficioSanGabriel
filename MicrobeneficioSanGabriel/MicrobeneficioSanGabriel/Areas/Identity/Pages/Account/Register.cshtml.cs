@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -64,6 +63,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888.")]
             [Display(Name = "Teléfono")]
             public string PhoneNumber { get; set; } = string.Empty;
+
             [Required(ErrorMessage = "El correo es obligatorio.")]
             [EmailAddress(ErrorMessage = "Debe ingresar un correo válido.")]
             [Display(Name = "Correo electrónico")]
@@ -84,7 +84,6 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-
             ExternalLogins = (await _signInManager
                 .GetExternalAuthenticationSchemesAsync())
                 .ToList();
@@ -106,71 +105,82 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                     "El teléfono debe contener exactamente 8 dígitos.");
             }
 
+            // El registro requiere SMTP real para que la cuenta reciba el enlace obligatorio de confirmación.
+            if (ModelState.IsValid && !_emailService.IsConfigured)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "El servicio de correo todavía no está configurado. Ejecute CONFIGURAR_CORREO_GMAIL.bat antes de registrar usuarios.");
+                return Page();
+            }
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(
-                    user,
-                    Input.Email,
-                    CancellationToken.None);
-
-                await _emailStore.SetEmailAsync(
-                    user,
-                    Input.Email,
-                    CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 user.Nombre = Input.Nombre;
                 user.Apellidos = Input.Apellidos;
                 user.PhoneNumber = Input.PhoneNumber;
+                user.EmailConfirmed = false;
 
-                var result = await _userManager.CreateAsync(
-                    user,
-                    Input.Password);
+                var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Usuario registrado correctamente.");
+                    _logger.LogInformation("Usuario registrado correctamente y pendiente de confirmar correo.");
 
                     if (!await _roleManager.RoleExistsAsync("Cliente"))
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Cliente"));
                     }
 
-                    await _userManager.AddToRoleAsync(user, "Cliente");
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-
-                    var code = await _userManager
-                        .GenerateEmailConfirmationTokenAsync(user);
-
-                    code = WebEncoders.Base64UrlEncode(
-                        Encoding.UTF8.GetBytes(code));
-
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new
+                    var roleResult = await _userManager.AddToRoleAsync(user, "Cliente");
+                    if (!roleResult.Succeeded)
+                    {
+                        foreach (var error in roleResult.Errors)
                         {
-                            area = "Identity",
-                            userId = userId,
-                            code = code,
-                            returnUrl = returnUrl
-                        },
-                        protocol: Request.Scheme);
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
 
-                    await _emailService.SendEmailAsync(
-                        Input.Email,
-                        "Confirmación de cuenta",
-                        EmailTemplate.BaseTemplate(
-                        "Confirmación",
-                        "Gracias por registrarte. Confirmá tu correo.",
-                        "Confirmar correo",
-                        HtmlEncoder.Default.Encode(callbackUrl)
-                                                       ));
+                        await _userManager.DeleteAsync(user);
+                        return Page();
+                    }
 
-                    TempData["CorreoConfirmacion"] = true;
-                    return RedirectToPage("./RegisterConfirmation");
+                    var callbackUrl = await CrearUrlConfirmacionAsync(user, returnUrl);
+
+                    try
+                    {
+                        await _emailService.SendEmailAsync(
+                            Input.Email,
+                            "Confirme su cuenta - Microbeneficio San Gabriel",
+                            EmailTemplate.BaseTemplate(
+                                "Confirmación de cuenta",
+                                $"Hola {HtmlEncoder.Default.Encode(Input.Nombre)}, gracias por registrarte. Para activar tu cuenta y poder iniciar sesión, confirmá tu correo electrónico.",
+                                "Confirmar correo",
+                                HtmlEncoder.Default.Encode(callbackUrl)));
+
+                        TempData["RegistroExitoso"] =
+                            "Cuenta creada. Enviamos un enlace de confirmación a su correo.";
+                    }
+                    catch (Exception ex)
+                    {
+                        // La cuenta permanece sin confirmar. El usuario puede reenviar
+                        // el enlace desde la pantalla de confirmación.
+                        _logger.LogError(ex,
+                            "No se pudo enviar el correo de confirmación a {Email}.",
+                            Input.Email);
+
+                        TempData["ErrorEnvioCorreo"] =
+                            "La cuenta fue creada, pero no pudimos enviar el correo en este momento. Revise la configuración SMTP y utilice “Reenviar correo”.";
+                    }
+
+                    return RedirectToPage("./RegisterConfirmation", new
+                    {
+                        email = Input.Email,
+                        returnUrl
+                    });
                 }
 
                 bool emailDuplicadoMostrado = false;
@@ -179,7 +189,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 {
                     string mensaje = error.Description;
 
-                    if (mensaje.Contains("is already taken"))
+                    if (mensaje.Contains("is already taken", StringComparison.OrdinalIgnoreCase))
                     {
                         if (emailDuplicadoMostrado)
                         {
@@ -195,6 +205,25 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             }
 
             return Page();
+        }
+
+        private async Task<string> CrearUrlConfirmacionAsync(ApplicationUser user, string returnUrl)
+        {
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            return Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new
+                {
+                    area = "Identity",
+                    userId,
+                    code,
+                    returnUrl
+                },
+                protocol: Request.Scheme)!;
         }
 
         private static string SoloDigitos(string? valor)
@@ -225,6 +254,4 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
-
-
 }

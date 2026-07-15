@@ -1,4 +1,4 @@
-﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Infrastructure;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
@@ -44,6 +44,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedEmail = true;
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
     options.Password.RequireNonAlphanumeric = true;

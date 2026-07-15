@@ -91,7 +91,25 @@
                 </div>
 
                 <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+                    @if (TempData["RegistroExitoso"] is string mensajeRegistro)
+                    {
+                        <div class="alert alert-success mb-3" role="alert">
+                            <i class="fa-solid fa-circle-check me-2"></i>@mensajeRegistro
+                        </div>
+                    }
                     <div asp-validation-summary="ModelOnly" class="text-danger validation-summary mb-3"></div>
+
+                    @if (Model.RequiresEmailConfirmation)
+                    {
+                        <div class="alert alert-warning mb-3" role="alert">
+                            <i class="fa-solid fa-envelope-circle-check me-2"></i>
+                            La cuenta está pendiente de confirmación.
+                            <a asp-page="./RegisterConfirmation"
+                               asp-route-email="@Model.EmailForConfirmation"
+                               asp-route-returnUrl="@Model.ReturnUrl"
+                               class="alert-link">Reenviar enlace</a>.
+                        </div>
+                    }
 
                     <div class="form-group">
                         <label class="form-label" asp-for="Input.Email">Correo</label>

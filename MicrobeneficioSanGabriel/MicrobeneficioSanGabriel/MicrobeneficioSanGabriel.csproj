@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-MicrobeneficioSanGabriel-ece0a987-74e9-42f9-9e7f-66be2cf02faa</UserSecretsId>
+    <UserSecretsId>aspnet-MicrobeneficioSanGabriel-restored-aff9d1df-2074-4270-99ce-55e195ceb58c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

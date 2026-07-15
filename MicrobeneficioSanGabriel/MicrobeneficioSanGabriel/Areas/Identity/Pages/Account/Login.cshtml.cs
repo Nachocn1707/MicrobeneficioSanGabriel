@@ -6,7 +6,6 @@ using MicrobeneficioSanGabriel.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -14,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
 namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
@@ -48,6 +46,10 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string ReturnUrl { get; set; }
+
+        public bool RequiresEmailConfirmation { get; set; }
+
+        public string EmailForConfirmation { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -131,11 +133,17 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
+                if (result.IsNotAllowed)
                 {
-                    ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
+                    RequiresEmailConfirmation = true;
+                    EmailForConfirmation = Input.Email;
+                    ModelState.AddModelError(string.Empty,
+                        "La cuenta todavía no está habilitada. Debe confirmar el correo electrónico antes de iniciar sesión.");
                     return Page();
                 }
+
+                ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
+                return Page();
             }
 
             // If we got this far, something failed, redisplay form
