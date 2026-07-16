@@ -1017,3 +1017,171 @@
   content:none!important;
   display:none!important;
 }
+
+/* ===========================================================
+   Modo oscuro — sg-crud-overrides
+   =========================================================== */
+
+html.dark .VistaCrear-card,
+html.dark .EstiloEditar-card,
+html.dark .EstiloDetalle-card,
+html.dark .delete-card,
+html.dark .producto-premium-card,
+html.dark .pedido-premium-card,
+html.dark .factura-premium-card,
+html.dark .pedido-create-card,
+html.dark .pedido-edit-card,
+html.dark .pedido-admin-edit-card,
+html.dark .pedido-cancel-card,
+html.dark .factura-create-card,
+html.dark .factura-edit-card,
+html.dark .factura-pago-card,
+html.dark .movimiento-edit-card,
+html.dark .movimiento-create-card,
+html.dark .produccion-create-card,
+html.dark .produccion-edit-card,
+html.dark .payment-card {
+    background: rgba(36, 26, 21, .97);
+}
+
+html.dark .detalle-item,
+html.dark .producto-detail-item,
+html.dark .pedido-detail-item,
+html.dark .factura-detail-item {
+    background: #2b1e18;
+    border-color: #493326;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .25);
+}
+
+html.dark .producto-image-box,
+html.dark .pedido-image-box,
+html.dark .factura-image-box {
+    background: #1f150f;
+}
+
+html.dark .producto-status-top,
+html.dark .pedido-status-top,
+html.dark .factura-status-top {
+    background: #2c3a25;
+}
+
+    html.dark .producto-status-top.inactivo,
+    html.dark .pedido-status-top.cancelado,
+    html.dark .factura-status-top.pendiente {
+        background: #3c2420;
+    }
+
+html.dark .sg-main .form-control,
+html.dark .sg-main .form-select,
+html.dark .sg-main input[type="date"],
+html.dark .sg-main input[type="datetime-local"],
+html.dark .sg-main input[type="time"],
+html.dark .sg-main input[type="number"],
+html.dark .sg-main textarea,
+html.dark .sg-main select {
+    background: #2b1e18 !important;
+    border-color: #594031 !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .2) !important;
+}
+
+    html.dark .sg-main .form-control:focus,
+    html.dark .sg-main .form-select:focus,
+    html.dark .sg-main textarea:focus,
+    html.dark .sg-main select:focus {
+        border-color: #df913a !important;
+        box-shadow: 0 0 0 .2rem rgba(223, 145, 58, .2) !important;
+    }
+
+html.dark .sg-main .btn-outline-secondary,
+html.dark .sg-main .btn.btn-outline-secondary,
+html.dark .sg-main .btn-volver,
+html.dark .sg-main .btn-cancel,
+html.dark .sg-main .btn-outline-primary,
+html.dark .sg-main .btn-outline-info {
+    background: #2b1e18 !important;
+    border-color: #594031 !important;
+}
+
+html.dark .sg-content .sg-card .alert {
+    background: #3a2b18;
+    border-color: #5c4726;
+    color: #f0c078;
+}
+
+html.dark .sg-content .sg-card .alert-info {
+    background: #1c2f22;
+    border-color: #2f4a35;
+    color: #9fd3a9;
+}
+
+html.dark .sg-content .sg-card .border.rounded-4,
+html.dark .sg-content .sg-card .border.rounded-3,
+html.dark .sg-content .sg-card .border.rounded {
+    background: #2b1e18;
+    border-color: #493326 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
+}
+
+    html.dark .sg-content .sg-card .border.rounded-4 a:not(.btn),
+    html.dark .sg-content .sg-card .border.rounded-3 a:not(.btn),
+    html.dark .sg-content .sg-card .border.rounded a:not(.btn) {
+        background: #24382a;
+        border-color: #355c3f;
+    }
+
+html.dark .delete-warning,
+html.dark .pedido-cancel-warning {
+    background: #3a2b18;
+    border-color: #5c4726;
+    color: #f0c078;
+}
+
+    html.dark .delete-warning strong,
+    html.dark .pedido-cancel-warning strong {
+        color: #f8dfbf;
+    }
+
+html.dark .payment-summary,
+html.dark .customer-info,
+html.dark .payment-methods {
+    background: #2b1e18;
+    border-color: #493326;
+}
+
+html.dark .summary-row,
+html.dark .total-row {
+    border-bottom-color: #493326;
+}
+
+html.dark .payment-option {
+    background: #2b1e18;
+    border-color: #594031;
+}
+
+html.dark .sg-product-detail-badge {
+    background: rgba(36, 26, 21, .94);
+}
+
+html.dark .finanzas-actions.sg-action-icons a,
+html.dark .finanzas-actions.sg-action-icons button,
+html.dark .sg-action-icons a,
+html.dark .sg-action-icons button,
+html.dark .sg-inline-action-form button {
+    background: #2b1e18 !important;
+    border-color: #493326 !important;
+}
+
+    html.dark .finanzas-actions.sg-action-icons a[title="Editar"],
+    html.dark .sg-action-icons a[title="Editar"] {
+        background: #4a3114 !important;
+        border-color: #5c4726 !important;
+        color: #f0c078 !important;
+    }
+
+    html.dark .finanzas-actions.sg-action-icons a[title="Eliminar"],
+    html.dark .sg-action-icons a[title="Eliminar"],
+    html.dark .sg-inline-action-form button {
+        background: #3c2420 !important;
+        border-color: #5c332c !important;
+        color: #ef9494 !important;
+    }

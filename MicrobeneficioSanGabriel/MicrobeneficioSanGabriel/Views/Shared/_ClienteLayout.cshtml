@@ -16,38 +16,54 @@
         return currentPath.Contains(keyword.ToLower()) ? "active" : "";
     }
 }
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <style>
+            html {
+                visibility: hidden;
+            }
+
+                html.theme-ready {
+                    visibility: visible;
+                }
+    </style>
+
+    <script>
+            (function() {
+                var isDark = localStorage.getItem("theme") === "dark";
+
+                if (isDark) {
+                    document.documentElement.classList.add("dark");
+                }
+
+                document.documentElement.classList.add("theme-ready");
+                window.__themeIsDark = isDark;
+            })();
+    </script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"] - San Gabriel</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/visual-backgrounds.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/client-dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/notificaciones.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/client-dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sg-coffee-ui.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/cliente-estetico.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
 
-    <link rel="stylesheet" href="~/css/respawn-coffee.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/notificaciones.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/sg-coffee-ui.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/cliente-estetico.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/translucent-coffee-background.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cafe-aurora-palette.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/translucent-coffee-background.css" asp-append-version="true" />
 </head>
-
 <body class="sg-coffee-bg rc-client-body cafe-portal-body">
     <div class="cafe-portal-shell">
         <header class="cafe-portal-header">
+
             <a asp-controller="Home"
                asp-action="ClienteDashboard"
                class="cafe-portal-brand"
@@ -83,6 +99,17 @@
             </nav>
 
             <div class="cafe-portal-actions">
+
+                <div class="sg-theme-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <label for="theme-toggle" class="sg-switch">
+                        <span class="sg-slider"></span>
+                    </label>
+                </div>
+                <script>
+                   document.getElementById("theme-toggle").checked = window.__themeIsDark === true;
+                </script>
+
                 <div class="cafe-client-session" title="Cliente en sesión: @clientName">
                     <span class="cafe-client-session-icon" aria-hidden="true">
                         <i class="fa-regular fa-user"></i>
@@ -111,7 +138,9 @@
                         <span>Salir</span>
                     </button>
                 </form>
+
             </div>
+
         </header>
 
         <main class="cafe-portal-main">
@@ -125,18 +154,16 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Validaciones.js"></script>
-
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
-        setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
-        });
-        });
+            document.addEventListener("DOMContentLoaded", () => {
+                document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
+                    setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
+                });
+            });
     </script>
-
     @await RenderSectionAsync("Scripts", required: false)
-
     <script src="~/js/sg-datatables.js" asp-append-version="true"></script>
     <script src="~/js/notificaciones.js" asp-append-version="true"></script>
+    <script src="~/js/ModoOscuro.js"></script>
 </body>
 </html>
