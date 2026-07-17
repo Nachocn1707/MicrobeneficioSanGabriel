@@ -1,6 +1,6 @@
 @model IEnumerable<MicrobeneficioSanGabriel.Models.Lote>
 @{
-    ViewData["Title"] = "Lotes y Producción";
+    ViewData["Title"] = "Lotes";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var lotes = Model.ToList();
     var total = lotes.Count;
@@ -21,7 +21,7 @@
     decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
 }
 <section class="sg-page-head">
-    <div><h1>Lotes y Producción</h1><p>Gestión integral de lotes y procesos de producción con datos reales del sistema.</p></div>
+    <div><h1>Lotes</h1><p>Gestión integral de lotes y procesos de producción con datos reales del sistema.</p></div>
     <div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo lote</a><a asp-controller="Producciones" asp-action="Create" class="sg-btn ghost"><i class="fa-solid fa-plus"></i>Registrar producción</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaLotes" placeholder="Buscar lote, productor o finca..." /></label></div>
 </section>
 <section class="sg-kpi-grid">
