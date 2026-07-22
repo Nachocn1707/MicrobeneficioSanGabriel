@@ -33,10 +33,10 @@
 
     var coloresPedidos = new[]
     {
-        new { Clase = "green", Hex = "#5F7F57", Label = "Completados", Valor = completados },
-        new { Clase = "gold", Hex = "#C46816", Label = "En proceso", Valor = enProcesoPedidos },
-        new { Clase = "tan", Hex = "#E8B66F", Label = "Pendientes", Valor = pendientesPedidos },
-        new { Clase = "brown", Hex = "#AD4939", Label = "Cancelados", Valor = canceladosPedidos }
+        new { Clase = "green", Hex = "#53833B", Label = "Completados", Valor = completados },
+        new { Clase = "gold", Hex = "#D4730B", Label = "En proceso", Valor = enProcesoPedidos },
+        new { Clase = "tan", Hex = "#EDAE3E", Label = "Pendientes", Valor = pendientesPedidos },
+        new { Clase = "brown", Hex = "#4F3514", Label = "Cancelados", Valor = canceladosPedidos }
     };
 
     string FormatoPorcentaje(decimal valor) =>
@@ -87,11 +87,11 @@
 
     var coloresProduccion = new[]
     {
-        new { Clase = "green", Hex = "#5F7F57", Label = "Completado", Valor = procesosCompletados },
-        new { Clase = "gold", Hex = "#C46816", Label = "En proceso", Valor = procesosEnProceso },
-        new { Clase = "tan", Hex = "#E8B66F", Label = "Pendiente", Valor = procesosPendientes },
-        new { Clase = "brown", Hex = "#AD4939", Label = "Cancelado", Valor = procesosCancelados },
-        new { Clase = "coffee", Hex = "#74320D", Label = "Otros", Valor = procesosOtros }
+        new { Clase = "green", Hex = "#53833B", Label = "Completado", Valor = procesosCompletados },
+        new { Clase = "gold", Hex = "#D4730B", Label = "En proceso", Valor = procesosEnProceso },
+        new { Clase = "tan", Hex = "#EDAE3E", Label = "Pendiente", Valor = procesosPendientes },
+        new { Clase = "brown", Hex = "#4F3514", Label = "Cancelado", Valor = procesosCancelados },
+        new { Clase = "coffee", Hex = "#834003", Label = "Otros", Valor = procesosOtros }
     };
 
     string CrearDonutProduccion()
@@ -161,116 +161,116 @@
 
 @if (puedeVerComercial)
 {
-<section class="sg-grid-2">
-    <article class="sg-card sg-panel">
-        <div class="sg-panel-head">
-            <div><h2>Ventas mensuales</h2><small><span class="sg-dot"></span> Cobros confirmados @anioActual</small></div>
-            <span class="sg-btn ghost">@anioActual</span>
-        </div>
-        <div class="sg-chart"><canvas id="ventasChart"></canvas></div>
-    </article>
-    <article class="sg-card sg-panel">
-        <div class="sg-panel-head"><h2>Estado de pedidos</h2></div>
-        <div class="sg-donut-wrap">
-            <div class="sg-donut" style="--donut-bg: @donutPedidos;"><div><b>@Porcentaje(completados)%</b><br/><span>Completados</span></div></div>
-            <div class="sg-legend">
-                @foreach (var estado in coloresPedidos)
-                {
-                    <div class="sg-legend-row">
-                        <span class="sg-dot @estado.Clase"></span>
-                        <span>@estado.Label</span>
-                        <b>@estado.Valor (@Porcentaje(estado.Valor)%)</b>
-                    </div>
-                }
+    <section class="sg-grid-2">
+        <article class="sg-card sg-panel">
+            <div class="sg-panel-head">
+                <div><h2>Ventas mensuales</h2><small><span class="sg-dot"></span> Cobros confirmados @anioActual</small></div>
+                <span class="sg-btn ghost">@anioActual</span>
             </div>
-        </div>
-    </article>
-</section>
+            <div class="sg-chart"><canvas id="ventasChart"></canvas></div>
+        </article>
+        <article class="sg-card sg-panel">
+            <div class="sg-panel-head"><h2>Estado de pedidos</h2></div>
+            <div class="sg-donut-wrap">
+                <div class="sg-donut" style="--donut-bg: @donutPedidos;"><div><b>@Porcentaje(completados)%</b><br /><span>Completados</span></div></div>
+                <div class="sg-legend">
+                    @foreach (var estado in coloresPedidos)
+                    {
+                        <div class="sg-legend-row">
+                            <span class="sg-dot @estado.Clase"></span>
+                            <span>@estado.Label</span>
+                            <b>@estado.Valor (@Porcentaje(estado.Valor)%)</b>
+                        </div>
+                    }
+                </div>
+            </div>
+        </article>
+    </section>
 }
 
 @if (puedeVerOperacion)
 {
-<section class="sg-grid-3">
-    <article class="sg-card sg-panel">
-        <div class="sg-panel-head"><h3>Inventario por producto</h3><a class="text-success fw-bold" asp-controller="MovimientosInventario" asp-action="Index">Ver detalles</a></div>
-        <div class="sg-mini-list">
-            @if (productosInventario.Any())
-            {
-                foreach (var producto in productosInventario)
+    <section class="sg-grid-3">
+        <article class="sg-card sg-panel">
+            <div class="sg-panel-head"><h3>Inventario por producto</h3><a class="text-success fw-bold" asp-controller="MovimientosInventario" asp-action="Index">Ver detalles</a></div>
+            <div class="sg-mini-list">
+                @if (productosInventario.Any())
                 {
-                    var porcentajeStock = totalStockKg == 0 ? 0 : Math.Min(100, (int)Math.Round(producto.Stock * 100m / totalStockKg));
-                    <div class="sg-mini-row">
-                        <img class="sg-thumb" src="@ImagenProducto(producto)" alt="@producto.Nombre" />
-                        <span>@producto.Nombre<div class="sg-bar"><span style="width:@porcentajeStock%"></span></div></span>
-                        <b>@producto.Stock kg</b>
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="text-muted py-3">No hay productos activos registrados.</div>
-            }
-        </div>
-    </article>
-    <article class="sg-card sg-panel">
-        <div class="sg-panel-head"><h3>Procesos de producción</h3><a class="text-success fw-bold" asp-controller="Producciones" asp-action="Index">Ver detalles</a></div>
-        <div class="sg-donut-wrap">
-            <div class="sg-donut" style="--donut-bg: @donutProduccion; width:138px;height:138px"><div><b>@totalProcesosEstados</b><br/><span>Procesos</span></div></div>
-            <div class="sg-legend">
-                @if (coloresProduccion.Any(e => e.Valor > 0))
-                {
-                    foreach (var estado in coloresProduccion.Where(e => e.Valor > 0))
+                    foreach (var producto in productosInventario)
                     {
-                        <div class="sg-legend-row">
-                            <span class="sg-dot @estado.Clase"></span>
-                            <b>@estado.Valor</b>
-                            <span>@estado.Label</span>
+                        var porcentajeStock = totalStockKg == 0 ? 0 : Math.Min(100, (int)Math.Round(producto.Stock * 100m / totalStockKg));
+                        <div class="sg-mini-row">
+                            <img class="sg-thumb" src="@ImagenProducto(producto)" alt="@producto.Nombre" />
+                            <span>@producto.Nombre<div class="sg-bar"><span style="width:@porcentajeStock%"></span></div></span>
+                            <b>@producto.Stock kg</b>
                         </div>
                     }
                 }
                 else
                 {
-                    <div class="text-muted">No hay procesos registrados.</div>
+                    <div class="text-muted py-3">No hay productos activos registrados.</div>
                 }
             </div>
-        </div>
-    </article>
-    <article class="sg-card sg-panel">
-        <div class="sg-panel-head"><h3>Rendimiento de trazabilidad</h3><a class="text-success fw-bold" asp-controller="Trazabilidades" asp-action="Index">Ver detalles</a></div>
-        <div class="sg-donut-wrap">
-            <div class="sg-donut"><div><b>@porcentajeTrazabilidad%</b><br/><span>Trazabilidad</span></div></div>
-            <div class="sg-mini-list">
-                <div class="sg-mini-row"><i class="fa-solid fa-shield-halved text-success"></i><span>Registros de trazabilidad</span><b>@totalRegistrosTrazabilidad</b></div>
-                <div class="sg-mini-row"><i class="fa-solid fa-layer-group text-success"></i><span>Lotes con trazabilidad</span><b>@lotesConTrazabilidad</b></div>
+        </article>
+        <article class="sg-card sg-panel">
+            <div class="sg-panel-head"><h3>Procesos de producción</h3><a class="text-success fw-bold" asp-controller="Producciones" asp-action="Index">Ver detalles</a></div>
+            <div class="sg-donut-wrap">
+                <div class="sg-donut" style="--donut-bg: @donutProduccion; width:138px;height:138px"><div><b>@totalProcesosEstados</b><br /><span>Procesos</span></div></div>
+                <div class="sg-legend">
+                    @if (coloresProduccion.Any(e => e.Valor > 0))
+                    {
+                        foreach (var estado in coloresProduccion.Where(e => e.Valor > 0))
+                        {
+                            <div class="sg-legend-row">
+                                <span class="sg-dot @estado.Clase"></span>
+                                <b>@estado.Valor</b>
+                                <span>@estado.Label</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-muted">No hay procesos registrados.</div>
+                    }
+                </div>
             </div>
-        </div>
-    </article>
-</section>
+        </article>
+        <article class="sg-card sg-panel">
+            <div class="sg-panel-head"><h3>Rendimiento de trazabilidad</h3><a class="text-success fw-bold" asp-controller="Trazabilidades" asp-action="Index">Ver detalles</a></div>
+            <div class="sg-donut-wrap">
+                <div class="sg-donut"><div><b>@porcentajeTrazabilidad%</b><br /><span>Trazabilidad</span></div></div>
+                <div class="sg-mini-list">
+                    <div class="sg-mini-row"><i class="fa-solid fa-shield-halved text-success"></i><span>Registros de trazabilidad</span><b>@totalRegistrosTrazabilidad</b></div>
+                    <div class="sg-mini-row"><i class="fa-solid fa-layer-group text-success"></i><span>Lotes con trazabilidad</span><b>@lotesConTrazabilidad</b></div>
+                </div>
+            </div>
+        </article>
+    </section>
 }
 
 @if (puedeVerComercial)
 {
-<section class="sg-card sg-table-card">
-    <div class="sg-panel-head"><h3>Pedidos recientes</h3><a class="text-success fw-bold" asp-controller="Pedidos" asp-action="Index">Ver todos</a></div>
-    <div class="table-responsive">
-        <table class="sg-table">
-            <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Estado</th><th>Fecha</th><th>Total</th><th></th></tr></thead>
-            <tbody>
-                @if (pedidos.Any())
-                {
-                    foreach(var p in pedidos.Take(5))
+    <section class="sg-card sg-table-card">
+        <div class="sg-panel-head"><h3>Pedidos recientes</h3><a class="text-success fw-bold" asp-controller="Pedidos" asp-action="Index">Ver todos</a></div>
+        <div class="table-responsive">
+            <table class="sg-table">
+                <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Estado</th><th>Fecha</th><th>Total</th><th></th></tr></thead>
+                <tbody>
+                    @if (pedidos.Any())
                     {
-                        <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
+                        foreach (var p in pedidos.Take(5))
+                        {
+                            <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
+                        }
                     }
-                }
-                else
-                {
-                    <tr><td colspan="8" class="text-muted text-center py-4">No hay pedidos registrados.</td></tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</section>
+                    else
+                    {
+                        <tr><td colspan="8" class="text-muted text-center py-4">No hay pedidos registrados.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
 }
 
 @section Scripts {
@@ -285,8 +285,8 @@
             if (!canvas) return;
 
             const darkMode = localStorage.getItem("theme") === "dark";
-            const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
-            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
+            const textColor = darkMode ? "#E8E1D8" : "#293F25";
+            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(41, 63, 37, .10)";
 
             ventasChart = new Chart(canvas, {
                 type: "bar",
@@ -297,7 +297,8 @@
                     ],
                     datasets: [{
                         data: ventasMensuales,
-                        backgroundColor: "#C46816",
+                        backgroundColor: "#293F25",
+                        hoverBackgroundColor: "#53833B",
                         borderRadius: 8,
                         borderSkipped: false
                     }]
@@ -343,8 +344,8 @@
             if (!ventasChart) return;
 
             const darkMode = document.body.classList.contains("dark");
-            const textColor = darkMode ? "#E8E1D8" : "#5B4A3C";
-            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(43, 26, 14, .08)";
+            const textColor = darkMode ? "#E8E1D8" : "#293F25";
+            const gridColor = darkMode ? "rgba(255, 255, 255, .10)" : "rgba(41, 63, 37, .10)";
 
             ventasChart.options.scales.x.ticks.color = textColor;
             ventasChart.options.scales.y.ticks.color = textColor;
