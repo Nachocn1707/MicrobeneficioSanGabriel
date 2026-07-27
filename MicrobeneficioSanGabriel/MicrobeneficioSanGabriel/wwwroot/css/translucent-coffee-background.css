@@ -2,8 +2,8 @@
    Solo modifica el fondo; no altera tamaños, posiciones ni componentes. */
 :root {
     --sg-bg-image: url('/images/visual/coffee-farm.jpg');
-    --sg-bg-overlay: linear-gradient(rgba(247, 243, 234, .90), rgba(247, 243, 234, .86));
-    --sg-bg-overlay-client: linear-gradient(rgba(250, 247, 239, .88), rgba(244, 237, 224, .84));
+    --sg-bg-overlay: linear-gradient(rgba(247, 243, 234, .70), rgba(247, 243, 234, .64));
+    --sg-bg-overlay-client: linear-gradient(rgba(250, 247, 239, .62), rgba(244, 237, 224, .58));
 }
 
 .sg-main {
@@ -27,7 +27,7 @@
 /* En las pantallas públicas se mantiene el diseño actual y solo se agrega profundidad. */
 .rc-public-body {
     background-color: #f4efe6;
-    background-image: linear-gradient(rgba(247, 242, 232, .82), rgba(247, 242, 232, .78)), var(--sg-bg-image);
+    background-image: linear-gradient(rgba(247, 242, 232, .66), rgba(247, 242, 232, .62)), var(--sg-bg-image);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -42,8 +42,8 @@
 }
 
 html.dark {
-    --sg-bg-overlay: linear-gradient(rgba(25, 25, 22, .90), rgba(25, 25, 22, .86));
-    --sg-bg-overlay-client: linear-gradient(rgba(27, 27, 23, .90), rgba(27, 27, 23, .86));
+    --sg-bg-overlay: linear-gradient(rgba(25, 25, 22, .72), rgba(25, 25, 22, .68));
+    --sg-bg-overlay-client: linear-gradient(rgba(27, 27, 23, .78), rgba(27, 27, 23, .74));
 }
 
 @media (max-width: 991.98px) {

@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --sg-card: #fdf9f1;
     --sg-border: #ece0cc;
     --sg-text: #241a10;
@@ -379,5 +379,50 @@ html.dark .sg-visual-badge {
     .EstiloDetalle-premium-body {
         padding-left: 1.5rem;
         padding-right: 1.5rem;
+    }
+}
+
+
+/* --- Ajustes finales detalle de pedido --- */
+.sg-page-head,
+.sg-visual-hero.sg-hero-pedidos,
+.EstiloDetalle-detalle-page {
+    width: calc(100% - 56px);
+    max-width: 1720px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sg-visual-hero.sg-hero-pedidos {
+    margin-bottom: 24px;
+}
+
+.EstiloDetalle-detalle-page {
+    padding: 0 0 34px;
+}
+
+.EstiloDetalle-premium-card {
+    width: 100%;
+}
+
+.sg-hero-pedidos .sg-visual-badge,
+.sg-hero-pedidos .sg-visual-badge i {
+    color: #ffffff !important;
+}
+
+.sg-hero-pedidos .sg-visual-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(196, 129, 44, .28), rgba(116, 72, 23, .34)) !important;
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+@media (max-width: 768px) {
+    .sg-page-head,
+    .sg-visual-hero.sg-hero-pedidos,
+    .EstiloDetalle-detalle-page {
+        width: calc(100% - 28px);
     }
 }

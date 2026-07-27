@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -603,10 +603,17 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Pago(int? pedidoId, string metodoPago)
         {
+            var esSolicitudAjax = EsSolicitudAjax();
             var metodosPermitidos = new[] { "SINPE Móvil", "Efectivo" };
             if (!metodosPermitidos.Contains(metodoPago))
             {
-                TempData["Error"] = "Seleccione un método de pago válido.";
+                const string mensaje = "Seleccione un método de pago válido.";
+                if (esSolicitudAjax)
+                {
+                    return BadRequest(new { success = false, message = mensaje });
+                }
+
+                TempData["Error"] = mensaje;
                 return pedidoId.HasValue
                     ? RedirectToAction(nameof(Pago), new { id = pedidoId.Value })
                     : RedirectToAction(nameof(Pago));
@@ -616,13 +623,33 @@ namespace MicrobeneficioSanGabriel.Controllers
             // que aparece en la lista de pedidos del cliente.
             if (pedidoId.HasValue && pedidoId.Value > 0)
             {
-                var pedidoExistente = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == pedidoId.Value);
-                if (pedidoExistente == null) return NotFound();
-                if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedidoExistente)) return Forbid();
+                var pedidoExistente = await _context.Pedidos
+                    .Include(p => p.Producto)
+                    .FirstOrDefaultAsync(p => p.Id == pedidoId.Value);
+
+                if (pedidoExistente == null)
+                {
+                    return esSolicitudAjax
+                        ? NotFound(new { success = false, message = "El pedido indicado no existe." })
+                        : NotFound();
+                }
+
+                if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedidoExistente))
+                {
+                    return esSolicitudAjax
+                        ? StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "No tiene permiso para pagar este pedido." })
+                        : Forbid();
+                }
 
                 if (pedidoExistente.Estado == EstadosPedido.Cancelado)
                 {
-                    TempData["Error"] = "No se puede registrar pago para un pedido cancelado.";
+                    const string mensaje = "No se puede registrar pago para un pedido cancelado.";
+                    if (esSolicitudAjax)
+                    {
+                        return BadRequest(new { success = false, message = mensaje });
+                    }
+
+                    TempData["Error"] = mensaje;
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -634,6 +661,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Registrar método de pago",
                     pedidoExistente.Id, $"Método: {metodoPago}. Estado: {pedidoExistente.EstadoPago}.", _logger);
 
+                if (esSolicitudAjax)
+                {
+                    return CrearRespuestaPagoAjax(pedidoExistente);
+                }
+
                 return metodoPago == "SINPE Móvil"
                     ? RedirectToAction(nameof(PagoConfirmado), new { id = pedidoExistente.Id })
                     : RedirectToAction(nameof(Details), new { id = pedidoExistente.Id });
@@ -643,15 +675,32 @@ namespace MicrobeneficioSanGabriel.Controllers
             var pendiente = ObtenerPedidoPendiente();
             if (pendiente == null)
             {
-                TempData["Error"] = "La información temporal del pedido venció. Vuelva a realizarlo.";
+                const string mensaje = "La información temporal del pedido venció. Vuelva a realizarlo.";
+                if (esSolicitudAjax)
+                {
+                    return BadRequest(new { success = false, message = mensaje });
+                }
+
+                TempData["Error"] = mensaje;
                 return RedirectToAction("Index", "Productos");
             }
 
             if (User.IsInRole("Cliente"))
             {
                 var usuario = await _userManager.GetUserAsync(User);
-                if (usuario == null) return Challenge();
-                if (!string.Equals(pendiente.ClienteId, usuario.Id, StringComparison.Ordinal)) return Forbid();
+                if (usuario == null)
+                {
+                    return esSolicitudAjax
+                        ? Unauthorized(new { success = false, message = "La sesión del usuario venció. Inicie sesión nuevamente." })
+                        : Challenge();
+                }
+
+                if (!string.Equals(pendiente.ClienteId, usuario.Id, StringComparison.Ordinal))
+                {
+                    return esSolicitudAjax
+                        ? StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "No tiene permiso para registrar este pago." })
+                        : Forbid();
+                }
             }
 
             var producto = await _context.Productos
@@ -660,7 +709,13 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (producto == null || producto.Stock < pendiente.Cantidad)
             {
                 EliminarPedidoPendiente();
-                TempData["Error"] = "El producto ya no está disponible o no cuenta con suficiente inventario.";
+                const string mensaje = "El producto ya no está disponible o no cuenta con suficiente inventario.";
+                if (esSolicitudAjax)
+                {
+                    return BadRequest(new { success = false, message = mensaje });
+                }
+
+                TempData["Error"] = mensaje;
                 return RedirectToAction("Index", "Productos");
             }
 
@@ -686,6 +741,12 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Crear", pedido.Id,
                 $"Se registró el pedido PP-{pedido.Id:0000} para {pedido.ClienteNombre}, con método {metodoPago}.", _logger);
+
+            pedido.Producto = producto;
+            if (esSolicitudAjax)
+            {
+                return CrearRespuestaPagoAjax(pedido);
+            }
 
             return metodoPago == "SINPE Móvil"
                 ? RedirectToAction(nameof(PagoConfirmado), new { id = pedido.Id })
@@ -798,6 +859,34 @@ namespace MicrobeneficioSanGabriel.Controllers
                 "El pago se marcó como completado.", _logger);
             TempData["Success"] = "Pago confirmado correctamente.";
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool EsSolicitudAjax()
+        {
+            return string.Equals(
+                Request.Headers["X-Requested-With"].ToString(),
+                "XMLHttpRequest",
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        private JsonResult CrearRespuestaPagoAjax(Pedido pedido)
+        {
+            const string numeroSinpe = "89546434";
+            var codigoPedido = $"PP-{pedido.Id:0000}";
+            var textoWhatsapp = Uri.EscapeDataString(
+                $"Hola, envío el comprobante de pago por SINPE Móvil correspondiente al pedido {codigoPedido}.");
+
+            return Json(new
+            {
+                success = true,
+                message = "El método de pago fue registrado correctamente.",
+                pedidoId = pedido.Id,
+                codigoPedido,
+                metodoPago = pedido.MetodoPago,
+                estadoPago = pedido.EstadoPago,
+                sinpeNumero = numeroSinpe,
+                whatsappUrl = $"https://wa.me/506{numeroSinpe}?text={textoWhatsapp}"
+            });
         }
 
         private async Task SincronizarEstadoPagoFacturasAsync(int pedidoId, string estadoPago)

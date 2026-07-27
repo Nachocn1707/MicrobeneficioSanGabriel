@@ -108,15 +108,7 @@
           asp-append-version="true" />
 
     <link rel="stylesheet"
-          href="~/css/translucent-coffee-background.css"
-          asp-append-version="true" />
-
-    <link rel="stylesheet"
-          href="~/css/cafe-aurora-palette.css"
-          asp-append-version="true" />
-
-    <link rel="stylesheet"
-          href="~/css/admin-profesora.css"
+          href="~/css/portal-unificado.css"
           asp-append-version="true" />
 </head>
 
@@ -362,6 +354,18 @@
 
     <script src="~/js/notificaciones.js"
             asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const notificationDock = document.querySelector(".sg-notification-dock");
+
+            // Se mueve al body para evitar que cualquier contenedor, overlay o
+            // contexto de apilamiento del dashboard lo deje por detrás.
+            if (notificationDock && notificationDock.parentElement !== document.body) {
+                document.body.appendChild(notificationDock);
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {

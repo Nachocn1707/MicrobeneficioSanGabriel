@@ -744,6 +744,9 @@ body { color: var(--rc-ink); }
 /* Responsive */
 @media (max-width: 1180px) {
     .rc-public-header { grid-template-columns:auto auto; }
+    .rc-hero-copy { max-width: min(860px, 100%); }
+    .rc-hero-copy h1 { max-width: 100%; font-size: clamp(3rem, 6vw, 5rem); }
+    .rc-hero-micro-card { position: static; width: min(100%, 620px); margin-top: 28px; }
     .rc-public-nav { position:absolute;top:88px;left:22px;right:22px;display:none;flex-direction:column;align-items:stretch;padding:18px;background:#111;border:1px solid rgba(255,255,255,.12); }
     .rc-public-nav.open { display:flex; }
     .rc-mobile-toggle { display:grid;place-items:center;justify-self:end;width:42px;height:42px;color:#fff;border:1px solid rgba(255,255,255,.2);background:transparent; }
@@ -780,7 +783,9 @@ body { color: var(--rc-ink); }
 @media (max-width: 640px) {
     .rc-public-header { padding-inline:16px; }
     .rc-public-hero { min-height:auto;padding:120px 16px 55px; }
-    .rc-hero-copy h1 { font-size:3rem; }
+    .rc-hero-copy { max-width: 100%; }
+    .rc-hero-copy h1 { max-width: 100%; font-size:2.8rem; line-height: .98; }
+    .rc-hero-micro-card { padding: 20px 18px; width: 100%; }
     .rc-hero-art { min-height:380px; }
     .rc-hero-photo { inset:25px 0 10px 10px; }
     .rc-floating-score { display:none; }
@@ -1719,5 +1724,289 @@ html body.rc-admin-body .movimiento-premium-body .movimiento-side-line {
     .rc-floating-score,
     .rc-floating-note {
         display: none;
+    }
+}
+/* =========================================================
+   BARRA PÚBLICA NO FIJA
+   La navegación permanece al inicio del documento y desaparece
+   al desplazarse hacia abajo, sin superponerse al contenido.
+   ========================================================= */
+html {
+    scroll-padding-top: 0 !important;
+}
+
+#inicio,
+#catalogo,
+#ventajas,
+#proceso,
+#contacto {
+    scroll-margin-top: 20px !important;
+}
+
+html body.rc-public-body .rc-public-page .rc-public-header {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    inset: auto !important;
+    width: 100% !important;
+    z-index: 50 !important;
+}
+
+html body.rc-public-body .rc-public-hero {
+    padding-top: 70px !important;
+}
+
+@media (max-width: 768px) {
+    html body.rc-public-body .rc-public-hero {
+        padding-top: 60px !important;
+    }
+}
+
+
+/* Ajustes hero público: título más horizontal + tarjeta informativa */
+.rc-public-hero {
+    align-items: flex-end;
+    padding: 120px clamp(22px,5vw,76px) 78px;
+}
+
+.rc-hero-copy {
+    max-width: min(980px, 68vw);
+}
+
+.rc-hero-copy h1 {
+    max-width: min(1180px, 72vw);
+    font-size: clamp(3.1rem, 5.3vw, 6.15rem);
+    line-height: .95;
+    letter-spacing: -.045em;
+}
+
+.rc-hero-copy p {
+    max-width: 760px;
+}
+
+.rc-hero-micro-card {
+    position: absolute;
+    right: clamp(22px, 4vw, 72px);
+    bottom: 48px;
+    z-index: 10;
+    width: min(360px, 34vw);
+    padding: 24px 26px;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.16);
+    background: linear-gradient(180deg, rgba(17,16,15,.78), rgba(17,16,15,.56));
+    box-shadow: var(--rc-shadow-dark);
+    backdrop-filter: blur(12px);
+    clip-path: polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);
+}
+
+.rc-hero-card-label {
+    display: inline-flex;
+    margin-bottom: 10px;
+    color: var(--rc-amber);
+    font-size: .72rem;
+    font-weight: 950;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.rc-hero-micro-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.38rem;
+    line-height: 1.25;
+    text-transform: uppercase;
+    letter-spacing: -.02em;
+}
+
+.rc-hero-micro-card p {
+    margin: 0 0 16px;
+    color: #e3d8d1;
+    font-size: .96rem;
+    line-height: 1.65;
+}
+
+.rc-hero-card-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rc-hero-card-list li {
+    color: #f3ece7;
+    font-size: .9rem;
+    line-height: 1.45;
+}
+
+.rc-hero-card-list strong {
+    color: var(--rc-amber);
+}
+
+
+/* Ajuste final solicitado: hero más horizontal y tarjeta con texto blanco */
+html body.rc-public-body .rc-public-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    column-gap: clamp(24px, 3vw, 42px) !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-copy {
+    max-width: min(1320px, calc(100% - 380px)) !important;
+    width: 100% !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-copy h1 {
+    max-width: min(1320px, calc(100% - 20px)) !important;
+    font-size: clamp(3.2rem, 5vw, 6.2rem) !important;
+    line-height: .93 !important;
+    letter-spacing: -.04em !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-copy p {
+    max-width: min(900px, 100%) !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card {
+    position: static !important;
+    align-self: end !important;
+    justify-self: end !important;
+    width: min(360px, 100%) !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card h3,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card p,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card li,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card strong {
+    color: #ffffff !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card p {
+    opacity: .95 !important;
+}
+
+@media (max-width: 1180px) {
+    html body.rc-public-body .rc-public-hero {
+        grid-template-columns: 1fr !important;
+        row-gap: 26px !important;
+    }
+
+    html body.rc-public-body .rc-public-hero .rc-hero-copy {
+        max-width: 100% !important;
+    }
+
+    html body.rc-public-body .rc-public-hero .rc-hero-copy h1 {
+        max-width: 100% !important;
+    }
+
+    html body.rc-public-body .rc-public-hero .rc-hero-micro-card {
+        justify-self: start !important;
+        width: min(100%, 620px) !important;
+    }
+}
+
+
+/* Corrección definitiva del hero público: texto más horizontal y tarjeta visible */
+html body.rc-public-body .rc-public-hero {
+    display: flex !important;
+    align-items: center !important;
+    position: relative !important;
+    min-height: 820px !important;
+    padding: 108px clamp(24px, 4vw, 72px) 72px !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-copy {
+    position: relative !important;
+    z-index: 12 !important;
+    width: calc(100% - 390px) !important;
+    max-width: 1320px !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-copy h1 {
+    width: 100% !important;
+    max-width: 1280px !important;
+    margin: 18px 0 22px !important;
+    font-size: clamp(3rem, 4.25vw, 5.25rem) !important;
+    line-height: .94 !important;
+    letter-spacing: -.042em !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-copy p {
+    max-width: 860px !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card {
+    position: absolute !important;
+    right: clamp(24px, 3.8vw, 70px) !important;
+    bottom: 62px !important;
+    z-index: 30 !important;
+    display: block !important;
+    width: min(350px, 30vw) !important;
+    min-width: 310px !important;
+    margin: 0 !important;
+    padding: 24px 26px !important;
+    overflow: visible !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,.22) !important;
+    background: linear-gradient(145deg, rgba(18,16,15,.94), rgba(49,31,20,.88)) !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,.38) !important;
+    backdrop-filter: blur(14px) !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card .rc-hero-card-label {
+    color: #ffc064 !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card h3,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card p,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card li,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card strong {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card h3 {
+    font-size: 1.28rem !important;
+    line-height: 1.22 !important;
+}
+
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card p,
+html body.rc-public-body .rc-public-hero .rc-hero-micro-card li {
+    font-size: .88rem !important;
+    line-height: 1.55 !important;
+}
+
+@media (max-width: 1180px) {
+    html body.rc-public-body .rc-public-hero {
+        display: block !important;
+        min-height: auto !important;
+        padding-bottom: 64px !important;
+    }
+
+    html body.rc-public-body .rc-public-hero .rc-hero-copy {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    html body.rc-public-body .rc-public-hero .rc-hero-copy h1 {
+        max-width: 100% !important;
+        font-size: clamp(3rem, 6vw, 5rem) !important;
+    }
+
+    html body.rc-public-body .rc-public-hero .rc-hero-micro-card {
+        position: relative !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: min(100%, 620px) !important;
+        min-width: 0 !important;
+        margin-top: 30px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    html body.rc-public-body .rc-public-hero .rc-hero-copy h1 {
+        font-size: 2.65rem !important;
     }
 }

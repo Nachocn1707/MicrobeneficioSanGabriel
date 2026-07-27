@@ -1,0 +1,2286 @@
+/* Tema administrativo basado en la referencia de la profesora */
+body.sg-reference-theme {
+    --sg-cream: #EFECE4;
+    --sg-card: #FEFCFA;
+    --sg-sidebar: #FEFCFA;
+    --sg-espresso: #293F25;
+    --sg-espresso-2: #293F25;
+    --sg-text: #293F25;
+    --sg-muted: #666859;
+    --sg-green: #53833B;
+    --sg-green-2: #293F25;
+    --sg-gold: #D4730B;
+    --sg-gold-2: #EDAE3E;
+    --sg-danger: #D16F5A;
+    --sg-line: #EFECE4;
+    --sg-radius: 10px;
+    --sg-shadow: 0 4px 14px rgba(41, 55, 31, .07);
+    margin: 0;
+    background: #EFECE4 !important;
+    color: #293F25 !important;
+}
+
+    /* Barra lateral */
+    body.sg-reference-theme .sg-sidebar {
+        width: 250px;
+        padding: 24px 18px 18px;
+        gap: 18px;
+        background: #FEFCFA !important;
+        border-right: 1px solid #EFECE4 !important;
+        box-shadow: 4px 0 18px rgba(41, 55, 31, .05) !important;
+    }
+
+    body.sg-reference-theme .sg-brand {
+        gap: 11px;
+        color: #293F25 !important;
+    }
+
+    body.sg-reference-theme .sg-brand-mark {
+        width: 48px;
+        height: 48px;
+        border: 0 !important;
+        border-radius: 10px;
+        color: #EDAE3E !important;
+        background: #293F25 !important;
+        font-size: 21px;
+    }
+
+    body.sg-reference-theme .sg-brand strong {
+        color: #293F25 !important;
+        font-size: 1.12rem;
+        letter-spacing: .035em;
+    }
+
+    body.sg-reference-theme .sg-brand small {
+        margin-top: 4px;
+        color: #834003 !important;
+        font-size: .62rem;
+        letter-spacing: .13em;
+    }
+
+    /* NavegaciÃƒÂ³n */
+    body.sg-reference-theme .sg-nav {
+        gap: 4px;
+        margin-top: 8px;
+    }
+
+        body.sg-reference-theme .sg-nav a,
+        body.sg-reference-theme .sg-nav summary {
+            height: 43px;
+            padding: 0 13px;
+            border-radius: 6px;
+            color: #4F3514 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            font-size: .88rem;
+            font-weight: 700;
+        }
+
+            body.sg-reference-theme .sg-nav a i,
+            body.sg-reference-theme .sg-nav summary i {
+                color: #834003 !important;
+            }
+
+            body.sg-reference-theme .sg-nav a:hover,
+            body.sg-reference-theme .sg-nav summary:hover {
+                color: #293F25 !important;
+                background: #EFECE4 !important;
+            }
+
+            body.sg-reference-theme .sg-nav a.active,
+            body.sg-reference-theme .sg-nav summary.active,
+            body.sg-reference-theme .sg-nav details[open] > summary {
+                color: #FEFCFA !important;
+                background: #293F25 !important;
+            }
+
+                body.sg-reference-theme .sg-nav a.active i,
+                body.sg-reference-theme .sg-nav summary.active i,
+                body.sg-reference-theme .sg-nav details[open] > summary i {
+                    color: #FEFCFA !important;
+                }
+
+    body.sg-reference-theme .sg-subnav {
+        gap: 2px;
+        margin: 3px 0 5px 13px;
+        padding-left: 9px;
+        border-left: 1px solid #EFECE4 !important;
+    }
+
+        body.sg-reference-theme .sg-subnav a {
+            height: 37px;
+            font-size: .79rem;
+        }
+
+            body.sg-reference-theme .sg-subnav a.active {
+                color: #293F25 !important;
+                background: #E7EEE3 !important;
+            }
+
+    body.sg-reference-theme .sg-sidebar-bottom {
+        border-top: 1px solid #EFECE4;
+    }
+
+    body.sg-reference-theme .sg-user,
+    body.sg-reference-theme .sg-user strong {
+        color: #293F25 !important;
+    }
+
+        body.sg-reference-theme .sg-user small {
+            color: #53833B !important;
+        }
+
+        body.sg-reference-theme .sg-user .avatar {
+            color: #293F25 !important;
+            border-color: #C9D2C5 !important;
+            background: #F4F7F2 !important;
+        }
+
+    body.sg-reference-theme .sg-logout {
+        color: #4F3514 !important;
+        background: #FEFCFA !important;
+        border-color: #EFECE4 !important;
+    }
+
+    /* Fondo y encabezado */
+    body.sg-reference-theme .sg-main {
+        margin-left: 250px;
+        padding: 0 28px 28px;
+        background-color: #EFECE4 !important;
+        background-image: linear-gradient( rgba(247, 243, 234, 0.70), rgba(247, 243, 234, 0.64) ), url("/images/visual/coffee-farm.jpg") !important;
+        background-position: center !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }
+
+    body.sg-reference-theme .sg-content {
+        max-width: 1580px;
+        padding-top: 18px;
+    }
+
+    body.sg-reference-theme .sg-page-head {
+        margin: -18px -28px 16px;
+        padding: 19px 78px 18px 28px;
+        align-items: center;
+        background: rgba(254, 252, 250, .92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid #EFECE4;
+    }
+
+        body.sg-reference-theme .sg-page-head h1 {
+            color: #293F25 !important;
+            font-size: 1.65rem;
+            letter-spacing: -.025em;
+        }
+
+        body.sg-reference-theme .sg-page-head p {
+            color: #666859 !important;
+            font-size: .88rem;
+            margin-top: 4px;
+        }
+
+    body.sg-reference-theme .sg-notification-dock {
+        top: 15px;
+        right: 22px;
+    }
+
+    /* Botones */
+    body.sg-reference-theme .sg-btn {
+        min-height: 40px;
+        padding: 0 15px;
+        border-radius: 8px;
+        box-shadow: none;
+        font-size: .84rem;
+    }
+
+        body.sg-reference-theme .sg-btn.green,
+        body.sg-reference-theme .sg-btn.gold {
+            color: #FEFCFA !important;
+            border-color: #293F25 !important;
+            background: #293F25 !important;
+        }
+
+            body.sg-reference-theme .sg-btn.green:hover,
+            body.sg-reference-theme .sg-btn.gold:hover {
+                background: #293F25 !important;
+            }
+
+        body.sg-reference-theme .sg-btn.ghost {
+            color: #4F3514 !important;
+            background: #FEFCFA !important;
+            border: 1px solid #EFECE4 !important;
+        }
+
+    /* Tarjetas */
+    body.sg-reference-theme .sg-card,
+    body.sg-reference-theme .sg-panel,
+    body.sg-reference-theme .sg-table-card {
+        color: #293F25 !important;
+        background: #FEFCFA !important;
+        border: 1px solid #EFECE4 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 14px rgba(41, 55, 31, .07) !important;
+    }
+
+    body.sg-reference-theme .sg-kpi-grid {
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    body.sg-reference-theme .sg-kpi {
+        min-height: 102px;
+        padding: 17px;
+        gap: 14px;
+    }
+
+        body.sg-reference-theme .sg-kpi::after {
+            display: none;
+        }
+
+    body.sg-reference-theme .sg-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        font-size: 1.14rem;
+        color: #FEFCFA !important;
+    }
+
+    body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(1) .sg-icon {
+        background: #293F25 !important;
+    }
+
+    body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(2) .sg-icon {
+        background: #834003 !important;
+    }
+
+    body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(3) .sg-icon {
+        background: #D4730B !important;
+    }
+
+    body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(4) .sg-icon {
+        background: #293F25 !important;
+    }
+
+    body.sg-reference-theme .sg-kpi span {
+        color: #666859 !important;
+        font-size: .82rem;
+    }
+
+    body.sg-reference-theme .sg-kpi strong {
+        color: #293F25 !important;
+        font-size: 1.55rem;
+    }
+
+    body.sg-reference-theme .sg-trend {
+        color: #666859 !important;
+        font-size: .72rem;
+    }
+
+        body.sg-reference-theme .sg-trend.warn {
+            color: #D4730B !important;
+        }
+
+    /* Paneles y grÃƒÂ¡ficas */
+    body.sg-reference-theme .sg-grid-2,
+    body.sg-reference-theme .sg-grid-3 {
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    body.sg-reference-theme .sg-panel {
+        padding: 17px;
+    }
+
+    body.sg-reference-theme .sg-panel-head {
+        margin-bottom: 11px;
+    }
+
+        body.sg-reference-theme .sg-panel-head h2,
+        body.sg-reference-theme .sg-panel-head h3 {
+            color: #293F25 !important;
+            font-size: 1rem;
+        }
+
+        body.sg-reference-theme .sg-panel-head small {
+            color: #666859 !important;
+        }
+
+    body.sg-reference-theme .sg-chart {
+        height: 245px;
+    }
+
+    body.sg-reference-theme .sg-donut-wrap {
+        min-height: 220px;
+    }
+
+    body.sg-reference-theme .sg-donut {
+        width: 150px !important;
+        height: 150px !important;
+    }
+
+        body.sg-reference-theme .sg-donut::after {
+            background: #FEFCFA !important;
+            border-color: #EFECE4 !important;
+        }
+
+        body.sg-reference-theme .sg-donut b,
+        body.sg-reference-theme .sg-donut span,
+        body.sg-reference-theme .sg-legend-row {
+            color: #293F25 !important;
+        }
+
+    body.sg-reference-theme .sg-dot.green {
+        background: #53833B !important;
+    }
+
+    body.sg-reference-theme .sg-dot.gold {
+        background: #D4730B !important;
+    }
+
+    body.sg-reference-theme .sg-dot.tan {
+        background: #EDAE3E !important;
+    }
+
+    body.sg-reference-theme .sg-dot.brown {
+        background: #4F3514 !important;
+    }
+
+    body.sg-reference-theme .sg-dot.coffee {
+        background: #834003 !important;
+    }
+
+    body.sg-reference-theme .sg-bar {
+        background: #EFECE4 !important;
+    }
+
+        body.sg-reference-theme .sg-bar > span {
+            background: #D4730B !important;
+        }
+
+    /* Enlaces de detalle */
+    body.sg-reference-theme .sg-panel-head a:not(.sg-btn),
+    body.sg-reference-theme .sg-table-card .sg-panel-head a {
+        min-height: 29px !important;
+        padding: 0 10px !important;
+        color: #293F25 !important;
+        background: #F4F7F2 !important;
+        border: 1px solid #C9D2C5 !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+    }
+
+    /* Tabla */
+    body.sg-reference-theme .sg-table-card {
+        padding: 16px 18px;
+    }
+
+    body.sg-reference-theme .sg-table {
+        color: #293F25 !important;
+        font-size: .82rem;
+    }
+
+        body.sg-reference-theme .sg-table thead th {
+            color: #4F3514 !important;
+            background: #F4F1EA !important;
+            border-color: #EFECE4 !important;
+        }
+
+        body.sg-reference-theme .sg-table tbody td {
+            color: #293F25 !important;
+            background: #FEFCFA !important;
+            border-bottom-color: #EFECE4 !important;
+        }
+
+        body.sg-reference-theme .sg-table tbody tr:hover td {
+            background: #F4F7F2 !important;
+        }
+
+    body.sg-reference-theme .sg-badge {
+        color: #293F25 !important;
+        background: #E4EDE0 !important;
+    }
+
+        body.sg-reference-theme .sg-badge.gold {
+            color: #834003 !important;
+            background: #FFF0D5 !important;
+        }
+
+        body.sg-reference-theme .sg-badge.tan {
+            color: #834003 !important;
+            background: #F8E7C7 !important;
+        }
+
+        body.sg-reference-theme .sg-badge.brown {
+            color: #FEFCFA !important;
+            background: #4F3514 !important;
+        }
+
+    /* Iconos blancos como en la referencia */
+    body.sg-reference-theme .sg-icon,
+    body.sg-reference-theme .sg-icon i,
+    body.sg-reference-theme .sg-icon .fa-solid,
+    body.sg-reference-theme .sg-icon .fa-regular,
+    body.sg-reference-theme .sg-icon svg,
+    body.sg-reference-theme .sg-icon svg path {
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+    }
+
+/* Mantener esta apariencia aunque estuviera activo el modo oscuro */
+html.dark body.sg-reference-theme,
+html.dark body.sg-reference-theme .sg-main {
+    color: #293F25 !important;
+    background-color: #EFECE4 !important;
+}
+
+    html.dark body.sg-reference-theme .sg-sidebar,
+    html.dark body.sg-reference-theme .sg-card,
+    html.dark body.sg-reference-theme .sg-panel,
+    html.dark body.sg-reference-theme .sg-table-card {
+        color: #293F25 !important;
+        background: #FEFCFA !important;
+        border-color: #EFECE4 !important;
+    }
+
+/* Responsive */
+@media (max-width: 1100px) {
+    body.sg-reference-theme .sg-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    body.sg-reference-theme .sg-main {
+        margin-left: 0;
+        padding: 0 20px 24px;
+    }
+
+    body.sg-reference-theme .sg-content {
+        padding-top: 16px;
+    }
+
+    body.sg-reference-theme .sg-page-head {
+        margin: -16px -20px 16px;
+        padding: 18px 74px 18px 20px;
+    }
+
+    body.sg-reference-theme .sg-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.sg-reference-theme .sg-grid-2,
+    body.sg-reference-theme .sg-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    body.sg-reference-theme .sg-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.sg-reference-theme .sg-page-head {
+        padding-right: 66px;
+    }
+
+        body.sg-reference-theme .sg-page-head h1 {
+            font-size: 1.4rem;
+        }
+
+    body.sg-reference-theme .sg-donut-wrap {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+}
+
+
+/* Paleta administrativa aplicada al portal del cliente */
+body.rc-client-body {
+    --sg-admin-cream: #EFECE4;
+    --sg-admin-surface: #FEFCFA;
+    --sg-admin-surface-soft: rgba(254, 252, 250, 0.88);
+    --sg-admin-primary: #293F25;
+    --sg-admin-secondary: #4F3514;
+    --sg-admin-muted: #666859;
+    --sg-admin-accent: #834003;
+    --sg-admin-green: #53833B;
+    --sg-admin-gold: #D4730B;
+    --sg-admin-gold-soft: #EDAE3E;
+    --sg-admin-danger: #D16F5A;
+    --sg-admin-line: #E1DDD3;
+    color: var(--sg-admin-primary) !important;
+    background:
+        radial-gradient(circle at 12% 10%, rgba(212, 115, 11, .10), transparent 25%),
+        linear-gradient(180deg, rgba(239,236,228,.84) 0%, rgba(247,243,234,.90) 54%, rgba(239,236,228,.94) 100%) !important;
+}
+
+body.rc-client-body .cafe-portal-body,
+body.rc-client-body .cafe-portal-shell {
+    color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .cafe-portal-header {
+    border: 1px solid var(--sg-admin-line) !important;
+    background: rgba(254, 252, 250, .96) !important;
+    box-shadow: 0 18px 42px rgba(41, 55, 31, .08) !important;
+}
+
+body.rc-client-body .cafe-portal-brand,
+body.rc-client-body .cafe-portal-brand:hover,
+body.rc-client-body .cafe-portal-brand-text strong,
+body.rc-client-body .cafe-client-session-text strong {
+    color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .cafe-portal-brand-icon,
+body.rc-client-body .cafe-client-session-icon,
+body.rc-client-body .cliente-stat-icon,
+body.rc-client-body .cliente-module-card .cliente-module-icon,
+body.rc-client-body .cafe-quick-icon,
+body.rc-client-body .sg-order-summary-icon,
+body.rc-client-body .sg-payment-method-icon {
+    color: #FEFCFA !important;
+    background: var(--sg-admin-primary) !important;
+    box-shadow: 0 10px 24px rgba(41, 55, 31, .16) !important;
+}
+
+body.rc-client-body .sg-payment-method.cash .sg-payment-method-icon,
+body.rc-client-body .cliente-benefit-icon {
+    color: var(--sg-admin-primary) !important;
+    background: #E7EEE3 !important;
+    box-shadow: 0 10px 24px rgba(83, 131, 59, .13) !important;
+}
+
+body.rc-client-body .cafe-portal-brand-text small,
+body.rc-client-body .cafe-client-session-text small,
+body.rc-client-body .cliente-panel-head small,
+body.rc-client-body .cliente-section-label,
+body.rc-client-body .sg-payment-section-label span:first-child,
+body.rc-client-body .sg-order-summary-head small,
+body.rc-client-body .sg-payment-heading small,
+body.rc-client-body .sg-sinpe-number-box small,
+body.rc-client-body .cliente-order-pay,
+body.rc-client-body .client-purchase-number span,
+body.rc-client-body .client-purchase-product small,
+body.rc-client-body .client-purchase-total small {
+    color: var(--sg-admin-accent) !important;
+}
+
+body.rc-client-body .cafe-portal-nav a {
+    color: var(--sg-admin-secondary) !important;
+    font-weight: 700 !important;
+}
+
+body.rc-client-body .cafe-portal-nav a::after {
+    background: var(--sg-admin-gold) !important;
+}
+
+body.rc-client-body .cafe-portal-nav a.active,
+body.rc-client-body .cafe-portal-nav a:hover {
+    color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .cafe-client-session,
+body.rc-client-body .cafe-header-logout,
+body.rc-client-body .sg-page-head,
+body.rc-client-body .cafe-quick-section,
+body.rc-client-body .cafe-quick-card,
+body.rc-client-body .cliente-hero-premium,
+body.rc-client-body .cliente-side-panel,
+body.rc-client-body .cliente-stat-card,
+body.rc-client-body .cliente-module-card,
+body.rc-client-body .cliente-order-card,
+body.rc-client-body .cliente-feature-card,
+body.rc-client-body .cliente-benefits-panel,
+body.rc-client-body .cliente-benefit-card,
+body.rc-client-body .cliente-banner-card,
+body.rc-client-body .rc-client-kpi,
+body.rc-client-body .rc-client-panel,
+body.rc-client-body .sg-card,
+body.rc-client-body .sg-table-card,
+body.rc-client-body .client-orders-summary article,
+body.rc-client-body .client-orders-section,
+body.rc-client-body .client-purchase-card,
+body.rc-client-body .sg-payment-modal,
+body.rc-client-body .sg-order-summary,
+body.rc-client-body .sg-payment-success-box,
+body.rc-client-body .card,
+body.rc-client-body .table-responsive,
+body.rc-client-body .dataTables_wrapper,
+body.rc-client-body .form-card,
+body.rc-client-body .details-card,
+body.rc-client-body .edit-card,
+body.rc-client-body .create-card {
+    border-color: var(--sg-admin-line) !important;
+    background: var(--sg-admin-surface-soft) !important;
+    box-shadow: 0 14px 34px rgba(41, 55, 31, .08) !important;
+    color: var(--sg-admin-primary) !important;
+    backdrop-filter: blur(9px);
+}
+
+body.rc-client-body .cliente-module-card.featured,
+body.rc-client-body .sg-payment-header,
+body.rc-client-body .sg-order-summary-total,
+body.rc-client-body .client-orders-hero,
+body.rc-client-body .sg-visual-hero {
+    color: #FEFCFA !important;
+    background:
+        linear-gradient(120deg, rgba(41, 63, 37, .96) 0%, rgba(41, 63, 37, .82) 36%, rgba(41, 63, 37, .50) 100%),
+        url('/images/visual/coffee-farm.jpg') center/cover no-repeat !important;
+}
+
+body.rc-client-body .sg-payment-modal,
+body.rc-client-body .sg-payment-body {
+    color: var(--sg-admin-primary) !important;
+    background: var(--sg-admin-surface) !important;
+}
+
+body.rc-client-body .sg-payment-sidebar {
+    border-left: 1px solid var(--sg-admin-line) !important;
+    background: linear-gradient(180deg, rgba(239,236,228,.72) 0%, rgba(247,243,234,.92) 100%) !important;
+}
+
+body.rc-client-body .sg-payment-close {
+    background-color: rgba(255,255,255,.18) !important;
+}
+
+body.rc-client-body .sg-payment-method-card,
+body.rc-client-body .sg-sinpe-number-box,
+body.rc-client-body .sg-payment-details,
+body.rc-client-body .sg-payment-trust > div,
+body.rc-client-body .sg-copy-button,
+body.rc-client-body .sg-payment-button.secondary {
+    border-color: var(--sg-admin-line) !important;
+    background: rgba(254,252,250,.94) !important;
+    color: var(--sg-admin-secondary) !important;
+}
+
+body.rc-client-body .sg-payment-method:hover .sg-payment-method-card,
+body.rc-client-body .sg-copy-button:hover,
+body.rc-client-body .client-purchase-card:hover,
+body.rc-client-body .cafe-quick-card:hover,
+body.rc-client-body .cliente-module-card:hover,
+body.rc-client-body .rc-client-kpi:hover,
+body.rc-client-body .sg-product-card:hover {
+    border-color: rgba(83,131,59,.40) !important;
+    box-shadow: 0 20px 40px rgba(41,55,31,.12) !important;
+}
+
+body.rc-client-body .sg-payment-method input:focus-visible + .sg-payment-method-card {
+    outline: 3px solid rgba(83,131,59,.16) !important;
+}
+
+body.rc-client-body .sg-payment-method input:checked + .sg-payment-method-card,
+body.rc-client-body .sg-payment-details,
+body.rc-client-body .client-purchase-action.details:hover,
+body.rc-client-body .client-purchase-action.edit:hover,
+body.rc-client-body .client-purchase-action.cancel:hover {
+    border-color: rgba(83,131,59,.38) !important;
+    background: linear-gradient(135deg, rgba(231,238,227,.92), rgba(254,252,250,.97)) !important;
+}
+
+body.rc-client-body .sg-payment-radio-mark,
+body.rc-client-body .client-purchase-action,
+body.rc-client-body .cafe-header-logout,
+body.rc-client-body .cafe-client-session {
+    border-color: var(--sg-admin-line) !important;
+}
+
+body.rc-client-body .sg-payment-radio-mark::after {
+    background: var(--sg-admin-green) !important;
+}
+
+body.rc-client-body .sg-payment-button.primary,
+body.rc-client-body .cafe-header-order-button,
+body.rc-client-body .cliente-btn-primary,
+body.rc-client-body .cliente-module-button.primary,
+body.rc-client-body .cliente-chip-button.is-active,
+body.rc-client-body .client-orders-button.primary,
+body.rc-client-body .client-purchase-action.pay,
+body.rc-client-body .btn-primary,
+body.rc-client-body .sg-btn.green,
+body.rc-client-body .sg-btn.gold {
+    border-color: var(--sg-admin-primary) !important;
+    color: #FEFCFA !important;
+    background: var(--sg-admin-primary) !important;
+    box-shadow: 0 12px 24px rgba(41, 55, 31, .18) !important;
+}
+
+body.rc-client-body .sg-payment-button.primary:hover,
+body.rc-client-body .cafe-header-order-button:hover,
+body.rc-client-body .cliente-btn-primary:hover,
+body.rc-client-body .cliente-module-button.primary:hover,
+body.rc-client-body .client-purchase-action.pay:hover,
+body.rc-client-body .btn-primary:hover {
+    color: #FEFCFA !important;
+    background: #345230 !important;
+}
+
+body.rc-client-body .cliente-btn-secondary,
+body.rc-client-body .cliente-module-button.secondary,
+body.rc-client-body .cliente-chip-button,
+body.rc-client-body .client-orders-button.secondary,
+body.rc-client-body .btn-outline-secondary,
+body.rc-client-body .sg-btn.ghost,
+body.rc-client-body .client-purchase-action.details,
+body.rc-client-body .client-purchase-action.edit,
+body.rc-client-body .client-purchase-action.cancel {
+    border: 1px solid var(--sg-admin-line) !important;
+    color: var(--sg-admin-secondary) !important;
+    background: rgba(254,252,250,.92) !important;
+}
+
+body.rc-client-body .client-purchase-action.cancel {
+    color: var(--sg-admin-danger) !important;
+}
+
+body.rc-client-body .cafe-header-logout:hover,
+body.rc-client-body .cliente-btn-secondary:hover,
+body.rc-client-body .cliente-module-button.secondary:hover,
+body.rc-client-body .cliente-chip-button:hover,
+body.rc-client-body .client-orders-button.secondary:hover,
+body.rc-client-body .sg-payment-button.secondary:hover {
+    color: var(--sg-admin-primary) !important;
+    background: rgba(239,236,228,.88) !important;
+}
+
+body.rc-client-body .cliente-status-chip,
+body.rc-client-body .cliente-order-tag.complete,
+body.rc-client-body .status-badge.entregado,
+body.rc-client-body .status-badge.pagado,
+body.rc-client-body .sg-payment-success-icon {
+    color: #FEFCFA !important;
+    background: linear-gradient(135deg, var(--sg-admin-green), #7BA35D) !important;
+    box-shadow: 0 14px 30px rgba(83, 131, 59, .22) !important;
+}
+
+body.rc-client-body .cliente-order-tag.pending,
+body.rc-client-body .status-badge.pendiente,
+body.rc-client-body .status-badge.proceso,
+body.rc-client-body .status-badge.en-proceso,
+body.rc-client-body .client-orders-status.pending {
+    color: var(--sg-admin-accent) !important;
+    background: rgba(237,174,62,.22) !important;
+}
+
+body.rc-client-body .cliente-order-tag.process,
+body.rc-client-body .status-badge.preparacion,
+body.rc-client-body .status-badge.enviando {
+    color: var(--sg-admin-primary) !important;
+    background: rgba(83,131,59,.18) !important;
+}
+
+body.rc-client-body .cliente-card-tag,
+body.rc-client-body .sg-visual-badge,
+body.rc-client-body .client-orders-chip,
+body.rc-client-body .client-orders-summary small + strong {
+    color: var(--sg-admin-primary) !important;
+    background: rgba(237,174,62,.18) !important;
+    border-color: rgba(212,115,11,.14) !important;
+}
+
+body.rc-client-body .client-purchase-actions,
+body.rc-client-body .sg-order-summary-head,
+body.rc-client-body .sg-order-summary-row,
+body.rc-client-body .sg-payment-success-box div + div {
+    border-color: var(--sg-admin-line) !important;
+}
+
+body.rc-client-body .client-purchase-actions {
+    background: rgba(254,252,250,.74) !important;
+}
+
+body.rc-client-body .client-purchase-number strong,
+body.rc-client-body .client-purchase-product h3,
+body.rc-client-body .client-purchase-total strong,
+body.rc-client-body .cliente-hero-copy h1,
+body.rc-client-body .cliente-panel-head h2,
+body.rc-client-body .cliente-section-title,
+body.rc-client-body .cliente-stat-card strong,
+body.rc-client-body .cliente-module-card h3,
+body.rc-client-body .cliente-banner-card h3,
+body.rc-client-body .sg-page-head h1,
+body.rc-client-body .sg-payment-details-head strong,
+body.rc-client-body .sg-sinpe-number-box strong,
+body.rc-client-body .sg-order-summary-head strong,
+body.rc-client-body .sg-order-summary-row strong,
+body.rc-client-body .sg-payment-success h3,
+body.rc-client-body .sg-payment-success-box strong,
+body.rc-client-body .cafe-quick-card strong,
+body.rc-client-body .cafe-portal-main h2,
+body.rc-client-body .cafe-portal-main h3,
+body.rc-client-body .cafe-portal-main h4,
+body.rc-client-body .cafe-portal-main .h1,
+body.rc-client-body .cafe-portal-main .h2,
+body.rc-client-body .cafe-portal-main .h3,
+body.rc-client-body .cafe-portal-main .h4 {
+    color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .cliente-hero-copy p,
+body.rc-client-body .cliente-order-meta,
+body.rc-client-body .cliente-feature-card p,
+body.rc-client-body .cliente-module-card p,
+body.rc-client-body .cliente-banner-card p,
+body.rc-client-body .cliente-benefit-card p,
+body.rc-client-body .client-purchase-product span,
+body.rc-client-body .sg-payment-method-copy small,
+body.rc-client-body .sg-payment-details-head span,
+body.rc-client-body .sg-payment-note,
+body.rc-client-body .sg-order-summary-row,
+body.rc-client-body .sg-payment-success > p,
+body.rc-client-body .cafe-portal-main p,
+body.rc-client-body .cliente-stat-card small,
+body.rc-client-body .cliente-stat-card span {
+    color: var(--sg-admin-muted) !important;
+}
+
+body.rc-client-body .sg-table thead th,
+body.rc-client-body table.dataTable thead th,
+body.rc-client-body .table thead th {
+    color: #FEFCFA !important;
+    background: var(--sg-admin-primary) !important;
+    border-color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .sg-table tbody tr:hover,
+body.rc-client-body .table tbody tr:hover,
+body.rc-client-body table.dataTable tbody tr:hover {
+    background: rgba(231,238,227,.55) !important;
+}
+
+body.rc-client-body .form-control,
+body.rc-client-body .form-select,
+body.rc-client-body textarea,
+body.rc-client-body input,
+body.rc-client-body select {
+    border-color: #D7D2C8 !important;
+    color: var(--sg-admin-primary) !important;
+    background: rgba(254,252,250,.94) !important;
+}
+
+body.rc-client-body .form-control:focus,
+body.rc-client-body .form-select:focus,
+body.rc-client-body textarea:focus,
+body.rc-client-body input:focus,
+body.rc-client-body select:focus {
+    border-color: rgba(83,131,59,.55) !important;
+    box-shadow: 0 0 0 .22rem rgba(83,131,59,.14) !important;
+}
+
+body.rc-client-body .cafe-portal-main {
+    background-color: #f7f3eb !important;
+    background-image:
+        linear-gradient(rgba(247,243,234,.56), rgba(247,243,234,.52)),
+        url('/images/visual/coffee-farm.jpg') !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+body.rc-client-body .sg-client-content::before {
+    background:
+        linear-gradient(rgba(247,243,234,.42), rgba(247,243,234,.46)),
+        url('/images/dashboard/client-hero.jpg') center/cover no-repeat !important;
+    opacity: .82 !important;
+}
+
+body.rc-client-body .sg-client-content::after {
+    opacity: .18 !important;
+}
+
+body.rc-client-body .cafe-portal-main > .alert,
+body.rc-client-body .cafe-portal-main > .sg-page-head,
+body.rc-client-body .cafe-portal-main > .sg-grid-3,
+body.rc-client-body .cafe-portal-main > .sg-kpi-grid,
+body.rc-client-body .cafe-portal-main > .sg-table-card,
+body.rc-client-body .cafe-portal-main .cafe-client-home,
+body.rc-client-body .sg-client-content {
+    position: relative;
+    z-index: 1;
+}
+
+html.dark body.rc-client-body {
+    --sg-admin-surface-soft: rgba(37, 43, 33, 0.88);
+}
+
+html.dark body.rc-client-body .cafe-portal-header,
+html.dark body.rc-client-body .cafe-client-session,
+html.dark body.rc-client-body .cafe-header-logout,
+html.dark body.rc-client-body .sg-page-head,
+html.dark body.rc-client-body .cafe-quick-section,
+html.dark body.rc-client-body .cafe-quick-card,
+html.dark body.rc-client-body .cliente-hero-premium,
+html.dark body.rc-client-body .cliente-side-panel,
+html.dark body.rc-client-body .cliente-stat-card,
+html.dark body.rc-client-body .cliente-module-card,
+html.dark body.rc-client-body .cliente-order-card,
+html.dark body.rc-client-body .cliente-feature-card,
+html.dark body.rc-client-body .cliente-benefits-panel,
+html.dark body.rc-client-body .cliente-benefit-card,
+html.dark body.rc-client-body .cliente-banner-card,
+html.dark body.rc-client-body .rc-client-kpi,
+html.dark body.rc-client-body .rc-client-panel,
+html.dark body.rc-client-body .sg-card,
+html.dark body.rc-client-body .sg-table-card,
+html.dark body.rc-client-body .client-orders-summary article,
+html.dark body.rc-client-body .client-orders-section,
+html.dark body.rc-client-body .client-purchase-card,
+html.dark body.rc-client-body .sg-payment-modal,
+html.dark body.rc-client-body .sg-order-summary,
+html.dark body.rc-client-body .sg-payment-success-box,
+html.dark body.rc-client-body .card,
+html.dark body.rc-client-body .table-responsive,
+html.dark body.rc-client-body .dataTables_wrapper,
+html.dark body.rc-client-body .form-card,
+html.dark body.rc-client-body .details-card,
+html.dark body.rc-client-body .edit-card,
+html.dark body.rc-client-body .create-card {
+    border-color: rgba(110, 130, 98, .28) !important;
+    background: rgba(36, 42, 32, .90) !important;
+    color: #F2F2EC !important;
+}
+
+html.dark body.rc-client-body .cafe-portal-nav a,
+html.dark body.rc-client-body .cafe-portal-brand,
+html.dark body.rc-client-body .cafe-portal-brand:hover,
+html.dark body.rc-client-body .cafe-portal-brand-text strong,
+html.dark body.rc-client-body .cafe-client-session-text strong,
+html.dark body.rc-client-body .client-purchase-number strong,
+html.dark body.rc-client-body .client-purchase-product h3,
+html.dark body.rc-client-body .client-purchase-total strong,
+html.dark body.rc-client-body .cliente-panel-head h2,
+html.dark body.rc-client-body .cliente-section-title,
+html.dark body.rc-client-body .sg-page-head h1,
+html.dark body.rc-client-body .sg-payment-method-copy strong,
+html.dark body.rc-client-body .sg-payment-details-head strong,
+html.dark body.rc-client-body .sg-sinpe-number-box strong,
+html.dark body.rc-client-body .sg-order-summary-head strong,
+html.dark body.rc-client-body .sg-order-summary-row strong,
+html.dark body.rc-client-body .sg-payment-success h3,
+html.dark body.rc-client-body .sg-payment-success-box strong,
+html.dark body.rc-client-body .cafe-portal-main h2,
+html.dark body.rc-client-body .cafe-portal-main h3,
+html.dark body.rc-client-body .cafe-portal-main h4,
+html.dark body.rc-client-body .cafe-quick-card,
+html.dark body.rc-client-body .cliente-stat-card strong,
+html.dark body.rc-client-body .cliente-module-card h3 {
+    color: #F3F4ED !important;
+}
+
+html.dark body.rc-client-body .cafe-portal-main p,
+html.dark body.rc-client-body .cliente-hero-copy p,
+html.dark body.rc-client-body .cliente-order-meta,
+html.dark body.rc-client-body .cliente-feature-card p,
+html.dark body.rc-client-body .cliente-module-card p,
+html.dark body.rc-client-body .cliente-banner-card p,
+html.dark body.rc-client-body .cliente-benefit-card p,
+html.dark body.rc-client-body .client-purchase-product span,
+html.dark body.rc-client-body .sg-payment-method-copy small,
+html.dark body.rc-client-body .sg-payment-details-head span,
+html.dark body.rc-client-body .sg-payment-note,
+html.dark body.rc-client-body .sg-order-summary-row,
+html.dark body.rc-client-body .sg-payment-success > p,
+html.dark body.rc-client-body .cliente-stat-card small,
+html.dark body.rc-client-body .cliente-stat-card span,
+html.dark body.rc-client-body .cafe-portal-nav a,
+html.dark body.rc-client-body .cafe-header-logout,
+html.dark body.rc-client-body .client-purchase-action {
+    color: #D7DACE !important;
+}
+
+html.dark body.rc-client-body .cafe-portal-main {
+    background-image:
+        linear-gradient(rgba(23, 28, 20, .60), rgba(23, 28, 20, .64)),
+        url('/images/visual/coffee-farm.jpg') !important;
+}
+
+@media (max-width: 991.98px) {
+    body.rc-client-body .cafe-portal-main {
+        background-attachment: scroll !important;
+    }
+}
+
+
+/* Ajustes extra para eliminar remanentes de la paleta anterior */
+body.rc-client-body .sg-badge {
+    color: var(--sg-admin-primary) !important;
+    background: #E4EDE0 !important;
+    border: 1px solid rgba(83,131,59,.14) !important;
+}
+
+body.rc-client-body .sg-badge.gold,
+body.rc-client-body .sg-badge.tan {
+    color: var(--sg-admin-accent) !important;
+    background: #FFF0D5 !important;
+    border-color: rgba(212,115,11,.16) !important;
+}
+
+body.rc-client-body .sg-badge.brown {
+    color: #FEFCFA !important;
+    background: var(--sg-admin-secondary) !important;
+    border-color: var(--sg-admin-secondary) !important;
+}
+
+body.rc-client-body .sg-badge.red,
+body.rc-client-body .status-badge.cancelado {
+    color: #9D4D42 !important;
+    background: #F7E2DE !important;
+    border-color: rgba(209,111,90,.20) !important;
+}
+
+body.rc-client-body .sg-icon,
+body.rc-client-body .sg-icon.green,
+body.rc-client-body .sg-icon.gold,
+body.rc-client-body .sg-icon.brown {
+    color: #FFFFFF !important;
+    background: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .sg-trend,
+body.rc-client-body .sg-panel-head small,
+body.rc-client-body .sg-product-body p,
+body.rc-client-body .sg-product-footer span,
+body.rc-client-body .text-muted {
+    color: var(--sg-admin-muted) !important;
+}
+
+body.rc-client-body .sg-trend.warn,
+body.rc-client-body .sg-trend.down {
+    color: var(--sg-admin-accent) !important;
+}
+
+body.rc-client-body .sg-search {
+    border: 1px solid var(--sg-admin-line) !important;
+    background: rgba(254,252,250,.94) !important;
+}
+
+body.rc-client-body .sg-search input {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body.rc-client-body .sg-action-icons a {
+    color: var(--sg-admin-secondary) !important;
+    border: 1px solid var(--sg-admin-line) !important;
+    background: rgba(254,252,250,.94) !important;
+}
+
+body.rc-client-body .sg-action-icons a:hover {
+    color: var(--sg-admin-primary) !important;
+    background: #F4F7F2 !important;
+    border-color: rgba(83,131,59,.35) !important;
+}
+
+body.rc-client-body .sg-product-body strong,
+body.rc-client-body .sg-product-footer strong,
+body.rc-client-body .sg-panel-head h2,
+body.rc-client-body .sg-table tbody td,
+body.rc-client-body .table tbody td {
+    color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .sg-product-card > img {
+    border-bottom: 1px solid var(--sg-admin-line) !important;
+}
+
+body.rc-client-body .dataTables_wrapper .dataTables_length select,
+body.rc-client-body .dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--sg-admin-line) !important;
+    background: rgba(254,252,250,.94) !important;
+    color: var(--sg-admin-primary) !important;
+}
+
+body.rc-client-body .page-link {
+    color: var(--sg-admin-primary) !important;
+    border-color: var(--sg-admin-line) !important;
+    background: rgba(254,252,250,.94) !important;
+}
+
+body.rc-client-body .page-item.active .page-link,
+body.rc-client-body .page-link:hover {
+    color: #FEFCFA !important;
+    border-color: var(--sg-admin-primary) !important;
+    background: var(--sg-admin-primary) !important;
+}
+
+html.dark body.rc-client-body .sg-badge {
+    color: #F3F4ED !important;
+    background: rgba(83,131,59,.28) !important;
+    border-color: rgba(123,163,93,.22) !important;
+}
+
+html.dark body.rc-client-body .sg-badge.gold,
+html.dark body.rc-client-body .sg-badge.tan {
+    color: #F3E1BD !important;
+    background: rgba(212,115,11,.22) !important;
+    border-color: rgba(237,174,62,.24) !important;
+}
+
+html.dark body.rc-client-body .sg-badge.red,
+html.dark body.rc-client-body .status-badge.cancelado {
+    color: #F5D3CC !important;
+    background: rgba(209,111,90,.22) !important;
+}
+
+
+
+
+/* =========================================================
+   TEMA UNIFICADO SIN CONFLICTOS - CLIENTE + ADMIN
+   Objetivo: una sola capa visual final, menos conflicto,
+   fondos fotográficos más visibles y módulos con look premium.
+   ========================================================= */
+
+/* ---------- Base fotográfica más visible ---------- */
+body.sg-reference-theme .sg-main,
+body.rc-client-body .cafe-portal-main {
+    position: relative;
+    isolation: isolate;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+}
+
+body.sg-reference-theme .sg-main {
+    background-color: #efece4 !important;
+    background-image:
+        linear-gradient(rgba(26, 22, 18, .18), rgba(26, 22, 18, .12)),
+        url('/images/visual/coffee-farm.jpg') !important;
+}
+
+body.rc-client-body .cafe-portal-main {
+    background-color: #f1ede4 !important;
+    background-image:
+        linear-gradient(rgba(26, 22, 18, .20), rgba(26, 22, 18, .14)),
+        url('/images/visual/coffee-farm.jpg') !important;
+}
+
+body.sg-reference-theme .sg-main::before,
+body.rc-client-body .cafe-portal-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 12% 10%, rgba(212, 115, 11, .08), transparent 24%),
+        radial-gradient(circle at 88% 18%, rgba(83, 131, 59, .10), transparent 26%);
+}
+
+body.sg-reference-theme .sg-main > *,
+body.rc-client-body .cafe-portal-main > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- Encabezados y contenedores menos blancos ---------- */
+body.sg-reference-theme .sg-page-head,
+body.rc-client-body .sg-page-head,
+body.rc-client-body .cafe-quick-section,
+body.rc-client-body .cafe-summary-card,
+body.rc-client-body .cafe-section-card,
+body.rc-client-body .cafe-product-card,
+body.rc-client-body .cafe-order-item,
+body.rc-client-body .client-orders-summary article,
+body.rc-client-body .client-orders-section,
+body.rc-client-body .client-purchase-card,
+body.rc-client-body .sg-card,
+body.rc-client-body .sg-table-card,
+body.sg-reference-theme .sg-card,
+body.sg-reference-theme .sg-table-card,
+body.sg-reference-theme .sg-panel,
+body.sg-reference-theme .sg-kpi,
+body.sg-reference-theme .sg-page-head {
+    background: rgba(254, 252, 250, .88) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* ---------- HERO / MÓDULOS: look más parecido al login ---------- */
+body.sg-reference-theme .sg-hero,
+body.sg-reference-theme .sg-visual-hero,
+body.rc-client-body .cafe-welcome,
+body.rc-client-body .client-orders-hero,
+body.rc-client-body .cliente-hero-premium,
+body.rc-client-body .cliente-banner-card,
+body.rc-client-body .cliente-feature-card,
+body.rc-client-body .cliente-benefits-panel,
+body.rc-client-body .cliente-module-card.featured {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: 0 22px 56px rgba(27, 19, 13, .20) !important;
+}
+
+body.sg-reference-theme .sg-hero::before,
+body.sg-reference-theme .sg-visual-hero::before,
+body.rc-client-body .cafe-welcome::before,
+body.rc-client-body .client-orders-hero::before,
+body.rc-client-body .cliente-hero-premium::before,
+body.rc-client-body .cliente-banner-card::before,
+body.rc-client-body .cliente-feature-card::before,
+body.rc-client-body .cliente-benefits-panel::before,
+body.rc-client-body .cliente-module-card.featured::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(105deg, rgba(23, 18, 14, .80) 0%, rgba(34, 24, 18, .56) 38%, rgba(34, 24, 18, .20) 100%) !important;
+}
+
+body.sg-reference-theme .sg-hero > *,
+body.sg-reference-theme .sg-visual-hero > *,
+body.rc-client-body .cafe-welcome > *,
+body.rc-client-body .client-orders-hero > *,
+body.rc-client-body .cliente-hero-premium > *,
+body.rc-client-body .cliente-banner-card > *,
+body.rc-client-body .cliente-feature-card > *,
+body.rc-client-body .cliente-benefits-panel > *,
+body.rc-client-body .cliente-module-card.featured > * {
+    position: relative;
+    z-index: 1;
+}
+
+body.sg-reference-theme .sg-hero-content h2,
+body.sg-reference-theme .sg-hero-content p,
+body.sg-reference-theme .sg-visual-hero h1,
+body.sg-reference-theme .sg-visual-hero p,
+body.rc-client-body .cafe-welcome h1,
+body.rc-client-body .cafe-welcome-content > p,
+body.rc-client-body .client-orders-hero h1,
+body.rc-client-body .client-orders-hero p,
+body.rc-client-body .cliente-module-card.featured h3,
+body.rc-client-body .cliente-module-card.featured p,
+body.rc-client-body .cliente-banner-card h3,
+body.rc-client-body .cliente-banner-card p {
+    color: #fff !important;
+}
+
+body.rc-client-body .cafe-welcome {
+    background:
+        linear-gradient(110deg, rgba(26,18,14,.84) 0%, rgba(26,18,14,.72) 34%, rgba(26,18,14,.18) 100%),
+        url('/images/visual/coffee-banner.jpg') center/cover no-repeat !important;
+}
+
+body.rc-client-body .cafe-welcome-content {
+    background: linear-gradient(90deg, rgba(22, 17, 13, .64), rgba(22, 17, 13, .22)) !important;
+}
+
+body.rc-client-body .cafe-welcome-visual {
+    position: relative;
+    background: transparent !important;
+}
+
+body.rc-client-body .cafe-welcome-visual img {
+    filter: saturate(1.05) contrast(1.06) brightness(.78) !important;
+}
+
+body.rc-client-body .cafe-welcome-visual::after {
+    background: linear-gradient(180deg, rgba(17, 13, 10, .12), rgba(17, 13, 10, .38)) !important;
+}
+
+body.rc-client-body .cafe-product-image img,
+body.rc-client-body .sg-product-card > img,
+body.sg-reference-theme .sg-product-card > img,
+body.sg-reference-theme .sg-product-cell img,
+body.rc-client-body .cafe-product-card img {
+    filter: saturate(1.04) contrast(1.03) brightness(.94);
+}
+
+/* ---------- Formularios / botones / tablas unificados ---------- */
+body.sg-reference-theme .form-control,
+body.sg-reference-theme .form-select,
+body.rc-client-body .form-control,
+body.rc-client-body .form-select,
+body.rc-client-body .dataTables_wrapper .dataTables_length select,
+body.rc-client-body .dataTables_wrapper .dataTables_filter input,
+body.sg-reference-theme .dataTables_wrapper .dataTables_length select,
+body.sg-reference-theme .dataTables_wrapper .dataTables_filter input {
+    border-color: #d8d3c8 !important;
+    background: rgba(255,255,255,.92) !important;
+    color: #293f25 !important;
+}
+
+body.sg-reference-theme .form-control:focus,
+body.sg-reference-theme .form-select:focus,
+body.rc-client-body .form-control:focus,
+body.rc-client-body .form-select:focus,
+body.rc-client-body .dataTables_wrapper .dataTables_filter input:focus,
+body.sg-reference-theme .dataTables_wrapper .dataTables_filter input:focus {
+    border-color: rgba(83, 131, 59, .60) !important;
+    box-shadow: 0 0 0 .22rem rgba(83, 131, 59, .14) !important;
+}
+
+body.sg-reference-theme .sg-btn.gold,
+body.sg-reference-theme .sg-btn.green,
+body.sg-reference-theme .btn-primary,
+body.rc-client-body .cafe-primary-button,
+body.rc-client-body .cafe-header-order-button,
+body.rc-client-body .client-purchase-action.pay,
+body.rc-client-body .sg-btn.gold,
+body.rc-client-body .sg-btn.green,
+body.rc-client-body .btn-primary {
+    background: #293f25 !important;
+    border-color: #293f25 !important;
+    color: #fff !important;
+    box-shadow: 0 12px 24px rgba(41, 55, 31, .17) !important;
+}
+
+body.sg-reference-theme .sg-btn.gold:hover,
+body.sg-reference-theme .sg-btn.green:hover,
+body.sg-reference-theme .btn-primary:hover,
+body.rc-client-body .cafe-primary-button:hover,
+body.rc-client-body .cafe-header-order-button:hover,
+body.rc-client-body .client-purchase-action.pay:hover,
+body.rc-client-body .sg-btn.gold:hover,
+body.rc-client-body .sg-btn.green:hover,
+body.rc-client-body .btn-primary:hover {
+    background: #345230 !important;
+    border-color: #345230 !important;
+    color: #fff !important;
+}
+
+body.sg-reference-theme .sg-btn.ghost,
+body.sg-reference-theme .btn-outline-secondary,
+body.rc-client-body .sg-btn.ghost,
+body.rc-client-body .cafe-secondary-button,
+body.rc-client-body .cafe-small-button,
+body.rc-client-body .client-purchase-action.details,
+body.rc-client-body .client-purchase-action.edit,
+body.rc-client-body .client-purchase-action.cancel,
+body.rc-client-body .btn-outline-secondary {
+    background: rgba(254, 252, 250, .92) !important;
+    border: 1px solid #e1ddd3 !important;
+    color: #4f3514 !important;
+}
+
+body.rc-client-body .client-purchase-action.cancel {
+    color: #c06152 !important;
+}
+
+body.sg-reference-theme .sg-table thead th,
+body.rc-client-body .sg-table thead th,
+body.rc-client-body .table thead th,
+body.sg-reference-theme .table thead th {
+    background: #293f25 !important;
+    color: #fff !important;
+    border-color: #293f25 !important;
+}
+
+body.sg-reference-theme .sg-table tbody tr:hover td,
+body.rc-client-body .sg-table tbody tr:hover td,
+body.rc-client-body .table tbody tr:hover,
+body.sg-reference-theme .table tbody tr:hover {
+    background: #f3f6f1 !important;
+}
+
+/* ---------- Badges y estados ---------- */
+body.sg-reference-theme .sg-badge,
+body.rc-client-body .sg-badge {
+    color: #293f25 !important;
+    background: #e4ede0 !important;
+    border: 1px solid rgba(83, 131, 59, .10) !important;
+}
+
+body.sg-reference-theme .sg-badge.gold,
+body.sg-reference-theme .sg-badge.tan,
+body.rc-client-body .sg-badge.gold,
+body.rc-client-body .sg-badge.tan,
+body.rc-client-body .cliente-order-tag.pending,
+body.rc-client-body .status-badge.pendiente,
+body.rc-client-body .status-badge.proceso,
+body.rc-client-body .status-badge.en-proceso {
+    color: #834003 !important;
+    background: #fff0d5 !important;
+    border-color: rgba(212,115,11,.18) !important;
+}
+
+body.sg-reference-theme .sg-badge.brown,
+body.rc-client-body .sg-badge.brown,
+body.rc-client-body .cliente-order-pay {
+    color: #fff !important;
+    background: #4f3514 !important;
+    border-color: #4f3514 !important;
+}
+
+body.sg-reference-theme .sg-badge.red,
+body.rc-client-body .sg-badge.red,
+body.rc-client-body .cliente-order-tag.cancel,
+body.rc-client-body .status-badge.cancelado {
+    color: #9d4d42 !important;
+    background: #f7e2de !important;
+    border-color: rgba(209,111,90,.20) !important;
+}
+
+body.rc-client-body .cliente-order-tag.complete,
+body.rc-client-body .status-badge.pagado,
+body.rc-client-body .status-badge.completado,
+body.rc-client-body .cliente-status-chip {
+    color: #fff !important;
+    background: #53833b !important;
+    border-color: #53833b !important;
+}
+
+/* ---------- Íconos / quick cards / detalles ---------- */
+body.rc-client-body .cafe-summary-card i,
+body.rc-client-body .cafe-order-icon,
+body.rc-client-body .cafe-stock-badge,
+body.rc-client-body .cafe-client-session-icon,
+body.rc-client-body .cafe-portal-brand-icon,
+body.sg-reference-theme .sg-brand-mark,
+body.sg-reference-theme .sg-icon {
+    background: #293f25 !important;
+    color: #fff !important;
+}
+
+body.rc-client-body .cafe-portal-header,
+body.rc-client-body .cafe-client-session,
+body.rc-client-body .cafe-header-logout,
+body.sg-reference-theme .sg-sidebar,
+body.sg-reference-theme .sg-page-head {
+    box-shadow: 0 12px 30px rgba(41, 55, 31, .08) !important;
+}
+
+body.rc-client-body .cafe-portal-header {
+    background: rgba(254,252,250,.92) !important;
+    border-color: #e1ddd3 !important;
+    backdrop-filter: blur(14px);
+}
+
+body.rc-client-body .cafe-portal-nav a {
+    color: #4f3514 !important;
+    font-weight: 700 !important;
+}
+
+body.rc-client-body .cafe-portal-nav a.active,
+body.rc-client-body .cafe-portal-nav a:hover {
+    color: #293f25 !important;
+}
+
+body.rc-client-body .cafe-portal-nav a::after {
+    background: #d4730b !important;
+}
+
+/* ---------- Mis pedidos / productos cliente más consistentes ---------- */
+body.rc-client-body .client-purchase-card,
+body.rc-client-body .sg-product-card,
+body.rc-client-body .cafe-product-card,
+body.rc-client-body .cafe-summary-card,
+body.rc-client-body .cafe-order-item,
+body.rc-client-body .cafe-section-card {
+    border: 1px solid #e1ddd3 !important;
+}
+
+body.rc-client-body .client-purchase-number strong,
+body.rc-client-body .client-purchase-product h3,
+body.rc-client-body .client-purchase-total strong,
+body.rc-client-body .cafe-section-header h2,
+body.rc-client-body .cafe-product-info h3,
+body.rc-client-body .cafe-summary-card strong,
+body.rc-client-body .cafe-order-data strong {
+    color: #293f25 !important;
+}
+
+body.rc-client-body .client-purchase-product span,
+body.rc-client-body .client-purchase-number span,
+body.rc-client-body .client-purchase-total small,
+body.rc-client-body .cafe-product-info p,
+body.rc-client-body .cafe-order-data span,
+body.rc-client-body .cafe-order-data small,
+body.rc-client-body .cafe-section-header p {
+    color: #666859 !important;
+}
+
+/* ---------- Modo oscuro básico coherente ---------- */
+html.dark body.sg-reference-theme .sg-main,
+html.dark body.rc-client-body .cafe-portal-main {
+    background-image:
+        linear-gradient(rgba(16, 19, 14, .56), rgba(16, 19, 14, .52)),
+        url('/images/visual/coffee-farm.jpg') !important;
+}
+
+html.dark body.sg-reference-theme .sg-page-head,
+html.dark body.sg-reference-theme .sg-card,
+html.dark body.sg-reference-theme .sg-table-card,
+html.dark body.sg-reference-theme .sg-panel,
+html.dark body.sg-reference-theme .sg-kpi,
+html.dark body.rc-client-body .sg-page-head,
+html.dark body.rc-client-body .cafe-quick-section,
+html.dark body.rc-client-body .cafe-summary-card,
+html.dark body.rc-client-body .cafe-section-card,
+html.dark body.rc-client-body .cafe-product-card,
+html.dark body.rc-client-body .cafe-order-item,
+html.dark body.rc-client-body .client-orders-summary article,
+html.dark body.rc-client-body .client-orders-section,
+html.dark body.rc-client-body .client-purchase-card,
+html.dark body.rc-client-body .sg-card,
+html.dark body.rc-client-body .sg-table-card {
+    background: rgba(34, 40, 30, .90) !important;
+    border-color: rgba(110, 130, 98, .24) !important;
+    color: #f2f2ec !important;
+}
+
+html.dark body.sg-reference-theme .sg-table thead th,
+html.dark body.rc-client-body .sg-table thead th,
+html.dark body.rc-client-body .table thead th {
+    background: #1f2d1c !important;
+    border-color: #1f2d1c !important;
+}
+
+html.dark body.sg-reference-theme .sg-badge,
+html.dark body.rc-client-body .sg-badge {
+    color: #f3f4ed !important;
+    background: rgba(83,131,59,.28) !important;
+    border-color: rgba(123,163,93,.24) !important;
+}
+
+html.dark body.sg-reference-theme .sg-badge.gold,
+html.dark body.sg-reference-theme .sg-badge.tan,
+html.dark body.rc-client-body .sg-badge.gold,
+html.dark body.rc-client-body .sg-badge.tan {
+    color: #f3e1bd !important;
+    background: rgba(212,115,11,.22) !important;
+}
+
+html.dark body.sg-reference-theme .sg-badge.red,
+html.dark body.rc-client-body .sg-badge.red {
+    color: #f5d3cc !important;
+    background: rgba(209,111,90,.22) !important;
+}
+
+@media (max-width: 991.98px) {
+    body.sg-reference-theme .sg-main,
+    body.rc-client-body .cafe-portal-main {
+        background-attachment: scroll !important;
+    }
+}
+
+
+/* --- Ajustes finos solicitados por el usuario --- */
+body.rc-client-body .cafe-summary-card strong,
+body.rc-client-body .cliente-stat-card strong,
+body.rc-client-body .rc-client-kpi strong,
+body.sg-reference-theme .sg-kpi strong,
+body.sg-reference-theme .sg-panel .fw-bold,
+body.rc-client-body .sg-panel .fw-bold,
+body.rc-client-body .sg-card strong,
+body.sg-reference-theme .sg-card strong {
+    color: #293f25 !important;
+    background: transparent !important;
+}
+
+body.rc-client-body .cafe-summary-card,
+body.rc-client-body .cliente-stat-card,
+body.rc-client-body .rc-client-kpi,
+body.sg-reference-theme .sg-kpi {
+    min-height: 120px;
+}
+
+body.rc-client-body .cafe-summary-card > div,
+body.rc-client-body .cliente-stat-card > div,
+body.rc-client-body .rc-client-kpi > div,
+body.sg-reference-theme .sg-kpi > div {
+    width: 100%;
+}
+
+body.rc-client-body .sg-hero-pedidos .sg-visual-badge,
+body.rc-client-body .sg-hero-pedidos .sg-visual-badge i,
+body.sg-reference-theme .sg-hero-pedidos .sg-visual-badge,
+body.sg-reference-theme .sg-hero-pedidos .sg-visual-badge i {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   SISTEMA GLOBAL DE TARJETAS UNIFORMES
+   Aplica a cliente y administrativo
+   ========================================================= */
+body.sg-reference-theme .sg-kpi-grid,
+body.sg-reference-theme .sg-grid-2,
+body.sg-reference-theme .sg-grid-3,
+body.rc-client-body .sg-kpi-grid,
+body.rc-client-body .sg-grid-2,
+body.rc-client-body .sg-grid-3,
+body.rc-client-body .cafe-summary-grid,
+body.rc-client-body .client-orders-summary,
+body.rc-client-body .cafe-products-grid {
+    align-items: stretch !important;
+}
+
+body.sg-reference-theme .sg-kpi-grid > *,
+body.sg-reference-theme .sg-grid-2 > *,
+body.sg-reference-theme .sg-grid-3 > *,
+body.rc-client-body .sg-kpi-grid > *,
+body.rc-client-body .sg-grid-2 > *,
+body.rc-client-body .sg-grid-3 > *,
+body.rc-client-body .cafe-summary-grid > *,
+body.rc-client-body .client-orders-summary > *,
+body.rc-client-body .cafe-products-grid > * {
+    height: 100%;
+}
+
+body.sg-reference-theme .sg-kpi,
+body.sg-reference-theme .sg-grid-3 > .sg-card,
+body.sg-reference-theme .sg-grid-2 > .sg-card,
+body.sg-reference-theme .sg-grid-3 > .sg-panel,
+body.sg-reference-theme .sg-grid-2 > .sg-panel,
+body.rc-client-body .sg-kpi,
+body.rc-client-body .sg-grid-3 > .sg-card,
+body.rc-client-body .sg-grid-2 > .sg-card,
+body.rc-client-body .sg-grid-3 > .sg-panel,
+body.rc-client-body .sg-grid-2 > .sg-panel,
+body.rc-client-body .cafe-summary-card,
+body.rc-client-body .client-orders-summary article,
+body.rc-client-body .cafe-product-card,
+body.rc-client-body .sg-product-card,
+body.rc-client-body .cliente-module-card,
+body.rc-client-body .cliente-stat-card,
+body.rc-client-body .rc-client-kpi,
+body.sg-reference-theme .cliente-module-card,
+body.sg-reference-theme .cliente-stat-card,
+body.sg-reference-theme .rc-client-kpi {
+    height: 100%;
+    width: 100%;
+}
+
+body.sg-reference-theme .sg-kpi,
+body.rc-client-body .sg-kpi,
+body.rc-client-body .cafe-summary-card,
+body.rc-client-body .client-orders-summary article,
+body.rc-client-body .cliente-stat-card,
+body.rc-client-body .rc-client-kpi {
+    min-height: 122px;
+}
+
+body.sg-reference-theme .sg-grid-3 > .sg-card,
+body.sg-reference-theme .sg-grid-2 > .sg-card,
+body.sg-reference-theme .sg-grid-3 > .sg-panel,
+body.sg-reference-theme .sg-grid-2 > .sg-panel,
+body.rc-client-body .sg-grid-3 > .sg-card,
+body.rc-client-body .sg-grid-2 > .sg-card,
+body.rc-client-body .sg-grid-3 > .sg-panel,
+body.rc-client-body .sg-grid-2 > .sg-panel,
+body.rc-client-body .cafe-product-card,
+body.rc-client-body .sg-product-card,
+body.rc-client-body .cliente-module-card,
+body.rc-client-body .cliente-stat-card,
+body.rc-client-body .rc-client-kpi {
+    display: flex;
+    flex-direction: column;
+}
+
+body.sg-reference-theme .sg-kpi > div,
+body.rc-client-body .sg-kpi > div,
+body.rc-client-body .cafe-summary-card > div,
+body.rc-client-body .client-orders-summary article > div,
+body.rc-client-body .cliente-stat-card > div,
+body.rc-client-body .rc-client-kpi > div {
+    flex: 1;
+    min-width: 0;
+}
+
+body.rc-client-body .cafe-product-info,
+body.rc-client-body .sg-product-body,
+body.rc-client-body .cliente-module-card .cliente-module-content,
+body.rc-client-body .cliente-stat-card .cliente-stat-content,
+body.sg-reference-theme .sg-panel,
+body.sg-reference-theme .sg-card.sg-panel,
+body.rc-client-body .sg-panel,
+body.rc-client-body .sg-card.sg-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+body.rc-client-body .cafe-product-info p,
+body.rc-client-body .sg-product-body p {
+    flex-grow: 1;
+}
+
+body.rc-client-body .cafe-product-footer,
+body.rc-client-body .sg-product-footer,
+body.rc-client-body .sg-product-card .sg-actions,
+body.rc-client-body .cafe-product-info .sg-actions,
+body.rc-client-body .cafe-product-info .mt-3,
+body.rc-client-body .sg-product-body .mt-3,
+body.sg-reference-theme .sg-panel .sg-chart,
+body.sg-reference-theme .sg-panel .table-responsive,
+body.rc-client-body .sg-panel .sg-chart,
+body.rc-client-body .sg-panel .table-responsive {
+    margin-top: auto;
+}
+
+body.sg-reference-theme .sg-panel,
+body.sg-reference-theme .sg-card.sg-panel,
+body.rc-client-body .sg-panel,
+body.rc-client-body .sg-card.sg-panel {
+    min-height: 100%;
+}
+
+@media (max-width: 991.98px) {
+    body.sg-reference-theme .sg-kpi,
+    body.rc-client-body .sg-kpi,
+    body.rc-client-body .cafe-summary-card,
+    body.rc-client-body .client-orders-summary article,
+    body.rc-client-body .cliente-stat-card,
+    body.rc-client-body .rc-client-kpi {
+        min-height: 110px;
+    }
+}
+
+
+/* =========================================================
+   CABECERAS DE MÓDULO UNIFORMES
+   Hace que los encabezados superiores se vean como las cards de abajo
+   ========================================================= */
+body.sg-reference-theme .sg-page-head,
+body.rc-client-body .sg-page-head {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+    min-height: 118px;
+    padding: 22px 28px !important;
+    border: 1px solid #e1ddd3 !important;
+    border-radius: 22px !important;
+    background: rgba(254, 252, 250, .88) !important;
+    box-shadow: 0 14px 34px rgba(41, 55, 31, .08) !important;
+    backdrop-filter: blur(10px);
+}
+
+body.sg-reference-theme .sg-page-head > :first-child,
+body.rc-client-body .sg-page-head > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+body.sg-reference-theme .sg-page-head .sg-actions,
+body.rc-client-body .sg-page-head .sg-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 14px !important;
+    flex: 0 0 auto;
+    padding-right: 0 !important;
+    margin-left: auto;
+    min-height: 74px;
+}
+
+body.sg-reference-theme .sg-page-head .sg-actions > *,
+body.rc-client-body .sg-page-head .sg-actions > * {
+    flex-shrink: 0;
+}
+
+body.sg-reference-theme .sg-page-head h1,
+body.rc-client-body .sg-page-head h1 {
+    margin-bottom: 6px !important;
+}
+
+body.sg-reference-theme .sg-page-head p,
+body.rc-client-body .sg-page-head p {
+    margin: 0 !important;
+}
+
+body.sg-reference-theme .sg-page-head .sg-btn,
+body.rc-client-body .sg-page-head .sg-btn,
+body.sg-reference-theme .sg-page-head .sg-search,
+body.rc-client-body .sg-page-head .sg-search {
+    min-height: 46px;
+}
+
+body.sg-reference-theme .sg-page-head .sg-search,
+body.rc-client-body .sg-page-head .sg-search {
+    min-width: 290px;
+}
+
+@media (max-width: 991.98px) {
+    body.sg-reference-theme .sg-page-head,
+    body.rc-client-body .sg-page-head {
+        align-items: stretch !important;
+        flex-direction: column !important;
+        min-height: auto;
+        padding: 20px !important;
+    }
+
+    body.sg-reference-theme .sg-page-head .sg-actions,
+    body.rc-client-body .sg-page-head .sg-actions {
+        width: 100%;
+        justify-content: flex-start !important;
+        min-height: auto;
+        flex-wrap: wrap;
+    }
+
+    body.sg-reference-theme .sg-page-head .sg-search,
+    body.rc-client-body .sg-page-head .sg-search {
+        min-width: min(100%, 320px);
+    }
+}
+
+
+/* =========================================================
+   TARJETAS DE RESUMEN / HERO CONSISTENTES EN TODOS LOS MÓDULOS
+   ========================================================= */
+body.rc-client-body .client-orders-summary,
+body.rc-client-body .cafe-summary-grid,
+body.sg-reference-theme .historial-summary-grid,
+body.sg-reference-theme .finanzas-summary-grid,
+body.rc-client-body .historial-summary-grid,
+body.rc-client-body .finanzas-summary-grid {
+    align-items: stretch !important;
+    grid-auto-rows: 1fr;
+}
+
+body.rc-client-body .client-orders-summary article,
+body.rc-client-body .cafe-summary-card,
+body.rc-client-body .client-orders-hero-visual,
+body.rc-client-body .cafe-stock-badge,
+body.sg-reference-theme .historial-summary-card,
+body.sg-reference-theme .finanzas-summary-card,
+body.sg-reference-theme .client-edit-summary-card,
+body.rc-client-body .historial-summary-card,
+body.rc-client-body .finanzas-summary-card,
+body.rc-client-body .client-edit-summary-card {
+    width: 100%;
+    min-height: 118px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+body.rc-client-body .client-orders-hero-visual,
+body.rc-client-body .cafe-stock-badge {
+    display: grid !important;
+    grid-template-columns: 68px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 16px !important;
+    padding: 20px 24px !important;
+    border-radius: 22px !important;
+}
+
+body.rc-client-body .client-orders-hero-circle,
+body.rc-client-body .cafe-stock-badge i {
+    width: 64px !important;
+    height: 64px !important;
+    flex: 0 0 64px !important;
+    font-size: 1.55rem !important;
+}
+
+body.rc-client-body .client-orders-hero-visual strong,
+body.rc-client-body .cafe-stock-badge strong {
+    font-size: 2.2rem !important;
+    line-height: 1 !important;
+}
+
+body.rc-client-body .client-orders-hero-visual span,
+body.rc-client-body .cafe-stock-badge span {
+    margin-top: 4px !important;
+}
+
+body.sg-reference-theme .historial-summary-card,
+body.sg-reference-theme .finanzas-summary-card,
+body.rc-client-body .historial-summary-card,
+body.rc-client-body .finanzas-summary-card {
+    display: flex !important;
+    align-items: center !important;
+}
+
+body.sg-reference-theme .historial-summary-card > *,
+body.sg-reference-theme .finanzas-summary-card > *,
+body.rc-client-body .historial-summary-card > *,
+body.rc-client-body .finanzas-summary-card > * {
+    width: 100%;
+}
+
+@media (max-width: 991.98px) {
+    body.rc-client-body .client-orders-summary article,
+    body.rc-client-body .cafe-summary-card,
+    body.rc-client-body .client-orders-hero-visual,
+    body.rc-client-body .cafe-stock-badge,
+    body.sg-reference-theme .historial-summary-card,
+    body.sg-reference-theme .finanzas-summary-card,
+    body.rc-client-body .historial-summary-card,
+    body.rc-client-body .finanzas-summary-card {
+        min-height: 108px;
+    }
+}
+
+
+/* =========================================================
+   AJUSTES FINALES - HERO RESUMEN Y NÚMEROS SIN TONO NARANJA
+   ========================================================= */
+body.rc-client-body .client-orders-hero {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+    align-items: center !important;
+}
+
+body.rc-client-body .client-orders-hero-visual {
+    width: 300px !important;
+    max-width: 300px !important;
+    min-height: 118px !important;
+    height: auto !important;
+    align-self: center !important;
+    justify-self: end !important;
+    grid-template-columns: 64px minmax(0, 1fr) !important;
+    padding: 18px 22px !important;
+}
+
+body.rc-client-body .client-orders-hero-circle {
+    width: 58px !important;
+    height: 58px !important;
+    flex: 0 0 58px !important;
+    font-size: 1.4rem !important;
+}
+
+body.rc-client-body .client-orders-hero-visual strong {
+    font-size: 1.9rem !important;
+    color: #293f25 !important;
+    background: transparent !important;
+}
+
+body.rc-client-body .client-orders-hero-visual span,
+body.rc-client-body .client-orders-summary span,
+body.rc-client-body .client-orders-summary small,
+body.rc-client-body .cafe-summary-card span {
+    background: transparent !important;
+}
+
+body.rc-client-body .client-orders-summary small + strong,
+body.rc-client-body .client-orders-summary strong,
+body.rc-client-body .cafe-summary-card strong,
+body.rc-client-body .cafe-stock-badge strong,
+body.rc-client-body .client-orders-hero-visual strong {
+    color: #293f25 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 991.98px) {
+    body.rc-client-body .client-orders-hero {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.rc-client-body .client-orders-hero-visual {
+        width: 100% !important;
+        max-width: 320px !important;
+        justify-self: start !important;
+    }
+}
+
+
+/* =========================================================
+   AJUSTE ESPECÍFICO - BADGE DE STOCK EN HERO CLIENTE
+   Evita que tome el tamaño de las cards de resumen.
+   ========================================================= */
+body.rc-client-body .cafe-welcome-visual {
+    position: relative !important;
+}
+
+body.rc-client-body .cafe-stock-badge {
+    position: absolute !important;
+    right: 28px !important;
+    bottom: 28px !important;
+    z-index: 3 !important;
+    width: auto !important;
+    max-width: 290px !important;
+    min-width: 250px !important;
+    min-height: 96px !important;
+    height: auto !important;
+    display: grid !important;
+    grid-template-columns: 56px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 18px 20px !important;
+    border: 1px solid rgba(255,255,255,.22) !important;
+    border-radius: 22px !important;
+    background: rgba(33, 58, 29, .86) !important;
+    box-shadow: 0 18px 42px rgba(12, 20, 11, .24) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+body.rc-client-body .cafe-stock-badge i {
+    width: 56px !important;
+    height: 56px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 50% !important;
+    background: rgba(231, 161, 74, .16) !important;
+    color: #e7a14a !important;
+    font-size: 1.35rem !important;
+}
+
+body.rc-client-body .cafe-stock-badge strong {
+    color: #ffffff !important;
+    font-size: 2rem !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+body.rc-client-body .cafe-stock-badge span {
+    color: rgba(255,255,255,.78) !important;
+    font-size: .70rem !important;
+    font-weight: 800 !important;
+    letter-spacing: .04em !important;
+    text-transform: uppercase !important;
+    background: transparent !important;
+}
+
+@media (max-width: 991.98px) {
+    body.rc-client-body .cafe-stock-badge {
+        right: 18px !important;
+        bottom: 18px !important;
+        max-width: 260px !important;
+        min-width: 220px !important;
+    }
+}
+
+
+/* =========================================================
+   AJUSTES FINALES ADMIN - NOTIFICACIONES Y PALETA
+   ========================================================= */
+body.sg-reference-theme .sg-main,
+body.sg-reference-theme .sg-content,
+body.sg-reference-theme .sg-page-head {
+    overflow: visible !important;
+}
+
+body.sg-reference-theme .sg-notification-dock {
+    position: fixed !important;
+    top: 14px !important;
+    right: 22px !important;
+    z-index: 50000 !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-wrap,
+body.sg-reference-theme .sg-notification-dock .demo-icon-button {
+    position: relative !important;
+    z-index: 50010 !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-icon-button {
+    border-radius: 14px !important;
+    border: 1px solid #E1DDD3 !important;
+    background: rgba(254,252,250,.96) !important;
+    color: #4F3514 !important;
+    box-shadow: 0 14px 32px rgba(41,55,31,.12) !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-icon-button:hover {
+    color: #293F25 !important;
+    background: #FEFCFA !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-count {
+    background: #D4730B !important;
+    color: #fff !important;
+    border-color: #FEFCFA !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-panel {
+    position: fixed !important;
+    top: 76px !important;
+    right: 22px !important;
+    z-index: 50020 !important;
+    width: min(390px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow: auto !important;
+    border-radius: 18px !important;
+    border: 1px solid #E1DDD3 !important;
+    background: rgba(254,252,250,.98) !important;
+    box-shadow: 0 26px 70px rgba(25,18,13,.24) !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-head {
+    background: linear-gradient(180deg, rgba(239,236,228,.82), rgba(254,252,250,.96)) !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-item {
+    background: #FEFCFA !important;
+    border: 1px solid #EAE2D7 !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-item strong,
+body.sg-reference-theme .sg-notification-dock .demo-notification-item a,
+body.sg-reference-theme .sg-notification-dock .demo-notification-head strong {
+    color: #293F25 !important;
+}
+
+body.sg-reference-theme .sg-notification-dock .demo-notification-item strong i,
+body.sg-reference-theme .sg-notification-dock .demo-notification-close {
+    color: #834003 !important;
+}
+
+/* Paleta administrativa más consistente */
+body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(1) .sg-icon,
+body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(4) .sg-icon,
+body.sg-reference-theme .sg-icon.green {
+    background: #293F25 !important;
+}
+
+body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(2) .sg-icon,
+body.sg-reference-theme .sg-icon.brown {
+    background: #4F3514 !important;
+}
+
+body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(3) .sg-icon,
+body.sg-reference-theme .sg-icon.gold {
+    background: #53833B !important;
+}
+
+body.sg-reference-theme .sg-trend.warn,
+body.sg-reference-theme .sg-trend.down,
+body.sg-reference-theme .text-warning {
+    color: #834003 !important;
+}
+
+body.sg-reference-theme .text-success,
+body.sg-reference-theme .sg-panel-head a,
+body.sg-reference-theme .sg-table-card .sg-panel-head a,
+body.sg-reference-theme .sg-card a.fw-bold,
+body.sg-reference-theme .sg-panel a.fw-bold {
+    color: #293F25 !important;
+}
+
+body.sg-reference-theme .sg-dot.green {
+    background: #53833B !important;
+}
+
+body.sg-reference-theme .sg-dot.gold {
+    background: #53833B !important;
+}
+
+body.sg-reference-theme .sg-dot.tan {
+    background: #D4730B !important;
+}
+
+body.sg-reference-theme .sg-dot.brown,
+body.sg-reference-theme .sg-dot.coffee {
+    background: #4F3514 !important;
+}
+
+
+/* =========================================================
+   CORRECCIÓN DEFINITIVA: NOTIFICACIONES POR ENCIMA + ADMIN SIN NARANJA
+   ========================================================= */
+body.sg-reference-theme > .sg-notification-dock {
+    position: fixed !important;
+    top: 18px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 2147483000 !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    pointer-events: none;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap,
+body.sg-reference-theme > .sg-notification-dock .demo-icon-button,
+body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+    pointer-events: auto !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+    z-index: 2147483001 !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-icon-button {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 14px !important;
+    color: #293F25 !important;
+    border: 1px solid #D8D5CC !important;
+    background: #FEFCFA !important;
+    box-shadow: 0 14px 34px rgba(24,35,21,.18) !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-count {
+    background: #D16F5A !important;
+    border-color: #FEFCFA !important;
+    color: #fff !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+    position: fixed !important;
+    top: 78px !important;
+    right: 24px !important;
+    left: auto !important;
+    z-index: 2147483002 !important;
+    width: min(400px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto !important;
+    border: 1px solid #D8D5CC !important;
+    border-radius: 18px !important;
+    color: #293F25 !important;
+    background: #FEFCFA !important;
+    box-shadow: 0 28px 80px rgba(20,28,18,.28) !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-head {
+    color: #293F25 !important;
+    border-bottom-color: #E5E1D8 !important;
+    background: #EFECE4 !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-item {
+    color: #293F25 !important;
+    border-color: #E5E1D8 !important;
+    background: #F8F7F2 !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock .demo-notification-item strong,
+body.sg-reference-theme > .sg-notification-dock .demo-notification-item a,
+body.sg-reference-theme > .sg-notification-dock .demo-notification-head strong {
+    color: #293F25 !important;
+}
+
+/* Se eliminan los iconos KPI naranjas heredados */
+body.sg-reference-theme .sg-kpi-grid .sg-kpi .sg-icon,
+body.sg-reference-theme .sg-icon,
+body.sg-reference-theme .sg-icon.green,
+body.sg-reference-theme .sg-icon.gold,
+body.sg-reference-theme .sg-icon.tan,
+body.sg-reference-theme .sg-icon.brown {
+    color: #FFFFFF !important;
+    background: #293F25 !important;
+}
+
+body.sg-reference-theme .sg-kpi-grid .sg-kpi:nth-child(3) .sg-icon {
+    background: #53833B !important;
+}
+
+body.sg-reference-theme .sg-trend.warn,
+body.sg-reference-theme .sg-trend.down {
+    color: #4F3514 !important;
+}
+
+body.sg-reference-theme .sg-dot.deepgreen {
+    background: #293F25 !important;
+}
+
+body.sg-reference-theme .sg-dot.sage {
+    background: #8EAA82 !important;
+}
+
+body.sg-reference-theme .sg-dot.muted {
+    background: #666859 !important;
+}
+
+@media (max-width: 700px) {
+    body.sg-reference-theme > .sg-notification-dock {
+        top: 12px !important;
+        right: 12px !important;
+    }
+
+    body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+        top: 72px !important;
+        right: 12px !important;
+    }
+}
