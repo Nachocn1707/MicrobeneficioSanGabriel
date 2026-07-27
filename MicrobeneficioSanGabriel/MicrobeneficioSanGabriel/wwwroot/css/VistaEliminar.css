@@ -1,4 +1,4 @@
-﻿.sg-card {
+.sg-card {
     background: #FFFFFF;
     border: 2px solid #E8DCD0;
     border-radius: 16px;
@@ -398,33 +398,12 @@ body.dark .sg-card .etapa-badge {
     color: #90CAF9;
 }
 
-.sg-card .alert-info {
-    background: #E3F2FD;
-    border-color: #90CAF9;
-    color: #1A237E;
-}
-
-body.dark .sg-card .alert-info {
-    background: #1A237E;
-    border-color: #42A5F5;
-    color: #BBDEFB;
-}
-
 @media (max-width: 768px) {
     .sg-card .product-image {
         max-width: 150px;
         max-height: 150px;
     }
-}
 
-@media (max-width: 576px) {
-    .sg-card .product-image {
-        max-width: 120px;
-        max-height: 120px;
-    }
-}
-
-@media (max-width: 768px) {
     .sg-card {
         padding: 1.25rem;
     }
@@ -450,6 +429,11 @@ body.dark .sg-card .alert-info {
 }
 
 @media (max-width: 576px) {
+    .sg-card .product-image {
+        max-width: 120px;
+        max-height: 120px;
+    }
+
     .sg-card {
         padding: 1rem;
         border-radius: 12px;

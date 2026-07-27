@@ -6,15 +6,19 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloEditar-page">
-    <div class="EstiloEditar-top">
-        <div class="EstiloEditar-header">
-            <h1>Editar Usuarios</h1>
-            <p>Actualizá los datos de los usuarios registrados.</p>
+<div class="EstiloEditaR-page">
+
+    <div class="EstiloEditaR-top">
+        <div class="EstiloEditaR-title">
+            <span class="EstiloEditaR-badge">
+                <i class="fa-solid fa-user-gear"></i>
+                Gestión de usuarios
+            </span>
+            <h1>Editar usuario</h1>
+            <p>Actualizá los datos de los usuarios registrados dentro del sistema.</p>
         </div>
     </div>
 
@@ -31,75 +35,75 @@
                     </span>
                 </div>
 
-                <div class="EstiloEditar-section">
+                <div class="EstiloEditaR-section">
                     <h5>
-                        <i class="fa-solid fa-user-gear"></i>
+                        <i class="fa-solid fa-user-check"></i>
                         Detalle del usuario
                     </h5>
 
                     <div class="row g-4">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Nombre" class="form-label">Nombre</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-user"></i>
-                                    <input asp-for="Nombre" class="form-control" placeholder="Nombre del usuario" />
-                                </div>
+                                <label asp-for="Nombre" class="form-label">
+                                    <i class="fa-regular fa-user label-icon"></i>
+                                    Nombre
+                                </label>
+                                <input asp-for="Nombre" class="form-control" placeholder="Nombre del usuario" />
                                 <span asp-validation-for="Nombre" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Apellidos" class="form-label">Apellidos</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-user-tag"></i>
-                                    <input asp-for="Apellidos" class="form-control" placeholder="Apellidos del usuario" />
-                                </div>
+                                <label asp-for="Apellidos" class="form-label">
+                                    <i class="fa-solid fa-user-tag label-icon"></i>
+                                    Apellidos
+                                </label>
+                                <input asp-for="Apellidos" class="form-control" placeholder="Apellidos del usuario" />
                                 <span asp-validation-for="Apellidos" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Email" class="form-label">Correo</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-envelope"></i>
-                                    <input asp-for="Email" class="form-control" autocomplete="username" placeholder="correo@ejemplo.com" />
-                                </div>
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fa-regular fa-envelope label-icon"></i>
+                                    Correo
+                                </label>
+                                <input asp-for="Email" class="form-control" autocomplete="username" placeholder="correo@ejemplo.com" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="PhoneNumber" class="form-label">Teléfono</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-phone"></i>
-                                    <input asp-for="PhoneNumber" class="form-control" type="tel" inputmode="numeric"
-                                           maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
-                                           oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
-                                </div>
+                                <label asp-for="PhoneNumber" class="form-label">
+                                    <i class="fa-solid fa-phone label-icon"></i>
+                                    Teléfono
+                                </label>
+                                <input asp-for="PhoneNumber" class="form-control" type="tel" inputmode="numeric"
+                                       maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
                                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="Rol" class="form-label">Rol</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-user-shield"></i>
-                                    <select asp-for="Rol" asp-items="Model.Roles" class="form-select">
-                                        <option value="">Seleccione un rol</option>
-                                    </select>
-                                </div>
+                                <label asp-for="Rol" class="form-label">
+                                    <i class="fa-solid fa-user-shield label-icon"></i>
+                                    Rol
+                                </label>
+                                <select asp-for="Rol" asp-items="Model.Roles" class="form-select">
+                                    <option value="">Seleccione un rol</option>
+                                </select>
                                 <span asp-validation-for="Rol" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="EstiloEditar-actions">
+                <div class="EstiloEditaR-actions">
                     <a asp-action="Index" class="btn-volver">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver

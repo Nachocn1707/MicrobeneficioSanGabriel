@@ -19,29 +19,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <style>
-            html {
-                visibility: hidden;
-            }
-
-                html.theme-ready {
-                    visibility: visible;
-                }
-    </style>
-
-    <script>
-            (function() {
-                var isDark = localStorage.getItem("theme") === "dark";
-
-                if (isDark) {
-                    document.documentElement.classList.add("dark");
-                }
-
-                document.documentElement.classList.add("theme-ready");
-                window.__themeIsDark = isDark;
-            })();
-    </script>
-
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -57,6 +34,7 @@
 
     <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/portal-unificado.css" asp-append-version="true" />
+
 </head>
 <body class="sg-coffee-bg rc-client-body cafe-portal-body">
     <div class="cafe-portal-shell">
@@ -97,17 +75,6 @@
             </nav>
 
             <div class="cafe-portal-actions">
-
-                <div class="sg-theme-switch">
-                    <input type="checkbox" id="theme-toggle">
-                    <label for="theme-toggle" class="sg-switch">
-                        <span class="sg-slider"></span>
-                    </label>
-                </div>
-                <script>
-                   document.getElementById("theme-toggle").checked = window.__themeIsDark === true;
-                </script>
-
                 <div class="cafe-client-session" title="Cliente en sesión: @clientName">
                     <span class="cafe-client-session-icon" aria-hidden="true">
                         <i class="fa-regular fa-user"></i>

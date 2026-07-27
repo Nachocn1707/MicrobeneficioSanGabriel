@@ -6,23 +6,31 @@
 }
 
 @section Styles {
-    
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
-
 }
 
-<div class="EstiloEditar-page">
-    <div class="EstiloEditar-header">
-        <h1>Editar factura</h1>
-        <p>Actualizá los datos de la factura registrada.</p>
+<div class="EstiloEditaR-page">
+
+    <!-- BANNER SUPERIOR CON OVERLAY Y BADGE -->
+    <div class="EstiloEditaR-top">
+        <div class="EstiloEditaR-title">
+            <span class="EstiloEditaR-badge">
+                <i class="fa-solid fa-file-invoice"></i>
+                Gestión de facturación
+            </span>
+            <h1>Editar factura</h1>
+            <p>Actualizá los datos y estados de la factura registrada.</p>
+        </div>
     </div>
 
+    <!-- TARJETA DEL FORMULARIO -->
     <div class="EstiloEditaR-card">
         <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
                 <input type="hidden" asp-for="Id" />
 
+                <!-- ALERTA AZUL DESPEGADA -->
                 <div class="Estilo-alert">
                     <i class="fa-solid fa-circle-info"></i>
                     <span>
@@ -30,7 +38,7 @@
                     </span>
                 </div>
 
-                <div class="EstiloEditar-section">
+                <div class="EstiloEditaR-section">
                     <h5>
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                         Detalle de la factura
@@ -39,114 +47,114 @@
                     <div class="row g-4">
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="PedidoId" class="form-label">Pedido</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-cart-shopping"></i>
-                                    <select asp-for="PedidoId" class="form-select" asp-items="ViewBag.PedidoId">
-                                    </select>
-                                </div>
+                                <label asp-for="PedidoId" class="form-label">
+                                    <i class="fa-solid fa-cart-shopping label-icon"></i>
+                                    Pedido
+                                </label>
+                                <select asp-for="PedidoId" class="form-select" asp-items="ViewBag.PedidoId">
+                                </select>
                                 <span asp-validation-for="PedidoId" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="FechaFactura" class="form-label">Fecha de factura</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-calendar"></i>
-                                    <input asp-for="FechaFactura" type="datetime-local" class="form-control" />
-                                </div>
+                                <label asp-for="FechaFactura" class="form-label">
+                                    <i class="fa-regular fa-calendar-days label-icon"></i>
+                                    Fecha de factura
+                                </label>
+                                <input asp-for="FechaFactura" type="datetime-local" class="form-control" />
                                 <span asp-validation-for="FechaFactura" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="EstadoPago" class="form-label">Estado de pago</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-wallet"></i>
-                                    <select asp-for="EstadoPago" class="form-select">
-                                        <option value="Pendiente">Pendiente</option>
-                                        <option value="Pendiente de pago">Pendiente de pago</option>
-                                        <option value="Pago completado">Pago completado</option>
-                                        <option value="Anulada">Anulada</option>
-                                    </select>
-                                </div>
+                                <label asp-for="EstadoPago" class="form-label">
+                                    <i class="fa-solid fa-wallet label-icon"></i>
+                                    Estado de pago
+                                </label>
+                                <select asp-for="EstadoPago" class="form-select">
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Pendiente de pago">Pendiente de pago</option>
+                                    <option value="Pago completado">Pago completado</option>
+                                    <option value="Anulada">Anulada</option>
+                                </select>
                                 <span asp-validation-for="EstadoPago" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label asp-for="Subtotal" class="form-label">Subtotal</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-coins"></i>
-                                    <input asp-for="Subtotal"
-                                           type="number"
-                                           min="0"
-                                           step="0.01"
-                                           inputmode="decimal"
-                                           value="@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
-                                           class="form-control"
-                                           readonly />
-                                </div>
+                                <label asp-for="Subtotal" class="form-label">
+                                    <i class="fa-solid fa-coins label-icon"></i>
+                                    Subtotal
+                                </label>
+                                <input asp-for="Subtotal"
+                                       type="number"
+                                       min="0"
+                                       step="0.01"
+                                       inputmode="decimal"
+                                       value="@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                       class="form-control"
+                                       readonly />
                                 <span asp-validation-for="Subtotal" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label asp-for="IVA" class="form-label">IVA</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-percent"></i>
-                                    <input asp-for="IVA"
-                                           type="number"
-                                           min="0"
-                                           step="0.01"
-                                           inputmode="decimal"
-                                           value="@Model.IVA.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
-                                           class="form-control"
-                                           readonly />
-                                </div>
+                                <label asp-for="IVA" class="form-label">
+                                    <i class="fa-solid fa-percent label-icon"></i>
+                                    IVA
+                                </label>
+                                <input asp-for="IVA"
+                                       type="number"
+                                       min="0"
+                                       step="0.01"
+                                       inputmode="decimal"
+                                       value="@Model.IVA.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                       class="form-control"
+                                       readonly />
                                 <span asp-validation-for="IVA" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label asp-for="Total" class="form-label">Total</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-money-bill-wave"></i>
-                                    <input asp-for="Total"
-                                           type="number"
-                                           min="0"
-                                           step="0.01"
-                                           inputmode="decimal"
-                                           value="@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
-                                           class="form-control"
-                                           readonly />
-                                </div>
+                                <label asp-for="Total" class="form-label">
+                                    <i class="fa-solid fa-money-bill-wave label-icon"></i>
+                                    Total
+                                </label>
+                                <input asp-for="Total"
+                                       type="number"
+                                       min="0"
+                                       step="0.01"
+                                       inputmode="decimal"
+                                       value="@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                       class="form-control"
+                                       readonly />
                                 <span asp-validation-for="Total" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="Observacion" class="form-label">Observación</label>
-                                <div class="input-modern textarea-modern">
-                                    <i class="fa-solid fa-comment"></i>
-                                    <textarea asp-for="Observacion"
-                                              class="form-control"
-                                              rows="5"
-                                              placeholder="Detalle adicional de la factura"></textarea>
-                                </div>
+                                <label asp-for="Observacion" class="form-label">
+                                    <i class="fa-regular fa-comment-dots label-icon"></i>
+                                    Observación
+                                </label>
+                                <textarea asp-for="Observacion"
+                                          class="form-control"
+                                          rows="4"
+                                          placeholder="Detalle adicional de la factura"></textarea>
                                 <span asp-validation-for="Observacion" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="EstiloEditar-actions">
+                <div class="EstiloEditaR-actions">
                     <a asp-action="Index" class="btn-volver">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver
@@ -165,5 +173,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
 }

@@ -15,11 +15,8 @@
 <div class="payment-page">
     <div class="payment-card payment-confirmed-card">
         <div class="payment-header">
-            <div class="confirmed-icon">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <h2>Pedido creado correctamente</h2>
-            <p>El pedido ya fue almacenado y quedó pendiente de confirmación del pago.</p>
+            <h2 id="pago-titulo">Pedido creado correctamente</h2>
+            <p id="pago-texto">El pedido ya fue almacenado y quedó pendiente de confirmación del pago.</p>
         </div>
 
         <div class="payment-summary">
@@ -50,10 +47,11 @@
             <div class="sinpe-content">
                 <span class="sinpe-label">Número para SINPE Móvil</span>
                 <strong class="sinpe-number">89546434</strong>
-                <p>
+                <p class="sinpe-text">
                     Enviá el comprobante por WhatsApp e indicá que corresponde al
                     <strong>pedido @codigoPedido</strong>.
                 </p>
+
                 <a href="@whatsappUrl"
                    target="_blank"
                    rel="noopener noreferrer"
@@ -65,10 +63,10 @@
         </div>
 
         <div class="confirmed-actions">
-            <a asp-action="Details" asp-route-id="@Model.Id" class="btn-pay confirmed-link">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn-primary-action">
                 Ver detalle del pedido
             </a>
-            <a asp-action="Index" class="secondary-link">
+            <a asp-action="Index" class="btn-secondary-outline">
                 Ir a mis pedidos
             </a>
         </div>

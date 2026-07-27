@@ -1,4 +1,4 @@
-﻿/* ================================
+/* ================================
    VISUAL BACKGROUNDS - SAN GABRIEL
    Solo estilos visuales, no lógica
 ================================ */
@@ -92,26 +92,6 @@
 }
 
 /* Variantes por módulo */
-.sg-hero-dashboard {
-    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.82), rgba(58, 33, 20, 0.42), rgba(255, 248, 223, 0.28)), url("/images/visual/coffee-banner.jpg");
-}
-
-.sg-hero-productos {
-    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.82), rgba(58, 33, 20, 0.45), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-beans.jpg");
-}
-
-.sg-hero-pedidos {
-    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.46), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-sack.jpg");
-}
-
-.sg-hero-produccion {
-    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.46), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-process.jpg");
-}
-
-.sg-hero-lotes,
-.sg-hero-trazabilidad {
-    background-image: linear-gradient(90deg, rgba(58, 33, 20, 0.84), rgba(58, 33, 20, 0.46), rgba(255, 248, 223, 0.25)), url("/images/visual/coffee-farm.jpg");
-}
 
 /* Tarjetas sobre fondo visual */
 .sg-visual-card {

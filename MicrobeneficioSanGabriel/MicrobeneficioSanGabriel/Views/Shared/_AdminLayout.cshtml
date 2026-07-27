@@ -38,7 +38,7 @@
     }
 
     var usuarioActual = User.Identity?.IsAuthenticated == true
-        ? await UserManager.GetUserAsync(User)
+        ? UserManager.GetUserAsync(User).GetAwaiter().GetResult()
         : null;
 
     var nombreUsuarioActual =
@@ -50,117 +50,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <style>
-        html {
-            visibility: hidden;
-        }
-
-        html.theme-ready {
-            visibility: visible;
-        }
-    </style>
-
-    <script>
-        if (localStorage.getItem("theme") === "dark") {
-            document.documentElement.classList.add("dark");
-        }
-
-        document.documentElement.classList.add("theme-ready");
-    </script>
-
     <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"] - Microbeneficio San Gabriel</title>
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/notificaciones.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sg-coffee-ui.css" asp-append-version="true" />
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+    @await RenderSectionAsync("Styles", required: false)
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
-          rel="stylesheet">
-
-    <link rel="stylesheet"
-          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-    <link rel="stylesheet"
-          href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
-
-    <link rel="stylesheet"
-          href="~/css/notificaciones.css"
-          asp-append-version="true" />
-
-    <link rel="stylesheet"
-          href="~/css/sg-coffee-ui.css"
-          asp-append-version="true" />
-
-    @RenderSection("Styles", required: false)
-
-    <link rel="stylesheet"
-          href="~/css/sg-crud-overrides.css"
-          asp-append-version="true" />
-
-    <link rel="stylesheet"
-          href="~/css/portal-unificado.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/portal-unificado.css" asp-append-version="true" />
 </head>
 
 <body class="sg-reference-theme">
     <div class="sg-shell">
-        <aside class="sg-sidebar">
-            <a asp-controller="Home"
-               asp-action="Dashboard"
-               class="sg-brand">
 
+        <aside class="sg-sidebar">
+            <a asp-controller="Home" asp-action="Dashboard" class="sg-brand">
                 <span class="sg-brand-mark">
                     <i class="fa-solid fa-seedling"></i>
                 </span>
-
                 <span>
                     <strong>SAN GABRIEL</strong>
                     <small>COFFEE LAB</small>
                 </span>
-
-                <div class="sg-theme-switch">
-                    <input type="checkbox"
-                           id="theme-toggle">
-
-                    <label for="theme-toggle"
-                           class="sg-switch">
-                        <span class="sg-slider"></span>
-                    </label>
-                </div>
-
-                <script>
-                    (function () {
-                        var toggle = document.getElementById("theme-toggle");
-
-                        if (toggle) {
-                            toggle.checked =
-                                localStorage.getItem("theme") === "dark";
-                        }
-                    })();
-                </script>
             </a>
 
             <nav class="sg-nav">
                 <a asp-controller="Home"
                    asp-action="Dashboard"
                    class="@Active("/home/dashboard", "/home")">
-
                     <i class="fa-solid fa-house"></i>
                     Inicio
                 </a>
 
-                @if (User.IsInRole("Administrador") ||
-                     User.IsInRole("Operador"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
                 {
                     <details open="@(IsOper ? "open" : null)">
                         <summary class="@(IsOper ? "active" : "")">
@@ -170,67 +102,32 @@
                         </summary>
 
                         <div class="sg-subnav">
-                            <a asp-controller="Productores"
-                               asp-action="Index"
-                               class="@Active("productores")">
-
-                                <i class="fa-solid fa-user-tie"></i>
-                                Productores
+                            <a asp-controller="Productores" asp-action="Index" class="@Active("productores")">
+                                <i class="fa-solid fa-user-tie"></i> Productores
                             </a>
-
-                            <a asp-controller="Fincas"
-                               asp-action="Index"
-                               class="@Active("fincas")">
-
-                                <i class="fa-solid fa-mountain-sun"></i>
-                                Fincas
+                            <a asp-controller="Fincas" asp-action="Index" class="@Active("fincas")">
+                                <i class="fa-solid fa-mountain-sun"></i> Fincas
                             </a>
-
-                            <a asp-controller="Productos"
-                               asp-action="Index"
-                               class="@Active("productos")">
-
-                                <i class="fa-solid fa-mug-hot"></i>
-                                Productos
+                            <a asp-controller="Productos" asp-action="Index" class="@Active("productos")">
+                                <i class="fa-solid fa-mug-hot"></i> Productos
                             </a>
-
-                            <a asp-controller="MovimientosInventario"
-                               asp-action="Index"
-                               class="@Active("movimientosinventario")">
-
-                                <i class="fa-solid fa-boxes-stacked"></i>
-                                Inventario
+                            <a asp-controller="MovimientosInventario" asp-action="Index" class="@Active("movimientosinventario")">
+                                <i class="fa-solid fa-boxes-stacked"></i> Inventario
                             </a>
-
-                            <a asp-controller="Lotes"
-                               asp-action="Index"
-                               class="@Active("lotes")">
-
-                                <i class="fa-solid fa-layer-group"></i>
-                                Lotes
+                            <a asp-controller="Lotes" asp-action="Index" class="@Active("lotes")">
+                                <i class="fa-solid fa-layer-group"></i> Lotes
                             </a>
-
-                            <a asp-controller="Producciones"
-                               asp-action="Index"
-                               class="@Active("producciones")">
-
-                                <i class="fa-solid fa-industry"></i>
-                                Producción
+                            <a asp-controller="Producciones" asp-action="Index" class="@Active("producciones")">
+                                <i class="fa-solid fa-industry"></i> Producción
                             </a>
-
-                            <a asp-controller="Trazabilidades"
-                               asp-action="Index"
-                               class="@Active("trazabilidades")">
-
-                                <i class="fa-solid fa-route"></i>
-                                Trazabilidad
+                            <a asp-controller="Trazabilidades" asp-action="Index" class="@Active("trazabilidades")">
+                                <i class="fa-solid fa-route"></i> Trazabilidad
                             </a>
                         </div>
                     </details>
                 }
 
-                @if (User.IsInRole("Administrador") ||
-                     User.IsInRole("Vendedor"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
                 {
                     <details open="@(IsCom ? "open" : null)">
                         <summary class="@(IsCom ? "active" : "")">
@@ -240,20 +137,11 @@
                         </summary>
 
                         <div class="sg-subnav">
-                            <a asp-controller="Pedidos"
-                               asp-action="Index"
-                               class="@Active("pedidos")">
-
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                Pedidos
+                            <a asp-controller="Pedidos" asp-action="Index" class="@Active("pedidos")">
+                                <i class="fa-solid fa-cart-shopping"></i> Pedidos
                             </a>
-
-                            <a asp-controller="Facturas"
-                               asp-action="Index"
-                               class="@Active("facturas")">
-
-                                <i class="fa-solid fa-file-invoice-dollar"></i>
-                                Facturación
+                            <a asp-controller="Facturas" asp-action="Index" class="@Active("facturas")">
+                                <i class="fa-solid fa-file-invoice-dollar"></i> Facturación
                             </a>
                         </div>
                     </details>
@@ -269,37 +157,20 @@
                         </summary>
 
                         <div class="sg-subnav">
-                            <a asp-controller="Usuarios"
-                               asp-action="Index"
-                               class="@Active("usuarios")">
-
-                                <i class="fa-solid fa-users"></i>
-                                Usuarios
+                            <a asp-controller="Usuarios" asp-action="Index" class="@Active("usuarios")">
+                                <i class="fa-solid fa-users"></i> Usuarios
                             </a>
-
-                            <a asp-controller="RegistrosFinancieros"
-                               asp-action="Index"
-                               class="@Active("registrosfinancieros")">
-
-                                <i class="fa-solid fa-coins"></i>
-                                Contabilidad
+                            <a asp-controller="RegistrosFinancieros" asp-action="Index" class="@Active("registrosfinancieros")">
+                                <i class="fa-solid fa-coins"></i> Contabilidad
                             </a>
-
-                            <a asp-controller="Auditorias"
-                               asp-action="Index"
-                               class="@Active("auditorias")">
-
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                Auditoría
+                            <a asp-controller="Auditorias" asp-action="Index" class="@Active("auditorias")">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Auditoría
                             </a>
                         </div>
                     </details>
                 }
 
-                <a asp-controller="Reportes"
-                   asp-action="Index"
-                   class="@Active("reportes")">
-
+                <a asp-controller="Reportes" asp-action="Index" class="@Active("reportes")">
                     <i class="fa-solid fa-chart-column"></i>
                     Reportes
                 </a>
@@ -323,9 +194,7 @@
                       asp-page="/Account/Logout"
                       asp-route-returnUrl="/Identity/Account/Login"
                       method="post">
-
-                    <button class="sg-logout w-100"
-                            type="submit">
+                    <button class="sg-logout w-100" type="submit">
                         <i class="fa-solid fa-right-from-bracket me-2"></i>
                         Salir
                     </button>
@@ -351,42 +220,26 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="~/js/Validaciones.js"></script>
-
-    <script src="~/js/notificaciones.js"
-            asp-append-version="true"></script>
+    <script src="~/js/notificaciones.js" asp-append-version="true"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const notificationDock = document.querySelector(".sg-notification-dock");
-
-            // Se mueve al body para evitar que cualquier contenedor, overlay o
-            // contexto de apilamiento del dashboard lo deje por detrás.
-            if (notificationDock && notificationDock.parentElement !== document.body) {
-                document.body.appendChild(notificationDock);
-            }
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document
-                .querySelectorAll("[data-auto-dismiss='true']")
-                .forEach(message => {
-                    setTimeout(
-                        () => bootstrap.Alert
-                            .getOrCreateInstance(message)
-                            .close(),
-                        5000
-                    );
+            document.addEventListener("DOMContentLoaded", function () {
+                const notificationDock = document.querySelector(".sg-notification-dock");
+                if (notificationDock && notificationDock.parentElement !== document.body) {
+                    document.body.appendChild(notificationDock);
+                }
+                document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
+                    setTimeout(() => {
+                        const instance = bootstrap.Alert.getOrCreateInstance(message);
+                        if (instance) instance.close();
+                    }, 5000);
                 });
-        });
+            });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
-    <script src="~/js/sg-datatables.js"
-            asp-append-version="true"></script>
-
+    <script src="~/js/sg-datatables.js" asp-append-version="true"></script>
     <script src="~/js/ModoOscuro.js"></script>
 </body>
 </html>

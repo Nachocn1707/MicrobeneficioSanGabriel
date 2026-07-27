@@ -6,14 +6,18 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloEditar-page">
-    <div class="EstiloEditar-top">
-        <div class="EstiloEditar-header">
-            <h1>Contabilidad</h1>
+<div class="EstiloEditaR-page">
+
+    <div class="EstiloEditaR-top">
+        <div class="EstiloEditaR-title">
+            <span class="EstiloEditaR-badge">
+                <i class="fa-solid fa-calculator"></i>
+                Contabilidad
+            </span>
+            <h1>Editar registro financiero</h1>
             <p>Administrá ingresos, egresos, registros financieros y movimientos económicos del microbeneficio.</p>
         </div>
     </div>
@@ -31,7 +35,7 @@
                     </span>
                 </div>
 
-                <div class="EstiloEditar-section">
+                <div class="EstiloEditaR-section">
                     <h5>
                         <i class="fa-solid fa-scale-balanced"></i>
                         Detalle del movimiento financiero
@@ -40,77 +44,77 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Tipo" class="form-label">Tipo</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    <select asp-for="Tipo" class="form-select">
-                                        <option value="">Seleccione un tipo</option>
-                                        <option value="Ingreso">Ingreso</option>
-                                        <option value="Gasto">Gasto</option>
-                                    </select>
-                                </div>
+                                <label asp-for="Tipo" class="form-label">
+                                    <i class="fa-solid fa-arrow-right-arrow-left label-icon"></i>
+                                    Tipo
+                                </label>
+                                <select asp-for="Tipo" class="form-select">
+                                    <option value="">Seleccione un tipo</option>
+                                    <option value="Ingreso">Ingreso</option>
+                                    <option value="Gasto">Gasto</option>
+                                </select>
                                 <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Categoria" class="form-label">Categoría</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-tags"></i>
-                                    <input asp-for="Categoria" class="form-control" placeholder="Venta, mantenimiento, transporte..." />
-                                </div>
+                                <label asp-for="Categoria" class="form-label">
+                                    <i class="fa-solid fa-tags label-icon"></i>
+                                    Categoría
+                                </label>
+                                <input asp-for="Categoria" class="form-control" placeholder="Venta, mantenimiento, transporte..." />
                                 <span asp-validation-for="Categoria" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Monto" class="form-label">Monto</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-coins"></i>
-                                    <input asp-for="Monto" class="form-control" min="0" placeholder="Digite el monto" />
-                                </div>
+                                <label asp-for="Monto" class="form-label">
+                                    <i class="fa-solid fa-coins label-icon"></i>
+                                    Monto
+                                </label>
+                                <input asp-for="Monto" class="form-control" min="0" placeholder="Digite el monto" />
                                 <span asp-validation-for="Monto" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Fecha" class="form-label">Fecha</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-calendar"></i>
-                                    <input asp-for="Fecha" type="date" class="form-control" />
-                                </div>
+                                <label asp-for="Fecha" class="form-label">
+                                    <i class="fa-regular fa-calendar-days label-icon"></i>
+                                    Fecha
+                                </label>
+                                <input asp-for="Fecha" type="date" class="form-control" />
                                 <span asp-validation-for="Fecha" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="Descripcion" class="form-label">Descripción</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-file-lines"></i>
-                                    <input asp-for="Descripcion" class="form-control" placeholder="Descripción del movimiento financiero" />
-                                </div>
+                                <label asp-for="Descripcion" class="form-label">
+                                    <i class="fa-regular fa-file-lines label-icon"></i>
+                                    Descripción
+                                </label>
+                                <input asp-for="Descripcion" class="form-control" placeholder="Descripción del movimiento financiero" />
                                 <span asp-validation-for="Descripcion" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="Observacion" class="form-label">Observación</label>
-                                <div class="input-modern textarea-modern">
-                                    <i class="fa-solid fa-comment"></i>
-                                    <textarea asp-for="Observacion" class="form-control" rows="4" placeholder="Observación adicional del registro"></textarea>
-                                </div>
+                                <label asp-for="Observacion" class="form-label">
+                                    <i class="fa-regular fa-comment-dots label-icon"></i>
+                                    Observación
+                                </label>
+                                <textarea asp-for="Observacion" class="form-control" rows="4" placeholder="Observación adicional del registro"></textarea>
                                 <span asp-validation-for="Observacion" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="EstiloEditar-actions">
+                <div class="EstiloEditaR-actions">
                     <a asp-action="Index" class="btn-volver">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver

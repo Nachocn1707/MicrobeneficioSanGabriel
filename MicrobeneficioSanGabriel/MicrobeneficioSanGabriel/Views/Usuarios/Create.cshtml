@@ -6,20 +6,22 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
 }
 
-<div class="VistaCrear-page">
-    <div class="VistaCrear-top">
-        <div class="VistaCrear-title">
-            <span class="VistaCrear-badge">
-                <i class="fa-solid fa-user-gear"></i>
-                Gestión de usuarios
-            </span>
-            <h1>Registrar usuario</h1>
-            <p>
-                Creá nuevas cuentas y asigná roles dentro del sistema.
-            </p>
+<div class="VistaCreaR-page">
+    <div class="VistaCreaR-top">
+        <div class="VistaCreaR-banner-overlay">
+            <div class="VistaCreaR-title">
+                <span class="VistaCreaR-badge">
+                    <i class="fa-solid fa-user-gear"></i>
+                    Gestión de usuarios
+                </span>
+                <h1>Registrar usuario</h1>
+                <p>
+                    Creá nuevas cuentas y asigná roles dentro del sistema.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -28,7 +30,7 @@
             <form asp-action="Create" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-                <div class="VistaCrear-section">
+                <div class="VistaCreaR-section">
                     <h5>
                         <i class="fa-solid fa-user-gear"></i>
                         Información del usuario
@@ -124,7 +126,7 @@
                     </div>
                 </div> 
 
-                <div class="VistaCrear-actions">
+                <div class="VistaCreaR-actions">
                     <a asp-action="Index" class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver

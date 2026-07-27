@@ -6,14 +6,20 @@
 }
 
 @section Styles {
-    
     <link rel="stylesheet" href="~/css/VistaEditar.css" />
 }
 
-<div class="EstiloEditar-page">
-    <div class="EstiloEditar-header">
-        <h1>Editar Pedidos</h1>
-        <p>Actualizá los datos de los pedidos registrados.</p>
+<div class="EstiloEditaR-page">
+
+    <div class="EstiloEditaR-top">
+        <div class="EstiloEditaR-title">
+            <span class="EstiloEditaR-badge">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Gestión de pedidos
+            </span>
+            <h1>Editar pedido</h1>
+            <p>Actualizá los datos y estados de los pedidos registrados.</p>
+        </div>
     </div>
 
     <div class="EstiloEditaR-card">
@@ -21,7 +27,7 @@
             <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
                 <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="RowVersion" />
+                <input type="hidden" asp-for="RowVersion" />
 
                 <div class="Estilo-alert">
                     <i class="fa-solid fa-circle-info"></i>
@@ -30,7 +36,7 @@
                     </span>
                 </div>
 
-                <div class="EstiloEditar-section">
+                <div class="EstiloEditaR-section">
                     <h5>
                         <i class="fa-solid fa-clipboard-check"></i>
                         Detalle del pedido
@@ -39,96 +45,96 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="ClienteNombre" class="form-label">Cliente</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-user"></i>
-                                    <input asp-for="ClienteNombre" class="form-control" />
-                                </div>
+                                <label asp-for="ClienteNombre" class="form-label">
+                                    <i class="fa-solid fa-user label-icon"></i>
+                                    Cliente
+                                </label>
+                                <input asp-for="ClienteNombre" class="form-control" />
                                 <span asp-validation-for="ClienteNombre" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="ClienteTelefono" class="form-label">Teléfono</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-phone"></i>
-                                    <input asp-for="ClienteTelefono" class="form-control" type="tel" inputmode="numeric"
-                                           maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
-                                           oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
-                                </div>
+                                <label asp-for="ClienteTelefono" class="form-label">
+                                    <i class="fa-solid fa-phone label-icon"></i>
+                                    Teléfono
+                                </label>
+                                <input asp-for="ClienteTelefono" class="form-control" type="tel" inputmode="numeric"
+                                       maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
                                 <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="ProductoId" class="form-label">Producto</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-mug-hot"></i>
-                                    <select asp-for="ProductoId" class="form-select" asp-items="ViewBag.ProductoId">
-                                    </select>
-                                </div>
+                                <label asp-for="ProductoId" class="form-label">
+                                    <i class="fa-solid fa-mug-hot label-icon"></i>
+                                    Producto
+                                </label>
+                                <select asp-for="ProductoId" class="form-select" asp-items="ViewBag.ProductoId">
+                                </select>
                                 <span asp-validation-for="ProductoId" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Cantidad" class="form-label">Cantidad en kg</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-weight-scale"></i>
-                                    <input asp-for="Cantidad" asp-format="{0:0}" class="form-control"
-                                           type="text" inputmode="numeric" pattern="[0-9]+"
-                                           oninput="this.value=(this.value.match(/\d+/)||[''])[0]" />
-                                </div>
+                                <label asp-for="Cantidad" class="form-label">
+                                    <i class="fa-solid fa-weight-scale label-icon"></i>
+                                    Cantidad en kg
+                                </label>
+                                <input asp-for="Cantidad" asp-format="{0:0}" class="form-control"
+                                       type="text" inputmode="numeric" pattern="[0-9]+"
+                                       oninput="this.value=(this.value.match(/\d+/)||[''])[0]" />
                                 <span asp-validation-for="Cantidad" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="FechaPedido" class="form-label">Fecha del pedido</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-calendar"></i>
-                                    <input asp-for="FechaPedido" type="datetime-local" class="form-control" />
-                                </div>
+                                <label asp-for="FechaPedido" class="form-label">
+                                    <i class="fa-solid fa-calendar label-icon"></i>
+                                    Fecha del pedido
+                                </label>
+                                <input asp-for="FechaPedido" type="datetime-local" class="form-control" />
                                 <span asp-validation-for="FechaPedido" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="Estado" class="form-label">Estado</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    <select asp-for="Estado" class="form-select">
-                                        <option value="Pendiente">Pendiente</option>
-                                        <option value="En proceso">En proceso</option>
-                                        <option value="En camino">En camino</option>
-                                        <option value="Listo para retirar">Listo para retirar</option>
-                                        <option value="Completado">Completado</option>
-                                        <option value="Cancelado">Cancelado</option>
-                                    </select>
-                                </div>
+                                <label asp-for="Estado" class="form-label">
+                                    <i class="fa-solid fa-circle-info label-icon"></i>
+                                    Estado
+                                </label>
+                                <select asp-for="Estado" class="form-select">
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En proceso">En proceso</option>
+                                    <option value="En camino">En camino</option>
+                                    <option value="Listo para retirar">Listo para retirar</option>
+                                    <option value="Completado">Completado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
                                 <span asp-validation-for="Estado" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="Observacion" class="form-label">Observación</label>
-                                <div class="input-modern textarea-modern">
-                                    <i class="fa-solid fa-comment"></i>
-                                    <textarea asp-for="Observacion" class="form-control" rows="5" placeholder="Digite alguna observación del pedido"></textarea>
-                                </div>
+                                <label asp-for="Observacion" class="form-label">
+                                    <i class="fa-solid fa-comment label-icon"></i>
+                                    Observación
+                                </label>
+                                <textarea asp-for="Observacion" class="form-control" rows="4" placeholder="Digite alguna observación del pedido"></textarea>
                                 <span asp-validation-for="Observacion" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="EstiloEditar-actions">
+                <div class="EstiloEditaR-actions">
                     <a asp-action="Index" class="btn-volver">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver

@@ -427,22 +427,6 @@ body.sg-reference-theme {
         fill: #FFFFFF !important;
     }
 
-/* Mantener esta apariencia aunque estuviera activo el modo oscuro */
-html.dark body.sg-reference-theme,
-html.dark body.sg-reference-theme .sg-main {
-    color: #293F25 !important;
-    background-color: #EFECE4 !important;
-}
-
-    html.dark body.sg-reference-theme .sg-sidebar,
-    html.dark body.sg-reference-theme .sg-card,
-    html.dark body.sg-reference-theme .sg-panel,
-    html.dark body.sg-reference-theme .sg-table-card {
-        color: #293F25 !important;
-        background: #FEFCFA !important;
-        border-color: #EFECE4 !important;
-    }
-
 /* Responsive */
 @media (max-width: 1100px) {
     body.sg-reference-theme .sg-sidebar {
@@ -902,101 +886,6 @@ body.rc-client-body .sg-client-content {
     z-index: 1;
 }
 
-html.dark body.rc-client-body {
-    --sg-admin-surface-soft: rgba(37, 43, 33, 0.88);
-}
-
-html.dark body.rc-client-body .cafe-portal-header,
-html.dark body.rc-client-body .cafe-client-session,
-html.dark body.rc-client-body .cafe-header-logout,
-html.dark body.rc-client-body .sg-page-head,
-html.dark body.rc-client-body .cafe-quick-section,
-html.dark body.rc-client-body .cafe-quick-card,
-html.dark body.rc-client-body .cliente-hero-premium,
-html.dark body.rc-client-body .cliente-side-panel,
-html.dark body.rc-client-body .cliente-stat-card,
-html.dark body.rc-client-body .cliente-module-card,
-html.dark body.rc-client-body .cliente-order-card,
-html.dark body.rc-client-body .cliente-feature-card,
-html.dark body.rc-client-body .cliente-benefits-panel,
-html.dark body.rc-client-body .cliente-benefit-card,
-html.dark body.rc-client-body .cliente-banner-card,
-html.dark body.rc-client-body .rc-client-kpi,
-html.dark body.rc-client-body .rc-client-panel,
-html.dark body.rc-client-body .sg-card,
-html.dark body.rc-client-body .sg-table-card,
-html.dark body.rc-client-body .client-orders-summary article,
-html.dark body.rc-client-body .client-orders-section,
-html.dark body.rc-client-body .client-purchase-card,
-html.dark body.rc-client-body .sg-payment-modal,
-html.dark body.rc-client-body .sg-order-summary,
-html.dark body.rc-client-body .sg-payment-success-box,
-html.dark body.rc-client-body .card,
-html.dark body.rc-client-body .table-responsive,
-html.dark body.rc-client-body .dataTables_wrapper,
-html.dark body.rc-client-body .form-card,
-html.dark body.rc-client-body .details-card,
-html.dark body.rc-client-body .edit-card,
-html.dark body.rc-client-body .create-card {
-    border-color: rgba(110, 130, 98, .28) !important;
-    background: rgba(36, 42, 32, .90) !important;
-    color: #F2F2EC !important;
-}
-
-html.dark body.rc-client-body .cafe-portal-nav a,
-html.dark body.rc-client-body .cafe-portal-brand,
-html.dark body.rc-client-body .cafe-portal-brand:hover,
-html.dark body.rc-client-body .cafe-portal-brand-text strong,
-html.dark body.rc-client-body .cafe-client-session-text strong,
-html.dark body.rc-client-body .client-purchase-number strong,
-html.dark body.rc-client-body .client-purchase-product h3,
-html.dark body.rc-client-body .client-purchase-total strong,
-html.dark body.rc-client-body .cliente-panel-head h2,
-html.dark body.rc-client-body .cliente-section-title,
-html.dark body.rc-client-body .sg-page-head h1,
-html.dark body.rc-client-body .sg-payment-method-copy strong,
-html.dark body.rc-client-body .sg-payment-details-head strong,
-html.dark body.rc-client-body .sg-sinpe-number-box strong,
-html.dark body.rc-client-body .sg-order-summary-head strong,
-html.dark body.rc-client-body .sg-order-summary-row strong,
-html.dark body.rc-client-body .sg-payment-success h3,
-html.dark body.rc-client-body .sg-payment-success-box strong,
-html.dark body.rc-client-body .cafe-portal-main h2,
-html.dark body.rc-client-body .cafe-portal-main h3,
-html.dark body.rc-client-body .cafe-portal-main h4,
-html.dark body.rc-client-body .cafe-quick-card,
-html.dark body.rc-client-body .cliente-stat-card strong,
-html.dark body.rc-client-body .cliente-module-card h3 {
-    color: #F3F4ED !important;
-}
-
-html.dark body.rc-client-body .cafe-portal-main p,
-html.dark body.rc-client-body .cliente-hero-copy p,
-html.dark body.rc-client-body .cliente-order-meta,
-html.dark body.rc-client-body .cliente-feature-card p,
-html.dark body.rc-client-body .cliente-module-card p,
-html.dark body.rc-client-body .cliente-banner-card p,
-html.dark body.rc-client-body .cliente-benefit-card p,
-html.dark body.rc-client-body .client-purchase-product span,
-html.dark body.rc-client-body .sg-payment-method-copy small,
-html.dark body.rc-client-body .sg-payment-details-head span,
-html.dark body.rc-client-body .sg-payment-note,
-html.dark body.rc-client-body .sg-order-summary-row,
-html.dark body.rc-client-body .sg-payment-success > p,
-html.dark body.rc-client-body .cliente-stat-card small,
-html.dark body.rc-client-body .cliente-stat-card span,
-html.dark body.rc-client-body .cafe-portal-nav a,
-html.dark body.rc-client-body .cafe-header-logout,
-html.dark body.rc-client-body .client-purchase-action {
-    color: #D7DACE !important;
-}
-
-html.dark body.rc-client-body .cafe-portal-main {
-    background-image:
-        linear-gradient(rgba(23, 28, 20, .60), rgba(23, 28, 20, .64)),
-        url('/images/visual/coffee-farm.jpg') !important;
-}
-
 @media (max-width: 991.98px) {
     body.rc-client-body .cafe-portal-main {
         background-attachment: scroll !important;
@@ -1105,27 +994,6 @@ body.rc-client-body .page-link:hover {
     border-color: var(--sg-admin-primary) !important;
     background: var(--sg-admin-primary) !important;
 }
-
-html.dark body.rc-client-body .sg-badge {
-    color: #F3F4ED !important;
-    background: rgba(83,131,59,.28) !important;
-    border-color: rgba(123,163,93,.22) !important;
-}
-
-html.dark body.rc-client-body .sg-badge.gold,
-html.dark body.rc-client-body .sg-badge.tan {
-    color: #F3E1BD !important;
-    background: rgba(212,115,11,.22) !important;
-    border-color: rgba(237,174,62,.24) !important;
-}
-
-html.dark body.rc-client-body .sg-badge.red,
-html.dark body.rc-client-body .status-badge.cancelado {
-    color: #F5D3CC !important;
-    background: rgba(209,111,90,.22) !important;
-}
-
-
 
 
 /* =========================================================
@@ -1493,71 +1361,6 @@ body.rc-client-body .cafe-order-data small,
 body.rc-client-body .cafe-section-header p {
     color: #666859 !important;
 }
-
-/* ---------- Modo oscuro básico coherente ---------- */
-html.dark body.sg-reference-theme .sg-main,
-html.dark body.rc-client-body .cafe-portal-main {
-    background-image:
-        linear-gradient(rgba(16, 19, 14, .56), rgba(16, 19, 14, .52)),
-        url('/images/visual/coffee-farm.jpg') !important;
-}
-
-html.dark body.sg-reference-theme .sg-page-head,
-html.dark body.sg-reference-theme .sg-card,
-html.dark body.sg-reference-theme .sg-table-card,
-html.dark body.sg-reference-theme .sg-panel,
-html.dark body.sg-reference-theme .sg-kpi,
-html.dark body.rc-client-body .sg-page-head,
-html.dark body.rc-client-body .cafe-quick-section,
-html.dark body.rc-client-body .cafe-summary-card,
-html.dark body.rc-client-body .cafe-section-card,
-html.dark body.rc-client-body .cafe-product-card,
-html.dark body.rc-client-body .cafe-order-item,
-html.dark body.rc-client-body .client-orders-summary article,
-html.dark body.rc-client-body .client-orders-section,
-html.dark body.rc-client-body .client-purchase-card,
-html.dark body.rc-client-body .sg-card,
-html.dark body.rc-client-body .sg-table-card {
-    background: rgba(34, 40, 30, .90) !important;
-    border-color: rgba(110, 130, 98, .24) !important;
-    color: #f2f2ec !important;
-}
-
-html.dark body.sg-reference-theme .sg-table thead th,
-html.dark body.rc-client-body .sg-table thead th,
-html.dark body.rc-client-body .table thead th {
-    background: #1f2d1c !important;
-    border-color: #1f2d1c !important;
-}
-
-html.dark body.sg-reference-theme .sg-badge,
-html.dark body.rc-client-body .sg-badge {
-    color: #f3f4ed !important;
-    background: rgba(83,131,59,.28) !important;
-    border-color: rgba(123,163,93,.24) !important;
-}
-
-html.dark body.sg-reference-theme .sg-badge.gold,
-html.dark body.sg-reference-theme .sg-badge.tan,
-html.dark body.rc-client-body .sg-badge.gold,
-html.dark body.rc-client-body .sg-badge.tan {
-    color: #f3e1bd !important;
-    background: rgba(212,115,11,.22) !important;
-}
-
-html.dark body.sg-reference-theme .sg-badge.red,
-html.dark body.rc-client-body .sg-badge.red {
-    color: #f5d3cc !important;
-    background: rgba(209,111,90,.22) !important;
-}
-
-@media (max-width: 991.98px) {
-    body.sg-reference-theme .sg-main,
-    body.rc-client-body .cafe-portal-main {
-        background-attachment: scroll !important;
-    }
-}
-
 
 /* --- Ajustes finos solicitados por el usuario --- */
 body.rc-client-body .cafe-summary-card strong,

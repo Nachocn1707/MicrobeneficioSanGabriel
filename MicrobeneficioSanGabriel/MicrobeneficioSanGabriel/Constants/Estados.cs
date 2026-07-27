@@ -4,12 +4,14 @@ namespace MicrobeneficioSanGabriel.Constants
     {
         public const string Pendiente = "Pendiente";
         public const string EnProceso = "En proceso";
+        public const string EnCamino = "En camino";             
+        public const string ListoParaRetirar = "Listo para retirar"; 
         public const string Completado = "Completado";
         public const string Cancelado = "Cancelado";
 
         public static readonly string[] Permitidos =
         {
-            Pendiente, EnProceso, Completado, Cancelado
+            Pendiente, EnProceso, EnCamino, ListoParaRetirar, Completado, Cancelado
         };
 
         public static bool EsValido(string? estado) =>

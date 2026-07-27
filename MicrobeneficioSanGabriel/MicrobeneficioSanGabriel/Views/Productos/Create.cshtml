@@ -4,12 +4,12 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
 }
-<div class="VistaCrear-page">
-    <div class="VistaCrear-top">
-        <div class="VistaCrear-title">
-            <span class="VistaCrear-badge">
+<div class="VistaCreaR-page">
+    <div class="VistaCreaR-top">
+        <div class="VistaCreaR-title">
+            <span class="VistaCreaR-badge">
                 Gestión de productos
             </span>
             <h1>Registrar producto</h1>
@@ -24,7 +24,7 @@
             <form asp-action="Create" method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-                <div class="VistaCrear-section">
+                <div class="VistaCreaR-section">
                     <h5>
                         <i class="fa-solid fa-box"></i>
                         Información del producto
@@ -93,7 +93,7 @@
                     </div>
                 </div> 
 
-                <div class="VistaCrear-section">
+                <div class="VistaCreaR-section">
                     <h5>
                         <i class="fa-solid fa-image"></i>
                         Imagen
@@ -120,7 +120,7 @@
                     </div>
                 </div>
 
-                <div class="VistaCrear-section">
+                <div class="VistaCreaR-section">
                     <h5>
                         <i class="fa-solid fa-gear"></i>
                         Configuración
@@ -153,7 +153,7 @@
                     </div>
                 </div> 
 
-                <div class="VistaCrear-actions">
+                <div class="VistaCreaR-actions">
                     <a asp-action="Index" class="btn-cancelar">
                         Volver
                     </a>

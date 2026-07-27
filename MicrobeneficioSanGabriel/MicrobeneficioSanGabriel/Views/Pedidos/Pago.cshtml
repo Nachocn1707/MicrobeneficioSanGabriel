@@ -15,61 +15,38 @@
         : $"https://wa.me/50689546434?text={whatsappMessage}";
 }
 
-<link rel="stylesheet" href="~/css/pago.css" asp-append-version="true" />
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/pago.css" asp-append-version="true" />
+}
 
 <div class="payment-page">
     <div class="payment-card">
+
         <div class="payment-header">
-            <h2>Confirmar compra</h2>
-            @if (esPedidoPendiente)
-            {
-                <p>Revisá los datos. El pedido se guardará únicamente cuando confirmés el método de pago.</p>
-            }
-            else
-            {
-                <p>Revisá los datos antes de registrar el método de pago.</p>
-            }
+            <div class="payment-header-text">
+                <h2 id="pago-titulo">Confirmar compra</h2>
+                @if (esPedidoPendiente)
+                {
+                    <p id="pago-texto">Revisá los datos. El pedido se guardará únicamente cuando confirmés el método de pago.</p>
+                }
+                else
+                {
+                    <p id="pago-texto">Revisá los datos antes de registrar el método de pago.</p>
+                }
+            </div>
         </div>
 
         @if (esPedidoPendiente)
         {
             <div class="pending-order-notice">
-                <i class="fa-solid fa-circle-info"></i>
+                <span class="notice-icon"><i class="fa-solid fa-circle-info"></i></span>
                 <span>
                     Todavía no existe un pedido almacenado. Si seleccionás <strong>No deseo continuar</strong>,
                     la solicitud se descartará sin guardar información.
                 </span>
             </div>
         }
-
-        <div class="payment-summary">
-            <h4>Resumen del pedido</h4>
-
-            <div class="summary-row">
-                <span>Número de pedido</span>
-                <strong>@codigoPedido</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>Producto</span>
-                <strong>@Model.Producto?.Nombre</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>Cantidad</span>
-                <strong>@Model.Cantidad.ToString("0") kg</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>Precio por kg</span>
-                <strong>₡@Model.Producto?.Precio.ToString("N0")</strong>
-            </div>
-
-            <div class="summary-row total-row">
-                <span>Total</span>
-                <strong>₡@total.ToString("N0")</strong>
-            </div>
-        </div>
 
         <form asp-action="Pago"
               method="post"
@@ -81,102 +58,147 @@
                 <input type="hidden" name="pedidoId" value="@Model.Id" />
             }
 
-            <div class="customer-info">
-                <input type="text"
-                       id="nombreCompleto"
-                       class="form-control"
-                       maxlength="50"
-                       placeholder="Nombre completo" />
+            <div class="payment-body">
 
-                <select class="form-select" id="provincia">
-                    <option value="">--Seleccione la provincia--</option>
-                    <option>San José</option>
-                    <option>Alajuela</option>
-                    <option>Cartago</option>
-                    <option>Heredia</option>
-                    <option>Guanacaste</option>
-                    <option>Puntarenas</option>
-                    <option>Limón</option>
-                </select>
-            </div>
+                <div class="payment-summary">
+                    <h4>Resumen del pedido</h4>
 
-            <div class="payment-methods">
-                <h4>Forma de pago</h4>
-
-                <label class="payment-option">
-                    <input type="radio"
-                           name="metodoPago"
-                           value="SINPE Móvil"
-                           checked />
-                    <span>SINPE Móvil</span>
-                </label>
-
-                <label class="payment-option">
-                    <input type="radio"
-                           name="metodoPago"
-                           value="Efectivo" />
-                    <span>Pago en efectivo en el establecimiento</span>
-                </label>
-            </div>
-
-            <div id="sinpeSection">
-                <div class="sinpe-message">
-                    <div class="sinpe-icon" aria-hidden="true">
-                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    <div class="summary-row">
+                        <span>Número de pedido</span>
+                        <strong>@(esPedidoPendiente ? "Se asignará al confirmar" : codigoPedido)</strong>
                     </div>
-                    <div class="sinpe-content">
-                        <span class="sinpe-label">Número para SINPE Móvil</span>
-                        <strong class="sinpe-number">89546434</strong>
 
-                        @if (esPedidoPendiente)
-                        {
-                            <p>
-                                Al confirmar el método de pago se creará el pedido y se generará su código
-                                <strong>PP-0000</strong>. En la siguiente pantalla podrás enviar el comprobante
-                                por WhatsApp con el código correcto.
-                            </p>
-                        }
-                        else
-                        {
-                            <p>
-                                Realizá el pago por el monto total y enviá el comprobante por WhatsApp al mismo número.
-                                Indicá que corresponde al <strong>pedido @codigoPedido</strong>.
-                            </p>
-                            <a href="@whatsappUrl"
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               class="btn-whatsapp">
-                                <i class="fa-brands fa-whatsapp"></i>
-                                Enviar comprobante por WhatsApp
-                            </a>
-                        }
+                    <div class="summary-row">
+                        <span>Producto</span>
+                        <strong>@Model.Producto?.Nombre</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Cantidad</span>
+                        <strong>@Model.Cantidad.ToString("0") kg</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Precio por kg</span>
+                        <strong>₡@Model.Producto?.Precio.ToString("N0")</strong>
+                    </div>
+
+                    <div class="summary-row total-row">
+                        <span>Total</span>
+                        <strong>₡@total.ToString("N0")</strong>
                     </div>
                 </div>
-            </div>
+                <div class="payment-details">
 
-            <div id="cashSection" style="display:none;">
-                <div class="cash-message">
-                    El pago se realizará al retirar el pedido en el establecimiento.
+                    <div class="customer-info">
+                        <div class="input-icon-group">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text"
+                                   id="nombreCompleto"
+                                   class="form-control"
+                                   maxlength="50"
+                                   placeholder="Nombre completo" />
+                        </div>
+
+                        <div class="input-icon-group">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <select class="form-select" id="provincia">
+                                <option value="">--Seleccione la provincia--</option>
+                                <option>San José</option>
+                                <option>Alajuela</option>
+                                <option>Cartago</option>
+                                <option>Heredia</option>
+                                <option>Guanacaste</option>
+                                <option>Puntarenas</option>
+                                <option>Limón</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h4>Forma de pago</h4>
+
+                        <label class="payment-option">
+                            <input type="radio"
+                                   name="metodoPago"
+                                   value="SINPE Móvil"
+                                   checked />
+                            <span>SINPE Móvil</span>
+                        </label>
+
+                        <label class="payment-option">
+                            <input type="radio"
+                                   name="metodoPago"
+                                   value="Efectivo" />
+                            <span>Pago en efectivo en el establecimiento</span>
+                        </label>
+                    </div>
+
+                    <div id="sinpeSection">
+                        <div class="sinpe-message">
+                            <div class="sinpe-icon" aria-hidden="true">
+                                <div class="mobile-colon-icon">
+                                    <i class="fa-solid fa-mobile-screen"></i>
+                                    <span class="colon-symbol">₡</span>
+                                </div>
+                            </div>
+                            <div class="sinpe-content">
+                                <span class="sinpe-label">Número para SINPE Móvil</span>
+                                <strong class="sinpe-number">89546434</strong>
+
+                                @if (esPedidoPendiente)
+                                {
+                                    <p>
+                                        Al confirmar el método de pago se creará el pedido y se generará
+                                        su código <strong>PP-0000</strong>. En la siguiente pantalla podrás enviar el
+                                        comprobante por WhatsApp con el código correcto.
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p>
+                                        Realizá el pago por el monto total y enviá el comprobante por WhatsApp al mismo número.
+                                        Indicá que corresponde al <strong>pedido @codigoPedido</strong>.
+                                    </p>
+                                    <a href="@whatsappUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn-whatsapp">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                        Enviar comprobante por WhatsApp
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="cashSection" style="display:none;">
+                        <div class="cash-message">
+                            El pago se realizará al retirar el pedido en el establecimiento.
+                        </div>
+                    </div>
+
                 </div>
             </div>
+        </form>
 
-            <div class="payment-actions">
-                <button type="submit" class="btn-pay">
-                    @(esPedidoPendiente ? "Confirmar método de pago y crear pedido" : "Confirmar método de pago")
+        <div class="payment-actions">
+            <form asp-action="NoContinuarPago" method="post" class="cancel-payment-form">
+                @if (!esPedidoPendiente)
+                {
+                    <input type="hidden" name="pedidoId" value="@Model.Id" />
+                }
+                <button type="submit" class="btn-cancel">
+                    <i class="fa-solid fa-xmark"></i>
+                    No deseo continuar
                 </button>
-            </div>
-        </form>
+            </form>
 
-        <form asp-action="NoContinuarPago" method="post" class="cancel-payment-form">
-            @if (!esPedidoPendiente)
-            {
-                <input type="hidden" name="pedidoId" value="@Model.Id" />
-            }
-
-            <button type="submit" class="btn-cancel">
-                No deseo continuar
+            <button type="submit" form="paymentForm" class="btn-pay">
+                <i class="fa-solid fa-lock"></i>
+                @(esPedidoPendiente ? "Confirmar método de pago y crear pedido" : "Confirmar método de pago")
             </button>
-        </form>
+        </div>
     </div>
 
     <div id="loadingOverlay">

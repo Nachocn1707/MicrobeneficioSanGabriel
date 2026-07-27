@@ -16,18 +16,18 @@
 
 @section Styles {
 
-    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
 }
 
-<div class="VistaCrear-page">
-    <div class="VistaCrear-top">
-        <div class="VistaCrear-title">
-            <span class="VistaCrear-badge">
+<div class="VistaCreaR-page">
+    <div class="VistaCreaR-top">
+        <div class="VistaCreaR-title">
+            <span class="VistaCreaR-badge">
                 <i class="fa-solid fa-cart-shopping"></i>
                 Gestión de pedidos
             </span>
             <h1>Nuevo pedido</h1>
-            <p>
+            <p id="pago-texto">
                 Registrá pedidos realizados por clientes dentro del sistema del microbeneficio.
             </p>
         </div>
@@ -53,9 +53,9 @@
                     </div>
                 }
 
-                <div class="VistaCrear-section">
+                <div class="VistaCreaR-section">
                     <h5>
-                        <i class="fa-solid fa-cart-shopping"></i>
+                        <i class="fa-solid fa-box-archive"></i>
                         Detalle del pedido
                     </h5>
 
@@ -64,7 +64,7 @@
                             <div class="form-group">
                                 <label asp-for="ClienteNombre" class="form-label">Cliente</label>
                                 <div class="input-modern">
-                                    <i class="fa-solid fa-user"></i>
+                                    <i class="fa-regular fa-user"></i>
                                     <input asp-for="ClienteNombre"
                                            class="form-control"
                                            placeholder="Digite el nombre completo del cliente" />
@@ -94,7 +94,7 @@
                                 {
                                     <div class="input-modern readonly-product">
                                         <i class="fa-solid fa-box"></i>
-                                        <span>@productoNombre</span>
+                                        <span class="product-name">@productoNombre</span>
                                         <input type="hidden" asp-for="ProductoId" />
                                     </div>
                                 }
@@ -118,6 +118,7 @@
                                     <i class="fa-solid fa-weight-scale"></i>
                                     <input asp-for="Cantidad" asp-format="{0:0}" class="form-control"
                                            type="text" inputmode="numeric" pattern="[0-9]+"
+                                           placeholder="Ej: 5"
                                            oninput="this.value=(this.value.match(/\d+/)||[''])[0]" />
                                 </div>
                                 <span asp-validation-for="Cantidad" class="text-danger"></span>
@@ -130,7 +131,7 @@
                                 <div class="form-group">
                                     <label asp-for="FechaPedido" class="form-label">Fecha del pedido</label>
                                     <div class="input-modern">
-                                        <i class="fa-solid fa-calendar"></i>
+                                        <i class="fa-regular fa-calendar-days"></i>
                                         <input asp-for="FechaPedido" type="datetime-local" class="form-control" />
                                     </div>
                                     <span asp-validation-for="FechaPedido" class="text-danger"></span>
@@ -158,28 +159,28 @@
 
                         <div class="col-12">
                             <div class="form-group">
-                                <label asp-for="Observacion" class="form-label">Observación</label>
+                                <label asp-for="Observacion" class="form-label">Observaciones</label>
                                 <div class="input-modern textarea-modern">
-                                    <i class="fa-solid fa-comment"></i>
+                                    <i class="fa-regular fa-comment-dots"></i>
                                     <textarea asp-for="Observacion"
                                               class="form-control"
-                                              rows="2"
-                                              placeholder="Digite alguna observación del pedido"></textarea>
+                                              rows="3"
+                                              placeholder="Escriba alguna indicación o nota especial para el pedido"></textarea>
                                 </div>
                                 <span asp-validation-for="Observacion" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
 
-                <div class="VistaCrear-actions">
+                <div class="VistaCreaR-actions">
                     <a asp-controller="Productos" asp-action="Index" class="btn-cancelar">
                         <i class="fa-solid fa-arrow-left"></i>
                         Volver a la lista
                     </a>
                     <button type="submit" class="btn-crear">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Pagar
+                        <i class="fa-solid fa-credit-card"></i>
+                        Continuar al pago
                     </button>
                 </div>
             </form>
