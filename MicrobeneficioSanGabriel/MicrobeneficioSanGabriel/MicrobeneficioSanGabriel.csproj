@@ -28,4 +28,11 @@
     <Folder Include="wwwroot\img\shared\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Update="Rotativa\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>

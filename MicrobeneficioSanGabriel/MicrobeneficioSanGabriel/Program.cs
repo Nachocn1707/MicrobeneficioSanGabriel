@@ -131,6 +131,26 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
 
-RotativaConfiguration.Setup(app.Environment.ContentRootPath, "Rotativa");
+var rotativaPath = Path.Combine(
+    app.Environment.WebRootPath,
+    "Rotativa");
+
+var wkhtmltopdfPath = Path.Combine(
+    rotativaPath,
+    "wkhtmltopdf.exe");
+
+if (Directory.Exists(rotativaPath) && File.Exists(wkhtmltopdfPath))
+{
+    RotativaConfiguration.Setup(
+        app.Environment.WebRootPath,
+        "Rotativa");
+}
+else
+{
+    app.Logger.LogWarning(
+        "Rotativa no fue configurada porque no se encontró {WkhtmltopdfPath}. " +
+        "El sitio continuará funcionando, pero la generación de PDF no estará disponible.",
+        wkhtmltopdfPath);
+}
 
 app.Run();
