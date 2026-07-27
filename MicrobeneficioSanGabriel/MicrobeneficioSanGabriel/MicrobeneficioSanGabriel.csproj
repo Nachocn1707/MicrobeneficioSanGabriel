@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.25" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+    <PackageReference Include="QuestPDF" Version="2026.7.1" />
     <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
   </ItemGroup>
 
@@ -26,23 +27,6 @@
     <Folder Include="wwwroot\img\dashboard\" />
     <Folder Include="wwwroot\img\modules\" />
     <Folder Include="wwwroot\img\shared\" />
-    <Folder Include="wwwroot\Rotativa\" />
   </ItemGroup>
-
-	<ItemGroup>
-		<None Update="Rotativa\**\*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="wwwroot\Rotativa\wkhtmltopdf.exe">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="wwwroot\Rotativa\wkhtmltox-0.12.6-1.mxe-cross-win64.7z">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	</ItemGroup>
 
 </Project>

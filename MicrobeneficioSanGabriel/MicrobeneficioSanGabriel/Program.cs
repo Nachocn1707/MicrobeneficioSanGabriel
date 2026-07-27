@@ -5,6 +5,7 @@ using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,7 +132,6 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
 
-var wwwrootPath = app.Environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-RotativaConfiguration.Setup(wwwrootPath, "Rotativa");
+QuestPDF.Settings.License = LicenseType.Community;
 
 app.Run();

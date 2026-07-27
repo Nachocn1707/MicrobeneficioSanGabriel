@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Constants;
 using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.Models;
-using Rotativa.AspNetCore;
 using MicrobeneficioSanGabriel.Services;
+using QuestPDF.Fluent;
+using System.IO;
 
 namespace MicrobeneficioSanGabriel.Controllers
 {
@@ -14,11 +15,13 @@ namespace MicrobeneficioSanGabriel.Controllers
     public class FacturasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly decimal _porcentajeIva;
 
-        public FacturasController(ApplicationDbContext context, IConfiguration configuration)
+        public FacturasController(ApplicationDbContext context, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
             _porcentajeIva = configuration.GetValue<decimal?>("Facturacion:PorcentajeIVA") ?? 13m;
         }
 
@@ -314,11 +317,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
-            return new ViewAsPdf("FacturaPDF", factura)
-            {
-                FileName = $"Factura_{factura.Id}.pdf",
-                PageSize = Rotativa.AspNetCore.Options.Size.A4
-            };
+            var logoPath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "logo.png");
+            var document = new FacturaDocument(factura, logoPath);
+            byte[] pdfBytes = document.GeneratePdf();
+
+            return File(pdfBytes, "application/pdf", $"Factura_{factura.Id}.pdf");
         }
 
         private void CargarPedidos(int? pedidoSeleccionado = null)
