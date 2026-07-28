@@ -16,24 +16,28 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<section class="sg-page-head">
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle financiero</h1>
         <p>Consultá la información registrada para este movimiento financiero.</p>
     </div>
-    <div class="sg-actions">
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Registro #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-financiero">
-    <div class="sg-visual-hero-content">
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
         <h1>@Model.Tipo: ₡ @Model.Monto.ToString("N2")</h1>
-        <div class="sg-visual-line"></div>
-        <span class="sg-visual-badge"><i class="fa-solid fa-sack-dollar"></i> Registro financiero</span>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-sack-dollar"></i> Registro financiero
+        </span>
     </div>
 </section>
 
@@ -42,7 +46,6 @@
 
         <div class="EstiloDetalle-premium-header">
             <h2>Información general</h2>
-            <span class="movimiento-badge-top">Registro #@Model.Id</span>
         </div>
 
         <div class="EstiloDetalle-premium-body">
@@ -50,14 +53,18 @@
             <div class="EstiloDetalle-detail-grid">
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">FECHA</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.Fecha.ToString("dd/MM/yyyy")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">TIPO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-arrows-left-right"></i> TIPO
+                    </span>
                     <div>
                         <span class="@estadoClase">
                             @Model.Tipo
@@ -66,7 +73,9 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CATEGORÍA</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-layer-group"></i> CATEGORÍA
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Categoria)
                             ? "Sin categoría"
@@ -75,14 +84,18 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">MONTO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-coins"></i> MONTO
+                    </span>
                     <span class="@montoClase">
                         ₡ @Model.Monto.ToString("N2")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item full">
-                    <span class="EstiloDetalle-detail-label">DESCRIPCIÓN</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-file-lines"></i> DESCRIPCIÓN
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Descripcion)
                             ? "Sin descripción"
@@ -91,7 +104,9 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item full">
-                    <span class="EstiloDetalle-detail-label">OBSERVACIÓN</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Observacion)
                             ? "Sin observación"

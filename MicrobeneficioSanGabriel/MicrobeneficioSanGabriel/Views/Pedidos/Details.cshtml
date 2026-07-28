@@ -25,24 +25,28 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<section class="sg-page-head">
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle del pedido</h1>
         <p>Consultá la información registrada para este pedido.</p>
     </div>
-    <div class="sg-actions">
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Pedido #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-pedidos">
-    <div class="sg-visual-hero-content">
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
         <h1>Cliente: @Model.ClienteNombre</h1>
-        <div class="sg-visual-line"></div>
-        <span class="sg-visual-badge"><i class="fa-solid fa-mug-hot"></i> Seguimiento de pedidos</span>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-mug-hot"></i> Seguimiento de pedidos
+        </span>
     </div>
 </section>
 
@@ -51,7 +55,6 @@
 
         <div class="EstiloDetalle-premium-header">
             <h2>Información general</h2>
-            <span class="movimiento-badge-top">Pedido #@Model.Id</span>
         </div>
 
         <div class="EstiloDetalle-premium-body">
@@ -59,14 +62,18 @@
             <div class="EstiloDetalle-detail-grid">
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CLIENTE</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user"></i> CLIENTE
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.ClienteNombre
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">TELÉFONO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-phone"></i> TELÉFONO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.ClienteTelefono)
                             ? "Sin teléfono"
@@ -75,28 +82,36 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">PRODUCTO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-tag"></i> PRODUCTO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(Model.ProductoNombreMostrar)
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CANTIDAD</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-weight-hanging"></i> CANTIDAD
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.Cantidad kg
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">FECHA DEL PEDIDO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA DEL PEDIDO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.FechaPedido.ToString("dd/MM/yyyy hh:mm tt")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">ESTADO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-circle-check"></i> ESTADO
+                    </span>
                     <div>
                         <span class="@estadoClase">
                             @Model.Estado
@@ -105,13 +120,16 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item full">
-                    <span class="EstiloDetalle-detail-label">OBSERVACIÓN</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Observacion)
                             ? "Sin observación"
                             : Model.Observacion)
                     </span>
                 </div>
+
             </div>
 
             <div class="EstiloDetalle-actions">

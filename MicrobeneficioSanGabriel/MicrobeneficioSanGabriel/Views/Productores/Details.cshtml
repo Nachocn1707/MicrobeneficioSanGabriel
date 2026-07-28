@@ -1,8 +1,97 @@
 @model MicrobeneficioSanGabriel.Models.Productor
+
 @{
     ViewData["Title"] = "Detalle del productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="sg-visual-hero sg-hero-productores"><div class="sg-visual-hero-content"><span class="sg-visual-badge"><i class="fa-solid fa-seedling"></i> Productor</span><h1>@Model.Nombre</h1><div class="sg-visual-line"></div><p>@Model.UbicacionCompleta</p></div></div>
-<div class="sg-card mb-4"><div class="row g-4"><div class="col-md-4"><small class="text-muted">Cédula</small><h5>@Model.Cedula</h5></div><div class="col-md-4"><small class="text-muted">Teléfono</small><h5>@Model.Telefono</h5></div><div class="col-md-4"><small class="text-muted">Correo</small><h5>@(Model.Correo ?? "Sin correo")</h5></div><div class="col-md-4"><small class="text-muted">Provincia</small><p>@Model.Provincia</p></div><div class="col-md-4"><small class="text-muted">Cantón</small><p>@Model.Canton</p></div><div class="col-md-4"><small class="text-muted">Distrito</small><p>@Model.Distrito</p></div><div class="col-12"><small class="text-muted">Dirección exacta</small><p>@Model.DireccionExacta</p></div></div></div>
-<div class="sg-card"><div class="d-flex justify-content-between align-items-center mb-3"><h3>Fincas asociadas</h3><a asp-controller="Fincas" asp-action="Create" asp-route-productorId="@Model.Id" class="btn btn-success btn-sm">Agregar finca</a></div>@if(Model.Fincas.Any()){<div class="row g-3">@foreach(var finca in Model.Fincas){<div class="col-md-6"><div class="border rounded-4 p-3"><strong>@finca.Nombre</strong><p class="text-muted mb-2">@finca.UbicacionCompleta</p><a asp-controller="Fincas" asp-action="Details" asp-route-id="@finca.Id">Ver detalle</a></div></div>}</div>}else{<div class="alert alert-info">Este productor todavía no tiene fincas registradas.</div>}<div class="d-flex justify-content-end gap-2 mt-4"><a asp-action="Index" class="btn btn-outline-secondary">Volver</a>@if(User.IsInRole("Administrador")){<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>}</div></div>
+
+<div class="sg-visual-hero sg-hero-productores">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-seedling"></i> Productor
+        </span>
+        <h1>@Model.Nombre</h1>
+        <div class="sg-visual-line"></div>
+        <p>@Model.UbicacionCompleta</p>
+    </div>
+</div>
+
+<div class="sg-card mb-4">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <small class="text-muted">Cédula</small>
+            <h5>@Model.Cedula</h5>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Teléfono</small>
+            <h5>@Model.Telefono</h5>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Correo</small>
+            <h5>@(Model.Correo ?? "Sin correo")</h5>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Provincia</small>
+            <p>@Model.Provincia</p>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Cantón</small>
+            <p>@Model.Canton</p>
+        </div>
+        <div class="col-md-4">
+            <small class="text-muted">Distrito</small>
+            <p>@Model.Distrito</p>
+        </div>
+        <div class="col-12">
+            <small class="text-muted">Dirección exacta</small>
+            <p>@Model.DireccionExacta</p>
+        </div>
+    </div>
+</div>
+
+<div class="sg-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Fincas asociadas</h3>
+        <a asp-controller="Fincas"
+           asp-action="Create"
+           asp-route-productorId="@Model.Id"
+           class="btn btn-success btn-sm">
+            Agregar finca
+        </a>
+    </div>
+
+    @if (Model.Fincas.Any())
+    {
+        <div class="row g-3">
+            @foreach (var finca in Model.Fincas)
+            {
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3">
+                        <strong>@finca.Nombre</strong>
+                        <p class="text-muted mb-2">@finca.UbicacionCompleta</p>
+                        <a asp-controller="Fincas"
+                           asp-action="Details"
+                           asp-route-id="@finca.Id">
+                            Ver detalle
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Este productor todavía no tiene fincas registradas.
+        </div>
+    }
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+
+        @if (User.IsInRole("Administrador"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+        }
+    </div>
+</div>

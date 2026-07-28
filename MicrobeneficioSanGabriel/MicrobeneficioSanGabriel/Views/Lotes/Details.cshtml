@@ -1,69 +1,134 @@
 @model MicrobeneficioSanGabriel.Models.Lote
+
 @{
-    ViewData["Title"] = "Detalle del lote";
+    ViewData["Title"] = "Detalle del Lote";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    string estadoClase = Model.Estado switch
+    {
+        "Recibido" or "Completado" => "movimiento-estado movimiento-entrada",
+        "En Proceso" => "movimiento-estado movimiento-neutral",
+        "Cancelado" or "Anulado" => "movimiento-estado movimiento-salida",
+        _ => "movimiento-estado movimiento-neutral"
+    };
 }
 
-<section class="sg-page-head">
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
+
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle del lote</h1>
-        <p>Consultá la información del lote </p>
+        <p>Consultá la información del lote.</p>
     </div>
-    <div class="sg-actions">
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Lote #@Model.CodigoLote
+        </span>
     </div>
 </section>
 
-<div class="sg-visual-hero sg-hero-lotes">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge">
-            <i class="fa-solid fa-barcode"></i> Trazabilidad
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
+        <h1>Lote: @Model.CodigoLote</h1>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-barcode"></i> @(Model.Productor?.Nombre ?? "Sin Productor") · @(Model.Finca?.Nombre ?? "Sin Finca")
         </span>
-        <h1>@Model.CodigoLote</h1>
-        <div class="sg-visual-line"></div>
-        <p>@Model.Productor?.Nombre · @Model.Finca?.Nombre</p>
     </div>
-</div>
+</section>
 
-<div class="sg-card">
-    <div class="row g-4">
-        <div class="col-md-4">
-            <small class="text-muted">Productor</small>
-            <h5>@Model.Productor?.Nombre</h5>
+<div class="EstiloDetalle-detalle-page">
+    <div class="EstiloDetalle-premium-card">
+
+        <div class="EstiloDetalle-premium-header">
+            <h2>Información general</h2>
         </div>
 
-        <div class="col-md-4">
-            <small class="text-muted">Finca</small>
-            <h5>@(Model.Finca?.Nombre ?? "Sin finca asociada")</h5>
+        <div class="EstiloDetalle-premium-body">
+
+            <div class="EstiloDetalle-detail-grid">
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user-gear"></i> PRODUCTOR
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(Model.Productor?.Nombre ?? "No asignado")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-mountain-sun"></i> FINCA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(Model.Finca?.Nombre ?? "Sin finca asociada")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-weight-hanging"></i> PESO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.PesoKg.ToString("N2") kg
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA DE RECEPCIÓN
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.FechaRecepcion.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-circle-check"></i> ESTADO
+                    </span>
+                    <div>
+                        <span class="@estadoClase">
+                            @Model.Estado
+                        </span>
+                    </div>
+                </div>
+
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.Observacion)
+                            ? "Sin observación"
+                            : Model.Observacion)
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index" class="btn-EstiloDetalle btn-EstiloDetalle-primary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver
+                </a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn-EstiloDetalle btn-EstiloDetalle-warning">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Editar
+                    </a>
+                }
+
+            </div>
+
         </div>
-
-        <div class="col-md-4">
-            <small class="text-muted">Peso</small>
-            <h5>@Model.PesoKg.ToString("N2") kg</h5>
-        </div>
-
-        <div class="col-md-4">
-            <small class="text-muted">Fecha de recepción</small>
-            <p>@Model.FechaRecepcion.ToString("dd/MM/yyyy HH:mm")</p>
-        </div>
-
-        <div class="col-md-4">
-            <small class="text-muted">Estado</small>
-            <p>@Model.Estado</p>
-        </div>
-
-        <div class="col-12">
-            <small class="text-muted">Observación</small>
-            <p>@(Model.Observacion ?? "Sin observación")</p>
-        </div>
-    </div>
-
-    <!-- Acciones / Botones -->
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-
-        @if (User.IsInRole("Administrador"))
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
-        }
     </div>
 </div>

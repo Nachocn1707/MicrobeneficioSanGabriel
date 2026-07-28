@@ -1,7 +1,7 @@
 @model MicrobeneficioSanGabriel.Models.Produccion
 
 @{
-    ViewData["Title"] = "Detalle de producción";
+    ViewData["Title"] = "Detalle de Producción";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var loteCodigo = Model.Lote?.CodigoLote ?? $"LOTE-{Model.LoteId:0000}";
@@ -12,111 +12,176 @@
         ? Math.Round((Model.CantidadResultanteKg / Model.CantidadProcesadaKg) * 100, 2)
         : 0;
 
-    string EstadoClase(string? estado)
+    string estadoClase = Model.Estado switch
     {
-        estado ??= string.Empty;
-        if (estado.Contains("Complet", StringComparison.OrdinalIgnoreCase)) return string.Empty;
-        if (estado.Contains("Cancel", StringComparison.OrdinalIgnoreCase)) return "brown";
-        return "gold";
-    }
+        "Completado" or "Completada" => "movimiento-estado movimiento-entrada",
+        "En Proceso" or "Pendiente" => "movimiento-estado movimiento-neutral",
+        "Cancelado" or "Anulado" => "movimiento-estado movimiento-salida",
+        _ => "movimiento-estado movimiento-neutral"
+    };
 }
 
-<section class="sg-page-head">
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
+
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle de producción</h1>
         <p>Consulta el proceso aplicado al lote, cantidades procesadas y producto resultante.</p>
     </div>
-    <div class="sg-actions">
-        <span class="sg-badge @EstadoClase(Model.Estado)">@Model.Estado</span>
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Producción #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-produccion">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-industry"></i> Proceso de producción</span>
-        <h1>@loteCodigo</h1>
-        <div class="sg-visual-line"></div>
-        <p>@Model.TipoProceso · @producto</p>
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
+        <h1>Lote: @loteCodigo</h1>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-industry"></i> @Model.TipoProceso · @producto
+        </span>
     </div>
 </section>
 
-<section class="sg-kpi-grid mb-3">
-    <article class="sg-card sg-kpi">
-        <span class="sg-icon green"><i class="fa-solid fa-weight-scale"></i></span>
-        <div>
-            <span>Cantidad procesada</span>
-            <strong>@Model.CantidadProcesadaKg.ToString("N2") kg</strong>
-            <div class="sg-trend">Materia prima del lote</div>
-        </div>
-    </article>
-    <article class="sg-card sg-kpi">
-        <span class="sg-icon gold"><i class="fa-solid fa-scale-balanced"></i></span>
-        <div>
-            <span>Cantidad resultante</span>
-            <strong>@Model.CantidadResultanteKg.ToString("N2") kg</strong>
-            <div class="sg-trend warn">Resultado del proceso</div>
-        </div>
-    </article>
-    <article class="sg-card sg-kpi">
-        <span class="sg-icon green"><i class="fa-solid fa-chart-simple"></i></span>
-        <div>
-            <span>Rendimiento</span>
-            <strong>@rendimiento%</strong>
-            <div class="sg-trend">Relación resultado / procesado</div>
-        </div>
-    </article>
-    <article class="sg-card sg-kpi">
-        <span class="sg-icon brown"><i class="fa-solid fa-calendar-days"></i></span>
-        <div>
-            <span>Fecha de producción</span>
-            <strong>@Model.FechaProduccion.ToString("dd/MM/yyyy")</strong>
-            <div class="sg-trend">Registro operativo</div>
-        </div>
-    </article>
-</section>
+<div class="EstiloDetalle-detalle-page">
+    <div class="EstiloDetalle-premium-card">
 
-<section class="sg-card sg-panel">
-    <div class="sg-panel-head">
-        <h3>Información general</h3>
-        <span class="sg-badge">Producción #@Model.Id</span>
-    </div>
+        <div class="EstiloDetalle-premium-header">
+            <h2>Información general</h2>
+        </div>
 
-    <div class="row g-4 mt-1">
-        <div class="col-md-4">
-            <small class="text-muted">Lote</small>
-            <h5>@loteCodigo</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Productor</small>
-            <h5>@productor</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Finca</small>
-            <h5>@finca</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Tipo de proceso</small>
-            <p class="fw-bold mb-0">@Model.TipoProceso</p>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Producto resultante</small>
-            <p class="fw-bold mb-0">@producto</p>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Estado</small>
-            <p class="mb-0"><span class="sg-badge @EstadoClase(Model.Estado)">@Model.Estado</span></p>
-        </div>
-        <div class="col-12">
-            <small class="text-muted">Observación</small>
-            <p class="mb-0">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación registrada." : Model.Observacion)</p>
-        </div>
-    </div>
+        <div class="EstiloDetalle-premium-body">
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-arrow-left"></i>Volver</a>
-        @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="sg-btn gold"><i class="fa-solid fa-pen"></i>Editar</a>
-        }
+            <div class="EstiloDetalle-detail-grid">
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-barcode"></i> LOTE
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @loteCodigo
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user-gear"></i> PRODUCTOR
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @productor
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-mountain-sun"></i> FINCA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @finca
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-gears"></i> TIPO DE PROCESO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.TipoProceso
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-box-open"></i> PRODUCTO RESULTANTE
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @producto
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-circle-check"></i> ESTADO
+                    </span>
+                    <div>
+                        <span class="@estadoClase">
+                            @Model.Estado
+                        </span>
+                    </div>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-weight-scale"></i> CANTIDAD PROCESADA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.CantidadProcesadaKg.ToString("N2") kg
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-scale-balanced"></i> CANTIDAD RESULTANTE
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.CantidadResultanteKg.ToString("N2") kg
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-chart-simple"></i> RENDIMIENTO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @rendimiento%
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA DE PRODUCCIÓN
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.FechaProduccion.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.Observacion)
+                            ? "Sin observación registrada."
+                            : Model.Observacion)
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index" class="btn-EstiloDetalle btn-EstiloDetalle-primary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver
+                </a>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn-EstiloDetalle btn-EstiloDetalle-warning">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Editar
+                    </a>
+                }
+
+            </div>
+
+        </div>
     </div>
-</section>
+</div>

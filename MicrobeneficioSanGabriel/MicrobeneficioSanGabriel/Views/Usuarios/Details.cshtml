@@ -15,24 +15,28 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<section class="sg-page-head">
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle de usuario</h1>
         <p>Consultá la información registrada para este usuario.</p>
     </div>
-    <div class="sg-actions">
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Usuario #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-usuarios">
-    <div class="sg-visual-hero-content">
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
         <h1>@Model.NombreCompleto</h1>
-        <div class="sg-visual-line"></div>
-        <span class="sg-visual-badge"><i class="fa-solid fa-user"></i> Usuario del sistema</span>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-user"></i> Usuario del sistema
+        </span>
     </div>
 </section>
 
@@ -41,7 +45,6 @@
 
         <div class="EstiloDetalle-premium-header">
             <h2>Información general</h2>
-            <span class="movimiento-badge-top">Usuario #@Model.Id</span>
         </div>
 
         <div class="EstiloDetalle-premium-body">
@@ -49,7 +52,9 @@
             <div class="EstiloDetalle-detail-grid">
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">NOMBRE</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-id-card"></i> NOMBRE
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Nombre)
                             ? "Sin nombre"
@@ -58,7 +63,9 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">APELLIDOS</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-signature"></i> APELLIDOS
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Apellidos)
                             ? "Sin apellidos"
@@ -67,14 +74,18 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CORREO ELECTRÓNICO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-envelope"></i> CORREO ELECTRÓNICO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.Email
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">USUARIO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-at"></i> USUARIO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.UserName)
                             ? "Sin usuario"
@@ -83,7 +94,9 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">TELÉFONO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-phone"></i> TELÉFONO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.PhoneNumber)
                             ? "Sin teléfono"
@@ -92,7 +105,9 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">ROL</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user-shield"></i> ROL
+                    </span>
                     <div>
                         <span class="@rolClase">
                             @Model.Rol

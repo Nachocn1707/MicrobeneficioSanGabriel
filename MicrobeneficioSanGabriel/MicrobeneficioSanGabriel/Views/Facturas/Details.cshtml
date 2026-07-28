@@ -23,24 +23,28 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<section class="sg-page-head">
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle de factura</h1>
         <p>Consultá la información registrada para esta factura.</p>
     </div>
-    <div class="sg-actions">
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Factura #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-facturas">
-    <div class="sg-visual-hero-content">
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
         <h1>Cliente: @cliente</h1>
-        <div class="sg-visual-line"></div>
-        <span class="sg-visual-badge"><i class="fa-solid fa-file-invoice-dollar"></i> Comprobante de venta</span>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Comprobante de venta
+        </span>
     </div>
 </section>
 
@@ -49,7 +53,6 @@
 
         <div class="EstiloDetalle-premium-header">
             <h2>Información general</h2>
-            <span class="movimiento-badge-top">Factura #@Model.Id</span>
         </div>
 
         <div class="EstiloDetalle-premium-body">
@@ -57,42 +60,54 @@
             <div class="EstiloDetalle-detail-grid">
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CLIENTE</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user"></i> CLIENTE
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @cliente
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">TELÉFONO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-phone"></i> TELÉFONO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @telefono
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">PRODUCTO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-tag"></i> PRODUCTO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @producto
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CANTIDAD</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-weight-hanging"></i> CANTIDAD
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @cantidad
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">FECHA DE FACTURA</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA DE FACTURA
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.FechaFactura.ToString("dd/MM/yyyy hh:mm tt")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">ESTADO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-circle-check"></i> ESTADO
+                    </span>
                     <div>
                         <span class="@estadoClase">
                             @Model.EstadoPago
@@ -101,32 +116,41 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">SUBTOTAL</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calculator"></i> SUBTOTAL
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         ₡ @Model.Subtotal.ToString("N0")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">IVA</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-percent"></i> IVA
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         ₡ @Model.IVA.ToString("N0")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">TOTAL</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-money-bill-wave"></i> TOTAL
+                    </span>
                     <span class="EstiloDetalle-detail-value EstiloDetalle-detail-value-total">
                         ₡ @Model.Total.ToString("N0")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item full">
-                    <span class="EstiloDetalle-detail-label">OBSERVACIÓN</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @observacion
                     </span>
                 </div>
+
             </div>
 
             <div class="EstiloDetalle-actions">

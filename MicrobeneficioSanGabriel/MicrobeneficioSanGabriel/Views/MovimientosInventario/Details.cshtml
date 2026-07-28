@@ -6,7 +6,6 @@
 
     var producto = Model.Producto?.Categoria;
 
-
     string tipoClase = Model.TipoMovimiento switch
     {
         "Entrada" => "movimiento-estado movimiento-entrada",
@@ -16,24 +15,29 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<section class="sg-page-head">
+
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle del inventario</h1>
         <p>Consultá la información del inventario.</p>
     </div>
-    <div class="sg-actions">
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Movimiento #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-inventario">
-    <div class="sg-visual-hero-content">
-        <h1>Categoria: @producto</h1>
-        <div class="sg-visual-line"></div>
-        <span class="sg-visual-badge"><i class="fa-solid fa-boxes-stacked"></i> Seguimiento de inventario</span>
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
+        <h1>Categoría: @producto</h1>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-boxes-stacked"></i> Seguimiento de inventario
+        </span>
     </div>
 </section>
 
@@ -42,7 +46,6 @@
 
         <div class="EstiloDetalle-premium-header">
             <h2>Información general</h2>
-            <span class="movimiento-badge-top">Movimiento #@Model.Id</span>
         </div>
 
         <div class="EstiloDetalle-premium-body">
@@ -50,14 +53,18 @@
             <div class="EstiloDetalle-detail-grid">
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">PRODUCTO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-tag"></i> PRODUCTO
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(Model.ProductoNombreMostrar)
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">TIPO MOVIMIENTO</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i> TIPO MOVIMIENTO
+                    </span>
                     <div>
                         <span class="@tipoClase">
                             @Model.TipoMovimiento
@@ -66,33 +73,39 @@
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">CANTIDAD</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-weight-hanging"></i> CANTIDAD
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.Cantidad kg
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item">
-                    <span class="EstiloDetalle-detail-label">FECHA</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")
                     </span>
                 </div>
 
                 <div class="EstiloDetalle-detail-item full">
-                    <span class="EstiloDetalle-detail-label">OBSERVACIÓN</span>
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
                     <span class="EstiloDetalle-detail-value">
                         @(string.IsNullOrWhiteSpace(Model.Observacion)
                             ? "Sin observación"
                             : Model.Observacion)
                     </span>
                 </div>
+
             </div>
 
             <div class="EstiloDetalle-actions">
 
-                <a asp-action="Index"
-                   class="btn-EstiloDetalle btn-EstiloDetalle-primary">
+                <a asp-action="Index" class="btn-EstiloDetalle btn-EstiloDetalle-primary">
                     <i class="fa-solid fa-arrow-left"></i>
                     Volver
                 </a>

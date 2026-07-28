@@ -1,7 +1,7 @@
 @model MicrobeneficioSanGabriel.Models.Trazabilidad
 
 @{
-    ViewData["Title"] = "Detalle de trazabilidad";
+    ViewData["Title"] = "Detalle de Trazabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var loteCodigo = Model.Lote?.CodigoLote ?? $"LOTE-{Model.LoteId:0000}";
@@ -11,77 +11,159 @@
         ? $"Producción #{Model.Produccion.Id} · {Model.Produccion.TipoProceso}"
         : $"Producción #{Model.ProduccionId}";
     var producto = Model.Produccion?.ProductoNombreMostrar ?? "Sin producto resultante";
+
+    string etapaClase = Model.Etapa switch
+    {
+        "Completado" or "Finalizado" => "movimiento-estado movimiento-entrada",
+        "En Proceso" or "Procesamiento" or "Recepción" => "movimiento-estado movimiento-neutral",
+        "Detenido" or "Cancelado" => "movimiento-estado movimiento-salida",
+        _ => "movimiento-estado movimiento-neutral"
+    };
 }
 
-<section class="sg-page-head">
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
+
+<section class="Detalle-page-head">
     <div>
         <h1>Detalle de trazabilidad</h1>
         <p>Consulta el seguimiento del lote, su etapa actual y la producción asociada.</p>
     </div>
-    <div class="sg-actions">
-        <span class="sg-badge gold">@Model.Etapa</span>
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            Registro #@Model.Id
+        </span>
     </div>
 </section>
 
-<section class="sg-visual-hero sg-hero-trazabilidad">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-route"></i> Seguimiento del café</span>
-        <h1>@loteCodigo</h1>
-        <div class="sg-visual-line"></div>
-        <p>@productor · @finca</p>
+<section class="Detalle-visual-hero Detalle-hero-inventario">
+    <div class="Detalle-visual-hero-content">
+        <h1>Lote: @loteCodigo</h1>
+        <div class="Detalle-visual-line"></div>
+        <span class="Detalle-visual-badge">
+            <i class="fa-solid fa-route"></i> @productor · @finca
+        </span>
     </div>
 </section>
 
-<section class="sg-card sg-panel">
-    <div class="sg-panel-head">
-        <h3>Información del registro</h3>
-        <span class="sg-badge">Registro #@Model.Id</span>
-    </div>
+<div class="EstiloDetalle-detalle-page">
+    <div class="EstiloDetalle-premium-card">
 
-    <div class="row g-4 mt-1">
-        <div class="col-md-4">
-            <small class="text-muted">Código de lote</small>
-            <h5>@loteCodigo</h5>
+        <div class="EstiloDetalle-premium-header">
+            <h2>Información del registro</h2>
         </div>
-        <div class="col-md-4">
-            <small class="text-muted">Productor</small>
-            <h5>@productor</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Finca</small>
-            <h5>@finca</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Etapa</small>
-            <p class="mb-0"><span class="sg-badge gold">@Model.Etapa</span></p>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Fecha de registro</small>
-            <p class="fw-bold mb-0">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Responsable</small>
-            <p class="fw-bold mb-0">@(string.IsNullOrWhiteSpace(Model.Responsable) ? "Sin responsable registrado" : Model.Responsable)</p>
-        </div>
-        <div class="col-md-6">
-            <small class="text-muted">Producción asociada</small>
-            <p class="fw-bold mb-0">@produccionTexto</p>
-        </div>
-        <div class="col-md-6">
-            <small class="text-muted">Producto resultante</small>
-            <p class="fw-bold mb-0">@producto</p>
-        </div>
-        <div class="col-12">
-            <small class="text-muted">Observación</small>
-            <p class="mb-0">@(string.IsNullOrWhiteSpace(Model.Observacion) ? "Sin observación registrada." : Model.Observacion)</p>
-        </div>
-    </div>
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-arrow-left"></i>Volver</a>
-        @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="sg-btn gold"><i class="fa-solid fa-pen"></i>Editar</a>
-        }
+        <div class="EstiloDetalle-premium-body">
+
+            <div class="EstiloDetalle-detail-grid">
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-barcode"></i> CÓDIGO DE LOTE
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @loteCodigo
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user-gear"></i> PRODUCTOR
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @productor
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-mountain-sun"></i> FINCA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @finca
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-list-check"></i> ETAPA
+                    </span>
+                    <div>
+                        <span class="@etapaClase">
+                            @Model.Etapa
+                        </span>
+                    </div>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-calendar-days"></i> FECHA DE REGISTRO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user-check"></i> RESPONSABLE
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.Responsable) ? "Sin responsable registrado" : Model.Responsable)
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-industry"></i> PRODUCCIÓN ASOCIADA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @produccionTexto
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-box-open"></i> PRODUCTO RESULTANTE
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @producto
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.Observacion)
+                            ? "Sin observación registrada."
+                            : Model.Observacion)
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="EstiloDetalle-actions">
+
+                <a asp-action="Index" class="btn-EstiloDetalle btn-EstiloDetalle-primary">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver
+                </a>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+                {
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn-EstiloDetalle btn-EstiloDetalle-warning">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Editar
+                    </a>
+                }
+
+            </div>
+
+        </div>
     </div>
-</section>
+</div>

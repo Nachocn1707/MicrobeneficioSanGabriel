@@ -3,14 +3,14 @@
     gap: 22px;
 }
 
-.ia-report-header h1 {
+.Detalle-page-head h1 {
     color: #293F25;
     font-size: 34px;
     font-weight: 950;
     margin: 0;
 }
 
-.ia-report-header p {
+.Detalle-page-head p {
     color: #666859;
     font-weight: 600;
     margin: 6px 0 0;
@@ -136,8 +136,8 @@
 }
 
 .btn-ia-primary {
-    background: #4F3514;
-    color: #F4F7F1;
+    background: #3a5333 !important;
+    color: #F4F7F1 !important;
     border: 1px solid #4F3514;
     border-radius: 10px;
     padding: 10px 18px;
@@ -155,6 +155,70 @@
     text-decoration: none;
 }
 
+.sg-report-progress {
+    height: 28px;
+    border-radius: 999px;
+    background: #f1e3cf;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(65, 39, 20, .12);
+}
+
+    .sg-report-progress.lg {
+        height: 35px;
+    }
+
+.sg-report-bar {
+    height: 100%;
+    min-width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--bar-1), var(--bar-2));
+    color: #fff;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px rgba(91, 54, 24, .18);
+}
+
+    .sg-report-bar.ventas {
+        --bar-1: #5E8450;
+        --bar-2: #A15F26;
+    }
+
+.sg-stock-bar.coffee {
+    --bar-1: #9f5c22;
+    --bar-2: #c47b32;
+}
+
+.sg-stock-bar.green {
+    --bar-1: #5E8450;
+    --bar-2: #7EA36A;
+}
+
+.sg-stock-bar.gold {
+    --bar-1: #D89A25;
+    --bar-2: #E8B750;
+}
+
+.sg-stock-bar.tan {
+    --bar-1: #B58B51;
+    --bar-2: #D7B97F;
+}
+
+.sg-stock-bar.brown {
+    --bar-1: #4A2A18;
+    --bar-2: #7B4A2D;
+}
+
+.sg-stock-bar.sage {
+    --bar-1: #758A61;
+    --bar-2: #9BAC82;
+}
+
+.sg-report-stock-value {
+    color: #8f531c !important;
+}
+
 @media (max-width: 1000px) {
     .ia-grid,
     .ia-two-columns {
@@ -162,96 +226,6 @@
     }
 }
 
-/* ===========================================================
-   Modo oscuro
-   =========================================================== */
-
-html.dark .ia-report-header h1 {
-    color: #f1e6d8;
-}
-
-html.dark .ia-report-header p {
-    color: #b4a08a;
-}
-
-html.dark .ia-card {
-    background: #2c2116;
-    border-color: #4a3826;
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
-}
-
-    html.dark .ia-card h2 {
-        color: #f1e6d8;
-    }
-
-html.dark .ia-summary {
-    border-left-color: #e0ac52;
-    background: #3a2b18;
-}
-
-    html.dark .ia-summary p {
-        color: #f1e6d8;
-    }
-
-html.dark .ia-metric strong {
-    color: #f1e6d8;
-}
-
-html.dark .ia-metric span {
-    color: #b4a08a;
-}
-
-html.dark .ia-list-item {
-    border-color: #4a3826;
-    background: #362a1c;
-}
-
-    html.dark .ia-list-item strong {
-        color: #f1e6d8;
-    }
-
-    html.dark .ia-list-item span {
-        color: #b4a08a;
-    }
-
-html.dark .ia-recommendation {
-    border-color: #4a3826;
-    background: #362a1c;
-}
-
-    html.dark .ia-recommendation i {
-        background: #e0ac52;
-        color: #241a12;
-    }
-
-    html.dark .ia-recommendation h3 {
-        color: #f1e6d8;
-    }
-
-    html.dark .ia-recommendation p {
-        color: #c3ac96;
-    }
-
-html.dark .btn-ia-primary {
-    background: #e0ac52;
-    color: #241a12;
-    border-color: #e0ac52;
-}
-
-    html.dark .btn-ia-primary:hover {
-        background: #f0c078;
-        border-color: #f0c078;
-    }
-
-html.dark .btn-ia-secondary {
-    background: #423114;
-    color: #f0c078;
-    border-color: #5c4726;
-}
-
-    html.dark .btn-ia-secondary:hover {
-        background: #5c4726;
-    }
 
 /* Paleta institucional San Gabriel: verde, café, naranja y blanco */
 .ia-report-page { --ia-green:#293F25; --ia-green-2:#53833B; --ia-brown:#4F3514; --ia-orange:#D4730B; --ia-sage:#8EAA82; --ia-white:#FFFFFF; }
