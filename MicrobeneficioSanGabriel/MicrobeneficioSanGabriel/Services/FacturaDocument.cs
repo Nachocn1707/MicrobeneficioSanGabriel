@@ -1,4 +1,4 @@
-﻿using QuestPDF.Fluent;
+using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using MicrobeneficioSanGabriel.Models;
@@ -126,7 +126,7 @@ namespace MicrobeneficioSanGabriel.Services
                             header.Cell().Background("#1f2937").Border(1).BorderColor("#1f2937").Padding(10).AlignCenter().Text("Subtotal").Bold().FontColor(Colors.White);
                         });
 
-                        var productoNombre = Model.Pedido?.Producto?.Nombre ?? "Sin producto";
+                        var productoNombre = Model.Pedido?.ProductoNombreMostrar ?? "Sin producto";
                         var cantidadStr = Model.Pedido != null ? $"{Model.Pedido.Cantidad} kg" : "0 kg";
                         var subtotalStr = $"₡ {Model.Subtotal:N0}";
 

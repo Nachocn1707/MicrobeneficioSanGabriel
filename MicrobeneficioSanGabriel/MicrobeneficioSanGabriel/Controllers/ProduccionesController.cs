@@ -79,6 +79,23 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             await ValidarLoteYCapacidadAsync(produccion);
 
+            if (produccion.ProductoId.HasValue)
+            {
+                var productoSeleccionado = await _context.Productos
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p => p.Id == produccion.ProductoId.Value);
+
+                if (productoSeleccionado == null)
+                {
+                    ModelState.AddModelError(nameof(Produccion.ProductoId),
+                        "El producto resultante seleccionado no existe.");
+                }
+                else
+                {
+                    produccion.ProductoNombre = productoSeleccionado.Nombre;
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 await using var transaction = await _context.Database.BeginTransactionAsync();
@@ -407,6 +424,17 @@ namespace MicrobeneficioSanGabriel.Controllers
                 : datosNuevos.Observacion.Trim();
             produccionActual.ProductoId = datosNuevos.ProductoId;
 
+            if (datosNuevos.ProductoId.HasValue)
+            {
+                var productoSeleccionado = await _context.Productos.FindAsync(datosNuevos.ProductoId.Value);
+                if (productoSeleccionado == null)
+                {
+                    return "El producto resultante seleccionado no existe.";
+                }
+
+                produccionActual.ProductoNombre = productoSeleccionado.Nombre;
+            }
+
             if (cambiaInventario && produccionActual.Estado == EstadosProduccion.Completado)
             {
                 return await AplicarEntradaProduccionAsync(produccionActual);
@@ -429,11 +457,13 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
 
             var cantidad = produccion.CantidadResultanteKg;
+            produccion.ProductoNombre = producto.Nombre;
             producto.Stock += cantidad;
 
             var movimiento = new MovimientoInventario
             {
                 ProductoId = producto.Id,
+                ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Entrada",
                 Cantidad = cantidad,
                 FechaMovimiento = DateTime.Now,
@@ -457,7 +487,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             var producto = await _context.Productos.FindAsync(produccion.ProductoId.Value);
             if (producto == null)
             {
-                return "No se encontró el producto asociado para ajustar el inventario.";
+                // El catálogo fue eliminado y no queda inventario que revertir.
+                produccion.ProductoId = null;
+                return null;
             }
 
             var cantidad = produccion.CantidadResultanteKg;
@@ -471,6 +503,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context.MovimientosInventario.Add(new MovimientoInventario
             {
                 ProductoId = producto.Id,
+                ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Salida",
                 Cantidad = cantidad,
                 FechaMovimiento = DateTime.Now,

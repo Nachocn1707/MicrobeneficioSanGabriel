@@ -242,7 +242,6 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Where(p => p.Activo)
                 .OrderByDescending(p => p.Stock)
                 .ThenBy(p => p.Nombre)
-                .Take(3)
                 .ToListAsync();
 
             ViewBag.TotalKgDisponibles = await _context.Productos

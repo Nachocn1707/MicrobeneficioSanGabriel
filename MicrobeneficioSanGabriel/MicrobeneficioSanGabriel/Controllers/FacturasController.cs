@@ -69,9 +69,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                     ModelState.AddModelError("", "No se puede facturar un pedido cancelado.");
                 }
 
-                if (pedido.Producto == null)
+                if (pedido.PrecioUnitarioMostrar <= 0)
                 {
-                    ModelState.AddModelError("", "El pedido no tiene un producto válido asociado.");
+                    ModelState.AddModelError("", "El pedido no tiene un precio histórico válido para facturar.");
                 }
 
                 if (await _context.Facturas.AnyAsync(f => f.PedidoId == factura.PedidoId && f.EstadoPago != EstadosPago.Anulada))
@@ -87,7 +87,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 factura.EstadoPago = string.IsNullOrWhiteSpace(pedido!.EstadoPago)
                     ? EstadosPago.Pendiente
                     : pedido.EstadoPago;
-                factura.Subtotal = Math.Round(pedido.Cantidad * pedido.Producto!.Precio, 2, MidpointRounding.AwayFromZero);
+                factura.Subtotal = Math.Round(pedido.Cantidad * pedido.PrecioUnitarioMostrar, 2, MidpointRounding.AwayFromZero);
                 factura.IVA = Math.Round(factura.Subtotal * (_porcentajeIva / 100m), 2, MidpointRounding.AwayFromZero);
                 factura.Total = Math.Round(factura.Subtotal + factura.IVA, 2, MidpointRounding.AwayFromZero);
 
@@ -188,9 +188,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                     ModelState.AddModelError("", "No se puede asociar una factura a un pedido cancelado.");
                 }
 
-                if (pedido.Producto == null)
+                if (pedido.PrecioUnitarioMostrar <= 0)
                 {
-                    ModelState.AddModelError("", "El pedido no tiene un producto válido asociado.");
+                    ModelState.AddModelError("", "El pedido no tiene un precio histórico válido para facturar.");
                 }
 
                 if (await _context.Facturas.AnyAsync(f =>
@@ -212,7 +212,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                     facturaExistente.Observacion = factura.Observacion;
                     facturaExistente.EstadoPago = estadosPermitidos.First(e =>
                         string.Equals(e, factura.EstadoPago, StringComparison.OrdinalIgnoreCase));
-                    facturaExistente.Subtotal = Math.Round(pedido!.Cantidad * pedido.Producto!.Precio, 2, MidpointRounding.AwayFromZero);
+                    facturaExistente.Subtotal = Math.Round(pedido!.Cantidad * pedido.PrecioUnitarioMostrar, 2, MidpointRounding.AwayFromZero);
                     facturaExistente.IVA = Math.Round(facturaExistente.Subtotal * (_porcentajeIva / 100m), 2, MidpointRounding.AwayFromZero);
                     facturaExistente.Total = Math.Round(facturaExistente.Subtotal + facturaExistente.IVA, 2, MidpointRounding.AwayFromZero);
 
@@ -334,7 +334,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             var pedidos = _context.Pedidos
                 .Include(p => p.Producto)
                 .Where(p => p.Estado != EstadosPedido.Cancelado &&
-                            p.Producto != null &&
+                            (p.ProductoId != null || p.PrecioUnitario > 0) &&
                             (!pedidosFacturados.Contains(p.Id) || p.Id == pedidoSeleccionado))
                 .OrderByDescending(p => p.FechaPedido)
                 .AsNoTracking()
@@ -342,7 +342,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Select(p => new
                 {
                     Id = p.Id,
-                    Nombre = $"{p.ClienteNombre} - {p.Producto!.Nombre} - {p.Cantidad} kg"
+                    Nombre = $"{p.ClienteNombre} - {p.ProductoNombreMostrar} - {p.Cantidad} kg"
                 });
 
             ViewBag.PedidoId = new SelectList(

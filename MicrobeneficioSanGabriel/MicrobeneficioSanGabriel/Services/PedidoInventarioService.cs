@@ -61,6 +61,14 @@ namespace MicrobeneficioSanGabriel.Services
                 return "El estado seleccionado no es válido.";
             }
 
+            var productoNuevo = await _context.Productos
+                .FirstOrDefaultAsync(p => p.Id == productoId);
+
+            if (productoNuevo == null)
+            {
+                return "El producto seleccionado no existe.";
+            }
+
             var cambiaDatosInventario = pedido.ProductoId != productoId || pedido.Cantidad != cantidad;
 
             if (pedido.InventarioAplicado && (cambiaDatosInventario || nuevoEstado != EstadosPedido.Completado))
@@ -73,6 +81,8 @@ namespace MicrobeneficioSanGabriel.Services
             }
 
             pedido.ProductoId = productoId;
+            pedido.ProductoNombre = productoNuevo.Nombre;
+            pedido.PrecioUnitario = productoNuevo.Precio;
             pedido.Cantidad = cantidad;
             pedido.Estado = nuevoEstado;
 
@@ -96,12 +106,17 @@ namespace MicrobeneficioSanGabriel.Services
 
         private async Task<string?> AplicarSalidaAsync(Pedido pedido)
         {
+            if (!pedido.ProductoId.HasValue)
+            {
+                return "El producto de este pedido fue eliminado. Seleccione otro producto antes de completarlo.";
+            }
+
             var producto = await _context.Productos
-                .FirstOrDefaultAsync(p => p.Id == pedido.ProductoId);
+                .FirstOrDefaultAsync(p => p.Id == pedido.ProductoId.Value);
 
             if (producto == null)
             {
-                return "El producto seleccionado no existe.";
+                return "El producto seleccionado ya no existe. Seleccione otro producto antes de completar el pedido.";
             }
 
             if (pedido.Cantidad <= 0)
@@ -114,12 +129,19 @@ namespace MicrobeneficioSanGabriel.Services
                 return $"No hay suficiente stock. Disponible: {producto.Stock:N2} kg.";
             }
 
+            pedido.ProductoNombre = producto.Nombre;
+            if (pedido.PrecioUnitario <= 0)
+            {
+                pedido.PrecioUnitario = producto.Precio;
+            }
+
             producto.Stock -= pedido.Cantidad;
             pedido.InventarioAplicado = true;
 
             _context.MovimientosInventario.Add(new MovimientoInventario
             {
                 ProductoId = producto.Id,
+                ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Salida",
                 Cantidad = pedido.Cantidad,
                 FechaMovimiento = DateTime.Now,
@@ -134,12 +156,22 @@ namespace MicrobeneficioSanGabriel.Services
 
         private async Task<string?> RevertirSalidaAsync(Pedido pedido)
         {
+            // Si el producto ya fue eliminado, no existe inventario que devolver.
+            // El pedido y su historial sí pueden continuar gestionándose.
+            if (!pedido.ProductoId.HasValue)
+            {
+                pedido.InventarioAplicado = false;
+                return null;
+            }
+
             var producto = await _context.Productos
-                .FirstOrDefaultAsync(p => p.Id == pedido.ProductoId);
+                .FirstOrDefaultAsync(p => p.Id == pedido.ProductoId.Value);
 
             if (producto == null)
             {
-                return "No se encontró el producto del pedido para devolver el inventario.";
+                pedido.ProductoId = null;
+                pedido.InventarioAplicado = false;
+                return null;
             }
 
             producto.Stock += pedido.Cantidad;
@@ -148,6 +180,7 @@ namespace MicrobeneficioSanGabriel.Services
             _context.MovimientosInventario.Add(new MovimientoInventario
             {
                 ProductoId = producto.Id,
+                ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Entrada",
                 Cantidad = pedido.Cantidad,
                 FechaMovimiento = DateTime.Now,

@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var cliente = Model.Pedido?.ClienteNombre ?? "Sin cliente";
-    var producto = Model.Pedido?.Producto?.Nombre ?? "Sin producto";
+    var producto = Model.Pedido?.ProductoNombreMostrar ?? "Sin producto";
     var cantidad = Model.Pedido != null ? $"{Model.Pedido.Cantidad} kg" : "Sin cantidad";
     var telefono = Model.Pedido?.ClienteTelefono ?? "Sin teléfono";
     var observacion = string.IsNullOrWhiteSpace(Model.Observacion)

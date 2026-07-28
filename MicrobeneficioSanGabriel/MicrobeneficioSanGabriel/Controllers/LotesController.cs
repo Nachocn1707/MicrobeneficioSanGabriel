@@ -301,6 +301,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                     _context.MovimientosInventario.Add(new MovimientoInventario
                     {
                         ProductoId = produccion.ProductoId!.Value,
+                        ProductoNombre = produccion.ProductoNombreMostrar,
                         TipoMovimiento = "Salida",
                         Cantidad = produccion.CantidadResultanteKg,
                         FechaMovimiento = DateTime.Now,

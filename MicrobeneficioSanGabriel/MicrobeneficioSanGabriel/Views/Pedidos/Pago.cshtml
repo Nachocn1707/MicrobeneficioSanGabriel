@@ -70,7 +70,7 @@
 
                     <div class="summary-row">
                         <span>Producto</span>
-                        <strong>@Model.Producto?.Nombre</strong>
+                        <strong>@Model.ProductoNombreMostrar</strong>
                     </div>
 
                     <div class="summary-row">
@@ -80,7 +80,7 @@
 
                     <div class="summary-row">
                         <span>Precio por kg</span>
-                        <strong>₡@Model.Producto?.Precio.ToString("N0")</strong>
+                        <strong>₡@Model.PrecioUnitarioMostrar.ToString("N0")</strong>
                     </div>
 
                     <div class="summary-row total-row">

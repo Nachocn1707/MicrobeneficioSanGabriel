@@ -12,7 +12,7 @@ namespace MicrobeneficioSanGabriel.Models
         [Display(Name = "Lote")]
         public int LoteId { get; set; }
 
-        [ForeignKey("LoteId")]
+        [ForeignKey(nameof(LoteId))]
         public Lote? Lote { get; set; }
 
         [Required(ErrorMessage = "La fecha de producción es obligatoria")]
@@ -44,7 +44,15 @@ namespace MicrobeneficioSanGabriel.Models
         [Display(Name = "Producto resultante")]
         public int? ProductoId { get; set; }
 
-        [ForeignKey("ProductoId")]
+        [ForeignKey(nameof(ProductoId))]
         public Producto? Producto { get; set; }
+
+        [StringLength(100)]
+        public string? ProductoNombre { get; set; }
+
+        [NotMapped]
+        public string ProductoNombreMostrar =>
+            Producto?.Nombre
+            ?? (!string.IsNullOrWhiteSpace(ProductoNombre) ? ProductoNombre : "Sin producto resultante");
     }
 }

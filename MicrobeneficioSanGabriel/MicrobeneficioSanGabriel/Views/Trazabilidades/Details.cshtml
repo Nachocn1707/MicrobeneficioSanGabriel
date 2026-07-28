@@ -10,7 +10,7 @@
     var produccionTexto = Model.Produccion != null
         ? $"Producción #{Model.Produccion.Id} · {Model.Produccion.TipoProceso}"
         : $"Producción #{Model.ProduccionId}";
-    var producto = Model.Produccion?.Producto?.Nombre ?? "Sin producto resultante";
+    var producto = Model.Produccion?.ProductoNombreMostrar ?? "Sin producto resultante";
 }
 
 <section class="sg-page-head">

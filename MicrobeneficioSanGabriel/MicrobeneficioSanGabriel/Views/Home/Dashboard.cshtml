@@ -260,7 +260,7 @@
                     {
                         foreach (var p in pedidos.Take(5))
                         {
-                            <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.Producto?.Nombre ?? "Producto")</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
+                            <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.ProductoNombreMostrar)</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.PrecioUnitarioMostrar) * p.Cantidad).ToString("N0"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
                         }
                     }
                     else

@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.MovimientoInventario
+@model MicrobeneficioSanGabriel.Models.MovimientoInventario
 
 @{
     ViewData["Title"] = "Eliminar movimiento";
@@ -25,7 +25,7 @@
     </h1>
 
     <p>
-        <strong>Producto:</strong> @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")<br />
+        <strong>Producto:</strong> @(Model.ProductoNombreMostrar)<br />
         <strong>Tipo:</strong> <span class="@tipoClase">@Model.TipoMovimiento</span><br />
         <strong>Cantidad:</strong> @Model.Cantidad kg<br />
         <strong>Fecha:</strong> @Model.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")

@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Pedido
+@model MicrobeneficioSanGabriel.Models.Pedido
 
 @{
     ViewData["Title"] = "Cancelar pedido";
@@ -340,7 +340,7 @@
                     </span>
 
                     <span class="pedido-cancel-value">
-                        @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")
+                        @(Model.ProductoNombreMostrar)
                     </span>
                 </div>
 

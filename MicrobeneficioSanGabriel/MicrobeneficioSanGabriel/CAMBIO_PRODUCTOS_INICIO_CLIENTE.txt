@@ -1,0 +1,11 @@
+CAMBIO REALIZADO: PRODUCTOS EN INICIO DEL CLIENTE
+
+Problema:
+La sección "Cafés elegidos para vos" estaba limitada a tres productos en dos lugares:
+1. HomeController.cs usaba Take(3).
+2. ClienteDashboard.cshtml volvía a usar Take(3).
+
+Solución:
+Se eliminaron ambos límites. Ahora la sección muestra todos los productos activos, ordenados de mayor a menor stock y luego por nombre.
+
+No requiere migración de base de datos.

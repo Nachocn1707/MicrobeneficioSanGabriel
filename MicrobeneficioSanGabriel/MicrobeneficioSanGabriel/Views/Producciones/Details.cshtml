@@ -7,7 +7,7 @@
     var loteCodigo = Model.Lote?.CodigoLote ?? $"LOTE-{Model.LoteId:0000}";
     var productor = Model.Lote?.Productor?.Nombre ?? "Sin productor asociado";
     var finca = Model.Lote?.Finca?.Nombre ?? "Sin finca asociada";
-    var producto = Model.Producto?.Nombre ?? "Sin producto resultante";
+    var producto = Model.ProductoNombreMostrar ?? "Sin producto resultante";
     var rendimiento = Model.CantidadProcesadaKg > 0
         ? Math.Round((Model.CantidadResultanteKg / Model.CantidadProcesadaKg) * 100, 2)
         : 0;

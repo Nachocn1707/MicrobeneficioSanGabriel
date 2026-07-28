@@ -314,8 +314,12 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<int>("ProductoId")
+                    b.Property<int?>("ProductoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductoNombre")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TipoMovimiento")
                         .IsRequired()
@@ -407,8 +411,16 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.Property<string>("Observacion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductoId")
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ProductoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductoNombre")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("RowVersion")
                         .IsRequired()
@@ -456,6 +468,10 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     b.Property<int?>("ProductoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProductoNombre")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TipoProceso")
                         .IsRequired()
@@ -852,8 +868,7 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.HasOne("MicrobeneficioSanGabriel.Models.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Producto");
                 });
@@ -879,8 +894,7 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
                     b.HasOne("MicrobeneficioSanGabriel.Models.Producto", "Producto")
                         .WithMany()
                         .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Cliente");
 
@@ -897,7 +911,8 @@ namespace MicrobeneficioSanGabriel.Data.Migrations
 
                     b.HasOne("MicrobeneficioSanGabriel.Models.Producto", "Producto")
                         .WithMany()
-                        .HasForeignKey("ProductoId");
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Lote");
 

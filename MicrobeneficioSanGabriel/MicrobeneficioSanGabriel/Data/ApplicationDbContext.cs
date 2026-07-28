@@ -100,6 +100,42 @@ namespace MicrobeneficioSanGabriel.Data
                 .HasForeignKey(p => p.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Los registros históricos se conservan cuando se elimina un producto.
+            // Estas propiedades deben ser opcionales tanto en SQL Server como en el modelo de EF.
+            builder.Entity<Pedido>()
+                .Property(p => p.ProductoId)
+                .IsRequired(false);
+
+            builder.Entity<MovimientoInventario>()
+                .Property(m => m.ProductoId)
+                .IsRequired(false);
+
+            builder.Entity<Produccion>()
+                .Property(p => p.ProductoId)
+                .IsRequired(false);
+
+            // El nombre y el precio se almacenan como datos históricos en cada entidad.
+            builder.Entity<Pedido>()
+                .HasOne(p => p.Producto)
+                .WithMany()
+                .HasForeignKey(p => p.ProductoId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<MovimientoInventario>()
+                .HasOne(m => m.Producto)
+                .WithMany()
+                .HasForeignKey(m => m.ProductoId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Produccion>()
+                .HasOne(p => p.Producto)
+                .WithMany()
+                .HasForeignKey(p => p.ProductoId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.Entity<Factura>()
                 .HasIndex(f => f.PedidoId)
                 .IsUnique()
@@ -123,6 +159,10 @@ namespace MicrobeneficioSanGabriel.Data
 
             builder.Entity<Pedido>()
                 .Property(p => p.Cantidad)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Pedido>()
+                .Property(p => p.PrecioUnitario)
                 .HasPrecision(18, 2);
 
             builder.Entity<MovimientoInventario>()

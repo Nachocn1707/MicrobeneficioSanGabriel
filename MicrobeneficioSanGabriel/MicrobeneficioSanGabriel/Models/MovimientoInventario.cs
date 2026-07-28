@@ -8,11 +8,22 @@ namespace MicrobeneficioSanGabriel.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Debe seleccionar un producto")]
-        public int ProductoId { get; set; }
+        // Nullable en base de datos para conservar el historial si se elimina el producto.
+        // Debe permanecer nullable en el modelo de EF para que los movimientos
+        // históricos puedan conservarse después de eliminar un producto.
+        // La selección obligatoria se valida en el controlador al crear/editar.
+        public int? ProductoId { get; set; }
 
-        [ForeignKey("ProductoId")]
+        [ForeignKey(nameof(ProductoId))]
         public Producto? Producto { get; set; }
+
+        [StringLength(100)]
+        public string? ProductoNombre { get; set; }
+
+        [NotMapped]
+        public string ProductoNombreMostrar =>
+            Producto?.Nombre
+            ?? (!string.IsNullOrWhiteSpace(ProductoNombre) ? ProductoNombre : "Producto eliminado");
 
         [Required(ErrorMessage = "El tipo de movimiento es obligatorio")]
         [StringLength(20)]
@@ -34,6 +45,5 @@ namespace MicrobeneficioSanGabriel.Models
         public int? OrigenId { get; set; }
 
         public bool EsAutomatico { get; set; }
-
     }
 }

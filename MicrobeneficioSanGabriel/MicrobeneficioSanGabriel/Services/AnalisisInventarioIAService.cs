@@ -23,8 +23,21 @@ namespace MicrobeneficioSanGabriel.Services
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
 
-            var movimientos = await _context.MovimientosInventario
-                .Where(m => m.FechaMovimiento >= fecha45Dias)
+            // Solo se analizan movimientos que todavía pertenecen a productos activos.
+            // Los movimientos históricos cuyo producto fue eliminado conservan su nombre,
+            // pero tienen ProductoId = NULL y no deben materializarse para este análisis.
+            var movimientos = await (
+                from movimiento in _context.MovimientosInventario.AsNoTracking()
+                join producto in _context.Productos.AsNoTracking()
+                    on movimiento.ProductoId equals (int?)producto.Id
+                where movimiento.FechaMovimiento >= fecha45Dias
+                select new
+                {
+                    ProductoId = producto.Id,
+                    movimiento.TipoMovimiento,
+                    movimiento.Cantidad,
+                    movimiento.FechaMovimiento
+                })
                 .ToListAsync();
 
             var alertas = new List<AlertaInventarioIAViewModel>();

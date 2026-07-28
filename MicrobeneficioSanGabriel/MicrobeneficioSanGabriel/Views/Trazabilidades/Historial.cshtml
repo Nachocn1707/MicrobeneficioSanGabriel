@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.ViewModels.TrazabilidadHistorialViewModel
+@model MicrobeneficioSanGabriel.ViewModels.TrazabilidadHistorialViewModel
 
 @{
     ViewData["Title"] = "Historial de trazabilidad";
@@ -736,7 +736,7 @@
                                         </span>
 
                                         <span class="timeline-value">
-                                            @(item.Produccion?.Producto?.Nombre ?? "Sin producto")
+                                            @(item.Produccion?.ProductoNombreMostrar ?? "Sin producto")
                                         </span>
                                     </div>
 

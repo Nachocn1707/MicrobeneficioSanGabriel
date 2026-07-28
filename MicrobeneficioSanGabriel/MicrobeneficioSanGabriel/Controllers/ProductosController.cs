@@ -231,25 +231,58 @@ namespace MicrobeneficioSanGabriel.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var producto = await _context.Productos.FindAsync(id);
-
             if (producto == null) return NotFound();
 
-            var tieneRelaciones = await _context.Pedidos.AnyAsync(p => p.ProductoId == id)
-                || await _context.Producciones.AnyAsync(p => p.ProductoId == id)
-                || await _context.MovimientosInventario.AnyAsync(m => m.ProductoId == id);
+            var nombreProducto = producto.Nombre;
+            var precioProducto = producto.Precio;
+            var imagenProducto = producto.ImagenUrl;
 
-            if (tieneRelaciones)
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                TempData["Error"] = "No se puede eliminar el producto porque posee pedidos, producciones o movimientos de inventario asociados. Puede desactivarlo en su lugar.";
+                // Antes de eliminar el catálogo se actualizan los datos históricos.
+                // Las llaves foráneas quedan en NULL mediante ON DELETE SET NULL.
+                await _context.Pedidos
+                    .Where(p => p.ProductoId == id)
+                    .ExecuteUpdateAsync(actualizacion => actualizacion
+                        .SetProperty(p => p.ProductoNombre, nombreProducto));
+
+                await _context.Pedidos
+                    .Where(p => p.ProductoId == id && p.PrecioUnitario <= 0)
+                    .ExecuteUpdateAsync(actualizacion => actualizacion
+                        .SetProperty(p => p.PrecioUnitario, precioProducto));
+
+                await _context.Producciones
+                    .Where(p => p.ProductoId == id)
+                    .ExecuteUpdateAsync(actualizacion => actualizacion
+                        .SetProperty(p => p.ProductoNombre, nombreProducto));
+
+                await _context.MovimientosInventario
+                    .Where(m => m.ProductoId == id)
+                    .ExecuteUpdateAsync(actualizacion => actualizacion
+                        .SetProperty(m => m.ProductoNombre, nombreProducto));
+
+                _context.Productos.Remove(producto);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException)
+            {
+                await transaction.RollbackAsync();
+                TempData["Error"] =
+                    "No fue posible eliminar el producto. Verifique que la migración para conservar el historial esté aplicada.";
                 return RedirectToAction(nameof(Index));
             }
 
-            EliminarImagenPersonalizada(producto.ImagenUrl);
-            _context.Productos.Remove(producto);
-            await _context.SaveChangesAsync();
+            // El archivo se elimina únicamente después de confirmar la transacción.
+            EliminarImagenPersonalizada(imagenProducto);
+
             await AuditoriaHelper.RegistrarAsync(_context, User, "Productos", "Eliminar", id,
-                $"Se eliminó el producto {producto.Nombre}.");
-            TempData["Success"] = "Producto eliminado correctamente.";
+                $"Se eliminó el producto {nombreProducto}. Los pedidos, producciones y movimientos relacionados se conservaron.");
+
+            TempData["Success"] =
+                "Producto eliminado correctamente. Los registros relacionados se conservaron con su nombre histórico.";
             return RedirectToAction(nameof(Index));
         }
 

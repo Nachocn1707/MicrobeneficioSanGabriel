@@ -167,18 +167,21 @@
                     <tr>
                         <td>@m.FechaMovimiento.ToString("dd MMM yyyy")</td>
                         <td><span class="sg-badge @(m.TipoMovimiento == "Entrada" ? "" : "gold")">@m.TipoMovimiento</span></td>
-                        <td>@m.Producto?.Nombre</td>
+                        <td>@m.ProductoNombreMostrar</td>
                         <td>@(m.Observacion ?? $"MOV-{m.Id:0000}") @if (m.EsAutomatico) { <span class="sg-badge ms-1">Automático</span> }</td>
                         <td>@entrada</td>
                         <td>@salida</td>
-                        <td>@m.Producto?.Stock kg</td>
+                        <td>@(m.Producto != null ? $"{m.Producto.Stock:N2} kg" : "Producto eliminado")</td>
                         <td>
                             <span class="sg-action-icons">
                                 <a asp-action="Details" asp-route-id="@m.Id"><i class="fa-solid fa-eye"></i></a>
                                 @if (User.IsInRole("Administrador"))
                                 {
-                                    <a asp-action="Edit" asp-route-id="@m.Id"><i class="fa-solid fa-pen"></i></a>
-                                    <a asp-action="Delete" asp-route-id="@m.Id"><i class="fa-solid fa-trash"></i></a>
+                                    @if (m.ProductoId.HasValue)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@m.Id" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                                    }
+                                    <a asp-action="Delete" asp-route-id="@m.Id" title="Eliminar"><i class="fa-solid fa-trash"></i></a>
                                 }
                             </span>
                         </td>

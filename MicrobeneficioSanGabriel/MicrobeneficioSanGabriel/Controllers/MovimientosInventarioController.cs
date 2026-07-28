@@ -57,11 +57,20 @@ namespace MicrobeneficioSanGabriel.Controllers
             [Bind("ProductoId,TipoMovimiento,Cantidad,Observacion")]
             MovimientoInventario movimiento)
         {
-            var producto = await _context.Productos.FindAsync(movimiento.ProductoId);
-            if (producto == null)
+            Producto? producto = null;
+            if (!movimiento.ProductoId.HasValue)
             {
                 ModelState.AddModelError(nameof(MovimientoInventario.ProductoId),
-                    "El producto seleccionado no existe.");
+                    "Debe seleccionar un producto.");
+            }
+            else
+            {
+                producto = await _context.Productos.FindAsync(movimiento.ProductoId.Value);
+                if (producto == null)
+                {
+                    ModelState.AddModelError(nameof(MovimientoInventario.ProductoId),
+                        "El producto seleccionado no existe.");
+                }
             }
 
             if (!EsTipoValido(movimiento.TipoMovimiento))
@@ -80,6 +89,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (ModelState.IsValid && producto != null)
             {
                 movimiento.FechaMovimiento = DateTime.Now;
+                movimiento.ProductoNombre = producto.Nombre;
                 movimiento.Observacion = movimiento.Observacion?.Trim();
                 movimiento.EsAutomatico = false;
                 movimiento.OrigenTipo = null;
@@ -133,10 +143,17 @@ namespace MicrobeneficioSanGabriel.Controllers
                     "Debe seleccionar Entrada o Salida.");
             }
 
-            var productoOriginal = await _context.Productos.FindAsync(original.ProductoId);
-            var productoNuevo = original.ProductoId == movimiento.ProductoId
-                ? productoOriginal
-                : await _context.Productos.FindAsync(movimiento.ProductoId);
+            var productoOriginal = original.ProductoId.HasValue
+                ? await _context.Productos.FindAsync(original.ProductoId.Value)
+                : null;
+
+            Producto? productoNuevo = null;
+            if (movimiento.ProductoId.HasValue)
+            {
+                productoNuevo = original.ProductoId == movimiento.ProductoId
+                    ? productoOriginal
+                    : await _context.Productos.FindAsync(movimiento.ProductoId.Value);
+            }
 
             if (productoOriginal == null || productoNuevo == null)
             {
@@ -168,6 +185,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         {
                             AplicarMovimiento(productoNuevo, movimiento.TipoMovimiento, movimiento.Cantidad);
                             movimiento.FechaMovimiento = original.FechaMovimiento;
+                            movimiento.ProductoNombre = productoNuevo.Nombre;
                             movimiento.Observacion = movimiento.Observacion?.Trim();
                             // Conserva la trazabilidad del origen aunque el movimiento automático sea ajustado.
                             movimiento.EsAutomatico = original.EsAutomatico;
@@ -225,9 +243,19 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movimiento == null) return NotFound();
+
+            // Si el producto fue eliminado, el movimiento puede borrarse manualmente
+            // sin intentar modificar un inventario que ya no existe.
             if (movimiento.Producto == null)
             {
-                TempData["Error"] = "El movimiento no tiene un producto válido asociado.";
+                _context.MovimientosInventario.Remove(movimiento);
+                await _context.SaveChangesAsync();
+
+                await AuditoriaHelper.RegistrarAsync(
+                    _context, User, "Inventario", "Eliminar", id,
+                    $"Se eliminó el movimiento histórico #{id} sin ajuste de stock porque su producto ya no existe.");
+
+                TempData["Success"] = "Movimiento histórico eliminado correctamente. No fue necesario ajustar stock.";
                 return RedirectToAction(nameof(Index));
             }
 

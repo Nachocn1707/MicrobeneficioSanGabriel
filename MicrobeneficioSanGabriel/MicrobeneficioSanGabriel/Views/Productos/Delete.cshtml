@@ -70,16 +70,16 @@
 
     <div class="alert alert-warning">
         <i class="fa-solid fa-circle-exclamation"></i>
-        Esta acción eliminará el producto del sistema de forma <strong>permanente</strong>.
-        Si el producto tiene registros relacionados (pedidos, inventario, producciones),
-        el sistema podría bloquear la operación.
+        Esta acción eliminará el producto del catálogo de forma <strong>permanente</strong>.
+        Los pedidos, movimientos de inventario, producciones, facturas y trazabilidades relacionados
+        se conservarán con el nombre y el precio histórico del producto.
     </div>
 
     @if (!Model.Activo)
     {
         <div class="alert alert-info">
             <i class="fa-solid fa-check-circle"></i>
-            Este producto ya se encuentra inactivo. Puedes eliminarlo sin restricciones.
+            Este producto ya se encuentra inactivo. Al eliminarlo, su historial relacionado se conservará.
         </div>
     }
 

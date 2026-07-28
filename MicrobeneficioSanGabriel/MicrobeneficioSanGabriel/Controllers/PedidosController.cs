@@ -192,7 +192,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ClienteId = pedido.ClienteId,
                 ClienteCorreo = pedido.ClienteCorreo,
                 ClienteTelefono = pedido.ClienteTelefono,
-                ProductoId = pedido.ProductoId,
+                ProductoId = pedido.ProductoId!.Value,
                 Cantidad = pedido.Cantidad,
                 Observacion = pedido.Observacion,
                 FechaCreacion = DateTime.Now
@@ -280,6 +280,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ModelState.AddModelError(nameof(Pedido.ClienteTelefono), "El teléfono debe contener 8 dígitos.");
             }
 
+            if (!datos.ProductoId.HasValue)
+            {
+                ModelState.AddModelError(nameof(Pedido.ProductoId), "Debe seleccionar un producto.");
+            }
+
             var tieneFactura = await _context.Facturas.AnyAsync(f => f.PedidoId == id);
             if (tieneFactura && (pedido.ProductoId != datos.ProductoId || pedido.Cantidad != datos.Cantidad))
             {
@@ -298,7 +303,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 var estadoAnterior = pedido.Estado;
                 var errorInventario = await _pedidoInventarioService.ActualizarPedidoAsync(
-                    pedido, datos.ProductoId, datos.Cantidad, datos.Estado);
+                    pedido, datos.ProductoId!.Value, datos.Cantidad, datos.Estado);
 
                 if (errorInventario != null)
                 {
@@ -400,6 +405,8 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (ModelState.IsValid)
             {
                 pedido.ProductoId = datos.ProductoId;
+                pedido.ProductoNombre = producto!.Nombre;
+                pedido.PrecioUnitario = producto.Precio;
                 pedido.Cantidad = datos.Cantidad;
                 pedido.ClienteTelefono = telefono;
                 pedido.Observacion = string.IsNullOrWhiteSpace(datos.Observacion) ? null : datos.Observacion.Trim();
@@ -591,7 +598,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
 
                 ViewBag.EsPedidoPendiente = false;
-                ViewBag.Total = pedidoExistente.Producto?.Precio * pedidoExistente.Cantidad;
+                ViewBag.Total = pedidoExistente.SubtotalMostrar;
                 return View(pedidoExistente);
             }
 
@@ -629,6 +636,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ClienteTelefono = pendiente.ClienteTelefono,
                 ProductoId = pendiente.ProductoId,
                 Producto = producto,
+                ProductoNombre = producto.Nombre,
+                PrecioUnitario = producto.Precio,
                 Cantidad = pendiente.Cantidad,
                 Observacion = pendiente.Observacion,
                 FechaPedido = pendiente.FechaCreacion,
@@ -771,6 +780,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ClienteCorreo = pendiente.ClienteCorreo,
                 ClienteTelefono = pendiente.ClienteTelefono,
                 ProductoId = pendiente.ProductoId,
+                ProductoNombre = producto.Nombre,
+                PrecioUnitario = producto.Precio,
                 Cantidad = pendiente.Cantidad,
                 Observacion = pendiente.Observacion,
                 FechaPedido = DateTime.Now,
@@ -814,7 +825,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(Details), new { id = pedido.Id });
             }
 
-            ViewBag.Total = pedido.Producto?.Precio * pedido.Cantidad;
+            ViewBag.Total = pedido.SubtotalMostrar;
             return View(pedido);
         }
 

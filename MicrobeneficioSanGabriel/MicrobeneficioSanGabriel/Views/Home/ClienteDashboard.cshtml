@@ -183,7 +183,7 @@
             <div class="cafe-products-grid">
                 @if (productosDestacados.Any())
                 {
-                    foreach (var producto in productosDestacados.Take(3))
+                    foreach (var producto in productosDestacados)
                     {
                         <article class="cafe-product-card">
                             <div class="cafe-product-image cafe-product-image-completa"
@@ -272,7 +272,7 @@
                                 </strong>
 
                                 <span>
-                                    @(pedido.Producto?.Nombre ?? "Producto")
+                                    @(pedido.ProductoNombreMostrar)
                                     · @pedido.Cantidad kg
                                 </span>
 

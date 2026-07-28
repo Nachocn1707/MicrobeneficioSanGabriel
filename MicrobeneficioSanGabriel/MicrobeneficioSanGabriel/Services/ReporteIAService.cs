@@ -63,14 +63,14 @@ namespace MicrobeneficioSanGabriel.Services
             };
 
             modelo.ProductosMasVendidos = pedidos
-                .Where(p => p.Producto != null && p.Estado == EstadosPedido.Completado)
-                .GroupBy(p => p.Producto!.Nombre)
+                .Where(p => p.Estado == EstadosPedido.Completado)
+                .GroupBy(p => p.ProductoNombreMostrar)
                 .Select(g => new ProductoVendidoIAItem
                 {
                     Producto = g.Key,
                     Cantidad = g.Sum(x => x.Cantidad),
                     TotalVentas = facturasValidas
-                        .Where(f => f.Pedido?.Producto?.Nombre == g.Key)
+                        .Where(f => f.Pedido?.ProductoNombreMostrar == g.Key)
                         .Sum(f => f.Total)
                 })
                 .OrderByDescending(x => x.Cantidad)

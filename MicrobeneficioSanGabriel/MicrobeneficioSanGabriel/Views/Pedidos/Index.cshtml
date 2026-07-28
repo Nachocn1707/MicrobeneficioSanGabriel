@@ -10,7 +10,7 @@
     var completados = pedidos.Count(p => p.Estado == "Completado");
     var cancelados = pedidos.Count(p => (p.Estado ?? string.Empty).Contains("Cancel"));
     var pagosPendientes = pedidos.Count(p => p.EstadoPago == "Pendiente" || p.EstadoPago == "Pendiente de pago" || p.EstadoPago == "Sin pago");
-    var ventas = pedidos.Where(p => p.EstadoPago == "Pago completado").Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
+    var ventas = pedidos.Where(p => p.EstadoPago == "Pago completado").Sum(p => (p.PrecioUnitarioMostrar) * p.Cantidad);
     var enProceso = pedidos.Count(p => p.Estado == "En proceso");
     var pendientesSolo = pedidos.Count(p => p.Estado == "Pendiente");
     var porcentajeCompletados = total == 0 ? 0 : Math.Round(completados * 100m / total, 0);
@@ -160,7 +160,7 @@
                 <div class="client-orders-list">
                     @foreach (var p in pedidos)
                     {
-                        var subtotalPedido = Math.Round((p.Producto?.Precio ?? 0) * p.Cantidad, 2, MidpointRounding.AwayFromZero);
+                        var subtotalPedido = Math.Round((p.PrecioUnitarioMostrar) * p.Cantidad, 2, MidpointRounding.AwayFromZero);
                         var ivaPedido = Math.Round(subtotalPedido * 0.13m, 2, MidpointRounding.AwayFromZero);
                         var totalPedido = Math.Round(subtotalPedido + ivaPedido, 2, MidpointRounding.AwayFromZero);
                         var pagoPendiente = string.IsNullOrWhiteSpace(p.EstadoPago) ||
@@ -183,7 +183,7 @@
 
                                 <div class="client-purchase-product">
                                     <small>Producto seleccionado</small>
-                                    <h3>@(p.Producto?.Nombre ?? "Producto")</h3>
+                                    <h3>@(p.ProductoNombreMostrar)</h3>
                                     <span>@p.Cantidad kg · @p.FechaPedido.ToString("dd MMM yyyy")</span>
                                 </div>
 
@@ -236,7 +236,7 @@
                                             class="client-purchase-action pay js-open-payment-modal"
                                             data-pedido-id="@p.Id"
                                             data-pedido-code="PP-@p.Id.ToString("0000")"
-                                            data-product="@(p.Producto?.Nombre ?? "Producto")"
+                                            data-product="@(p.ProductoNombreMostrar)"
                                             data-quantity="@p.Cantidad.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
                                             data-date="@p.FechaPedido.ToString("dd MMM yyyy")"
                                             data-subtotal-display="₡@subtotalPedido.ToString("N0")"
@@ -271,7 +271,7 @@ else
 {
     var inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
     var finMes = inicioMes.AddMonths(1);
-    var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes && p.EstadoPago == "Pago completado").Sum(p => (p.Producto?.Precio ?? 0) * p.Cantidad);
+    var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes && p.EstadoPago == "Pago completado").Sum(p => (p.PrecioUnitarioMostrar) * p.Cantidad);
 
     <section class="sg-page-head">
         <div><h1>Pedidos y Facturación</h1><p>Gestión de pedidos, entregas y facturación.</p></div>
@@ -313,12 +313,12 @@ else
                     <tr>
                         <td>PP-@p.Id.ToString("0000")</td>
                         <td>@p.ClienteNombre</td>
-                        <td>@(p.Producto?.Nombre ?? "Producto")</td>
+                        <td>@(p.ProductoNombreMostrar)</td>
                         <td>@p.Cantidad kg</td>
                         <td>@p.FechaPedido.ToString("dd MMM yyyy")</td>
                         <td><span class="sg-badge @EstadoClase(p.Estado)">@p.Estado</span></td>
                         <td><span class="sg-badge @(p.EstadoPago?.Contains("Pend") == true || p.EstadoPago == "Sin pago" ? "tan" : "")">@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)</span></td>
-                        <td>₡@(((p.Producto?.Precio ?? 0) * p.Cantidad).ToString("N0"))</td>
+                        <td>₡@(((p.PrecioUnitarioMostrar) * p.Cantidad).ToString("N0"))</td>
                         <td>
                             <span class="sg-action-icons">
                                 <a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))

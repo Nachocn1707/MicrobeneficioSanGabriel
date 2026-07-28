@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Produccion
+@model MicrobeneficioSanGabriel.Models.Produccion
 
 @{
     ViewData["Title"] = "Eliminar producción";
@@ -26,7 +26,7 @@
 
     <p>
         <strong>Lote:</strong> @(Model.Lote != null ? Model.Lote.CodigoLote : "Sin lote")<br />
-        <strong>Producto:</strong> @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")<br />
+        <strong>Producto:</strong> @(Model.ProductoNombreMostrar)<br />
         <strong>Fecha:</strong> @Model.FechaProduccion.ToString("dd/MM/yyyy HH:mm")<br />
         <strong>Tipo de proceso:</strong> @Model.TipoProceso<br />
         <strong>Cantidad procesada:</strong> @Model.CantidadProcesadaKg kg<br />

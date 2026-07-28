@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.MovimientoInventario
+@model MicrobeneficioSanGabriel.Models.MovimientoInventario
 
 @{
     ViewData["Title"] = "Detalle EstiloDetalle";
@@ -52,7 +52,7 @@
                 <div class="EstiloDetalle-detail-item">
                     <span class="EstiloDetalle-detail-label">PRODUCTO</span>
                     <span class="EstiloDetalle-detail-value">
-                        @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")
+                        @(Model.ProductoNombreMostrar)
                     </span>
                 </div>
 

@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.Pedido
+@model MicrobeneficioSanGabriel.Models.Pedido
 
 @{
     ViewData["Title"] = "Eliminar pedido";
@@ -29,7 +29,7 @@
     <p>
         <strong>Cliente:</strong> @Model.ClienteNombre<br />
         <strong>Teléfono:</strong> @(string.IsNullOrWhiteSpace(Model.ClienteTelefono) ? "Sin teléfono" : Model.ClienteTelefono)<br />
-        <strong>Producto:</strong> @(Model.Producto != null ? Model.Producto.Nombre : "Sin producto")<br />
+        <strong>Producto:</strong> @(Model.ProductoNombreMostrar)<br />
         <strong>Cantidad:</strong> @Model.Cantidad kg<br />
         <strong>Fecha:</strong> @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")<br />
         <strong>Estado:</strong> <span class="@estadoClase">@Model.Estado</span>
