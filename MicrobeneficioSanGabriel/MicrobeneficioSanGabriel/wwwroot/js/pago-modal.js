@@ -5,10 +5,8 @@
         const modalElement = document.getElementById("paymentModal");
         if (!modalElement || typeof bootstrap === "undefined") return;
 
-        // El modal se renderiza dentro del contenido del cliente. Ese contenedor
-        // utiliza capas visuales propias, por lo que el backdrop podía quedar
-        // encima del popup e impedir cualquier clic. Al moverlo directamente al
-        // body, modal y backdrop comparten el mismo contexto de apilamiento.
+        // El popup debe vivir directamente dentro del body para evitar que el
+        // fondo oscuro quede por encima cuando el contenido usa capas propias.
         if (modalElement.parentElement !== document.body) {
             document.body.appendChild(modalElement);
         }
@@ -18,12 +16,14 @@
             keyboard: true,
             focus: true
         });
+
         const form = document.getElementById("modalPaymentForm");
         const formView = document.getElementById("paymentFormView");
         const successView = document.getElementById("paymentSuccessView");
         const feedback = document.getElementById("paymentModalFeedback");
         const submitButton = document.getElementById("paymentSubmitButton");
         const submitButtonText = document.getElementById("paymentSubmitText");
+        const successCloseButton = document.getElementById("paymentSuccessCloseButton");
         const sinpeDetails = document.getElementById("modalSinpeDetails");
         const cashDetails = document.getElementById("modalCashDetails");
         const whatsappButton = document.getElementById("paymentWhatsappButton");
@@ -35,18 +35,22 @@
         const successSinpeNumber = document.getElementById("paymentSuccessSinpeNumber");
         const copyButton = document.getElementById("copySinpeNumber");
 
-        let activePayButton = null;
-        let activeTotalDisplay = "";
-
         const fields = {
             pedidoId: document.getElementById("modalPedidoId"),
             orderCode: document.getElementById("modalOrderCode"),
             product: document.getElementById("modalProduct"),
             quantity: document.getElementById("modalQuantity"),
             date: document.getElementById("modalDate"),
+            subtotal: document.getElementById("modalSubtotal"),
+            iva: document.getElementById("modalIva"),
             total: document.getElementById("modalTotal"),
             reference: document.getElementById("modalReference")
         };
+
+        let activePayButton = null;
+        let activeTotalDisplay = "";
+        let redirectOnClose = "";
+        let paymentCompleted = false;
 
         function selectedMethod() {
             return form?.querySelector('input[name="metodoPago"]:checked')?.value || "";
@@ -54,7 +58,8 @@
 
         function showFeedback(message) {
             if (!feedback) return;
-            feedback.querySelector("span").textContent = message;
+            const text = feedback.querySelector("span");
+            if (text) text.textContent = message;
             feedback.classList.add("show");
         }
 
@@ -71,6 +76,7 @@
         function resetModalState() {
             clearFeedback();
             form?.reset();
+
             const sinpeRadio = form?.querySelector('input[value="SINPE Móvil"]');
             if (sinpeRadio) sinpeRadio.checked = true;
             updateMethodDetails();
@@ -79,24 +85,50 @@
             if (successView) successView.hidden = true;
             if (submitButton) submitButton.disabled = false;
             if (submitButtonText) submitButtonText.textContent = "Confirmar método de pago";
+            if (successCloseButton) successCloseButton.textContent = "Entendido";
         }
 
-        modalElement.addEventListener("show.bs.modal", event => {
-            const trigger = event.relatedTarget;
-            if (!(trigger instanceof HTMLElement)) return;
+        function normaliseDetails(details = {}) {
+            return {
+                pedidoId: details.pedidoId ?? "",
+                pedidoCode: details.pedidoCode || details.codigoPedido || "Pedido nuevo",
+                product: details.product || details.producto || "Producto",
+                quantity: details.quantity || details.cantidad || "0",
+                date: details.date || details.fecha || "—",
+                subtotalDisplay: details.subtotalDisplay || "₡0",
+                ivaDisplay: details.ivaDisplay || "₡0",
+                totalDisplay: details.totalDisplay || "₡0",
+                redirectUrl: details.redirectUrl || ""
+            };
+        }
 
-            activePayButton = trigger;
-            activeTotalDisplay = trigger.dataset.totalDisplay || "₡0";
+        function openPaymentModal(details, trigger = null) {
+            const data = normaliseDetails(details);
+
+            activePayButton = trigger instanceof HTMLElement ? trigger : null;
+            activeTotalDisplay = data.totalDisplay;
+            redirectOnClose = data.redirectUrl;
+            paymentCompleted = false;
+
             resetModalState();
 
-            if (fields.pedidoId) fields.pedidoId.value = trigger.dataset.pedidoId || "";
-            if (fields.orderCode) fields.orderCode.textContent = trigger.dataset.pedidoCode || "Pedido";
-            if (fields.product) fields.product.textContent = trigger.dataset.product || "Producto";
-            if (fields.quantity) fields.quantity.textContent = `${trigger.dataset.quantity || "0"} kg`;
-            if (fields.date) fields.date.textContent = trigger.dataset.date || "—";
-            if (fields.total) fields.total.textContent = activeTotalDisplay;
-            if (fields.reference) fields.reference.textContent = trigger.dataset.pedidoCode || "Pedido";
-        });
+            if (fields.pedidoId) fields.pedidoId.value = data.pedidoId;
+            if (fields.orderCode) fields.orderCode.textContent = data.pedidoCode;
+            if (fields.product) fields.product.textContent = data.product;
+            if (fields.quantity) fields.quantity.textContent = `${data.quantity} kg`;
+            if (fields.date) fields.date.textContent = data.date;
+            if (fields.subtotal) fields.subtotal.textContent = data.subtotalDisplay;
+            if (fields.iva) fields.iva.textContent = data.ivaDisplay;
+            if (fields.total) fields.total.textContent = data.totalDisplay;
+            if (fields.reference) fields.reference.textContent = data.pedidoCode;
+
+            modal.show();
+        }
+
+        window.SanGabrielPaymentModal = {
+            open: openPaymentModal,
+            close: () => modal.hide()
+        };
 
         form?.querySelectorAll('input[name="metodoPago"]').forEach(input => {
             input.addEventListener("change", updateMethodDetails);
@@ -158,6 +190,9 @@
                     throw new Error(result?.message || "No fue posible registrar el método de pago. Intentá nuevamente.");
                 }
 
+                paymentCompleted = true;
+                redirectOnClose = result.redirectUrl || redirectOnClose;
+
                 if (formView) formView.hidden = true;
                 if (successView) successView.hidden = false;
 
@@ -166,6 +201,9 @@
                 if (successStatus) successStatus.textContent = result.estadoPago || "Pendiente de pago";
                 if (successTotal) successTotal.textContent = activeTotalDisplay;
                 if (successSinpeNumber) successSinpeNumber.textContent = result.sinpeNumero || "89546434";
+                if (successCloseButton) {
+                    successCloseButton.textContent = redirectOnClose ? "Ver mis pedidos" : "Entendido";
+                }
 
                 const isSinpe = (result.metodoPago || method) === "SINPE Móvil";
                 if (successMessage) {
@@ -182,6 +220,8 @@
                 const successSinpeBlock = document.getElementById("paymentSuccessSinpeBlock");
                 if (successSinpeBlock) successSinpeBlock.hidden = !isSinpe;
 
+                // En el listado se mantiene el botón mientras el pago siga pendiente,
+                // tal como solicita el flujo de pedidos del cliente.
                 const card = activePayButton?.closest(".client-purchase-card");
                 const badge = card?.querySelector(".client-payment-pill");
                 if (badge) {
@@ -190,7 +230,10 @@
                     badge.innerHTML = '<i class="fa-solid fa-wallet"></i> Pendiente de pago';
                 }
 
-                activePayButton?.remove();
+                if (activePayButton && result.pedidoId) {
+                    activePayButton.dataset.pedidoId = String(result.pedidoId);
+                    activePayButton.dataset.pedidoCode = result.codigoPedido || activePayButton.dataset.pedidoCode || "Pedido";
+                }
             } catch (error) {
                 showFeedback(error instanceof Error ? error.message : "Ocurrió un error inesperado.");
             } finally {
@@ -199,14 +242,35 @@
             }
         });
 
+        successCloseButton?.addEventListener("click", () => modal.hide());
+
         modalElement.addEventListener("hidden.bs.modal", () => {
+            const nextUrl = paymentCompleted ? redirectOnClose : "";
+
             activePayButton = null;
             activeTotalDisplay = "";
+            redirectOnClose = "";
+            paymentCompleted = false;
             resetModalState();
+
+            if (nextUrl) {
+                window.location.assign(nextUrl);
+            }
         });
 
         document.querySelectorAll(".js-open-payment-modal").forEach(button => {
-            button.addEventListener("click", () => modal.show(button));
+            button.addEventListener("click", () => {
+                openPaymentModal({
+                    pedidoId: button.dataset.pedidoId,
+                    pedidoCode: button.dataset.pedidoCode,
+                    product: button.dataset.product,
+                    quantity: button.dataset.quantity,
+                    date: button.dataset.date,
+                    subtotalDisplay: button.dataset.subtotalDisplay,
+                    ivaDisplay: button.dataset.ivaDisplay,
+                    totalDisplay: button.dataset.totalDisplay
+                }, button);
+            });
         });
     });
 })();

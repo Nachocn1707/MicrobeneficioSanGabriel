@@ -19,6 +19,27 @@
     });
     var peso = lotes.Sum(l => l.PesoKg);
     decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
+    string Fmt(decimal valor) => valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    var estadosLote = new[]
+    {
+        new { Clase = "green", Hex = "#4F8738", Label = "Finalizados", Valor = finalizados },
+        new { Clase = "sage", Hex = "#9DBB8F", Label = "En proceso", Valor = enProceso },
+        new { Clase = "deepgreen", Hex = "#294B2A", Label = "Activos", Valor = activos },
+        new { Clase = "brown", Hex = "#5B3A16", Label = "Cancelados", Valor = cancelados }
+    };
+    string CrearDonutLotes()
+    {
+        if (total <= 0) return "conic-gradient(#E8D4B0 0% 100%)";
+        var partes = new List<string>(); decimal acumulado = 0m;
+        foreach (var e in estadosLote)
+        {
+            if (e.Valor <= 0) continue;
+            var inicio = acumulado; acumulado += e.Valor * 100m / total;
+            partes.Add($"{e.Hex} {Fmt(inicio)}% {Fmt(acumulado)}%");
+        }
+        return partes.Any() ? $"conic-gradient({string.Join(", ", partes)})" : "conic-gradient(#E8D4B0 0% 100%)";
+    }
+    var donutLotes = CrearDonutLotes();
 }
 <section class="sg-page-head">
     <div><h1>Lotes</h1><p>Gestión integral de lotes y procesos de producción con datos reales del sistema.</p></div>
@@ -34,11 +55,11 @@
     <article class="sg-card sg-panel">
         <div class="sg-panel-head"><h3>Estado de lotes</h3></div>
         <div class="sg-donut-wrap">
-            <div class="sg-donut" style="--p:@Porcentaje(finalizados)"><div><b>@Porcentaje(finalizados)%</b><br/><span>Finalizados</span></div></div>
+            <div class="sg-donut" style="--donut-bg: @donutLotes"><div><b>@Porcentaje(finalizados)%</b><span>Finalizados</span></div></div>
             <div class="sg-legend">
-                <div class="sg-legend-row"><span class="sg-dot gold"></span><span>Finalizados</span><b>@finalizados</b></div>
-                <div class="sg-legend-row"><span class="sg-dot green"></span><span>En proceso</span><b>@enProceso</b></div>
-                <div class="sg-legend-row"><span class="sg-dot coffee"></span><span>Activos</span><b>@activos</b></div>
+                <div class="sg-legend-row"><span class="sg-dot green"></span><span>Finalizados</span><b>@finalizados</b></div>
+                <div class="sg-legend-row"><span class="sg-dot sage"></span><span>En proceso</span><b>@enProceso</b></div>
+                <div class="sg-legend-row"><span class="sg-dot deepgreen"></span><span>Activos</span><b>@activos</b></div>
                 <div class="sg-legend-row"><span class="sg-dot brown"></span><span>Cancelados</span><b>@cancelados</b></div>
             </div>
         </div>

@@ -35,7 +35,9 @@
         @foreach (var item in productos.Where(p => p.Activo))
         {
             <article class="sg-card sg-product-card">
-                <img src="@ImagenProducto(item)" alt="@item.Nombre" />
+                <div class="sg-product-media" aria-label="Imagen de @item.Nombre">
+                    <img src="@ImagenProducto(item)" alt="@item.Nombre" loading="lazy" />
+                </div>
                 <div class="sg-product-body">
                     <span class="sg-badge gold">@item.Categoria</span>
                     <h3>@item.Nombre</h3>

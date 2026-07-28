@@ -108,12 +108,6 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var movimiento = await _context.MovimientosInventario.FindAsync(id);
             if (movimiento == null) return NotFound();
-            if (movimiento.EsAutomatico)
-            {
-                TempData["Error"] = "Los movimientos automáticos se administran desde el pedido o la producción que los originó.";
-                return RedirectToAction(nameof(Index));
-            }
-
             CargarProductos(movimiento.ProductoId);
             return View(movimiento);
         }
@@ -133,12 +127,6 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (original == null) return NotFound();
-            if (original.EsAutomatico)
-            {
-                TempData["Error"] = "Los movimientos automáticos no se pueden editar manualmente.";
-                return RedirectToAction(nameof(Index));
-            }
-
             if (!EsTipoValido(movimiento.TipoMovimiento))
             {
                 ModelState.AddModelError(nameof(MovimientoInventario.TipoMovimiento),
@@ -181,6 +169,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                             AplicarMovimiento(productoNuevo, movimiento.TipoMovimiento, movimiento.Cantidad);
                             movimiento.FechaMovimiento = original.FechaMovimiento;
                             movimiento.Observacion = movimiento.Observacion?.Trim();
+                            // Conserva la trazabilidad del origen aunque el movimiento automático sea ajustado.
+                            movimiento.EsAutomatico = original.EsAutomatico;
+                            movimiento.OrigenTipo = original.OrigenTipo;
+                            movimiento.OrigenId = original.OrigenId;
 
                             _context.MovimientosInventario.Update(movimiento);
                             await _context.SaveChangesAsync();
@@ -233,11 +225,6 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movimiento == null) return NotFound();
-            if (movimiento.EsAutomatico)
-            {
-                TempData["Error"] = "Los movimientos automáticos se revierten desde el pedido o la producción que los originó.";
-                return RedirectToAction(nameof(Index));
-            }
             if (movimiento.Producto == null)
             {
                 TempData["Error"] = "El movimiento no tiene un producto válido asociado.";

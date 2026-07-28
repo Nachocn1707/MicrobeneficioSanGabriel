@@ -55,7 +55,7 @@
   box-shadow:0 8px 16px rgba(213,154,54,.35);
 }
 .sg-hero-productores{background-image:url('/images/visual/productores.jpg');}
-.sg-hero-fincas{background-image:url('/images/visual/coffee-farm.jpg');}
+.sg-hero-fincas{background-image:url('/images/visual/coffee-farm-admin-hd.jpg');}
 .sg-hero-lotes{background-image:url('/images/visual/lotes.jpg');}
 .sg-hero-auditoria{background-image:url('/images/visual/reportes.jpg');}
 .sg-hero-productos{background-image:url('/images/visual/productos.jpg');}
@@ -120,7 +120,7 @@
   box-shadow:var(--sg-shadow);
   background:
       linear-gradient(90deg,rgba(26,15,10,.90),rgba(26,15,10,.66),rgba(26,15,10,.22)),
-      url('/images/visual/coffee-banner.jpg') center/cover no-repeat;
+      url('/images/visual/coffee-banner-hd.jpg') center/cover no-repeat;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;

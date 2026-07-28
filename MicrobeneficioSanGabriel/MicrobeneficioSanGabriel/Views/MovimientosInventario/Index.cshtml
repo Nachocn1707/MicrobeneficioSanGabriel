@@ -15,8 +15,8 @@
         ?? new List<MicrobeneficioSanGabriel.Models.Producto>();
 
     var stockTotal = productosStock.Sum(p => p.Stock);
-    var coloresStock = new[] { "coffee", "green", "gold", "tan", "brown", "sage" };
-    var coloresStockHex = new[] { "#74320D", "#9B470F", "#C46816", "#E8B66F", "#3B180B", "#C59063" };
+    var coloresStock = new[] { "brown", "green", "sage", "gold", "deepgreen", "tan" };
+    var coloresStockHex = new[] { "#5B3A16", "#4F8738", "#9DBB8F", "#D97800", "#294B2A", "#E8D4B0" };
 
     string FormatoPorcentaje(decimal valor) =>
         valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
@@ -168,7 +168,7 @@
                         <td>@m.FechaMovimiento.ToString("dd MMM yyyy")</td>
                         <td><span class="sg-badge @(m.TipoMovimiento == "Entrada" ? "" : "gold")">@m.TipoMovimiento</span></td>
                         <td>@m.Producto?.Nombre</td>
-                        <td>@(m.Observacion ?? $"MOV-{m.Id:0000}")</td>
+                        <td>@(m.Observacion ?? $"MOV-{m.Id:0000}") @if (m.EsAutomatico) { <span class="sg-badge ms-1">Automático</span> }</td>
                         <td>@entrada</td>
                         <td>@salida</td>
                         <td>@m.Producto?.Stock kg</td>

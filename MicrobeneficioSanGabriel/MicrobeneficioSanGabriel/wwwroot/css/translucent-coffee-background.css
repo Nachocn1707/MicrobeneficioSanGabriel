@@ -1,7 +1,7 @@
 /* Fondo fotográfico translúcido global.
    Solo modifica el fondo; no altera tamaños, posiciones ni componentes. */
 :root {
-    --sg-bg-image: url('/images/visual/coffee-farm.jpg');
+    --sg-bg-image: url('/images/visual/coffee-farm-admin-hd.jpg');
     --sg-bg-overlay: linear-gradient(rgba(247, 243, 234, .70), rgba(247, 243, 234, .64));
     --sg-bg-overlay-client: linear-gradient(rgba(250, 247, 239, .62), rgba(244, 237, 224, .58));
 }

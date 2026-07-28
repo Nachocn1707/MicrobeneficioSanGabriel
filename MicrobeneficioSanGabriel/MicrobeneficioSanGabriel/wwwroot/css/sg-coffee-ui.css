@@ -1460,3 +1460,113 @@ html.dark {
     opacity: .55 !important;
     cursor: not-allowed !important;
 }
+
+
+/* Ajustes visuales unificados: tarjetas blancas y centros de dona legibles */
+body:not(.dark) .sg-card,
+body:not(.dark) .card,
+body:not(.dark) .sg-panel,
+body:not(.dark) .sg-table-card,
+body:not(.dark) .client-card,
+body:not(.dark) .client-orders-card {
+    background: #fff !important;
+}
+
+.sg-donut > div {
+    width: 112px;
+    min-height: 82px;
+    padding: 4px;
+}
+
+.sg-donut b {
+    font-size: clamp(1.65rem, 2.2vw, 2rem) !important;
+    line-height: .95 !important;
+    margin: 0 0 7px !important;
+}
+
+.sg-donut span {
+    max-width: 106px !important;
+    font-size: .67rem !important;
+    line-height: 1.12 !important;
+    margin: 0 !important;
+    overflow-wrap: anywhere;
+}
+
+.sg-report-filters .form-label {
+    color: #fff !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,.65);
+}
+
+.sg-dot.green { background:#4F8738 !important; }
+.sg-dot.deepgreen { background:#294B2A !important; }
+.sg-dot.sage { background:#9DBB8F !important; }
+.sg-dot.gold { background:#D97800 !important; }
+.sg-dot.brown { background:#5B3A16 !important; }
+.sg-dot.tan { background:#E8D4B0 !important; }
+.sg-dot.coffee { background:#8B5A2B !important; }
+
+
+/* Correcciones finales de donas y tarjetas - 28/07/2026 */
+.sg-donut {
+    overflow: visible;
+}
+
+.sg-donut .sg-donut-center {
+    position: absolute !important;
+    inset: 32px !important;
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 6px !important;
+    margin: 0 !important;
+    z-index: 3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    pointer-events: none;
+}
+
+.sg-donut .sg-donut-center b {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 6px !important;
+    font-size: clamp(1.45rem, 2vw, 1.9rem) !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+}
+
+.sg-donut .sg-donut-center span {
+    display: block !important;
+    width: 100% !important;
+    max-width: 92px !important;
+    margin: 0 !important;
+    font-size: .62rem !important;
+    line-height: 1.08 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-align: center !important;
+}
+
+.sg-donut-orders .sg-donut-center span {
+    font-size: .58rem !important;
+    letter-spacing: -.01em;
+}
+
+/* Los cards de reportes usan exactamente la apariencia de los cards operativos. */
+.sg-report-card {
+    background: var(--sg-card, #fff) !important;
+    border: 1px solid #E6DCCF !important;
+    border-radius: var(--sg-radius, 18px) !important;
+    box-shadow: 0 8px 18px rgba(0,0,0,.05) !important;
+    color: var(--sg-text, #293F25) !important;
+}
+.sg-report-card h2,
+.sg-report-card h5,
+.sg-report-card h6 {
+    color: var(--sg-text, #293F25) !important;
+}
+.sg-report-card .text-muted {
+    color: var(--sg-muted, #666859) !important;
+}

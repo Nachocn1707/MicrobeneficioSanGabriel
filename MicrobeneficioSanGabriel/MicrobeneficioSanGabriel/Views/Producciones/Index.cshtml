@@ -15,9 +15,9 @@
 
     var coloresProduccion = new[]
     {
-        new { Clase = "green", Hex = "#5E8450", Label = "Completadas", Valor = completadas },
-        new { Clase = "gold", Hex = "#C98D25", Label = "En proceso", Valor = curso },
-        new { Clase = "brown", Hex = "#3A2416", Label = "Canceladas", Valor = canceladas }
+        new { Clase = "green", Hex = "#4F8738", Label = "Completadas", Valor = completadas },
+        new { Clase = "gold", Hex = "#D97800", Label = "En proceso", Valor = curso },
+        new { Clase = "brown", Hex = "#5B3A16", Label = "Canceladas", Valor = canceladas }
     };
 
     string FormatoPorcentajeProduccion(decimal valor) =>
@@ -65,8 +65,7 @@
         <div class="sg-donut-wrap mt-3">
             <div class="sg-donut" style="--donut-bg: @donutProduccion;">
                 <div>
-                    <b>@Porcentaje(completadas)%</b><br />
-                    <span>Completadas</span>
+                    <b>@Porcentaje(completadas)%</b><span>Completadas</span>
                 </div>
             </div>
             <div class="sg-legend">

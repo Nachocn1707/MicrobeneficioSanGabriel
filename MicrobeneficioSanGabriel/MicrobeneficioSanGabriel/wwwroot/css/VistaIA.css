@@ -1,43 +1,43 @@
-﻿.ia-report-page {
+.ia-report-page {
     display: grid;
     gap: 22px;
 }
 
 .ia-report-header h1 {
-    color: #2b160d;
+    color: #293F25;
     font-size: 34px;
     font-weight: 950;
     margin: 0;
 }
 
 .ia-report-header p {
-    color: #7a6a5d;
+    color: #666859;
     font-weight: 600;
     margin: 6px 0 0;
 }
 
 .ia-card {
-    background: #fffdf8;
-    border: 1px solid #ead8a2;
+    background: #FFFFFF;
+    border: 1px solid #DDE4D8;
     border-radius: 18px;
     padding: 24px;
     box-shadow: 0 18px 42px rgba(74, 44, 26, 0.10);
 }
 
     .ia-card h2 {
-        color: #2b160d;
+        color: #293F25;
         font-size: 20px;
         font-weight: 950;
         margin-bottom: 14px;
     }
 
 .ia-summary {
-    border-left: 6px solid #d9a44a;
-    background: #fff8df;
+    border-left: 6px solid #D4730B;
+    background: #F4F7F1;
 }
 
     .ia-summary p {
-        color: #3a2114;
+        color: #293F25;
         font-size: 16px;
         font-weight: 700;
         margin: 0;
@@ -52,13 +52,13 @@
 
 .ia-metric strong {
     display: block;
-    color: #2b160d;
+    color: #293F25;
     font-size: 28px;
     font-weight: 950;
 }
 
 .ia-metric span {
-    color: #7a6a5d;
+    color: #666859;
     font-size: 13px;
     font-weight: 800;
 }
@@ -75,20 +75,20 @@
 }
 
 .ia-list-item {
-    border: 1px solid #ead8a2;
+    border: 1px solid #DDE4D8;
     border-radius: 14px;
     padding: 14px;
-    background: #fffaf2;
+    background: #FAFBF8;
 }
 
     .ia-list-item strong {
-        color: #2b160d;
+        color: #293F25;
         font-weight: 950;
     }
 
     .ia-list-item span {
         display: block;
-        color: #7a6a5d;
+        color: #666859;
         font-size: 13px;
         font-weight: 700;
         margin-top: 4px;
@@ -97,8 +97,8 @@
 .ia-recommendation {
     border-radius: 14px;
     padding: 15px;
-    border: 1px solid #ead8a2;
-    background: #fffaf2;
+    border: 1px solid #DDE4D8;
+    background: #FAFBF8;
     display: flex;
     gap: 12px;
 }
@@ -107,8 +107,8 @@
         width: 36px;
         height: 36px;
         border-radius: 12px;
-        background: #4a2c1a;
-        color: #fff3c4;
+        background: #4F3514;
+        color: #F3E3C7;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -117,14 +117,14 @@
 
     .ia-recommendation h3 {
         margin: 0;
-        color: #2b160d;
+        color: #293F25;
         font-size: 15px;
         font-weight: 950;
     }
 
     .ia-recommendation p {
         margin: 4px 0 0;
-        color: #4d3c31;
+        color: #566050;
         font-size: 13px;
         font-weight: 700;
     }
@@ -136,9 +136,9 @@
 }
 
 .btn-ia-primary {
-    background: #4a2c1a;
-    color: #fff8df;
-    border: 1px solid #4a2c1a;
+    background: #4F3514;
+    color: #F4F7F1;
+    border: 1px solid #4F3514;
     border-radius: 10px;
     padding: 10px 18px;
     font-weight: 900;
@@ -146,9 +146,9 @@
 }
 
 .btn-ia-secondary {
-    background: #fff3c4;
-    color: #4a2c1a;
-    border: 1px solid #d9a44a;
+    background: #F3E3C7;
+    color: #4F3514;
+    border: 1px solid #D4730B;
     border-radius: 10px;
     padding: 10px 18px;
     font-weight: 900;
@@ -252,3 +252,13 @@ html.dark .btn-ia-secondary {
     html.dark .btn-ia-secondary:hover {
         background: #5c4726;
     }
+
+/* Paleta institucional San Gabriel: verde, café, naranja y blanco */
+.ia-report-page { --ia-green:#293F25; --ia-green-2:#53833B; --ia-brown:#4F3514; --ia-orange:#D4730B; --ia-sage:#8EAA82; --ia-white:#FFFFFF; }
+.ia-card { background:#FFFFFF; border-color:#DDE4D8; box-shadow:0 12px 30px rgba(41,63,37,.10); }
+.ia-summary { background:#F4F7F1; border-left-color:#D4730B; }
+.ia-list-item,.ia-recommendation { background:#FAFBF8; border-color:#DDE4D8; }
+.ia-metric:nth-child(1){border-top:4px solid #53833B}.ia-metric:nth-child(2){border-top:4px solid #D4730B}.ia-metric:nth-child(3){border-top:4px solid #4F3514}.ia-metric:nth-child(4){border-top:4px solid #8EAA82}
+.btn-ia-primary{background:#4F3514;border-color:#4F3514;color:#fff}.btn-ia-primary:hover{background:#293F25;border-color:#293F25;color:#fff}
+.btn-ia-secondary{background:#fff;border-color:#D4730B;color:#4F3514}.btn-ia-secondary:hover{background:#F3E3C7;color:#293F25}
+.ia-recommendation i{background:#293F25;color:#fff}

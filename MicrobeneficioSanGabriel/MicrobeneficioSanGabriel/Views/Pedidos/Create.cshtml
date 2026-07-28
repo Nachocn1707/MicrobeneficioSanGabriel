@@ -15,8 +15,8 @@
 }
 
 @section Styles {
-
     <link rel="stylesheet" href="~/css/VistaCreaR.css" />
+    <link rel="stylesheet" href="~/css/pago-modal.css" asp-append-version="true" />
 }
 
 <div class="VistaCreaR-page">
@@ -35,7 +35,7 @@
 
     <div class="VistaCreaR-card">
         <div class="VistaCreaR-form-container">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" id="createOrderForm">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
                 <input type="hidden" asp-for="ClienteCorreo" />
@@ -188,8 +188,12 @@
     </div>
 </div>
 
+<partial name="_PaymentModal" />
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="~/js/pago-modal.js" asp-append-version="true"></script>
+    <script src="~/js/pedido-create-modal.js" asp-append-version="true"></script>
 }

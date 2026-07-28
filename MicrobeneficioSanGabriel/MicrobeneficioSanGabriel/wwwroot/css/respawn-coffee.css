@@ -674,7 +674,7 @@ body { color: var(--rc-ink); }
 .rc-client-body .sg-client-content { background:transparent!important;padding:25px!important; }
 
 .rc-client-dashboard { display:grid;gap:22px; }
-.rc-client-hero { position:relative;overflow:hidden;display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;min-height:390px;padding:36px;color:#fff;background:linear-gradient(110deg,rgba(7,7,8,.94),rgba(30,15,10,.72)),url('/images/dashboard/client-hero.jpg') center/cover;box-shadow:var(--rc-shadow-dark);clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); }
+.rc-client-hero { position:relative;overflow:hidden;display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;min-height:390px;padding:36px;color:#fff;background:linear-gradient(110deg,rgba(7,7,8,.94),rgba(30,15,10,.72)),url('/images/dashboard/coffee-farm-client-hd.jpg') center/cover;box-shadow:var(--rc-shadow-dark);clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px); }
 .rc-client-hero::after { content:"";position:absolute;right:-100px;bottom:-130px;width:360px;height:360px;border:1px solid rgba(242,100,48,.5);border-radius:50%; }
 .rc-client-hero > * { position:relative;z-index:2; }
 .rc-client-hero h1 { margin:17px 0 13px;color:#fff;font-size:clamp(2.5rem,4vw,4.8rem);line-height:.9;font-weight:950;text-transform:uppercase;letter-spacing:-.04em; }
@@ -709,7 +709,7 @@ body { color: var(--rc-ink); }
 /* Existing client dashboard classes */
 .rc-client-body .cliente-premium-dashboard { display:grid!important;gap:22px!important; }
 .rc-client-body .cliente-overview { display:grid!important;grid-template-columns:1.45fr .75fr!important;gap:20px!important; }
-.rc-client-body .cliente-hero-premium { position:relative!important;overflow:hidden!important;min-height:370px!important;padding:34px!important;border-radius:0!important;color:#fff!important;background:linear-gradient(110deg,rgba(7,7,8,.94),rgba(30,15,10,.72)),url('/images/dashboard/client-hero.jpg') center/cover!important;box-shadow:var(--rc-shadow-dark)!important;clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px); }
+.rc-client-body .cliente-hero-premium { position:relative!important;overflow:hidden!important;min-height:370px!important;padding:34px!important;border-radius:0!important;color:#fff!important;background:linear-gradient(110deg,rgba(7,7,8,.94),rgba(30,15,10,.72)),url('/images/dashboard/coffee-farm-client-hd.jpg') center/cover!important;box-shadow:var(--rc-shadow-dark)!important;clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px); }
 .rc-client-body .cliente-hero-premium h1 { color:#fff!important;text-transform:uppercase!important;font-size:clamp(2.5rem,4vw,4.5rem)!important;line-height:.9!important; }
 .rc-client-body .cliente-hero-premium p { color:#ddd0c9!important; }
 .rc-client-body .cliente-status-chip { color:#ffd39b!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,173,54,.38)!important;border-radius:0!important; }
@@ -803,7 +803,7 @@ body { color: var(--rc-ink); }
 }
 
 /* Explicit module imagery */
-.sg-hero-fincas { background-image:url('/images/visual/coffee-farm.jpg')!important; }
+.sg-hero-fincas { background-image:url('/images/visual/coffee-farm-admin-hd.jpg')!important; }
 .sg-hero-usuarios { background-image:url('/images/visual/usuarios.jpg')!important; }
 .sg-hero-auditoria { background-image:url('/images/visual/dashboard.jpg')!important; }
 
@@ -1352,7 +1352,7 @@ html body.rc-admin-body .movimiento-premium-body .movimiento-side-line {
     min-height: 650px !important;
     background:
         linear-gradient(125deg, rgba(15, 11, 9, .93), rgba(36, 20, 13, .76)),
-        url('/images/visual/coffee-banner.jpg') center/cover no-repeat !important;
+        url('/images/visual/coffee-banner-hd.jpg') center/cover no-repeat !important;
     color: #fff !important;
 }
 
@@ -1637,7 +1637,7 @@ html body.rc-admin-body .movimiento-premium-body .movimiento-side-line {
 
 .rc-client-hero,
 .rc-client-body .cliente-hero-premium {
-    background: linear-gradient(110deg, rgba(7,7,8,.82), rgba(30,15,10,.56)), url('/images/dashboard/client-hero.jpg') center/cover !important;
+    background: linear-gradient(110deg, rgba(7,7,8,.82), rgba(30,15,10,.56)), url('/images/dashboard/coffee-farm-client-hd.jpg') center/cover !important;
 }
 
 /* Mantener legibilidad pese a mostrar más imagen */

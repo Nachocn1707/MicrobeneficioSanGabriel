@@ -147,7 +147,7 @@ body.sg-reference-theme {
         margin-left: 250px;
         padding: 0 28px 28px;
         background-color: #EFECE4 !important;
-        background-image: linear-gradient( rgba(247, 243, 234, 0.70), rgba(247, 243, 234, 0.64) ), url("/images/visual/coffee-farm.jpg") !important;
+        background-image: linear-gradient( rgba(247, 243, 234, 0.70), rgba(247, 243, 234, 0.64) ), url("/images/visual/coffee-farm-admin-hd.jpg") !important;
         background-position: center !important;
         background-size: cover !important;
         background-repeat: no-repeat !important;
@@ -611,7 +611,7 @@ body.rc-client-body .sg-visual-hero {
     color: #FEFCFA !important;
     background:
         linear-gradient(120deg, rgba(41, 63, 37, .96) 0%, rgba(41, 63, 37, .82) 36%, rgba(41, 63, 37, .50) 100%),
-        url('/images/visual/coffee-farm.jpg') center/cover no-repeat !important;
+        url('/images/visual/coffee-farm-admin-hd.jpg') center/cover no-repeat !important;
 }
 
 body.rc-client-body .sg-payment-modal,
@@ -857,7 +857,7 @@ body.rc-client-body .cafe-portal-main {
     background-color: #f7f3eb !important;
     background-image:
         linear-gradient(rgba(247,243,234,.56), rgba(247,243,234,.52)),
-        url('/images/visual/coffee-farm.jpg') !important;
+        url('/images/visual/coffee-farm-admin-hd.jpg') !important;
     background-position: center !important;
     background-size: cover !important;
     background-repeat: no-repeat !important;
@@ -867,7 +867,7 @@ body.rc-client-body .cafe-portal-main {
 body.rc-client-body .sg-client-content::before {
     background:
         linear-gradient(rgba(247,243,234,.42), rgba(247,243,234,.46)),
-        url('/images/dashboard/client-hero.jpg') center/cover no-repeat !important;
+        url('/images/dashboard/coffee-farm-client-hd.jpg') center/cover no-repeat !important;
     opacity: .82 !important;
 }
 
@@ -1016,14 +1016,14 @@ body.sg-reference-theme .sg-main {
     background-color: #efece4 !important;
     background-image:
         linear-gradient(rgba(26, 22, 18, .18), rgba(26, 22, 18, .12)),
-        url('/images/visual/coffee-farm.jpg') !important;
+        url('/images/visual/coffee-farm-admin-hd.jpg') !important;
 }
 
 body.rc-client-body .cafe-portal-main {
     background-color: #f1ede4 !important;
     background-image:
         linear-gradient(rgba(26, 22, 18, .20), rgba(26, 22, 18, .14)),
-        url('/images/visual/coffee-farm.jpg') !important;
+        url('/images/visual/coffee-farm-admin-hd.jpg') !important;
 }
 
 body.sg-reference-theme .sg-main::before,
@@ -1130,7 +1130,7 @@ body.rc-client-body .cliente-banner-card p {
 body.rc-client-body .cafe-welcome {
     background:
         linear-gradient(110deg, rgba(26,18,14,.84) 0%, rgba(26,18,14,.72) 34%, rgba(26,18,14,.18) 100%),
-        url('/images/visual/coffee-banner.jpg') center/cover no-repeat !important;
+        url('/images/visual/coffee-banner-hd.jpg') center/cover no-repeat !important;
 }
 
 body.rc-client-body .cafe-welcome-content {
@@ -2085,5 +2085,194 @@ body.sg-reference-theme .sg-dot.muted {
     body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
         top: 72px !important;
         right: 12px !important;
+    }
+}
+
+
+/* Correcciones finales: donas y tarjetas de reportes */
+body.sg-reference-theme .sg-donut .sg-donut-center{position:absolute;inset:24%;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.05;min-width:0}
+body.sg-reference-theme .sg-donut .sg-donut-center b{font-size:2rem;line-height:1;margin:0}
+body.sg-reference-theme .sg-donut .sg-donut-center span{display:block;font-size:.68rem;line-height:1.1;margin-top:7px;max-width:88px;white-space:normal;overflow-wrap:anywhere}
+body.sg-reference-theme .sg-donut-orders{flex:0 0 150px}
+body.sg-reference-theme .sg-dot.green{background:#53833B!important}
+body.sg-reference-theme .sg-dot.deepgreen{background:#293F25!important}
+body.sg-reference-theme .sg-dot.gold{background:#D4730B!important}
+body.sg-reference-theme .sg-dot.brown{background:#4F3514!important}
+body.sg-reference-theme .sg-report-card{background:#FFFFFF!important;border:1px solid #DDE4D8!important;border-radius:18px!important;box-shadow:0 12px 28px rgba(41,63,37,.10)!important;color:#293F25!important}
+body.sg-reference-theme .sg-report-card h2,body.sg-reference-theme .sg-report-card h5,body.sg-reference-theme .sg-report-card h6{color:#293F25!important}
+body.sg-reference-theme .sg-report-card .text-muted{color:#666859!important}
+
+/* =========================================================
+   FONDOS CAFETAL HD — ADMINISTRACIÓN Y CLIENTE
+   Se usan nombres nuevos para evitar que el navegador conserve
+   en caché las imágenes anteriores de menor calidad.
+   ========================================================= */
+body.sg-reference-theme .sg-main {
+    background-color: #efece4 !important;
+    background-image:
+        linear-gradient(rgba(26, 22, 18, .18), rgba(26, 22, 18, .12)),
+        url('/images/visual/coffee-farm-admin-hd.jpg') !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+body.rc-client-body .cafe-portal-main {
+    background-color: #f1ede4 !important;
+    background-image:
+        linear-gradient(rgba(26, 22, 18, .17), rgba(26, 22, 18, .11)),
+        url('/images/dashboard/coffee-farm-client-hd.jpg') !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+body.rc-client-body .sg-client-content::before {
+    background:
+        linear-gradient(rgba(247,243,234,.32), rgba(247,243,234,.36)),
+        url('/images/dashboard/coffee-farm-client-hd.jpg') center center / cover no-repeat !important;
+    opacity: .88 !important;
+}
+
+@media (max-width: 991.98px) {
+    body.sg-reference-theme .sg-main,
+    body.rc-client-body .cafe-portal-main {
+        background-attachment: scroll !important;
+    }
+}
+
+/* =========================================================
+   PRODUCTOS CLIENTE: IMÁGENES COMPLETAS SIN RECORTES
+   Mantiene todas las tarjetas alineadas y muestra el producto
+   completo mediante object-fit: contain.
+   ========================================================= */
+body.rc-client-body .sg-product-card .sg-product-media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #fbfaf7 0%, #f1eee7 100%);
+    border-bottom: 1px solid var(--sg-admin-line, #ddd8ce);
+}
+
+body.rc-client-body .sg-product-card .sg-product-media img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: none !important;
+    filter: saturate(1.04) contrast(1.03) brightness(.97);
+}
+
+body.rc-client-body .sg-product-card:hover .sg-product-media img {
+    transform: none !important;
+}
+
+@media (max-width: 992px) {
+    body.rc-client-body .sg-product-card .sg-product-media {
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    body.rc-client-body .sg-product-card .sg-product-media {
+        min-height: 180px;
+    }
+}
+
+
+/* =========================================================
+   INICIO CLIENTE: IMÁGENES DESTACADAS COMPLETAS SIN RECORTES
+   Aplica el mismo tratamiento del catálogo a la sección
+   "Cafés elegidos para vos" del dashboard del cliente.
+   ========================================================= */
+body.rc-client-body .cafe-products-section .cafe-product-image {
+    width: 100%;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #fbfaf7 0%, #f1eee7 100%);
+    border-bottom: 1px solid var(--sg-admin-line, #ddd8ce);
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-image img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: none !important;
+    filter: saturate(1.04) contrast(1.03) brightness(.97);
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-card:hover .cafe-product-image img {
+    transform: none !important;
+}
+
+@media (max-width: 992px) {
+    body.rc-client-body .cafe-products-section .cafe-product-image {
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    body.rc-client-body .cafe-products-section .cafe-product-image {
+        min-height: 180px;
+    }
+}
+
+
+/* =========================================================
+   CORRECCIÓN DEFINITIVA: IMÁGENES COMPLETAS EN EL INICIO
+   DEL CLIENTE. Esta regla se carga al final y evita cualquier
+   recorte provocado por estilos anteriores o por object-fit: cover.
+   ========================================================= */
+body.rc-client-body .cafe-products-section .cafe-product-image.cafe-product-image-completa {
+    width: 100% !important;
+    height: 270px !important;
+    min-height: 270px !important;
+    aspect-ratio: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    background: #f5f2eb !important;
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-image.cafe-product-image-completa > img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: none !important;
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-card:hover
+.cafe-product-image.cafe-product-image-completa > img {
+    transform: none !important;
+}
+
+@media (max-width: 768px) {
+    body.rc-client-body .cafe-products-section .cafe-product-image.cafe-product-image-completa {
+        height: 240px !important;
+        min-height: 240px !important;
     }
 }

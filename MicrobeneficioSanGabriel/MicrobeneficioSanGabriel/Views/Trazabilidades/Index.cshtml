@@ -12,6 +12,34 @@
     var etapasConteo = registros.GroupBy(t => t.Etapa).OrderByDescending(g => g.Count()).ToList();
     var etapaPrincipal = etapasConteo.FirstOrDefault();
     decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
+    string Fmt(decimal valor) => valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    string ColorEtapa(string etapa) => etapa switch
+    {
+        "Recepción" => "#D97800",
+        "Despulpado" => "#4F8738",
+        "Fermentación" => "#5B3A16",
+        "Lavado" => "#9DBB8F",
+        "Secado" => "#294B2A",
+        "Tueste" => "#8B5A2B",
+        "Tostado" => "#8B5A2B",
+        "Molido" => "#D97800",
+        "Producción" => "#5B3A16",
+        "Empaque" => "#E8D4B0",
+        "Almacenamiento" => "#6F8F63",
+        _ => "#667A5B"
+    };
+    string CrearDonutEtapas()
+    {
+        if (total <= 0) return "conic-gradient(#E8D4B0 0% 100%)";
+        var partes = new List<string>(); decimal acumulado = 0m;
+        foreach (var etapa in etapasConteo)
+        {
+            var inicio = acumulado; acumulado += etapa.Count() * 100m / total;
+            partes.Add($"{ColorEtapa(etapa.Key)} {Fmt(inicio)}% {Fmt(acumulado)}%");
+        }
+        return $"conic-gradient({string.Join(", ", partes)})";
+    }
+    var donutEtapas = CrearDonutEtapas();
 }
 <section class="sg-page-head">
     <div>
@@ -50,7 +78,7 @@
     <article class="sg-card sg-panel"><h3 class="mb-4">Ruta de trazabilidad</h3><div class="sg-steps"><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-user-tie"></i></div><b>Productor</b><br/><small>Origen registrado</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-mountain-sun"></i></div><b>Finca</b><br/><small>Ubicación registrada</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-sack-xmark"></i></div><b>Lote</b><br/><small>@lotes lote(s)</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-gear"></i></div><b>Producción</b><br/><small>@producciones proceso(s)</small></div><div class="sg-step-line"></div><div class="sg-step gold"><div class="sg-step-icon"><i class="fa-solid fa-clipboard-check"></i></div><b>Seguimiento</b><br/><small>@total registro(s)</small></div></div></article>
     <article class="sg-card sg-panel">
         <h3>Distribución por etapa</h3><div class="sg-donut-wrap mt-3">
-        <div class="sg-donut" style="--p:@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))"><div><b>@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))%</b><br /><span>@(etapaPrincipal?.Key ?? "Sin datos")</span></div></div><div class="sg-legend">
+        <div class="sg-donut" style="--donut-bg: @donutEtapas"><div class="sg-donut-center"><b>@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))%</b><span>@(etapaPrincipal?.Key ?? "Sin datos")</span></div></div><div class="sg-legend">
         @if (etapasConteo.Any())
         {
             foreach (var etapa in etapasConteo)
@@ -68,7 +96,7 @@
                 };
 
                 <div class="sg-legend-row">
-                    <span class="sg-dot @color"></span>
+                    <span class="sg-dot" style="background:@ColorEtapa(etapa.Key)"></span>
                     <span>@etapa.Key</span>
                     <b>@etapa.Count()</b>
                 </div>

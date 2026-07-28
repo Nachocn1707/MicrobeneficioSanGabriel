@@ -1,0 +1,264 @@
+    <div class="modal fade"
+         id="paymentModal"
+         tabindex="-1"
+         aria-labelledby="paymentModalTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable sg-payment-dialog">
+            <div class="modal-content sg-payment-modal">
+                <div class="modal-header sg-payment-header">
+                    <div class="sg-payment-heading">
+                        <span class="sg-payment-heading-icon" aria-hidden="true">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </span>
+                        <div>
+                            <small>Proceso seguro</small>
+                            <h2 id="paymentModalTitle">Método de pago</h2>
+                        </div>
+                    </div>
+
+                    <button type="button"
+                            class="btn-close sg-payment-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body sg-payment-body">
+                    <div id="paymentFormView">
+                        <form asp-controller="Pedidos"
+                              asp-action="Pago"
+                              method="post"
+                              id="modalPaymentForm">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="pedidoId" id="modalPedidoId" />
+
+                            <div class="sg-payment-layout">
+                                <div class="sg-payment-main">
+                                    <div class="sg-payment-section-label">
+                                        <span>Seleccioná cómo pagar</span>
+                                        <span class="sg-payment-secure-badge">
+                                            <i class="fa-solid fa-lock"></i>
+                                            Datos protegidos
+                                        </span>
+                                    </div>
+
+                                    <div class="sg-payment-methods" role="radiogroup" aria-label="Métodos de pago">
+                                        <label class="sg-payment-method">
+                                            <input type="radio"
+                                                   name="metodoPago"
+                                                   value="SINPE Móvil"
+                                                   checked />
+                                            <span class="sg-payment-method-card">
+                                                <span class="sg-payment-method-icon" aria-hidden="true">
+                                                    <i class="fa-solid fa-mobile-screen-button"></i>
+                                                </span>
+                                                <span class="sg-payment-method-copy">
+                                                    <strong>SINPE Móvil</strong>
+                                                    <small>Transferencia rápida desde tu banco</small>
+                                                </span>
+                                                <span class="sg-payment-radio-mark" aria-hidden="true"></span>
+                                            </span>
+                                        </label>
+
+                                        <label class="sg-payment-method cash">
+                                            <input type="radio"
+                                                   name="metodoPago"
+                                                   value="Efectivo" />
+                                            <span class="sg-payment-method-card">
+                                                <span class="sg-payment-method-icon" aria-hidden="true">
+                                                    <i class="fa-solid fa-money-bill-wave"></i>
+                                                </span>
+                                                <span class="sg-payment-method-copy">
+                                                    <strong>Efectivo</strong>
+                                                    <small>Pagá al retirar el pedido en el establecimiento</small>
+                                                </span>
+                                                <span class="sg-payment-radio-mark" aria-hidden="true"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div class="sg-payment-details" id="modalSinpeDetails">
+                                        <div class="sg-payment-details-head">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                            <div>
+                                                <strong>Información para realizar el SINPE</strong>
+                                                <span>Usá el número indicado y colocá el código del pedido como referencia.</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="sg-sinpe-number-box">
+                                            <div>
+                                                <small>Número SINPE Móvil</small>
+                                                <strong>8954-6434</strong>
+                                            </div>
+                                            <button type="button"
+                                                    class="sg-copy-button"
+                                                    id="copySinpeNumber"
+                                                    data-number="89546434"
+                                                    aria-label="Copiar número SINPE">
+                                                <i class="fa-regular fa-copy"></i>
+                                            </button>
+                                        </div>
+
+                                        <p class="sg-payment-note">
+                                            <i class="fa-solid fa-receipt"></i>
+                                            <span>
+                                                Referencia: <strong id="modalReference">Pedido</strong>.
+                                                El pago quedará pendiente hasta validar el comprobante.
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <div class="sg-payment-details" id="modalCashDetails" hidden>
+                                        <div class="sg-payment-details-head">
+                                            <i class="fa-solid fa-store"></i>
+                                            <div>
+                                                <strong>Pago en el establecimiento</strong>
+                                                <span>Cancelá el monto total en efectivo cuando retirés tu pedido.</span>
+                                            </div>
+                                        </div>
+                                        <p class="sg-payment-note">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>No necesitás realizar ningún depósito anticipado.</span>
+                                        </p>
+                                    </div>
+
+                                    <div class="sg-payment-feedback"
+                                         id="paymentModalFeedback"
+                                         role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        <span>No fue posible procesar la solicitud.</span>
+                                    </div>
+
+                                    <div class="sg-payment-actions">
+                                        <button type="button"
+                                                class="sg-payment-button secondary"
+                                                data-bs-dismiss="modal">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit"
+                                                class="sg-payment-button primary"
+                                                id="paymentSubmitButton">
+                                            <i class="fa-solid fa-lock"></i>
+                                            <span id="paymentSubmitText">Confirmar método de pago</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <aside class="sg-payment-sidebar" aria-label="Resumen del pedido">
+                                    <div class="sg-order-summary">
+                                        <div class="sg-order-summary-head">
+                                            <span class="sg-order-summary-icon" aria-hidden="true">
+                                                <i class="fa-solid fa-mug-hot"></i>
+                                            </span>
+                                            <div>
+                                                <small>Resumen del pedido</small>
+                                                <strong id="modalOrderCode">Pedido</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="sg-order-summary-body">
+                                            <div class="sg-order-summary-row">
+                                                <span>Producto</span>
+                                                <strong id="modalProduct">Producto</strong>
+                                            </div>
+                                            <div class="sg-order-summary-row">
+                                                <span>Cantidad</span>
+                                                <strong id="modalQuantity">0 kg</strong>
+                                            </div>
+                                            <div class="sg-order-summary-row">
+                                                <span>Fecha del pedido</span>
+                                                <strong id="modalDate">—</strong>
+                                            </div>
+                                            <div class="sg-order-summary-row">
+                                                <span>Subtotal</span>
+                                                <strong id="modalSubtotal">₡0</strong>
+                                            </div>
+                                            <div class="sg-order-summary-row">
+                                                <span>IVA (13%)</span>
+                                                <strong id="modalIva">₡0</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="sg-order-summary-total">
+                                            <span>Total a pagar</span>
+                                            <strong id="modalTotal">₡0</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="sg-payment-trust">
+                                        <div>
+                                            <i class="fa-solid fa-shield-halved"></i>
+                                            <span>Proceso confiable</span>
+                                        </div>
+                                        <div>
+                                            <i class="fa-solid fa-headset"></i>
+                                            <span>Soporte disponible</span>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </form>
+                    </div>
+
+                    <section class="sg-payment-success"
+                             id="paymentSuccessView"
+                             aria-live="polite"
+                             hidden>
+                        <span class="sg-payment-success-icon" aria-hidden="true">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <h3>Método de pago registrado</h3>
+                        <p id="paymentSuccessMessage">
+                            La información se guardó correctamente.
+                        </p>
+
+                        <div class="sg-payment-success-box">
+                            <div>
+                                <small>Pedido</small>
+                                <strong id="paymentSuccessOrder">—</strong>
+                            </div>
+                            <div>
+                                <small>Método</small>
+                                <strong id="paymentSuccessMethod">—</strong>
+                            </div>
+                            <div>
+                                <small>Estado</small>
+                                <strong id="paymentSuccessStatus">Pendiente de pago</strong>
+                            </div>
+                        </div>
+
+                        <div class="sg-payment-success-box"
+                             id="paymentSuccessSinpeBlock">
+                            <div>
+                                <small>Número SINPE</small>
+                                <strong id="paymentSuccessSinpeNumber">89546434</strong>
+                            </div>
+                            <div>
+                                <small>Monto</small>
+                                <strong id="paymentSuccessTotal">₡0</strong>
+                            </div>
+                            <div>
+                                <small>Comprobante</small>
+                                <strong>Requerido</strong>
+                            </div>
+                        </div>
+
+                        <a href="#"
+                           class="sg-payment-button sg-payment-whatsapp"
+                           id="paymentWhatsappButton"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            Enviar comprobante
+                        </a>
+
+                        <button type="button"
+                                class="sg-payment-button primary"
+                                id="paymentSuccessCloseButton">
+                            Entendido
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>

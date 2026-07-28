@@ -99,6 +99,8 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador,Cliente")]
         public async Task<IActionResult> Create(Pedido pedido)
         {
+            var esSolicitudAjax = EsSolicitudAjax();
+
             pedido.ClienteNombre = pedido.ClienteNombre?.Trim() ?? string.Empty;
             pedido.ClienteCorreo = string.IsNullOrWhiteSpace(pedido.ClienteCorreo)
                 ? null
@@ -158,6 +160,26 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (!ModelState.IsValid)
             {
+                if (esSolicitudAjax)
+                {
+                    var errores = ModelState
+                        .Where(item => item.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            item => item.Key,
+                            item => item.Value!.Errors
+                                .Select(error => string.IsNullOrWhiteSpace(error.ErrorMessage)
+                                    ? "El valor ingresado no es válido."
+                                    : error.ErrorMessage)
+                                .ToArray());
+
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Revise los datos marcados antes de continuar al pago.",
+                        errors = errores
+                    });
+                }
+
                 CargarProductos(pedido.ProductoId);
                 return View(pedido);
             }
@@ -175,6 +197,29 @@ namespace MicrobeneficioSanGabriel.Controllers
                 Observacion = pedido.Observacion,
                 FechaCreacion = DateTime.Now
             });
+
+            if (esSolicitudAjax)
+            {
+                var cultura = System.Globalization.CultureInfo.GetCultureInfo("es-CR");
+                var subtotal = Math.Round(producto!.Precio * pedido.Cantidad, 2, MidpointRounding.AwayFromZero);
+                var iva = Math.Round(subtotal * 0.13m, 2, MidpointRounding.AwayFromZero);
+                var total = Math.Round(subtotal + iva, 2, MidpointRounding.AwayFromZero);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "El pedido está listo para seleccionar el método de pago.",
+                    pedidoId = (int?)null,
+                    codigoPedido = "Pedido nuevo",
+                    producto = producto.Nombre,
+                    cantidad = pedido.Cantidad.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture),
+                    fecha = DateTime.Now.ToString("dd MMM yyyy", cultura),
+                    subtotalDisplay = $"₡{subtotal.ToString("N0", cultura)}",
+                    ivaDisplay = $"₡{iva.ToString("N0", cultura)}",
+                    totalDisplay = $"₡{total.ToString("N0", cultura)}",
+                    redirectUrl = Url.Action(nameof(Index))
+                });
+            }
 
             TempData["Info"] = "Revise el resumen y confirme el método de pago. El pedido todavía no ha sido almacenado.";
             return RedirectToAction(nameof(Pago));
@@ -745,7 +790,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             pedido.Producto = producto;
             if (esSolicitudAjax)
             {
-                return CrearRespuestaPagoAjax(pedido);
+                return CrearRespuestaPagoAjax(pedido, redirigirAlListado: true);
             }
 
             return metodoPago == "SINPE Móvil"
@@ -869,7 +914,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 StringComparison.OrdinalIgnoreCase);
         }
 
-        private JsonResult CrearRespuestaPagoAjax(Pedido pedido)
+        private JsonResult CrearRespuestaPagoAjax(Pedido pedido, bool redirigirAlListado = false)
         {
             const string numeroSinpe = "89546434";
             var codigoPedido = $"PP-{pedido.Id:0000}";
@@ -885,7 +930,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 metodoPago = pedido.MetodoPago,
                 estadoPago = pedido.EstadoPago,
                 sinpeNumero = numeroSinpe,
-                whatsappUrl = $"https://wa.me/506{numeroSinpe}?text={textoWhatsapp}"
+                whatsappUrl = $"https://wa.me/506{numeroSinpe}?text={textoWhatsapp}",
+                redirectUrl = redirigirAlListado ? Url.Action(nameof(Index)) : null
             });
         }
 
