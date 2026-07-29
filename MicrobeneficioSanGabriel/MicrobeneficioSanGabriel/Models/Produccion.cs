@@ -9,6 +9,7 @@ namespace MicrobeneficioSanGabriel.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Debe seleccionar un lote")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un lote")]
         [Display(Name = "Lote")]
         public int LoteId { get; set; }
 
@@ -20,6 +21,7 @@ namespace MicrobeneficioSanGabriel.Models
         public DateTime FechaProduccion { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El tipo de proceso es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El tipo de proceso es obligatorio")]
         [Display(Name = "Tipo de proceso")]
         public string TipoProceso { get; set; } = string.Empty;
 
@@ -36,6 +38,7 @@ namespace MicrobeneficioSanGabriel.Models
         public decimal CantidadResultanteKg { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]
         public string Estado { get; set; } = string.Empty;
 
         [Display(Name = "Observación")]

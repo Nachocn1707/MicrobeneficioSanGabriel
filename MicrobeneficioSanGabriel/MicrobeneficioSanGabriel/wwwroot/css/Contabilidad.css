@@ -67,14 +67,14 @@
     }
 
 .btn-finanzas-nuevo {
-    background: #4a2c1a;
-    color: #fff8df;
-    box-shadow: 0 12px 28px rgba(74, 44, 26, 0.18);
+    background: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22);
 }
 
     .btn-finanzas-nuevo:hover {
-        background: #7a5230;
-        color: #fff8df;
+        background: #1d4ed8;
+        color: #ffffff;
     }
 
 .finanzas-alert {

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using MicrobeneficioSanGabriel.Infrastructure;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Identity;
@@ -49,8 +50,9 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+            [CompleteEmailAddress]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
         }
 

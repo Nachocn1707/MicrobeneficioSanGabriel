@@ -117,8 +117,9 @@
                             <input asp-for="Input.Email"
                                    id="email"
                                    class="sgl-input"
+                                   type="email"
                                    autocomplete="username"
-                                   placeholder="correo@ejemplo.com" />
+                                   placeholder="usuario@gmail.com" />
                         </div>
                         <span asp-validation-for="Input.Email" class="sgl-error-text"></span>
                     </div>
@@ -163,7 +164,7 @@
 
                     <div class="sgl-rules">
                         <div class="sgl-rules-title">Requisitos de seguridad</div>
-                        <div id="emailMessage" class="sgl-rule"><i class="fa-solid fa-circle-xmark"></i> Correo válido</div>
+                        <div id="emailMessage" class="sgl-rule"><i class="fa-solid fa-circle-xmark"></i> Correo completo (ej. gmail.com o hotmail.com)</div>
                         <div id="length" class="sgl-rule"><i class="fa-solid fa-circle-xmark"></i> Mínimo 8 caracteres</div>
                         <div id="uppercase" class="sgl-rule"><i class="fa-solid fa-circle-xmark"></i> Una mayúscula</div>
                         <div id="lowercase" class="sgl-rule"><i class="fa-solid fa-circle-xmark"></i> Una minúscula</div>

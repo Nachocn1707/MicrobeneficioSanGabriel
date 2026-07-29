@@ -132,7 +132,12 @@
                                     <label asp-for="FechaPedido" class="form-label">Fecha del pedido</label>
                                     <div class="input-modern">
                                         <i class="fa-regular fa-calendar-days"></i>
-                                        <input asp-for="FechaPedido" type="datetime-local" class="form-control" />
+                                        <input asp-for="FechaPedido" type="datetime-local" class="form-control"
+                                               min="@DateTime.Today.ToString("yyyy-MM-ddTHH:mm")"
+                                               data-no-past-date="true"
+                                               data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                               data-original-date="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                               data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                     </div>
                                     <span asp-validation-for="FechaPedido" class="text-danger"></span>
                                 </div>

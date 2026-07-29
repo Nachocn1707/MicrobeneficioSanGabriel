@@ -70,7 +70,9 @@
                                     <i class="fa-regular fa-envelope label-icon"></i>
                                     Correo
                                 </label>
-                                <input asp-for="Email" class="form-control" autocomplete="username" placeholder="correo@ejemplo.com" />
+                                <input asp-for="Email" class="form-control" type="email" autocomplete="username"
+                                       placeholder="usuario@gmail.com" />
+                                <div class="form-text">Ejemplos válidos: usuario@gmail.com o usuario@hotmail.com</div>
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>

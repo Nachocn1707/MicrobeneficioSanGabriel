@@ -8,25 +8,27 @@ namespace MicrobeneficioSanGabriel.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El nombre del producto es obligatorio")]
         [StringLength(100)]
         public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La categoría es obligatoria")]
+        [NotWhiteSpace(ErrorMessage = "La categoría es obligatoria")]
         [StringLength(50)]
         public string Categoria { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El precio es obligatorio")]
-        [Range(1, 9999999, ErrorMessage = "El precio debe ser un número entero mayor a 0")]
+        [Range(typeof(decimal), "1", "9999999", ErrorMessage = "El precio debe estar entre ₡1 y ₡9 999 999")]
         [WholeNumber]
         public decimal Precio { get; set; }
 
         [Required(ErrorMessage = "El stock es obligatorio")]
-        [Range(0, 999999, ErrorMessage = "El stock no puede ser negativo")]
+        [Range(typeof(decimal), "0", "999999", ErrorMessage = "El stock debe estar entre 0 y 999 999 unidades")]
         [WholeNumber]
         public decimal Stock { get; set; }
 
         [Display(Name = "Stock mínimo")]
-        [Range(0, 999999, ErrorMessage = "El stock mínimo no puede ser negativo")]
+        [Range(typeof(decimal), "0", "999999", ErrorMessage = "El stock mínimo debe estar entre 0 y 999 999 unidades")]
         [WholeNumber]
         public decimal StockMinimo { get; set; } = 20;
 

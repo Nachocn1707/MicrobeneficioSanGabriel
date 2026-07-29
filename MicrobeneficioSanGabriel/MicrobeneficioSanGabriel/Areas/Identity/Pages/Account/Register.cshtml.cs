@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using MicrobeneficioSanGabriel.Infrastructure;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -52,10 +53,12 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required(ErrorMessage = "El nombre es obligatorio.")]
+            [NotWhiteSpace(ErrorMessage = "El nombre es obligatorio.")]
             [Display(Name = "Nombre")]
             public string Nombre { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+            [NotWhiteSpace(ErrorMessage = "Los apellidos son obligatorios.")]
             [Display(Name = "Apellidos")]
             public string Apellidos { get; set; } = string.Empty;
 
@@ -65,16 +68,20 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             public string PhoneNumber { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "El correo es obligatorio.")]
-            [EmailAddress(ErrorMessage = "Debe ingresar un correo válido.")]
+            [CompleteEmailAddress]
+            [DataType(DataType.EmailAddress)]
             [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
             [Required(ErrorMessage = "La contraseña es obligatoria.")]
+            [NotWhiteSpace(ErrorMessage = "La contraseña es obligatoria.")]
             [StringLength(100, ErrorMessage = "La contraseña debe tener al menos {2} y máximo {1} caracteres.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
+            [Required(ErrorMessage = "Debe confirmar la contraseña.")]
+            [NotWhiteSpace(ErrorMessage = "Debe confirmar la contraseña.")]
             [DataType(DataType.Password)]
             [Display(Name = "Confirmar contraseña")]
             [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
@@ -189,7 +196,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 {
                     string mensaje = error.Description;
 
-                    if (mensaje.Contains("is already taken", StringComparison.OrdinalIgnoreCase))
+                    if (error.Code is "DuplicateUserName" or "DuplicateEmail")
                     {
                         if (emailDuplicadoMostrado)
                         {

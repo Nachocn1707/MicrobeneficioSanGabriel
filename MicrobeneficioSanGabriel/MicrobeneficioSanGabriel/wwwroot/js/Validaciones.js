@@ -112,7 +112,7 @@ function sglValidateRegisterForm() {
     const password = document.getElementById("password")?.value ?? "";
     const confirmPassword = document.getElementById("confirmPassword")?.value ?? "";
 
-    const emailIsValid = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(email);
+    const emailIsValid = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
     sglSetRule("emailMessage", emailIsValid);
     sglSetRule("length", password.length >= 8);
     sglSetRule("uppercase", /[A-Z]/.test(password));

@@ -106,6 +106,10 @@
                                     <i class="fa-solid fa-user-check"></i>
                                     <input asp-for="Responsable"
                                            class="form-control"
+                                           maxlength="100"
+                                           required
+                                           data-not-whitespace="true"
+                                           data-whitespace-message="El responsable no puede contener únicamente espacios."
                                            placeholder="Nombre del responsable" />
                                 </div>
                                 <span asp-validation-for="Responsable" class="text-danger"></span>

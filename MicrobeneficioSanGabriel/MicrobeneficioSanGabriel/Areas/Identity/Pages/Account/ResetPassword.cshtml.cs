@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using MicrobeneficioSanGabriel.Infrastructure;
 using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
@@ -42,15 +43,16 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+            [CompleteEmailAddress]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
             [StringLength(100, ErrorMessage = "La contraseña debe tener al menos {2} y máximo {1} caracteres.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             public string Password { get; set; }
@@ -60,15 +62,15 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar contraseña")]
+            [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
             public string ConfirmPassword { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "El código de recuperación es obligatorio.")]
             public string Code { get; set; }
 
         }
@@ -77,7 +79,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
         {
             if (code == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("Debe proporcionar un código para restablecer la contraseña.");
             }
             else
             {

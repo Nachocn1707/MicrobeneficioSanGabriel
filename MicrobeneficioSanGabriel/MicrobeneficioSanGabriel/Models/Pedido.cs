@@ -9,6 +9,7 @@ namespace MicrobeneficioSanGabriel.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre del cliente es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El nombre del cliente es obligatorio")]
         [Display(Name = "Cliente")]
         public string ClienteNombre { get; set; } = string.Empty;
 
@@ -24,6 +25,7 @@ namespace MicrobeneficioSanGabriel.Models
         public string? ClienteCorreo { get; set; }
 
         [Required(ErrorMessage = "El teléfono del cliente es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El teléfono del cliente es obligatorio")]
         [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888")]
         [Display(Name = "Teléfono del cliente")]
         public string ClienteTelefono { get; set; } = string.Empty;
@@ -75,6 +77,7 @@ namespace MicrobeneficioSanGabriel.Models
         public DateTime FechaPedido { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El estado es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]
         public string Estado { get; set; } = "Pendiente";
 
         [Display(Name = "Observación")]

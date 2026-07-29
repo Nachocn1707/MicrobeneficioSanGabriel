@@ -86,8 +86,12 @@
                                     <input asp-for="FechaMovimiento"
                                            type="datetime-local"
                                            class="form-control"
-                                           min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
-                                           max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
+                                           min="@(Model.FechaMovimiento.Date >= DateTime.Today ? DateTime.Today.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
+                                           max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")"
+                                           data-no-past-date="true"
+                                           data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                           data-original-date="@Model.FechaMovimiento.ToString("yyyy-MM-dd")"
+                                           data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                 </div>
                                 <span asp-validation-for="FechaMovimiento" class="text-danger"></span>
                             </div>

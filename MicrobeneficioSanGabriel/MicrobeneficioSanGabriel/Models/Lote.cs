@@ -13,6 +13,7 @@ namespace MicrobeneficioSanGabriel.Models
         public string CodigoLote { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un productor")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un productor")]
         [Display(Name = "Productor")]
         public int ProductorId { get; set; }
 
@@ -37,6 +38,7 @@ namespace MicrobeneficioSanGabriel.Models
         public DateTime FechaRecepcion { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El estado es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]
         public string Estado { get; set; } = string.Empty;
 
         [StringLength(500)]

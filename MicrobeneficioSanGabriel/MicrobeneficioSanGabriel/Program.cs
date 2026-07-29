@@ -26,6 +26,26 @@ builder.Services.AddControllersWithViews(options =>
 {
     // Acepta 1.50 y 1,50 en todos los campos decimal del sistema.
     options.ModelBinderProviders.Insert(0, new FlexibleDecimalModelBinderProvider());
+
+    // Mantiene en español los mensajes generados automáticamente por ASP.NET
+    // cuando un valor no puede convertirse al tipo esperado por el modelo.
+    var mensajes = options.ModelBindingMessageProvider;
+    mensajes.SetAttemptedValueIsInvalidAccessor((valor, campo) =>
+        $"El valor '{valor}' no es válido para {campo}.");
+    mensajes.SetNonPropertyAttemptedValueIsInvalidAccessor(valor =>
+        $"El valor '{valor}' no es válido.");
+    mensajes.SetUnknownValueIsInvalidAccessor(campo =>
+        $"El valor ingresado no es válido para {campo}.");
+    mensajes.SetValueIsInvalidAccessor(valor =>
+        $"El valor '{valor}' no es válido.");
+    mensajes.SetValueMustBeANumberAccessor(campo =>
+        $"El campo {campo} debe contener un número válido.");
+    mensajes.SetValueMustNotBeNullAccessor(valor =>
+        $"El valor '{valor}' no es válido.");
+    mensajes.SetNonPropertyUnknownValueIsInvalidAccessor(() =>
+        "El valor ingresado no es válido.");
+    mensajes.SetNonPropertyValueMustBeANumberAccessor(() =>
+        "El valor ingresado debe ser un número válido.");
 });
 
 // El pedido se mantiene temporalmente en sesión hasta que el cliente confirme
@@ -57,7 +77,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
 })
 .AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<ApplicationDbContext>();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

@@ -21,7 +21,9 @@
     </div>
     <div class="col-md-6">
         <label asp-for="Correo" class="form-label"></label>
-        <input asp-for="Correo" class="form-control" type="email" placeholder="productor@correo.com" />
+        <input asp-for="Correo" class="form-control" type="email" autocomplete="email"
+               placeholder="usuario@gmail.com" />
+        <div class="form-text">Ejemplos válidos: usuario@gmail.com o usuario@hotmail.com</div>
         <span asp-validation-for="Correo" class="text-danger"></span>
     </div>
     <div class="col-md-6 d-flex align-items-end">

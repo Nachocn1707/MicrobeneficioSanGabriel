@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace MicrobeneficioSanGabriel.Infrastructure;
 
@@ -9,11 +10,31 @@ namespace MicrobeneficioSanGabriel.Infrastructure;
 /// pero los formularios de cantidades trabajan únicamente con enteros.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
-public sealed class WholeNumberAttribute : ValidationAttribute
+public sealed class WholeNumberAttribute : ValidationAttribute, IClientModelValidator
 {
     public WholeNumberAttribute()
         : base("Ingrese un número entero, sin comas ni decimales.")
     {
+    }
+
+
+    public void AddValidation(ClientModelValidationContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        MergeAttribute(context.Attributes, "data-val", "true");
+        MergeAttribute(context.Attributes, "data-val-wholenumber", ErrorMessageString);
+    }
+
+    private static bool MergeAttribute(IDictionary<string, string> attributes, string key, string value)
+    {
+        if (attributes.ContainsKey(key))
+        {
+            return false;
+        }
+
+        attributes.Add(key, value);
+        return true;
     }
 
     public override bool IsValid(object? value)

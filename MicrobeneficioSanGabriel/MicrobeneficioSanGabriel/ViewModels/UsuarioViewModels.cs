@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MicrobeneficioSanGabriel.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MicrobeneficioSanGabriel.ViewModels
@@ -39,25 +40,30 @@ namespace MicrobeneficioSanGabriel.ViewModels
     public class UsuarioCrearViewModel
     {
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [NotWhiteSpace(ErrorMessage = "El nombre es obligatorio.")]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+        [NotWhiteSpace(ErrorMessage = "Los apellidos son obligatorios.")]
         [Display(Name = "Apellidos")]
         public string Apellidos { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
-        [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
+        [CompleteEmailAddress]
+        [DataType(DataType.EmailAddress)]
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
+        [NotWhiteSpace(ErrorMessage = "La contraseña es obligatoria.")]
         [DataType(DataType.Password)]
         [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
         [Display(Name = "Contraseña")]
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe confirmar la contraseña.")]
+        [NotWhiteSpace(ErrorMessage = "Debe confirmar la contraseña.")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
         [Display(Name = "Confirmar contraseña")]
@@ -69,6 +75,7 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un rol.")]
+        [NotWhiteSpace(ErrorMessage = "Debe seleccionar un rol.")]
         [Display(Name = "Rol")]
         public string Rol { get; set; } = string.Empty;
 
@@ -80,15 +87,18 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public string Id { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [NotWhiteSpace(ErrorMessage = "El nombre es obligatorio.")]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Los apellidos son obligatorios.")]
+        [NotWhiteSpace(ErrorMessage = "Los apellidos son obligatorios.")]
         [Display(Name = "Apellidos")]
         public string Apellidos { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
-        [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
+        [CompleteEmailAddress]
+        [DataType(DataType.EmailAddress)]
         [Display(Name = "Correo electrónico")]
         public string Email { get; set; } = string.Empty;
 
@@ -98,6 +108,7 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un rol.")]
+        [NotWhiteSpace(ErrorMessage = "Debe seleccionar un rol.")]
         [Display(Name = "Rol")]
         public string Rol { get; set; } = string.Empty;
 

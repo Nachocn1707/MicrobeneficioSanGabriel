@@ -247,6 +247,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             var pedido = await _context.Pedidos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
             if (pedido == null) return NotFound();
             pedido.ClienteTelefono = SoloDigitos(pedido.ClienteTelefono);
+            ViewBag.FechaPedidoOriginal = pedido.FechaPedido;
 
             CargarProductos(pedido.ProductoId, incluirInactivo: true);
             return View(pedido);
@@ -269,6 +270,14 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             datos.ClienteNombre = datos.ClienteNombre?.Trim() ?? string.Empty;
             datos.ClienteTelefono = SoloDigitos(datos.ClienteTelefono);
+            ViewBag.FechaPedidoOriginal = pedido.FechaPedido;
+
+            if (datos.FechaPedido.Date < DateTime.Today &&
+                datos.FechaPedido.Date != pedido.FechaPedido.Date)
+            {
+                ModelState.AddModelError(nameof(Pedido.FechaPedido),
+                    "No puede seleccionar una fecha anterior a hoy.");
+            }
 
             if (!EstadosPedido.EsValido(datos.Estado))
             {

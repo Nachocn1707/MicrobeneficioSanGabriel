@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MicrobeneficioSanGabriel.Infrastructure;
 
 namespace MicrobeneficioSanGabriel.Models
 {
@@ -7,10 +8,12 @@ namespace MicrobeneficioSanGabriel.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El tipo de registro es obligatorio.")]
+        [NotWhiteSpace(ErrorMessage = "El tipo de registro es obligatorio.")]
         [Display(Name = "Tipo")]
         public string Tipo { get; set; } = string.Empty; // Ingreso o Gasto
 
         [Required(ErrorMessage = "La descripción es obligatoria.")]
+        [NotWhiteSpace(ErrorMessage = "La descripción es obligatoria.")]
         [StringLength(150)]
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; } = string.Empty;
@@ -25,6 +28,8 @@ namespace MicrobeneficioSanGabriel.Models
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; } = DateTime.Today;
 
+        [Required(ErrorMessage = "La categoría es obligatoria.")]
+        [NotWhiteSpace(ErrorMessage = "La categoría es obligatoria.")]
         [StringLength(100)]
         [Display(Name = "Categoría")]
         public string? Categoria { get; set; }

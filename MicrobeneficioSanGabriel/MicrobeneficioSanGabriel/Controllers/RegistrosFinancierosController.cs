@@ -182,6 +182,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            ViewBag.FechaOriginal = registro.Fecha;
             return View(registro);
         }
 
@@ -192,6 +193,24 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (id != registroFinanciero.Id)
             {
                 return NotFound();
+            }
+
+            var registroActual = await _context.RegistrosFinancieros
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (registroActual == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.FechaOriginal = registroActual.Fecha;
+
+            if (registroFinanciero.Fecha.Date < DateTime.Today &&
+                registroFinanciero.Fecha.Date != registroActual.Fecha.Date)
+            {
+                ModelState.AddModelError(nameof(RegistroFinanciero.Fecha),
+                    "No puede seleccionar una fecha anterior a hoy.");
             }
 
             if (ModelState.IsValid)

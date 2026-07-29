@@ -131,7 +131,12 @@
                                         <i class="fa-regular fa-calendar-days label-icon"></i>
                                         Fecha de registro
                                     </label>
-                                    <input asp-for="FechaRegistro" type="datetime-local" class="form-control" />
+                                    <input asp-for="FechaRegistro" type="datetime-local" class="form-control"
+                                           min="@(Model.FechaRegistro.Date >= DateTime.Today ? DateTime.Today.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
+                                           data-no-past-date="true"
+                                           data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                           data-original-date="@Model.FechaRegistro.ToString("yyyy-MM-dd")"
+                                           data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                     <span asp-validation-for="FechaRegistro" class="text-danger"></span>
                                 </div>
                             </div>
@@ -142,7 +147,10 @@
                                         <i class="fa-regular fa-user label-icon"></i>
                                         Responsable
                                     </label>
-                                    <input asp-for="Responsable" class="form-control" placeholder="Nombre del responsable" />
+                                    <input asp-for="Responsable" class="form-control" maxlength="100" required
+                                           data-not-whitespace="true"
+                                           data-whitespace-message="El responsable no puede contener únicamente espacios."
+                                           placeholder="Nombre del responsable" />
                                     <span asp-validation-for="Responsable" class="text-danger"></span>
                                 </div>
                             </div>

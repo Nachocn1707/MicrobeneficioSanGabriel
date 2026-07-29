@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MicrobeneficioSanGabriel.Infrastructure;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrobeneficioSanGabriel.Models
@@ -8,6 +9,7 @@ namespace MicrobeneficioSanGabriel.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Debe seleccionar un pedido")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un pedido")]
         [Display(Name = "Pedido")]
         public int PedidoId { get; set; }
 
@@ -31,6 +33,7 @@ namespace MicrobeneficioSanGabriel.Models
         public decimal Total { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio")]
+        [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]
         public string EstadoPago { get; set; } = "Pendiente";
 
         [Display(Name = "Observación")]
