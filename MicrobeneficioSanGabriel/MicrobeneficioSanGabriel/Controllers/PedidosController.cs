@@ -522,7 +522,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Vendedor")]
         public async Task<IActionResult> CambiarEstado(int? id)
         {
             if (id == null) return NotFound();
@@ -530,16 +530,37 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(p => p.Producto)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
-            return pedido == null ? NotFound() : View(pedido);
+
+            if (pedido == null) return NotFound();
+
+            if (User.IsInRole("Vendedor") &&
+                !EstadosPago.EsPagado(pedido.EstadoPago))
+            {
+                TempData["Error"] =
+                    "El vendedor solo puede cambiar el estado cuando el pago esté completado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(pedido);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Vendedor")]
         public async Task<IActionResult> CambiarEstado(int id, string estado)
         {
             var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
             if (pedido == null) return NotFound();
+
+            if (User.IsInRole("Vendedor") &&
+                !EstadosPago.EsPagado(pedido.EstadoPago))
+            {
+                TempData["Error"] =
+                    "El vendedor solo puede cambiar el estado cuando el pago esté completado.";
+
+                return RedirectToAction(nameof(Index));
+            }
 
             if (!EstadosPedido.EsValido(estado))
             {

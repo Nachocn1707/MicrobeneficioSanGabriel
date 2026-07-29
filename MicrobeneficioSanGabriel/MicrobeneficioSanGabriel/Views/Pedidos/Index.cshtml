@@ -321,15 +321,53 @@ else
                         <td>₡@(((p.PrecioUnitarioMostrar) * p.Cantidad).ToString("N0"))</td>
                         <td>
                             <span class="sg-action-icons">
-                                <a asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a>@if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
+                                <a asp-action="Details"
+                                   asp-route-id="@p.Id"
+                                   title="Ver detalles"
+                                   aria-label="Ver detalles">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                @if (User.IsInRole("Administrador") || User.IsInRole("Vendedor"))
                                 {
-                                    <a asp-action="CambiarEstadoPago" asp-route-id="@p.Id" title="Cambiar estado de pago" aria-label="Cambiar estado de pago"><i class="fa-solid fa-wallet"></i></a>
+                                    <a asp-action="CambiarEstadoPago"
+                                       asp-route-id="@p.Id"
+                                       title="Cambiar estado de pago"
+                                       aria-label="Cambiar estado de pago">
+                                        <i class="fa-solid fa-wallet"></i>
+                                    </a>
                                 }
+
+                                @if (User.IsInRole("Administrador") ||
+                                     (User.IsInRole("Vendedor") &&
+                                      string.Equals(
+                                          p.EstadoPago,
+                                          "Pago completado",
+                                          StringComparison.OrdinalIgnoreCase)))
+                                {
+                                    <a asp-action="CambiarEstado"
+                                       asp-route-id="@p.Id"
+                                       title="Cambiar estado del pedido"
+                                       aria-label="Cambiar estado del pedido">
+                                        <i class="fa-solid fa-list-check"></i>
+                                    </a>
+                                }
+
                                 @if (User.IsInRole("Administrador"))
                                 {
-                                    <a asp-action="Edit" asp-route-id="@p.Id" title="Editar pedido" aria-label="Editar pedido"><i class="fa-solid fa-pen"></i></a>
-                                    <a asp-action="CambiarEstado" asp-route-id="@p.Id" title="Cambiar estado del pedido" aria-label="Cambiar estado del pedido"><i class="fa-solid fa-list-check"></i></a>
-                                    <a asp-action="Delete" asp-route-id="@p.Id" title="Eliminar pedido" aria-label="Eliminar pedido"><i class="fa-solid fa-trash"></i></a>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@p.Id"
+                                       title="Editar pedido"
+                                       aria-label="Editar pedido">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@p.Id"
+                                       title="Eliminar pedido"
+                                       aria-label="Eliminar pedido">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
                                 }
                             </span>
                         </td>
