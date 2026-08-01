@@ -3,11 +3,45 @@ using MicrobeneficioSanGabriel.Infrastructure;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Los tokens de confirmación y recuperación de Identity dependen de las claves
+// de Data Protection. Se guardan en una ubicación persistente para que no se
+// invaliden cuando la aplicación se reinicia, se vuelve a publicar o Azure
+// recicla el proceso.
+var dataProtectionBasePath = Environment.GetEnvironmentVariable("HOME");
+if (string.IsNullOrWhiteSpace(dataProtectionBasePath))
+{
+    dataProtectionBasePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+}
+if (string.IsNullOrWhiteSpace(dataProtectionBasePath))
+{
+    dataProtectionBasePath = builder.Environment.ContentRootPath;
+}
+
+var dataProtectionKeysPath = Path.Combine(
+    dataProtectionBasePath,
+    "MicrobeneficioSanGabriel",
+    "DataProtectionKeys");
+
+Directory.CreateDirectory(dataProtectionKeysPath);
+
+builder.Services
+    .AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionKeysPath))
+    .SetApplicationName("MicrobeneficioSanGabriel");
+
+// Tiempo suficiente para que el usuario pueda abrir el correo sin que el enlace
+// expire de forma prematura.
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(6);
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))

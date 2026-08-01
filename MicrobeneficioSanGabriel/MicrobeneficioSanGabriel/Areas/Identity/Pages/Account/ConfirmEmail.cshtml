@@ -2,7 +2,7 @@
 @using MicrobeneficioSanGabriel.Models
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Correo confirmado";
+    ViewData["Title"] = Model.ConfirmacionExitosa ? "Correo confirmado" : "Verificación de correo";
 }
 
 <div class="auth-shell auth-state-shell">
@@ -15,20 +15,49 @@
     </header>
 
     <main class="auth-state-stage">
-        <article class="auth-state-card auth-state-success">
-            <div class="auth-state-icon"><i class="fa-solid fa-circle-check"></i></div>
-            <span class="auth-kicker"><i class="fa-solid fa-shield-halved"></i> Verificación completada</span>
-            <h2>Correo confirmado</h2>
-            <p>Tu correo electrónico fue confirmado correctamente. La cuenta ya está lista para ingresar al sistema.</p>
-            <div class="auth-state-details">
-                <span><i class="fa-solid fa-user-check"></i> Cuenta habilitada</span>
-                <span><i class="fa-solid fa-lock"></i> Acceso seguro</span>
-                <span><i class="fa-solid fa-mug-hot"></i> Portal San Gabriel</span>
-            </div>
-            <div class="auth-state-actions">
-                <a asp-page="./Login" class="btn-login auth-inline-action"><i class="fa-solid fa-right-to-bracket"></i> Ir al login</a>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-secondary-action"><i class="fa-solid fa-house"></i> Volver al inicio</a>
-            </div>
-        </article>
+        @if (Model.ConfirmacionExitosa)
+        {
+            <article class="auth-state-card auth-state-success">
+                <div class="auth-state-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <span class="auth-kicker"><i class="fa-solid fa-shield-halved"></i> Verificación completada</span>
+                <h2>Correo confirmado</h2>
+                <p>@Model.MensajeEstado</p>
+                <div class="auth-state-details">
+                    <span><i class="fa-solid fa-user-check"></i> Cuenta habilitada</span>
+                    <span><i class="fa-solid fa-lock"></i> Acceso seguro</span>
+                    <span><i class="fa-solid fa-mug-hot"></i> Portal San Gabriel</span>
+                </div>
+                <div class="auth-state-actions">
+                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="btn-login auth-inline-action"><i class="fa-solid fa-right-to-bracket"></i> Ir al login</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="auth-secondary-action"><i class="fa-solid fa-house"></i> Volver al inicio</a>
+                </div>
+            </article>
+        }
+        else
+        {
+            <article class="auth-state-card auth-state-warning">
+                <div class="auth-state-icon"><i class="fa-solid fa-envelope-circle-xmark"></i></div>
+                <span class="auth-kicker"><i class="fa-solid fa-circle-info"></i> Verificación pendiente</span>
+                <h2>No se pudo confirmar</h2>
+                <p class="auth-state-error-message">@Model.MensajeEstado</p>
+                <div class="auth-state-details">
+                    <span><i class="fa-solid fa-envelope"></i> Revisá que sea el correo más reciente</span>
+                    <span><i class="fa-solid fa-rotate"></i> Solicitá un enlace nuevo</span>
+                    <span><i class="fa-solid fa-shield-halved"></i> Tu contraseña no se modifica</span>
+                </div>
+                <div class="auth-state-actions">
+                    @if (!string.IsNullOrWhiteSpace(Model.Email))
+                    {
+                        <a asp-page="./RegisterConfirmation"
+                           asp-route-email="@Model.Email"
+                           asp-route-returnUrl="@Model.ReturnUrl"
+                           class="btn-login auth-inline-action">
+                            <i class="fa-solid fa-paper-plane"></i> Reenviar correo
+                        </a>
+                    }
+                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="auth-secondary-action"><i class="fa-solid fa-arrow-left"></i> Volver al login</a>
+                </div>
+            </article>
+        }
     </main>
 </div>

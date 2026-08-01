@@ -19,8 +19,10 @@ namespace MicrobeneficioSanGabriel.Services
         {
             var safeTitle = WebUtility.HtmlEncode(title);
             var safeButtonText = WebUtility.HtmlEncode(buttonText);
+            var safeButtonUrl = WebUtility.HtmlEncode(buttonUrl);
 
-            // message y buttonUrl llegan codificados desde las páginas de Identity.
+            // El texto del mensaje ya llega preparado por las páginas de Identity.
+            // La URL se codifica una sola vez aquí para conservar todos los parámetros.
             return $"""
                 <!doctype html>
                 <html lang="es">
@@ -49,7 +51,7 @@ namespace MicrobeneficioSanGabriel.Services
                                     </tr>
                                     <tr>
                                         <td align="center" style="padding:34px 42px;">
-                                            <a href="{buttonUrl}"
+                                            <a href="{safeButtonUrl}"
                                                style="display:inline-block;background:#6b3514;color:#ffffff;text-decoration:none;font-size:16px;font-weight:700;padding:15px 31px;border-radius:12px;">
                                                 {safeButtonText}
                                             </a>

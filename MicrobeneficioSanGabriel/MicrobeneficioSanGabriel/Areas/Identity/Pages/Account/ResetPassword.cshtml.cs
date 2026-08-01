@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using MicrobeneficioSanGabriel.Infrastructure;
@@ -17,6 +16,7 @@ using MicrobeneficioSanGabriel.Models;
 
 namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -73,22 +73,65 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "El código de recuperación es obligatorio.")]
             public string Code { get; set; }
 
+            // Identifica de manera segura la cuenta asociada al enlace. El correo
+            // sigue visible en el formulario, pero no se usa como único criterio.
+            public string UserId { get; set; }
+
         }
 
-        public IActionResult OnGet(string code = null)
+        public async Task<IActionResult> OnGetAsync(
+            string code = null,
+            string userId = null,
+            string email = null)
         {
-            if (code == null)
+            if (string.IsNullOrWhiteSpace(code))
             {
-                return BadRequest("Debe proporcionar un código para restablecer la contraseña.");
+                return RedirectToPage("./ForgotPassword");
             }
-            else
+
+            string decodedCode;
+            try
             {
+                decodedCode = Encoding.UTF8.GetString(
+                    WebEncoders.Base64UrlDecode(code.Trim()));
+            }
+            catch (FormatException)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "El enlace de recuperación está dañado. Solicitá uno nuevo.");
+
                 Input = new InputModel
                 {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                    UserId = userId,
+                    Email = email,
+                    Code = string.Empty
                 };
+
                 return Page();
             }
+
+            ApplicationUser user = null;
+
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                user = await _userManager.FindByIdAsync(userId.Trim());
+            }
+
+            if (user == null && !string.IsNullOrWhiteSpace(email))
+            {
+                user = await _userManager.FindByEmailAsync(email.Trim());
+            }
+
+            Input = new InputModel
+            {
+                UserId = user?.Id ?? userId,
+                Email = user == null
+                    ? email
+                    : await _userManager.GetEmailAsync(user),
+                Code = decodedCode
+            };
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -98,10 +141,21 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByEmailAsync(Input.Email);
+            ApplicationUser user = null;
+
+            if (!string.IsNullOrWhiteSpace(Input.UserId))
+            {
+                user = await _userManager.FindByIdAsync(Input.UserId);
+            }
+
+            if (user == null && !string.IsNullOrWhiteSpace(Input.Email))
+            {
+                user = await _userManager.FindByEmailAsync(Input.Email);
+            }
+
             if (user == null)
             {
-                // Don't reveal that the user does not exist
+                // No revela si la cuenta existe.
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 

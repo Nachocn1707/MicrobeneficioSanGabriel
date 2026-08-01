@@ -71,10 +71,19 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var userId = await _userManager.GetUserIdAsync(user);
+                var userEmail = await _userManager.GetEmailAsync(user);
+
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { area = "Identity", code },
+                    values: new
+                    {
+                        area = "Identity",
+                        userId,
+                        email = userEmail,
+                        code
+                    },
                     protocol: Request.Scheme);
 
                 if (!_emailService.IsConfigured)
@@ -93,7 +102,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                             "Recuperación",
                             "Recibimos una solicitud para restablecer tu contraseña.",
                             "Restablecer contraseña",
-                            HtmlEncoder.Default.Encode(callbackUrl)));
+                            callbackUrl));
                 }
                 catch (Exception ex)
                 {

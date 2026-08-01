@@ -101,7 +101,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { area = "Identity", userId, code, returnUrl },
+                values: new { area = "Identity", userId, code, email = user.Email, returnUrl },
                 protocol: Request.Scheme)!;
 
             try
@@ -113,7 +113,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                         "Confirmación de cuenta",
                         "Recibimos una solicitud para reenviar el enlace. Confirmá tu correo para habilitar el inicio de sesión.",
                         "Confirmar correo",
-                        HtmlEncoder.Default.Encode(callbackUrl)));
+                        callbackUrl));
 
                 CorreoReenviado = "Enviamos un nuevo enlace de confirmación. Revise también Spam o Correo no deseado.";
             }

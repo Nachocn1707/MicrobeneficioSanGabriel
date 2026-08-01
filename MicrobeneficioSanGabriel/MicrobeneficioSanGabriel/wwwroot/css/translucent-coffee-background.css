@@ -61,3 +61,417 @@ html.dark {
         background-attachment: scroll !important;
     }
 }
+
+/* ========================================================================== */
+/* AJUSTE FINAL DE AUTENTICACIÓN                                                */
+/* Únicamente cambia tamaño y presentación visual. No modifica formularios,     */
+/* rutas, handlers, validaciones ni lógica de confirmación de correo.            */
+/* ========================================================================== */
+
+/* Login, registro y restablecimiento: aprovechar mejor la pantalla. */
+html body.rc-public-body .sgl-shell {
+    padding: 16px !important;
+}
+
+html body.rc-public-body .sgl-layout {
+    width: min(94vw, 1580px) !important;
+    max-width: 1580px !important;
+    min-height: calc(100vh - 32px) !important;
+    grid-template-columns: minmax(620px, 1.12fr) minmax(560px, 1fr) !important;
+    border-radius: 30px !important;
+}
+
+html body.rc-public-body .sgl-showcase,
+html body.rc-public-body .sgl-panel {
+    padding: 56px 52px !important;
+}
+
+html body.rc-public-body .sgl-card {
+    width: 100% !important;
+    max-width: 540px !important;
+}
+
+html body.rc-public-body .sgl-headline {
+    font-size: clamp(2rem, 2.35vw, 2.65rem) !important;
+}
+
+html body.rc-public-body .sgl-lead {
+    font-size: 1rem !important;
+    max-width: 48ch !important;
+}
+
+/* Pantalla "Revisá tu correo": tarjeta mucho más amplia. */
+html body.rc-public-body .sgl-state-card {
+    width: min(88vw, 790px) !important;
+    max-width: 790px !important;
+    min-height: 500px !important;
+    padding: 58px 64px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    border-radius: 30px !important;
+}
+
+html body.rc-public-body .sgl-state-card h2 {
+    font-size: clamp(1.8rem, 3vw, 2.4rem) !important;
+}
+
+html body.rc-public-body .sgl-state-card > p {
+    max-width: 610px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: 1rem !important;
+}
+
+/* Confirmación y activación de cuenta: mismo lenguaje visual del login. */
+html body.rc-public-body .auth-shell.auth-state-shell {
+    min-height: 100vh !important;
+    padding: 18px 26px 28px !important;
+    background:
+        linear-gradient(180deg, rgba(15, 10, 7, .52), rgba(10, 7, 5, .78)),
+        url('/img/FondoLYR.png') center/cover fixed !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-topbar {
+    width: min(95vw, 1580px) !important;
+    max-width: 1580px !important;
+    min-height: 88px !important;
+    margin: 0 auto 22px !important;
+    padding: 14px 22px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+    border: 1px solid rgba(224, 172, 82, .28) !important;
+    border-radius: 22px !important;
+    background: linear-gradient(120deg, rgba(30, 20, 15, .96), rgba(68, 43, 25, .93)) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .28) !important;
+    backdrop-filter: blur(14px) !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    min-width: 0 !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-brand-mark {
+    width: 50px !important;
+    height: 50px !important;
+    flex: 0 0 50px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 15px !important;
+    color: #2a1f18 !important;
+    background: linear-gradient(135deg, #e0ac52, #df913a) !important;
+    box-shadow: 0 10px 24px rgba(223, 145, 58, .28) !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-brand h1 {
+    margin: 0 0 3px !important;
+    color: #fff !important;
+    font-size: 1.55rem !important;
+    font-weight: 900 !important;
+    line-height: 1.05 !important;
+    text-transform: none !important;
+    letter-spacing: -.02em !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-brand span {
+    color: #e7c9a7 !important;
+    font-size: .82rem !important;
+    font-weight: 700 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-nav,
+html body.rc-public-body .auth-state-shell .auth-nav a {
+    flex: 0 0 auto !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-nav-pill,
+html body.rc-public-body .auth-state-shell .auth-top-action {
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 18px !important;
+    border: 1px solid rgba(224, 172, 82, .42) !important;
+    border-radius: 999px !important;
+    color: #f6e8d6 !important;
+    background: rgba(224, 172, 82, .12) !important;
+    clip-path: none !important;
+    text-decoration: none !important;
+    font-size: .82rem !important;
+    font-weight: 800 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-stage {
+    width: min(95vw, 1580px) !important;
+    max-width: 1580px !important;
+    min-height: calc(100vh - 150px) !important;
+    margin: 0 auto !important;
+    padding: 18px 0 30px !important;
+    display: grid !important;
+    place-items: center !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-card {
+    width: min(91vw, 940px) !important;
+    max-width: 940px !important;
+    padding: 58px 64px !important;
+    border: 1px solid rgba(224, 172, 82, .26) !important;
+    border-radius: 30px !important;
+    background:
+        radial-gradient(circle at top right, rgba(224, 172, 82, .14), transparent 34%),
+        rgba(255, 253, 249, .97) !important;
+    box-shadow: 0 30px 80px rgba(31, 20, 14, .25) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-card::after {
+    background: radial-gradient(circle, rgba(224, 172, 82, .18), transparent 68%) !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-icon {
+    width: 82px !important;
+    height: 82px !important;
+    margin-bottom: 18px !important;
+    border-radius: 24px !important;
+    color: #2a1f18 !important;
+    background: linear-gradient(135deg, #e0ac52, #df913a) !important;
+    box-shadow: 0 16px 34px rgba(223, 145, 58, .28) !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-kicker {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 7px 14px !important;
+    border: 1px solid rgba(224, 172, 82, .34) !important;
+    border-radius: 999px !important;
+    color: #a56a1c !important;
+    background: rgba(224, 172, 82, .10) !important;
+    font-size: .76rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .04em !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-card h2 {
+    margin: 18px 0 12px !important;
+    color: #2a1f18 !important;
+    font-size: clamp(2.15rem, 4vw, 3.15rem) !important;
+    font-weight: 900 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-card > p {
+    max-width: 690px !important;
+    margin: 0 auto 24px !important;
+    color: #746456 !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    line-height: 1.7 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-details {
+    gap: 14px !important;
+    margin: 28px 0 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-details span {
+    min-height: 112px !important;
+    padding: 18px 14px !important;
+    border: 1px solid #eadccf !important;
+    border-radius: 18px !important;
+    color: #4a3427 !important;
+    background: rgba(224, 172, 82, .06) !important;
+    font-weight: 800 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-details i {
+    color: #df913a !important;
+    font-size: 1.25rem !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-actions {
+    gap: 14px !important;
+    margin-top: 28px !important;
+}
+
+html body.rc-public-body .auth-state-shell .btn-login,
+html body.rc-public-body .auth-state-shell .auth-inline-action {
+    min-width: 220px !important;
+    min-height: 52px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    padding: 0 24px !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    color: #fff !important;
+    background: #5a321d !important;
+    clip-path: none !important;
+    text-decoration: none !important;
+    font-weight: 800 !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-secondary-action {
+    min-width: 220px !important;
+    min-height: 52px !important;
+    border: 1px solid #dfd2c5 !important;
+    border-radius: 12px !important;
+    color: #4b3427 !important;
+    background: #fff !important;
+    clip-path: none !important;
+}
+
+html body.rc-public-body .auth-state-shell .alert {
+    max-width: 720px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 14px !important;
+    text-align: left !important;
+}
+
+@media (max-width: 1180px) {
+    html body.rc-public-body .sgl-layout {
+        width: min(96vw, 980px) !important;
+        min-height: auto !important;
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.rc-public-body .sgl-showcase,
+    html body.rc-public-body .sgl-panel {
+        padding: 42px 36px !important;
+    }
+}
+
+@media (max-width: 700px) {
+    html body.rc-public-body .sgl-shell {
+        padding: 0 !important;
+    }
+
+    html body.rc-public-body .sgl-layout {
+        width: 100% !important;
+        border-radius: 0 !important;
+    }
+
+    html body.rc-public-body .sgl-showcase,
+    html body.rc-public-body .sgl-panel {
+        padding: 30px 22px !important;
+    }
+
+    html body.rc-public-body .sgl-state-card {
+        width: calc(100vw - 24px) !important;
+        min-height: 0 !important;
+        padding: 38px 24px !important;
+    }
+
+    html body.rc-public-body .auth-shell.auth-state-shell {
+        padding: 12px !important;
+        background-attachment: scroll !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-topbar {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 12px 14px !important;
+        border-radius: 16px !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-brand h1 {
+        font-size: 1.2rem !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-brand span {
+        display: none !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-nav-pill,
+    html body.rc-public-body .auth-state-shell .auth-top-action {
+        min-height: 40px !important;
+        padding: 0 13px !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-state-card {
+        width: 100% !important;
+        padding: 38px 22px !important;
+        border-radius: 22px !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-state-details {
+        grid-template-columns: 1fr !important;
+    }
+
+    html body.rc-public-body .auth-state-shell .auth-state-actions,
+    html body.rc-public-body .auth-state-shell .auth-state-actions > *,
+    html body.rc-public-body .auth-state-shell .auth-inline-action,
+    html body.rc-public-body .auth-state-shell .auth-secondary-action {
+        width: 100% !important;
+    }
+}
+
+
+/* Textos informativos del panel izquierdo: mayor legibilidad. */
+html body.rc-public-body .sgl-showcase .sgl-lead {
+    font-size: clamp(1.12rem, 1.2vw, 1.28rem) !important;
+    line-height: 1.72 !important;
+    max-width: 48ch !important;
+}
+
+html body.rc-public-body .sgl-showcase .sgl-feature strong {
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+}
+
+html body.rc-public-body .sgl-showcase .sgl-feature > span:not(.sgl-feature-icon) {
+    font-size: .9rem !important;
+    line-height: 1.45 !important;
+}
+
+html body.rc-public-body .sgl-showcase .sgl-info-list {
+    display: grid !important;
+    gap: 18px !important;
+    margin-top: 10px !important;
+}
+
+html body.rc-public-body .sgl-showcase .sgl-info-item {
+    display: grid !important;
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 15px !important;
+    color: #f1e6d8 !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    line-height: 1.45 !important;
+}
+
+html body.rc-public-body .sgl-showcase .sgl-info-item .sgl-feature-icon {
+    width: 46px !important;
+    height: 46px !important;
+    margin: 0 !important;
+    font-size: 1rem !important;
+}
+
+html body.rc-public-body .auth-state-shell .auth-state-error-message {
+    max-width: 700px !important;
+    margin: 0 auto 24px !important;
+    color: #746456 !important;
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    line-height: 1.7 !important;
+}
+
+@media (max-width: 700px) {
+    html body.rc-public-body .sgl-showcase .sgl-lead {
+        font-size: 1rem !important;
+    }
+
+    html body.rc-public-body .sgl-showcase .sgl-info-item {
+        font-size: .96rem !important;
+    }
+}

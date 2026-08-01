@@ -166,7 +166,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                                 "Confirmación de cuenta",
                                 $"Hola {HtmlEncoder.Default.Encode(Input.Nombre)}, gracias por registrarte. Para activar tu cuenta y poder iniciar sesión, confirmá tu correo electrónico.",
                                 "Confirmar correo",
-                                HtmlEncoder.Default.Encode(callbackUrl)));
+                                callbackUrl));
 
                         TempData["RegistroExitoso"] =
                             "Cuenta creada. Enviamos un enlace de confirmación a su correo.";
@@ -228,6 +228,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                     area = "Identity",
                     userId,
                     code,
+                    email = user.Email,
                     returnUrl
                 },
                 protocol: Request.Scheme)!;
