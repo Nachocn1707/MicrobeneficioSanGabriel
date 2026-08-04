@@ -8,6 +8,18 @@
 @section Styles {
     <style>
         .pedido-cancel-page {
+            --sg-primary: #293F25;
+            --sg-primary-2: #3A5333;
+            --sg-secondary: #834003;
+            --sg-muted: #666859;
+            --sg-surface: #FEFCFA;
+            --sg-surface-soft: #F7F3EA;
+            --sg-surface-tint: #E7EEE3;
+            --sg-line: #E4DED2;
+            --sg-accent: #EDAE3E;
+            --sg-accent-2: #D4730B;
+            --sg-danger: #D16F5A;
+            --sg-danger-hover: #B85B49;
             display: grid;
             gap: 24px;
             padding-top: 14px;
@@ -17,19 +29,19 @@
             font-size: 2.4rem;
             font-weight: 950;
             margin: 0;
-            color: #b42318;
+            color: var(--sg-primary);
         }
 
         .pedido-cancel-line {
             width: 78px;
             height: 4px;
             border-radius: 999px;
-            background: #dc3545;
+            background: linear-gradient(90deg, var(--sg-accent), var(--sg-accent-2));
             margin: 12px 0;
         }
 
         .pedido-cancel-header p {
-            color: #6f5b4a;
+            color: var(--sg-muted);
             font-weight: 650;
             margin: 0;
         }
@@ -38,8 +50,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #fde1df;
-            color: #b42318;
+            background: rgba(41, 63, 37, 0.10);
+            color: var(--sg-primary);
+            border: 1px solid rgba(41, 63, 37, 0.12);
             border-radius: 999px;
             padding: 8px 14px;
             font-weight: 900;
@@ -48,10 +61,10 @@
         }
 
         .pedido-cancel-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
+            background: var(--sg-surface);
+            border: 1px solid var(--sg-line);
             border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            box-shadow: 0 22px 55px rgba(41, 55, 31, 0.10);
             overflow: hidden;
             display: grid;
             grid-template-columns: 0.38fr 0.62fr;
@@ -59,11 +72,13 @@
         }
 
         .pedido-cancel-side {
-            background: linear-gradient(180deg, rgba(80, 19, 19, 0.90), rgba(45, 14, 14, 0.94)), url("/images/orders/order-detail-coffee.jpg");
+            background:
+                linear-gradient(180deg, rgba(41, 63, 37, 0.96), rgba(41, 63, 37, 0.88)),
+                url("/images/orders/order-detail-coffee.jpg");
             background-size: cover;
             background-position: center;
             padding: 36px;
-            color: #fff8df;
+            color: #FEFCFA;
             display: flex;
             align-items: center;
         }
@@ -76,17 +91,18 @@
             width: 72px;
             height: 72px;
             border-radius: 22px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
+            background: linear-gradient(135deg, var(--sg-accent), var(--sg-accent-2));
+            color: #FEFCFA;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 32px;
             margin-bottom: 26px;
+            box-shadow: 0 14px 28px rgba(212, 115, 11, 0.25);
         }
 
         .pedido-cancel-side h2 {
-            color: #fff3c4;
+            color: #FEFCFA;
             font-size: 2rem;
             font-weight: 950;
             margin: 0;
@@ -96,13 +112,12 @@
             width: 70px;
             height: 4px;
             border-radius: 999px;
-            background: #f3d27a;
+            background: linear-gradient(90deg, var(--sg-accent), var(--sg-accent-2));
             margin: 14px 0 18px;
         }
 
         .pedido-cancel-side p {
-            color: #fff8df;
-            opacity: 0.95;
+            color: rgba(254, 252, 250, 0.92);
             font-weight: 650;
             line-height: 1.55;
             margin-bottom: 28px;
@@ -117,12 +132,17 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            color: #fff8df;
+            color: rgba(254, 252, 250, 0.96);
             font-weight: 800;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 12px 14px;
+            backdrop-filter: blur(3px);
         }
 
             .pedido-cancel-info-item i {
-                color: #f3d27a;
+                color: var(--sg-accent);
                 width: 18px;
             }
 
@@ -131,9 +151,9 @@
         }
 
         .pedido-cancel-warning {
-            background: #fde1df;
-            color: #b42318;
-            border: 1px solid #f5b5ae;
+            background: var(--sg-surface-tint);
+            color: var(--sg-primary);
+            border: 1px solid rgba(83, 131, 59, 0.18);
             border-radius: 18px;
             padding: 15px 18px;
             font-weight: 750;
@@ -150,11 +170,12 @@
         }
 
         .pedido-cancel-item {
-            background: #fff8df;
-            border: 1px solid #ead8a2;
+            background: var(--sg-surface-soft);
+            border: 1px solid var(--sg-line);
             border-radius: 18px;
             padding: 17px;
             min-height: 90px;
+            box-shadow: 0 6px 18px rgba(41, 55, 31, 0.04);
         }
 
             .pedido-cancel-item.full {
@@ -165,7 +186,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #7a5230;
+            color: var(--sg-secondary);
             font-size: 0.78rem;
             font-weight: 950;
             text-transform: uppercase;
@@ -175,7 +196,7 @@
 
         .pedido-cancel-value {
             display: block;
-            color: #2b160d;
+            color: var(--sg-primary);
             font-size: 1rem;
             font-weight: 800;
             line-height: 1.45;
@@ -189,12 +210,13 @@
             padding: 7px 13px;
             font-size: 0.82rem;
             font-weight: 950;
-            background: #fff4d3;
-            color: #8a6500;
+            background: var(--sg-surface-tint);
+            color: var(--sg-primary);
+            border: 1px solid rgba(83, 131, 59, 0.18);
         }
 
         .pedido-cancel-actions {
-            border-top: 1px solid #ead8a2;
+            border-top: 1px solid var(--sg-line);
             margin-top: 26px;
             padding-top: 22px;
             display: flex;
@@ -220,23 +242,27 @@
             }
 
         .btn-cancel-volver {
-            background: #f3f4f6;
-            color: #111827;
+            background: #FFFFFF;
+            color: var(--sg-primary);
+            border: 1px solid var(--sg-line);
+            box-shadow: 0 10px 20px rgba(41, 55, 31, 0.06);
         }
 
             .btn-cancel-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
+                background: #F5F6F2;
+                color: var(--sg-primary);
+                border-color: rgba(41, 63, 37, 0.20);
             }
 
         .btn-cancel-confirmar {
-            background: #dc3545;
-            color: #ffffff;
+            background: var(--sg-danger);
+            color: #FFFFFF;
+            box-shadow: 0 12px 26px rgba(209, 111, 90, 0.24);
         }
 
             .btn-cancel-confirmar:hover {
-                background: #bb2d3b;
-                color: #ffffff;
+                background: var(--sg-danger-hover);
+                color: #FFFFFF;
             }
 
         @@media (max-width: 1100px) {

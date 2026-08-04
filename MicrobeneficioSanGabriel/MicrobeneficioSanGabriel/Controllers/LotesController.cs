@@ -71,7 +71,18 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
             else
             {
+                // El productor no viene en el formulario: se obtiene de la finca seleccionada.
                 lote.ProductorId = finca.ProductorId;
+            }
+
+            // ProductorId es obligatorio en el modelo, pero deliberadamente no se publica desde la vista.
+            // La validación automática lo marca como 0 antes de entrar al método; al asignarlo en el
+            // servidor debemos retirar ese resultado obsoleto para permitir guardar el lote.
+            ModelState.Remove(nameof(Lote.ProductorId));
+
+            if (!EstadoLoteValido(lote.Estado))
+            {
+                ModelState.AddModelError(nameof(Lote.Estado), "Seleccione un estado válido.");
             }
 
             if (ModelState.IsValid)
@@ -147,11 +158,12 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             if (id != lote.Id) return NotFound();
 
-            var original = await _context.Lotes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(l => l.Id == id);
+            // Se carga la entidad real para conservar siempre el código y evitar sobrescribir
+            // campos protegidos con valores vacíos provenientes del formulario.
+            var loteActual = await _context.Lotes.FirstOrDefaultAsync(l => l.Id == id);
+            if (loteActual == null) return NotFound();
 
-            if (original == null) return NotFound();
+            lote.CodigoLote = loteActual.CodigoLote;
 
             if (EsOperadorSoloEstado())
             {
@@ -159,13 +171,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     ModelState.AddModelError(nameof(Lote.Estado), "Seleccione un estado válido.");
                     ViewBag.SoloEstado = true;
-                    CargarFincas(original.FincaId);
-                    original.Estado = lote.Estado;
-                    return View(original);
+                    CargarFincas(loteActual.FincaId);
+                    loteActual.Estado = lote.Estado;
+                    return View(loteActual);
                 }
-
-                var loteActual = await _context.Lotes.FindAsync(id);
-                if (loteActual == null) return NotFound();
 
                 var estadoAnterior = loteActual.Estado;
                 loteActual.Estado = lote.Estado;
@@ -193,20 +202,34 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
             else
             {
+                // Igual que en Create, el productor se deriva de la finca y no se acepta del cliente.
                 lote.ProductorId = finca.ProductorId;
+            }
+
+            // Estos campos no se publican desde la vista. Se restauran en el servidor y se elimina
+            // cualquier resultado de validación generado antes de asignarlos.
+            ModelState.Remove(nameof(Lote.ProductorId));
+            ModelState.Remove(nameof(Lote.CodigoLote));
+
+            if (!EstadoLoteValido(lote.Estado))
+            {
+                ModelState.AddModelError(nameof(Lote.Estado), "Seleccione un estado válido.");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    lote.CodigoLote = original.CodigoLote;
-
-                    lote.Observacion = string.IsNullOrWhiteSpace(lote.Observacion)
+                    // Actualización explícita: el código queda intacto y no se permite overposting.
+                    loteActual.FincaId = lote.FincaId;
+                    loteActual.ProductorId = finca!.ProductorId;
+                    loteActual.PesoKg = lote.PesoKg;
+                    loteActual.FechaRecepcion = lote.FechaRecepcion;
+                    loteActual.Estado = lote.Estado;
+                    loteActual.Observacion = string.IsNullOrWhiteSpace(lote.Observacion)
                         ? null
                         : lote.Observacion.Trim();
 
-                    _context.Update(lote);
                     await _context.SaveChangesAsync();
 
                     await AuditoriaHelper.RegistrarAsync(
@@ -214,10 +237,10 @@ namespace MicrobeneficioSanGabriel.Controllers
                         User,
                         "Lotes",
                         "Editar",
-                        lote.Id,
-                        $"Se actualizó el lote {lote.CodigoLote}.");
+                        loteActual.Id,
+                        $"Se actualizó el lote {loteActual.CodigoLote}.");
 
-                    TempData["Success"] = $"Lote {lote.CodigoLote} actualizado correctamente.";
+                    TempData["Success"] = $"Lote {loteActual.CodigoLote} actualizado correctamente.";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
@@ -233,7 +256,9 @@ namespace MicrobeneficioSanGabriel.Controllers
                 }
             }
 
-            ViewBag.SoloEstado = EsOperadorSoloEstado();
+            // Si hay un error de validación, el código original sigue visible y protegido.
+            lote.ProductorId = finca?.ProductorId ?? loteActual.ProductorId;
+            ViewBag.SoloEstado = false;
             CargarFincas(lote.FincaId);
             return View(lote);
         }
