@@ -251,16 +251,16 @@
 @if (puedeVerComercial)
 {
     <section class="sg-card sg-table-card">
-        <div class="sg-panel-head"><h3>Pedidos recientes</h3><a class="text-success fw-bold" asp-controller="Pedidos" asp-action="Index">Ver todos</a></div>
+        <div class="sg-panel-head"><h3>Pedidos recientes</h3><a class="text-success fw-bold" asp-controller="Pedidos" asp-action="Index">Ver todos <i class="fa-solid fa-arrow-right"></i></a></div>
         <div class="table-responsive">
             <table class="sg-table">
-                <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Estado</th><th>Fecha</th><th>Total</th><th></th></tr></thead>
+                <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Estado</th><th>Fecha</th><th>Total</th><th class="text-end">Acciones</th></tr></thead>
                 <tbody>
                     @if (pedidos.Any())
                     {
                         foreach (var p in pedidos.Take(5))
                         {
-                            <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.ProductoNombreMostrar)</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.PrecioUnitarioMostrar) * p.Cantidad).ToString("N0"))</td><td><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a></td></tr>
+                            <tr><td>#P-@p.Id.ToString("0000")</td><td>@p.ClienteNombre</td><td>@(p.ProductoNombreMostrar)</td><td>@p.Cantidad kg</td><td><span class="sg-badge @(p.Estado == "Completado" ? "" : p.Estado == "Pendiente" ? "tan" : "gold")">@p.Estado</span></td><td>@p.FechaPedido.ToString("dd MMM yyyy")</td><td>₡@(((p.PrecioUnitarioMostrar) * p.Cantidad).ToString("N0"))</td><td class="text-end"><span class="sg-action-icons justify-content-end"><a asp-controller="Pedidos" asp-action="Details" asp-route-id="@p.Id" title="Ver detalles" aria-label="Ver detalles"><i class="fa-solid fa-eye"></i></a></span></td></tr>
                         }
                     }
                     else

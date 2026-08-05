@@ -11,7 +11,6 @@
 
 <div class="EstiloEditaR-page">
 
-    <!-- BANNER SUPERIOR CON OVERLAY Y BADGE -->
     <div class="EstiloEditaR-top">
         <div class="EstiloEditaR-title">
             <span class="EstiloEditaR-badge">
@@ -23,14 +22,12 @@
         </div>
     </div>
 
-    <!-- TARJETA DEL FORMULARIO -->
     <div class="EstiloEditaR-card">
         <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
                 <input type="hidden" asp-for="Id" />
 
-                <!-- ALERTA AZUL DESPEGADA -->
                 <div class="Estilo-alert">
                     <i class="fa-solid fa-circle-info"></i>
                     <span>

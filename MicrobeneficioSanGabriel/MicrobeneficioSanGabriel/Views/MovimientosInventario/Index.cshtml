@@ -9,8 +9,6 @@
     var salidas = movimientos.Where(m => m.TipoMovimiento == "Salida").Sum(m => m.Cantidad);
     var saldoMovimientos = entradas - salidas;
 
-    // Se toma directamente de Productos, no solo de movimientos.
-    // Así un producto nuevo se refleja de una vez en el gráfico y en la leyenda.
     var productosStock = ViewBag.ProductosStock as List<MicrobeneficioSanGabriel.Models.Producto>
         ?? new List<MicrobeneficioSanGabriel.Models.Producto>();
 

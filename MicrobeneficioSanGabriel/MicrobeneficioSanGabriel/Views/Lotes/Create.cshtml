@@ -1,5 +1,34 @@
 @model MicrobeneficioSanGabriel.Models.Lote
-@{ ViewData["Title"]="Nuevo lote"; Layout="~/Views/Shared/_AdminLayout.cshtml"; }
-<div class="sg-visual-hero sg-hero-lotes"><div class="sg-visual-hero-content"><span class="sg-visual-badge"><i class="fa-solid fa-layer-group"></i> Recepción</span><h1>Registrar lote</h1><div class="sg-visual-line"></div><p>Seleccione una finca; el productor y el código se asignarán de forma automática.</p></div></div>
-<div class="sg-card"><form asp-action="Create" method="post"><partial name="_Form" model="Model"/><div class="d-flex justify-content-end gap-2 mt-4"><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a><button class="btn btn-success"><i class="fa-solid fa-floppy-disk me-2"></i>Registrar lote</button></div></form></div>
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+@{
+    ViewData["Title"] = "Nuevo lote";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="sg-visual-hero sg-hero-lotes">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-layer-group"></i> Recepción
+        </span>
+        <h1>Registrar lote</h1>
+        <div class="sg-visual-line"></div>
+        <p>Seleccione una finca; el productor y el código se asignarán de forma automática.</p>
+    </div>
+</div>
+
+<div class="sg-card">
+    <form asp-action="Create" method="post">
+        <partial name="_Form" model="Model" />
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-floppy-disk me-2"></i>Registrar lote
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

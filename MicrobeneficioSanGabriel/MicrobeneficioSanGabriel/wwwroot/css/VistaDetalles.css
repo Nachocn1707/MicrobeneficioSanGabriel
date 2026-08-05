@@ -304,6 +304,16 @@
     border: 1px solid var(--sg-cancel-border);
 }
 
+.btn-EstiloDetalle-danger {
+    background: var(--sg-cancel-bg);
+    color: var(--sg-cancel-text) !important;
+    border: 1px solid var(--sg-cancel-border);
+}
+
+    .btn-EstiloDetalle-danger:hover {
+        background: var(--sg-bg-card);
+    }
+
     .btn-EstiloDetalle-primary:hover,
     .btn-EstiloDetalle-primary:focus {
         background: var(--sg-bg-card);
@@ -312,7 +322,7 @@
     }
 
 .btn-EstiloDetalle-secondary {
-    background: var(--sg-cancel-bg);
+    background: #284B25;
     color: var(--sg-primary);
     border: 1px solid var(--sg-primary);
 }

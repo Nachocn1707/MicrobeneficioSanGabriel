@@ -1,8 +1,36 @@
 @model MicrobeneficioSanGabriel.Models.Productor
+
 @{
     ViewData["Title"] = "Editar productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="sg-visual-hero sg-hero-productores"><div class="sg-visual-hero-content"><span class="sg-visual-badge"><i class="fa-solid fa-user-pen"></i> Actualización</span><h1>Editar productor</h1><div class="sg-visual-line"></div><p>Actualice la información de @Model.Nombre.</p></div></div>
-<div class="sg-card"><form asp-action="Edit" method="post"><input type="hidden" asp-for="Id" /><partial name="_Form" model="Model" /><div class="d-flex justify-content-end gap-2 mt-4"><a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a><button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-2"></i>Guardar cambios</button></div></form></div>
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+<div class="sg-visual-hero sg-hero-productores">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-user-pen"></i> Actualización
+        </span>
+        <h1>Editar productor</h1>
+        <div class="sg-visual-line"></div>
+        <p>Actualice la información de @Model.Nombre.</p>
+    </div>
+</div>
+
+<div class="sg-card">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <partial name="_Form" model="Model" />
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk me-2"></i>Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

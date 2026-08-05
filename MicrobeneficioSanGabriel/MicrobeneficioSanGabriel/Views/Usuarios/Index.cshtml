@@ -1,7 +1,9 @@
 @model IEnumerable<MicrobeneficioSanGabriel.ViewModels.UsuarioListadoViewModel>
+
 @{
     ViewData["Title"] = "Usuarios y Administración";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     var usuarios = Model.ToList();
     var total = usuarios.Count;
     var admins = usuarios.Count(u => u.Rol == "Administrador");
@@ -9,6 +11,175 @@
     var vendedores = usuarios.Count(u => u.Rol == "Vendedor");
     var clientes = usuarios.Count(u => u.Rol == "Cliente");
 }
-<section class="sg-page-head"><div><h1>Usuarios y Administración</h1><p>Gestiona los usuarios del sistema, roles y permisos de acceso.</p></div><div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Nuevo usuario</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Buscar usuario..." /></label></div></section>
-<section class="sg-kpi-grid"><article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-users"></i></span><div><span>Usuarios registrados</span><strong>@total</strong><div class="sg-trend">Usuarios en Identity</div></div></article><article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-shield-halved"></i></span><div><span>Administradores</span><strong>@admins</strong><div class="sg-trend">Rol asignado</div></div></article><article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-user-gear"></i></span><div><span>Operadores</span><strong>@operadores</strong><div class="sg-trend">Rol asignado</div></div></article><article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><span>Vendedores</span><strong>@vendedores</strong><div class="sg-trend">Rol asignado</div></div></article></section>
-<section class="sg-grid-2"><article class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Gestión de usuarios</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaUsuarios"><thead><tr><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>@foreach(var u in usuarios){<tr><td><span class="sg-badge">@((u.NombreCompleto.Length>1?u.NombreCompleto.Substring(0,1):"U"))</span> @u.UserName</td><td>@u.NombreCompleto</td><td>@u.Email</td><td>@u.PhoneNumber</td><td><span class="sg-badge @(u.Rol=="Vendedor"?"gold":u.Rol=="Cliente"?"tan":"")">@u.Rol</span></td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@u.Id" title="Ver" aria-label="Ver"><i class="fa-solid fa-eye"></i></a><a asp-action="Edit" asp-route-id="@u.Id" title="Editar" aria-label="Editar"><i class="fa-solid fa-pen"></i></a><a asp-action="Delete" asp-route-id="@u.Id" title="Eliminar" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></a></span></td></tr>}</tbody></table></div></article><aside class="sg-card sg-panel"><h3 class="mb-4">Roles del sistema</h3><div class="sg-role-list"><div class="sg-role"><span class="sg-icon green"><i class="fa-solid fa-shield-halved"></i></span><div><b>Administrador</b><br/><small>Acceso completo al sistema. Gestiona usuarios, roles y configuraciones.</small></div><span class="sg-badge">@admins usuarios</span></div><div class="sg-role"><span class="sg-icon green"><i class="fa-solid fa-user-gear"></i></span><div><b>Operador</b><br/><small>Actualiza estados operativos de lotes, producción y trazabilidad; además puede consultar reportes.</small></div><span class="sg-badge">@operadores usuarios</span></div><div class="sg-role"><span class="sg-icon gold"><i class="fa-solid fa-cart-shopping"></i></span><div><b>Vendedor</b><br/><small>Consulta pedidos y actualiza únicamente el estado de pago.</small></div><span class="sg-badge gold">@vendedores usuarios</span></div><div class="sg-role"><span class="sg-icon tan"><i class="fa-solid fa-user"></i></span><div><b>Cliente</b><br/><small>Acceso limitado para consultar pedidos y compras.</small></div><span class="sg-badge tan">@clientes usuarios</span></div></div></aside></section>
+
+<!-- Encabezado de la página -->
+<section class="sg-page-head">
+    <div>
+        <h1>Usuarios y Administración</h1>
+        <p>Gestiona los usuarios del sistema, roles y permisos de acceso.</p>
+    </div>
+    <div class="sg-actions">
+        <a asp-action="Create" class="sg-btn gold">
+            <i class="fa-solid fa-plus"></i>Nuevo usuario
+        </a>
+        <label class="sg-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input placeholder="Buscar usuario..." />
+        </label>
+    </div>
+</section>
+
+<!-- Tarjetas KPI -->
+<section class="sg-kpi-grid">
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon green">
+            <i class="fa-solid fa-users"></i>
+        </span>
+        <div>
+            <span>Usuarios registrados</span>
+            <strong>@total</strong>
+            <div class="sg-trend">Usuarios en Identity</div>
+        </div>
+    </article>
+
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon gold">
+            <i class="fa-solid fa-shield-halved"></i>
+        </span>
+        <div>
+            <span>Administradores</span>
+            <strong>@admins</strong>
+            <div class="sg-trend">Rol asignado</div>
+        </div>
+    </article>
+
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon green">
+            <i class="fa-solid fa-user-gear"></i>
+        </span>
+        <div>
+            <span>Operadores</span>
+            <strong>@operadores</strong>
+            <div class="sg-trend">Rol asignado</div>
+        </div>
+    </article>
+
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon gold">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </span>
+        <div>
+            <span>Vendedores</span>
+            <strong>@vendedores</strong>
+            <div class="sg-trend">Rol asignado</div>
+        </div>
+    </article>
+</section>
+
+<!-- Panel principal y resumen de roles -->
+<section class="sg-grid-2">
+    <!-- Tabla de usuarios -->
+    <article class="sg-card sg-table-card">
+        <div class="sg-panel-head">
+            <h3>Gestión de usuarios</h3>
+            <span class="sg-badge">@total registro(s)</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="sg-table" id="tablaUsuarios">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in usuarios)
+                    {
+                        var inicial = !string.IsNullOrEmpty(u.NombreCompleto) ? u.NombreCompleto.Substring(0, 1) : "U";
+                        var badgeClass = u.Rol == "Vendedor" ? "gold" : u.Rol == "Cliente" ? "tan" : "";
+
+                        <tr>
+                            <td>
+                                <span class="sg-badge">@inicial</span> @u.UserName
+                            </td>
+                            <td>@u.NombreCompleto</td>
+                            <td>@u.Email</td>
+                            <td>@u.PhoneNumber</td>
+                            <td>
+                                <span class="sg-badge @badgeClass">@u.Rol</span>
+                            </td>
+                            <td>
+                                <span class="sg-action-icons">
+                                    <a asp-action="Details" asp-route-id="@u.Id" title="Ver" aria-label="Ver">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@u.Id" title="Editar" aria-label="Editar">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@u.Id" title="Eliminar" aria-label="Eliminar">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <!-- Asistente de roles -->
+    <aside class="sg-card sg-panel">
+        <h3 class="mb-4">Roles del sistema</h3>
+        <div class="sg-role-list">
+            <div class="sg-role">
+                <span class="sg-icon green">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+                <div>
+                    <b>Administrador</b><br />
+                    <small>Acceso completo al sistema. Gestiona usuarios, roles y configuraciones.</small>
+                </div>
+                <span class="sg-badge">@admins usuarios</span>
+            </div>
+
+            <div class="sg-role">
+                <span class="sg-icon green">
+                    <i class="fa-solid fa-user-gear"></i>
+                </span>
+                <div>
+                    <b>Operador</b><br />
+                    <small>Actualiza estados operativos de lotes, producción y trazabilidad; además puede consultar reportes.</small>
+                </div>
+                <span class="sg-badge">@operadores usuarios</span>
+            </div>
+
+            <div class="sg-role">
+                <span class="sg-icon gold">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </span>
+                <div>
+                    <b>Vendedor</b><br />
+                    <small>Consulta pedidos y actualiza únicamente el estado de pago.</small>
+                </div>
+                <span class="sg-badge gold">@vendedores usuarios</span>
+            </div>
+
+            <div class="sg-role">
+                <span class="sg-icon tan">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+                <div>
+                    <b>Cliente</b><br />
+                    <small>Acceso limitado para consultar pedidos y compras.</small>
+                </div>
+                <span class="sg-badge tan">@clientes usuarios</span>
+            </div>
+        </div>
+    </aside>
+</section>
