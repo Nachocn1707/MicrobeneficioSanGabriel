@@ -290,9 +290,9 @@
 
 .cafe-welcome-content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     padding: 55px 25px 45px 52px;
-    background: radial-gradient(circle at 10% 10%, rgba(226, 174, 102, .2), transparent 35%), #f7ede1;
+    background: transparent;
 }
 
 .cafe-eyebrow,
@@ -403,11 +403,7 @@
 }
 
 .cafe-welcome-visual::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, #f7ede1 0%, transparent 25%);
-    pointer-events: none;
+    display: none;
 }
 
 .cafe-welcome-visual img {
@@ -1492,7 +1488,6 @@
     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 👁️ Ver detalles */
 body.rc-client-body .client-purchase-action.details,
 .client-purchase-action.details {
     color: #684536 !important;
@@ -1507,7 +1502,6 @@ body.rc-client-body .client-purchase-action.details:hover,
     border-color: #CBB4A3 !important;
 }
 
-/* ✏️ Editar */
 body.rc-client-body .client-purchase-action.edit,
 .client-purchase-action.edit {
     color: #92541F !important;
@@ -1522,7 +1516,6 @@ body.rc-client-body .client-purchase-action.edit:hover,
     border-color: #ECC79E !important;
 }
 
-/* 🚫 Cancelar */
 body.rc-client-body .client-purchase-action.cancel,
 .client-purchase-action.cancel {
     color: #94493E !important;
@@ -1537,7 +1530,6 @@ body.rc-client-body .client-purchase-action.cancel:hover,
     border-color: #F7B7AE !important;
 }
 
-/* 💳 Continuar al pago */
 body.rc-client-body .client-purchase-action.pay,
 .client-purchase-action.pay {
     color: #FFFFFF !important;
@@ -1585,10 +1577,6 @@ body.rc-client-body .client-purchase-action.pay:hover,
     font-weight: 900;
 }
 
-/* =========================================================
-   EDITAR PEDIDO - FORMULARIO DEL CLIENTE
-   ========================================================= */
-
 .client-edit-page {
     display: grid;
     gap: 22px;
@@ -1604,44 +1592,53 @@ body.rc-client-body .client-purchase-action.pay:hover,
     overflow: hidden;
     border-radius: 28px;
     color: #fff;
-    background: linear-gradient(90deg, rgba(42, 20, 13, .94), rgba(49, 24, 15, .58)), url("/images/visual/coffee-banner-hd.jpg") center/cover;
-    box-shadow: 0 20px 48px rgba(45, 22, 15, .14);
+    background: linear-gradient(90deg, rgba(20, 32, 18, 0.90), rgba(28, 48, 24, 0.65)), url("/images/visual/coffee-banner-hd.jpg") center/cover;
+    box-shadow: 0 20px 48px rgba(35, 55, 30, .14);
 }
 
 .client-edit-kicker {
-    padding: 7px 11px;
+    padding: 7px 12px;
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    border: 1px solid rgba(255, 255, 255, .3);
+    border: 1px solid rgba(255, 255, 255, .35);
     border-radius: 999px;
-    color: #f7cf9e;
-    background: rgba(255, 255, 255, .08);
+    color: #ffffff;
+    background: rgba(255, 255, 255, .15);
     font-size: .67rem;
     font-weight: 900;
     text-transform: uppercase;
 }
 
+#client-edit-hero-P {
+    max-width: 650px;
+    margin: 0;
+    color: #fffdf9 !important;
+    line-height: 1.65;
+}
+
 .client-edit-hero h1 {
     margin: 14px 0 8px;
     color: #fff;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(2.7rem, 4vw, 4.5rem);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: -.03em;
 }
 
 .client-edit-hero p {
     max-width: 650px;
     margin: 0;
-    color: #eadbd3;
+    color: #ffff !important;
     line-height: 1.65;
 }
 
 .client-edit-hero-number {
     min-width: 190px;
     padding: 20px 24px;
-    border: 1px solid rgba(255, 255, 255, .25);
+    border: 1px solid rgba(255, 255, 255, .3);
     border-radius: 20px;
-    background: rgba(27, 13, 9, .7);
+    background: rgba(18, 30, 16, .75);
     backdrop-filter: blur(8px);
 }
 
@@ -1651,7 +1648,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
 }
 
 .client-edit-hero-number small {
-    color: #d8c4b9;
+    color: #c5d4bc;
     font-size: .65rem;
     text-transform: uppercase;
 }
@@ -1671,10 +1668,10 @@ body.rc-client-body .client-purchase-action.pay:hover,
 
 .client-edit-fields-card,
 .client-edit-summary-card {
-    border: 1px solid #eadbcf;
+    border: 1px solid #e1e6df;
     border-radius: 24px;
-    background: #fffdf9;
-    box-shadow: 0 16px 42px rgba(59, 31, 20, .06);
+    background: #ffffff;
+    box-shadow: 0 16px 42px rgba(35, 55, 30, .05);
 }
 
 .client-edit-fields-card {
@@ -1696,11 +1693,11 @@ body.rc-client-body .client-purchase-action.pay:hover,
     flex: 0 0 52px;
     border-radius: 50%;
     color: #fff;
-    background: #bd6a32;
+    background: #284b25;
 }
 
 .client-edit-section-head small {
-    color: #b16331;
+    color: #284b25;
     font-size: .66rem;
     font-weight: 900;
     letter-spacing: .12em;
@@ -1709,14 +1706,15 @@ body.rc-client-body .client-purchase-action.pay:hover,
 
 .client-edit-section-head h2 {
     margin: 2px 0;
-    color: #321a12;
-    font-family: Georgia, "Times New Roman", serif;
+    color: #1f301b;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 1.8rem;
+    font-weight: 800;
 }
 
 .client-edit-section-head p {
     margin: 0;
-    color: #8a7368;
+    color: #697864;
     font-size: .78rem;
 }
 
@@ -1727,16 +1725,20 @@ body.rc-client-body .client-purchase-action.pay:hover,
     display: flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid #ebd4ae;
+    border: 1px solid #d2e2ce;
     border-radius: 14px;
-    color: #76502f;
-    background: #fff4de;
+    color: #23401e;
+    background: #eef4ec;
     font-size: .76rem;
+}
+
+.client-edit-notice i {
+    color: #284b25;
 }
 
 .client-edit-form-section {
     padding: 24px 0;
-    border-top: 1px solid #eee0d5;
+    border-top: 1px solid #e7ebe4;
 }
 
 .client-edit-form-section.last {
@@ -1757,22 +1759,23 @@ body.rc-client-body .client-purchase-action.pay:hover,
     place-items: center;
     flex: 0 0 34px;
     border-radius: 50%;
-    color: #8c4e28;
-    background: #f4dfca;
+    color: #284b25;
+    background: #e3ebe0;
     font-size: .7rem;
     font-weight: 900;
 }
 
 .client-edit-form-title h3 {
     margin: 0;
-    color: #3b2319;
+    color: #1f301b;
     font-size: 1rem;
+    font-weight: 800;
 }
 
 .client-edit-form-title p {
     margin: 4px 0 0;
-    color: #927c71;
-    font-size: .73rem;
+    color: #697864;
+    font-size: .65rem;
 }
 
 .client-edit-field-grid {
@@ -1789,9 +1792,9 @@ body.rc-client-body .client-purchase-action.pay:hover,
 .client-edit-field label {
     display: block;
     margin-bottom: 8px;
-    color: #4b3024;
-    font-size: .75rem;
-    font-weight: 900;
+    color: #23331f;
+    font-size: .78rem;
+    font-weight: 800;
 }
 
 .client-edit-control {
@@ -1803,7 +1806,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
     top: 50%;
     left: 16px;
     z-index: 2;
-    color: #b17a59;
+    color: #3f603c;
     transform: translateY(-50%);
 }
 
@@ -1812,18 +1815,18 @@ body.rc-client-body .client-purchase-action.pay:hover,
     min-height: 52px;
     padding-left: 44px;
     padding-right: 42px;
-    border: 1px solid #decfc4;
-    border-radius: 14px;
-    color: #3e291f;
-    background: #fffaf5;
-    font-size: .82rem;
-    font-weight: 700;
+    border: 1px solid #d5dad2;
+    border-radius: 12px;
+    color: #233220;
+    background: #ffffff;
+    font-size: .84rem;
+    font-weight: 600;
 }
 
 .client-edit-control .form-control:focus,
 .client-edit-control .form-select:focus {
-    border-color: #bd6a32;
-    box-shadow: 0 0 0 .2rem rgba(189, 106, 50, .12);
+    border-color: #284b25;
+    box-shadow: 0 0 0 .2rem rgba(40, 75, 37, .15);
 }
 
 .client-edit-control.textarea>i {
@@ -1841,7 +1844,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
     position: absolute;
     top: 50%;
     right: 15px;
-    color: #94796c;
+    color: #697864;
     font-size: .72rem;
     font-weight: 900;
     transform: translateY(-50%);
@@ -1857,7 +1860,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
     min-height: 165px;
     display: grid;
     place-items: center;
-    background: linear-gradient(rgba(45, 22, 15, .32), rgba(45, 22, 15, .48)), url("/images/orders/order-detail-coffee.jpg") center/cover;
+    background: linear-gradient(rgba(20, 32, 18, .4), rgba(20, 32, 18, .6)), url("/images/orders/order-detail-coffee.jpg") center/cover;
 }
 
 .client-edit-summary-image span {
@@ -1868,7 +1871,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
     border: 1px solid rgba(255, 255, 255, .5);
     border-radius: 50%;
     color: #fff;
-    background: rgba(43, 21, 14, .65);
+    background: rgba(20, 32, 18, .75);
     font-size: 1.45rem;
 }
 
@@ -1877,7 +1880,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
 }
 
 .client-edit-summary-label {
-    color: #b16331;
+    color: #284b25;
     font-size: .65rem;
     font-weight: 900;
     letter-spacing: .12em;
@@ -1886,8 +1889,9 @@ body.rc-client-body .client-purchase-action.pay:hover,
 
 .client-edit-summary-content h2 {
     margin: 5px 0 18px;
-    color: #321a12;
-    font-family: Georgia, "Times New Roman", serif;
+    color: #1f301b;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 800;
 }
 
 .client-edit-summary-list {
@@ -1899,29 +1903,30 @@ body.rc-client-body .client-purchase-action.pay:hover,
     display: flex;
     justify-content: space-between;
     gap: 15px;
-    border-top: 1px solid #eee1d7;
+    border-top: 1px solid #e7ebe4;
 }
 
 .client-edit-summary-list dt {
-    color: #947b6f;
+    color: #697864;
     font-size: .69rem;
     font-weight: 700;
 }
 
 .client-edit-summary-list dd {
     margin: 0;
-    color: #4a3025;
+    color: #23331f;
     font-size: .73rem;
     font-weight: 900;
     text-align: right;
 }
 
 .client-edit-summary-list .pending {
-    padding: 5px 8px;
+    padding: 5px 10px;
     border-radius: 999px;
-    color: #8a572f;
-    background: #f5e3ca;
+    color: #284b25;
+    background: #e3ebe0;
     font-size: .62rem;
+    font-weight: 900;
     text-transform: uppercase;
 }
 
@@ -1931,12 +1936,12 @@ body.rc-client-body .client-purchase-action.pay:hover,
     display: flex;
     gap: 10px;
     border-radius: 13px;
-    color: #725342;
-    background: #f8eee4;
+    color: #274020;
+    background: #eef4ec;
 }
 
 .client-edit-tip i {
-    color: #bd6a32;
+    color: #284b25;
 }
 
 .client-edit-tip p {
@@ -1952,45 +1957,51 @@ body.rc-client-body .client-purchase-action.pay:hover,
     align-items: center;
     justify-content: flex-end;
     gap: 10px;
-    border: 1px solid #eadbcf;
+    border: 1px solid #e1e6df;
     border-radius: 18px;
-    background: #fffdf9;
+    background: #ffffff;
 }
 
 .client-edit-back,
 .client-edit-save {
     min-height: 44px;
-    padding: 0 18px;
+    padding: 0 20px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     border-radius: 999px;
-    font-size: .75rem;
+    font-size: .78rem;
     font-weight: 900;
     text-decoration: none;
+    transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .client-edit-back {
-    color: #684638;
-    border: 1px solid #dfcbbd;
-    background: #fff;
+    color: #284b25;
+    border: 1px solid #cdd8c8;
+    background: #ffffff;
 }
 
 .client-edit-save {
-    color: #fff;
+    color: #ffffff;
     border: 0;
-    background: #3b2016;
-    box-shadow: 0 9px 20px rgba(59, 32, 22, .15);
+    background: #284b25;
+    box-shadow: 0 8px 20px rgba(40, 75, 37, .25);
 }
 
 .client-edit-back:hover {
-    color: #684638;
+    color: #1c361a;
+    border-color: #b5c5af;
+    background: #f2f7f0;
+    transform: translateY(-2px);
 }
 
 .client-edit-save:hover {
-    color: #fff;
-    background: #542c1d;
+    color: #ffffff;
+    background: #1c361a;
+    box-shadow: 0 10px 24px rgba(28, 54, 26, .35);
+    transform: translateY(-2px);
 }
 
 @media (max-width: 1100px) {

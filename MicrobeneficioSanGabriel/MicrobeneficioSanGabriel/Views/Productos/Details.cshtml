@@ -18,83 +18,81 @@
     var stockBajo = Model.Stock <= Model.StockMinimo;
 }
 
-<section class="sg-page-head">
-    <div>
-        <h1>Detalles del producto</h1>
-        <p>Información registrada para este producto del microbeneficio.</p>
-    </div>
-    <div class="sg-actions">
-        <span class="sg-badge @(Model.Activo ? "" : "red")">Estado actual: @estadoTexto</span>
-    </div>
-</section>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" asp-append-version="true" />
+}
 
-<section class="sg-hero sg-product-hero" style="background-image:url('/images/visual/productos.jpg')">
-    <div class="sg-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-mug-hot"></i> Producto de café</span>
-        <h2>@Model.Nombre</h2>
-        <p>@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Producto registrado en el catálogo comercial." : Model.Descripcion)</p>
-    </div>
-</section>
-
-<section class="sg-card sg-product-detail-clean">
-    <div class="sg-product-detail-media">
-        <img src="@imagenProducto" alt="Imagen de @Model.Nombre" />
-        <div class="sg-product-detail-badge">
-            <strong>@Model.Nombre</strong>
-            <span>Microbeneficio San Gabriel</span>
+<div class="sg-details-page-container">
+    <section class="sg-page-head">
+        <div>
+            <h1>Detalles del producto</h1>
+            <p>Información registrada para este producto del microbeneficio.</p>
         </div>
-    </div>
+        <div class="sg-actions">
+            <span class="sg-badge @(Model.Activo ? "" : "red")">Estado actual: @estadoTexto</span>
+        </div>
+    </section>
 
-    <div class="sg-product-detail-info">
-        <div class="detalle-grid">
-            <div class="detalle-item">
-                <span class="detalle-label"><i class="fa-solid fa-mug-hot"></i> Nombre</span>
-                <span class="detalle-value">@Model.Nombre</span>
-            </div>
-
-            <div class="detalle-item">
-                <span class="detalle-label"><i class="fa-solid fa-tags"></i> Categoría</span>
-                <span class="detalle-value">@Model.Categoria</span>
-            </div>
-
-            <div class="detalle-item">
-                <span class="detalle-label"><i class="fa-solid fa-coins"></i> Precio</span>
-                <span class="detalle-value">₡ @Model.Precio.ToString("N0")</span>
-            </div>
-
-            <div class="detalle-item">
-                <span class="detalle-label"><i class="fa-solid fa-weight-hanging"></i> Stock</span>
-                <span class="sg-badge @(stockBajo ? "red" : "")">@(stockBajo ? $"{Model.Stock} kg · Stock bajo" : $"{Model.Stock} kg disponibles")</span>
-            </div>
-
-            <div class="detalle-item">
-                <span class="detalle-label"><i class="fa-solid fa-circle-check"></i> Estado</span>
-                <span class="sg-badge @(Model.Activo ? "" : "red")">@estadoTexto</span>
-            </div>
-
-            <div class="detalle-item">
-                <span class="detalle-label"><i class="fa-solid fa-calendar-days"></i> Fecha de registro</span>
-                <span class="detalle-value">@Model.FechaRegistro.ToString("dd/MM/yyyy hh:mm tt")</span>
-            </div>
-
-            <div class="detalle-item full">
-                <span class="detalle-label"><i class="fa-solid fa-align-left"></i> Descripción</span>
-                <span class="detalle-value">@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripción registrada." : Model.Descripcion)</span>
+    <section class="sg-card sg-product-detail-clean">
+        <div class="sg-product-detail-media">
+            <img src="@imagenProducto" alt="Imagen de @Model.Nombre" />
+            <div class="sg-product-detail-badge">
+                <strong>@Model.Nombre</strong>
+                <span>Microbeneficio San Gabriel</span>
             </div>
         </div>
 
-        <div class="VistaCrear-actions">
-            <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a la lista</a>
+        <div class="sg-product-detail-info">
+            <div class="detalle-grid">
+                <div class="detalle-item">
+                    <span class="detalle-label"><i class="fa-solid fa-mug-hot"></i> Nombre</span>
+                    <span class="detalle-value">@Model.Nombre</span>
+                </div>
 
-            @if (User.IsInRole("Administrador"))
-            {
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
-            }
+                <div class="detalle-item">
+                    <span class="detalle-label"><i class="fa-solid fa-tags"></i> Categoría</span>
+                    <span class="detalle-value">@Model.Categoria</span>
+                </div>
 
-            @if (User.IsInRole("Cliente") && Model.Activo && Model.Stock > 0)
-            {
-                <a asp-controller="Pedidos" asp-action="Create" asp-route-productoId="@Model.Id" class="btn btn-success"><i class="fa-solid fa-cart-plus"></i> Realizar pedido</a>
-            }
+                <div class="detalle-item">
+                    <span class="detalle-label"><i class="fa-solid fa-coins"></i> Precio</span>
+                    <span class="detalle-value">₡ @Model.Precio.ToString("N0")</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label"><i class="fa-solid fa-weight-hanging"></i> Stock</span>
+                    <span class="sg-badge @(stockBajo ? "red" : "")">@(stockBajo ? $"{Model.Stock} kg · Stock bajo" : $"{Model.Stock} kg disponibles")</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label"><i class="fa-solid fa-circle-check"></i> Estado</span>
+                    <span class="sg-badge @(Model.Activo ? "" : "red")">@estadoTexto</span>
+                </div>
+
+                <div class="detalle-item">
+                    <span class="detalle-label"><i class="fa-solid fa-calendar-days"></i> Fecha de registro</span>
+                    <span class="detalle-value">@Model.FechaRegistro.ToString("dd/MM/yyyy hh:mm tt")</span>
+                </div>
+
+                <div class="detalle-item full">
+                    <span class="detalle-label"><i class="fa-solid fa-align-left"></i> Descripción</span>
+                    <span class="detalle-value">@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripción registrada." : Model.Descripcion)</span>
+                </div>
+            </div>
+
+            <div class="VistaCrear-actions">
+                <a asp-controller="Productos" asp-action="Index" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a la lista</a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
+                }
+
+                @if (User.IsInRole("Cliente") && Model.Activo && Model.Stock > 0)
+                {
+                    <a asp-controller="Pedidos" asp-action="Create" asp-route-productoId="@Model.Id" class="btn btn-success"><i class="fa-solid fa-cart-plus"></i> Realizar pedido</a>
+                }
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>

@@ -755,7 +755,7 @@ body.rc-client-body .sg-payment-success>p,
 body.rc-client-body .cafe-portal-main p,
 body.rc-client-body .cliente-stat-card small,
 body.rc-client-body .cliente-stat-card span {
-    color: var(--sg-admin-muted) !important;
+    color: var(--sg-admin-muted);
 }
 
 body.rc-client-body .sg-table thead th,
@@ -1066,26 +1066,39 @@ body.rc-client-body .cliente-banner-card p {
 }
 
 body.rc-client-body .cafe-welcome {
-    background:
-        linear-gradient(110deg, rgba(26, 18, 14, .84) 0%, rgba(26, 18, 14, .72) 34%, rgba(26, 18, 14, .18) 100%),
-        url('/images/visual/coffee-banner-hd.jpg') center/cover no-repeat !important;
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+    background: url('/images/visual/coffee-banner-hd.jpg') center/cover no-repeat !important;
+}
+
+body.rc-client-body .cafe-welcome::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    background: linear-gradient(105deg, rgba(24, 16, 11, .90) 0%, rgba(28, 18, 13, .84) 40%, rgba(32, 20, 14, .76) 70%, rgba(26, 16, 11, .70) 100%) !important;
 }
 
 body.rc-client-body .cafe-welcome-content {
-    background: linear-gradient(90deg, rgba(22, 17, 13, .64), rgba(22, 17, 13, .22)) !important;
+    position: relative !important;
+    z-index: 2 !important;
+    background: transparent !important;
 }
 
 body.rc-client-body .cafe-welcome-visual {
-    position: relative;
+    position: relative !important;
+    z-index: 2 !important;
     background: transparent !important;
 }
 
 body.rc-client-body .cafe-welcome-visual img {
-    filter: saturate(1.05) contrast(1.06) brightness(.78) !important;
+    display: none !important;
 }
 
 body.rc-client-body .cafe-welcome-visual::after {
-    background: linear-gradient(180deg, rgba(17, 13, 10, .12), rgba(17, 13, 10, .38)) !important;
+    display: none !important;
 }
 
 body.rc-client-body .cafe-product-image img,
@@ -1290,7 +1303,7 @@ body.rc-client-body .cafe-product-info p,
 body.rc-client-body .cafe-order-data span,
 body.rc-client-body .cafe-order-data small,
 body.rc-client-body .cafe-section-header p {
-    color: #666859 !important;
+    color: #666859;
 }
 
 /* --- Ajustes finos solicitados por el usuario --- */

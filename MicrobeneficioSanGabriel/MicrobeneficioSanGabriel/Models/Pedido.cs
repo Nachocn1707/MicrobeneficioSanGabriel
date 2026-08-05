@@ -11,7 +11,7 @@ namespace MicrobeneficioSanGabriel.Models
         [Required(ErrorMessage = "El nombre del cliente es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El nombre del cliente es obligatorio")]
         [Display(Name = "Cliente")]
-        public string ClienteNombre { get; set; } = string.Empty;
+        public string? ClienteNombre { get; set; } = string.Empty;
 
         [Display(Name = "Cliente registrado")]
         public string? ClienteId { get; set; }
@@ -28,7 +28,7 @@ namespace MicrobeneficioSanGabriel.Models
         [NotWhiteSpace(ErrorMessage = "El teléfono del cliente es obligatorio")]
         [RegularExpression(@"^\d{8}$", ErrorMessage = "El teléfono debe contener exactamente 8 dígitos, por ejemplo 88888888")]
         [Display(Name = "Teléfono del cliente")]
-        public string ClienteTelefono { get; set; } = string.Empty;
+        public string? ClienteTelefono { get; set; } = string.Empty;
 
         // Debe permanecer nullable en el modelo de EF para conservar el pedido
         // después de eliminar el producto. La selección obligatoria se valida

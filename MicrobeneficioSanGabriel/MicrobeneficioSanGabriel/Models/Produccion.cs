@@ -23,7 +23,7 @@ namespace MicrobeneficioSanGabriel.Models
         [Required(ErrorMessage = "El tipo de proceso es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El tipo de proceso es obligatorio")]
         [Display(Name = "Tipo de proceso")]
-        public string TipoProceso { get; set; } = string.Empty;
+        public string? TipoProceso { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La cantidad procesada es obligatoria")]
         [Range(1, 999999, ErrorMessage = "La cantidad debe ser mayor a 0")]
@@ -39,7 +39,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "El estado es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]
-        public string Estado { get; set; } = string.Empty;
+        public string? Estado { get; set; } = string.Empty;
 
         [Display(Name = "Observación")]
         public string? Observacion { get; set; }

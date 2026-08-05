@@ -225,3 +225,27 @@ textarea.form-control {
         width: 100%;
     }
 }
+
+/* =========================================================
+   CONTROL DE TAMAÑO DE PREVISUALIZACIÓN DE IMAGEN
+   ========================================================= */
+
+.custom-image-container {
+    background: #ffffff !important;
+    border: 1px solid var(--sg-input-border) !important;
+    border-radius: 16px !important;
+    padding: 16px 20px !important;
+}
+
+.img-preview-modern {
+    width: 140px !important;
+    height: 140px !important;
+    max-width: 140px !important;
+    max-height: 140px !important;
+    object-fit: cover !important;
+    border-radius: 14px !important;
+    border: 1px solid #e1e6df !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    flex-shrink: 0 !important;
+    background: #f8faf7 !important;
+}

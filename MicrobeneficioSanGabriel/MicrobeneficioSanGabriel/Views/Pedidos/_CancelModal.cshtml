@@ -1,0 +1,92 @@
+<div class="modal fade"
+     id="cancelModal"
+     tabindex="-1"
+     aria-labelledby="cancelModalTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered sg-cancel-dialog">
+        <div class="modal-content sg-cancel-modal">
+            <div class="modal-header sg-cancel-header">
+                <div class="sg-cancel-heading">
+                    <span class="sg-cancel-heading-icon" aria-hidden="true">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                    <div>
+                        <small>Confirmación requerida</small>
+                        <h2 id="cancelModalTitle">Cancelar pedido</h2>
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn-close sg-cancel-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body sg-cancel-body">
+                <form asp-controller="Pedidos"
+                      asp-action="Cancelar"
+                      method="post"
+                      id="modalCancelForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="cancelModalPedidoId" />
+
+                    <div class="sg-cancel-notice">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>
+                            El registro no será eliminado, solo cambiará a estado <strong>Cancelado</strong>.
+                        </span>
+                    </div>
+
+                    <div class="sg-cancel-order-summary">
+                        <div class="sg-cancel-order-head">
+                            <span class="sg-cancel-order-badge" id="cancelModalOrderCode">PP-0000</span>
+                            <span class="sg-cancel-status-pill">Pendiente</span>
+                        </div>
+
+                        <div class="sg-cancel-details-grid">
+                            <div class="sg-cancel-detail-item">
+                                <small><i class="fa-solid fa-mug-hot"></i> Producto</small>
+                                <strong id="cancelModalProduct">—</strong>
+                            </div>
+
+                            <div class="sg-cancel-detail-item">
+                                <small><i class="fa-solid fa-weight-hanging"></i> Cantidad</small>
+                                <strong id="cancelModalQuantity">—</strong>
+                            </div>
+
+                            <div class="sg-cancel-detail-item">
+                                <small><i class="fa-solid fa-calendar-days"></i> Fecha de pedido</small>
+                                <strong id="cancelModalDate">—</strong>
+                            </div>
+
+                            <div class="sg-cancel-detail-item">
+                                <small><i class="fa-solid fa-phone"></i> Teléfono de contacto</small>
+                                <strong id="cancelModalPhone">—</strong>
+                            </div>
+
+                            <div class="sg-cancel-detail-item full">
+                                <small><i class="fa-solid fa-comment-dots"></i> Observación</small>
+                                <span id="cancelModalObs">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sg-cancel-actions">
+                        <button type="button"
+                                class="sg-cancel-button secondary"
+                                data-bs-dismiss="modal">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Volver
+                        </button>
+                        <button type="submit"
+                                class="sg-cancel-button danger"
+                                id="cancelSubmitButton">
+                            <i class="fa-solid fa-ban"></i>
+                            Confirmar cancelación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

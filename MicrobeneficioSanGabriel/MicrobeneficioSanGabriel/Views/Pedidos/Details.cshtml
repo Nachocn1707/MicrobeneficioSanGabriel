@@ -179,15 +179,6 @@
                         Volver
                     </a>
 
-                    @if (Model.Estado == "Pendiente")
-                    {
-                        <a asp-action="Cancelar"
-                           asp-route-id="@Model.Id"
-                           class="btn-EstiloDetalle btn-EstiloDetalle-danger">
-                            <i class="fa-solid fa-ban"></i>
-                            Cancelar
-                        </a>
-                    }
                 }
                 else
                 {

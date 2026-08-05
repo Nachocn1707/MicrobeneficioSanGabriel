@@ -10,12 +10,12 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Display(Name = "Código")]
         [StringLength(30)]
-        public string CodigoLote { get; set; } = string.Empty;
+        public string? CodigoLote { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe seleccionar un productor")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un productor")]
         [Display(Name = "Productor")]
-        public int ProductorId { get; set; }
+        public int? ProductorId { get; set; }
 
         [ForeignKey(nameof(ProductorId))]
         public Productor? Productor { get; set; }
@@ -39,7 +39,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "El estado es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]
-        public string Estado { get; set; } = string.Empty;
+        public string? Estado { get; set; } = string.Empty;
 
         [StringLength(500)]
         [Display(Name = "Observación")]

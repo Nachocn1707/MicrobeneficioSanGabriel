@@ -62,19 +62,21 @@ namespace MicrobeneficioSanGabriel.Data
                 .HasOne(f => f.Productor)
                 .WithMany(p => p.Fincas)
                 .HasForeignKey(f => f.ProductorId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Lote>()
                 .HasOne(l => l.Productor)
                 .WithMany(p => p.Lotes)
                 .HasForeignKey(l => l.ProductorId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Lote>()
                 .HasOne(l => l.Finca)
                 .WithMany(f => f.Lotes)
                 .HasForeignKey(l => l.FincaId)
-                .IsRequired()
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Lote>()
@@ -100,8 +102,6 @@ namespace MicrobeneficioSanGabriel.Data
                 .HasForeignKey(p => p.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Los registros históricos se conservan cuando se elimina un producto.
-            // Estas propiedades deben ser opcionales tanto en SQL Server como en el modelo de EF.
             builder.Entity<Pedido>()
                 .Property(p => p.ProductoId)
                 .IsRequired(false);
@@ -114,7 +114,6 @@ namespace MicrobeneficioSanGabriel.Data
                 .Property(p => p.ProductoId)
                 .IsRequired(false);
 
-            // El nombre y el precio se almacenan como datos históricos en cada entidad.
             builder.Entity<Pedido>()
                 .HasOne(p => p.Producto)
                 .WithMany()
@@ -195,6 +194,34 @@ namespace MicrobeneficioSanGabriel.Data
             builder.Entity<Factura>()
                 .Property(f => f.Total)
                 .HasPrecision(18, 2);
+
+            builder.Entity<Productor>().Property(p => p.Nombre).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Cedula).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Telefono).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Correo).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Provincia).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Canton).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Distrito).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.DireccionExacta).IsRequired(false);
+            builder.Entity<Productor>().Property(p => p.Direccion).IsRequired(false);
+
+            builder.Entity<Finca>().Property(f => f.Nombre).IsRequired(false);
+            builder.Entity<Finca>().Property(f => f.Provincia).IsRequired(false);
+            builder.Entity<Finca>().Property(f => f.Canton).IsRequired(false);
+            builder.Entity<Finca>().Property(f => f.Distrito).IsRequired(false);
+            builder.Entity<Finca>().Property(f => f.DireccionExacta).IsRequired(false);
+
+            builder.Entity<Lote>().Property(l => l.CodigoLote).IsRequired(false);
+            builder.Entity<Lote>().Property(l => l.Estado).IsRequired(false);
+
+            builder.Entity<Produccion>().Property(p => p.TipoProceso).IsRequired(false);
+            builder.Entity<Produccion>().Property(p => p.Estado).IsRequired(false);
+
+            builder.Entity<Pedido>().Property(p => p.ClienteNombre).IsRequired(false);
+            builder.Entity<Pedido>().Property(p => p.ClienteTelefono).IsRequired(false);
+            builder.Entity<Pedido>().Property(p => p.Estado).IsRequired(false);
+            builder.Entity<Pedido>().Property(p => p.MetodoPago).IsRequired(false);
+            builder.Entity<Pedido>().Property(p => p.EstadoPago).IsRequired(false);
         }
     }
 }

@@ -56,24 +56,24 @@
     }
 
 .btn-finanzas-excel {
-    background: #198754;
+    background: #035815;
     color: #fff;
     box-shadow: 0 12px 28px rgba(25, 135, 84, 0.18);
 }
 
     .btn-finanzas-excel:hover {
-        background: #157347;
+        background: #023b0f;
         color: #fff;
     }
 
 .btn-finanzas-nuevo {
-    background: #2563eb;
+    background: #666859;
     color: #ffffff;
     box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22);
 }
 
     .btn-finanzas-nuevo:hover {
-        background: #1d4ed8;
+        background: #555554;
         color: #ffffff;
     }
 

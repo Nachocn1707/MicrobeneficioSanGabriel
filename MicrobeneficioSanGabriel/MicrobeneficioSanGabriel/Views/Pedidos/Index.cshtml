@@ -222,12 +222,20 @@
                                         Editar
                                     </a>
 
-                                    <a asp-action="Cancelar"
-                                       asp-route-id="@p.Id"
-                                       class="client-purchase-action cancel">
+                                    <button type="button"
+                                            class="client-purchase-action cancel js-open-cancel-modal"
+                                            data-pedido-id="@p.Id"
+                                            data-pedido-code="PP-@p.Id.ToString("0000")"
+                                            data-product="@(p.ProductoNombreMostrar)"
+                                            data-quantity="@p.Cantidad.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) kg"
+                                            data-date="@p.FechaPedido.ToString("dd/MM/yyyy HH:mm")"
+                                            data-phone="@(string.IsNullOrWhiteSpace(p.ClienteTelefono) ? "Sin teléfono" : p.ClienteTelefono)"
+                                            data-obs="@(string.IsNullOrWhiteSpace(p.Observacion) ? "Sin observación" : p.Observacion)"
+                                            aria-haspopup="dialog"
+                                            aria-controls="cancelModal">
                                         <i class="fa-solid fa-ban"></i>
                                         Cancelar
-                                    </a>
+                                    </button>
                                 }
 
                                 @if (puedeContinuarPago)
@@ -266,6 +274,7 @@
     </div>
 
     <partial name="_PaymentModal" />
+    <partial name="_CancelModal" />
 }
 else
 {
@@ -380,8 +389,10 @@ else
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/pago-modal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/CancelarPedido.css" asp-append-version="true" />
 }
 
 @section Scripts {
     <script src="~/js/pago-modal.js" asp-append-version="true"></script>
+    <script src="~/js/cancel-modal.js" asp-append-version="true"></script>
 }
