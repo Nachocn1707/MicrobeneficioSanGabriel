@@ -18,11 +18,12 @@
             <div class="sgl-showcase-glow"></div>
 
             <div class="sgl-showcase-top">
-                <span class="sgl-avatar">
-                    <img src="~/images/logo_san_gabriel.jpg" alt="Logo San Gabriel" />
-                </span>
-
-                <span class="sgl-badge"><i class="fa-solid fa-seedling"></i> Microbeneficio</span>
+                <div class="sgl-brand-header">
+                    <span class="sgl-avatar">
+                        <img src="~/images/logo_san_gabriel.jpg" alt="Logo San Gabriel" />
+                    </span>
+                    <span class="sgl-badge"><i class="fa-solid fa-seedling"></i> Microbeneficio</span>
+                </div>
 
                 <h1 class="sgl-headline">Bienvenido a <span>San Gabriel</span> Coffee Lab</h1>
 
@@ -58,16 +59,6 @@
 
         <section class="sgl-panel">
             <div class="sgl-card">
-
-                <nav class="sgl-login-navigation" aria-label="Navegación del acceso">
-                    <a asp-area=""
-                       asp-controller="Home"
-                       asp-action="Index"
-                       class="sgl-back-home">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Volver a la página inicial
-                    </a>
-                </nav>
 
                 <div class="sgl-card-header">
                     <span class="sgl-badge sgl-badge--panel"><i class="fa-solid fa-shield-halved"></i> Acceso seguro</span>
@@ -150,6 +141,16 @@
                         <i class="fa-solid fa-user-plus"></i>
                         Crear cuenta de cliente
                     </a>
+
+                    <nav class="sgl-login-navigation" aria-label="Navegación del acceso">
+                        <a asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index"
+                           class="sgl-back-home">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Volver a la página inicial
+                        </a>
+                    </nav>
 
                     <div class="sgl-security-note">
                         <i class="fa-solid fa-shield-halved"></i>

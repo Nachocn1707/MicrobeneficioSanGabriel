@@ -1,14 +1,17 @@
-#cancelModal {
+#cancelModal,
+#anularFacturaModal {
     z-index: 2140 !important;
     pointer-events: auto !important;
 }
 
-body.modal-open #cancelModal {
+body.modal-open #cancelModal,
+body.modal-open #anularFacturaModal {
     z-index: 2140 !important;
     pointer-events: auto !important;
 }
 
-#cancelModal.show {
+#cancelModal.show,
+#anularFacturaModal.show {
     display: block !important;
     z-index: 2140 !important;
 }
@@ -18,7 +21,13 @@ body.modal-open #cancelModal {
 #cancelModal button,
 #cancelModal input,
 #cancelModal label,
-#cancelModal a {
+#cancelModal a,
+#anularFacturaModal .modal-dialog,
+#anularFacturaModal .modal-content,
+#anularFacturaModal button,
+#anularFacturaModal input,
+#anularFacturaModal label,
+#anularFacturaModal a {
     pointer-events: auto !important;
 }
 

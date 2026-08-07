@@ -1,4 +1,3 @@
-/* Tema administrativo basado en la referencia de la profesora */
 body.sg-reference-theme {
     --sg-cream: #EFECE4;
     --sg-card: #FEFCFA;
@@ -764,6 +763,8 @@ body.rc-client-body .table thead th {
     color: #FEFCFA !important;
     background: var(--sg-admin-primary) !important;
     border-color: var(--sg-admin-primary) !important;
+    text-align: center !important;
+    vertical-align: middle !important;
 }
 
 body.rc-client-body .sg-table tbody tr:hover,
@@ -1180,6 +1181,8 @@ body.sg-reference-theme .table thead th {
     background: #293f25 !important;
     color: #fff !important;
     border-color: #293f25 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
 }
 
 body.sg-reference-theme .sg-table tbody tr:hover td,

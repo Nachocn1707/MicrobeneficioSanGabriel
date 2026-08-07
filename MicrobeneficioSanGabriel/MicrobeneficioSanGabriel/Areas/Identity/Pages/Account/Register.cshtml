@@ -178,9 +178,16 @@
                         Registrarse
                     </button>
 
-                    <div class="sgl-form-links">
-                        <a asp-page="./Login" class="sgl-link">Volver al inicio de sesión</a>
-                    </div>
+                    <nav class="sgl-login-navigation" aria-label="Navegación del acceso">
+                        <a asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index"
+                           class="sgl-back-home">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Volver a la página inicial
+                        </a>
+                    </nav>
+
                 </form>
             </div>
         </section>

@@ -157,6 +157,50 @@
 
             @if (pedidos.Any())
             {
+                <div class="client-orders-filter-bar" id="clientOrdersFilterBar">
+                    <div class="client-filter-group client-filter-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text"
+                               id="clientOrderSearchInput"
+                               class="client-filter-input"
+                               placeholder="Buscar por código, producto o fecha..."
+                               aria-label="Buscar compras" />
+                        <button type="button" id="clientClearSearchBtn" class="client-filter-clear-btn" title="Limpiar búsqueda" style="display:none;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <div class="client-filter-group">
+                        <label for="clientOrderFilterStatus"><i class="fa-solid fa-box"></i> Estado:</label>
+                        <select id="clientOrderFilterStatus" class="client-filter-select">
+                            <option value="">Todos los estados</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div class="client-filter-group">
+                        <label for="clientOrderFilterPayment"><i class="fa-solid fa-wallet"></i> Pago:</label>
+                        <select id="clientOrderFilterPayment" class="client-filter-select">
+                            <option value="">Todos los pagos</option>
+                            <option value="Pendiente">Pendiente de pago</option>
+                            <option value="Pago completado">Pago completado</option>
+                        </select>
+                    </div>
+
+                    <div class="client-filter-group">
+                        <label for="clientOrderPageSize"><i class="fa-solid fa-list-ol"></i> Mostrar:</label>
+                        <select id="clientOrderPageSize" class="client-filter-select">
+                            <option value="5" selected>5 por página</option>
+                            <option value="10">10 por página</option>
+                            <option value="20">20 por página</option>
+                            <option value="all">Todos</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="client-orders-list">
                     @foreach (var p in pedidos)
                     {
@@ -170,7 +214,12 @@
                         var puedeContinuarPago = pagoPendiente &&
                             !string.Equals(p.Estado, "Cancelado", StringComparison.OrdinalIgnoreCase);
 
-                        <article class="client-purchase-card">
+                        <article class="client-purchase-card"
+                                 data-order-id="PP-@p.Id.ToString("0000")"
+                                 data-product="@(p.ProductoNombreMostrar)"
+                                 data-status="@p.Estado"
+                                 data-payment-status="@(string.IsNullOrWhiteSpace(p.EstadoPago) ? "Pendiente" : p.EstadoPago)"
+                                 data-search-text="PP-@p.Id.ToString("0000") @(p.ProductoNombreMostrar) @p.Estado @(p.EstadoPago) @p.FechaPedido.ToString("dd MMM yyyy") @p.Cantidad kg ₡@totalPedido.ToString("N0")">
                             <div class="client-purchase-main">
                                 <div class="client-purchase-number">
                                     <span>Pedido</span>
@@ -259,6 +308,24 @@
                             </div>
                         </article>
                     }
+                </div>
+
+                <div id="clientOrdersNoResults" class="client-orders-empty" style="display:none;">
+                    <span><i class="fa-solid fa-filter-circle-xmark"></i></span>
+                    <h3>Sin resultados para la búsqueda</h3>
+                    <p>No se encontraron pedidos que coincidan con los filtros seleccionados.</p>
+                    <button type="button" id="clientResetFiltersBtn" class="client-orders-new-link">
+                        <i class="fa-solid fa-rotate-left"></i> Restablecer filtros
+                    </button>
+                </div>
+
+                <div class="client-orders-pagination-bar" id="clientOrdersPaginationBar">
+                    <div class="client-pagination-info" id="clientPaginationInfo">
+                        Mostrando <strong>1 - 5</strong> de <strong>@total</strong> pedidos
+                    </div>
+
+                    <div class="client-pagination-controls" id="clientPaginationControls">
+                    </div>
                 </div>
             }
             else
@@ -395,4 +462,5 @@ else
 @section Scripts {
     <script src="~/js/pago-modal.js" asp-append-version="true"></script>
     <script src="~/js/cancel-modal.js" asp-append-version="true"></script>
+    <script src="~/js/PaginacionClientes.js" asp-append-version="true"></script>
 }

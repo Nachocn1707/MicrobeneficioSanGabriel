@@ -30,6 +30,12 @@
         .Sum(f => f.Total);
 }
 
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/CancelarPedido.css" asp-append-version="true" />
+}
+
+
 <section class="sg-page-head">
     <div>
         <h1>Pedidos y Facturación</h1>
@@ -174,20 +180,16 @@
 
                                     @if (f.EstadoPago != "Anulada")
                                     {
-                                        <form asp-action="Anular"
-                                              asp-route-id="@f.Id"
-                                              method="post"
-                                              class="d-inline sg-inline-action-form"
-                                              onsubmit="return confirm('¿Desea anular esta factura? Esta acción no elimina el registro.');">
-
-                                            @Html.AntiForgeryToken()
-
-                                            <button type="submit"
-                                                    title="Anular factura"
-                                                    aria-label="Anular factura">
-                                                <i class="fa-solid fa-ban"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                                class="js-open-anular-modal"
+                                                data-factura-id="@f.Id"
+                                                data-factura-code="FAC-@f.Id.ToString("0000")"
+                                                data-cliente="@(f.Pedido?.ClienteNombre ?? "Sin cliente")"
+                                                data-total="₡@f.Total.ToString("N0")"
+                                                title="Anular factura"
+                                                aria-label="Anular factura">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </button>
                                     }
                                 }
                             </span>
@@ -198,3 +200,84 @@
         </table>
     </div>
 </section>
+
+<div class="modal fade"
+     id="anularFacturaModal"
+     tabindex="-1"
+     aria-labelledby="anularFacturaModalTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered sg-cancel-dialog">
+        <div class="modal-content sg-cancel-modal">
+            <div class="modal-header sg-cancel-header">
+                <div class="sg-cancel-heading">
+                    <span class="sg-cancel-heading-icon" aria-hidden="true">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                    <div>
+                        <small>Confirmación requerida</small>
+                        <h2 id="anularFacturaModalTitle">Anular factura</h2>
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn-close sg-cancel-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body sg-cancel-body">
+                <form asp-action="Anular"
+                      method="post"
+                      id="modalAnularFacturaForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="anularFacturaId" />
+
+                    <div class="sg-cancel-notice">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>
+                            ¿Desea anular esta factura? <strong>Esta acción no elimina el registro.</strong>
+                        </span>
+                    </div>
+
+                    <div class="sg-cancel-order-summary">
+                        <div class="sg-cancel-order-head">
+                            <span class="sg-cancel-order-badge" id="anularFacturaCode">FAC-0000</span>
+                            <span class="sg-cancel-status-pill warn">Factura</span>
+                        </div>
+
+                        <div class="sg-cancel-details-grid">
+                            <div class="sg-cancel-detail-item">
+                                <small><i class="fa-solid fa-user"></i> Cliente</small>
+                                <strong id="anularFacturaCliente">—</strong>
+                            </div>
+
+                            <div class="sg-cancel-detail-item">
+                                <small><i class="fa-solid fa-money-bill-wave"></i> Total</small>
+                                <strong id="anularFacturaTotal">—</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sg-cancel-actions">
+                        <button type="button"
+                                class="sg-cancel-button secondary"
+                                data-bs-dismiss="modal">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                                class="sg-cancel-button danger"
+                                id="anularSubmitButton">
+                            <i class="fa-solid fa-ban"></i>
+                            Confirmar anulación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Cancelar-Pedido.js" asp-append-version="true"></script>
+}

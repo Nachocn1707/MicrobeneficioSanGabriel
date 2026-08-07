@@ -1,22 +1,7 @@
-﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.RegistroFinanciero>
+@model IEnumerable<MicrobeneficioSanGabriel.Models.RegistroFinanciero>
 
 @{
     ViewData["Title"] = "Contabilidad";
-    <div class="sg-visual-hero sg-hero-contabilidad">
-        <div class="sg-visual-hero-content">
-            <span class="sg-visual-badge">
-                <i class="fa-solid fa-coins"></i>
-                Gestión financiera
-            </span>
-
-            <h1>Contabilidad</h1>
-            <div class="sg-visual-line"></div>
-
-            <p>
-                Administrá ingresos, egresos, registros financieros y movimientos económicos del microbeneficio.
-            </p>
-        </div>
-    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     decimal totalIngresos = 0;
@@ -48,79 +33,90 @@
 }
 
 @section Styles {
-    
-    <link rel="stylesheet" href="~/css/Contabilidad.css" />
+    <link rel="stylesheet" href="~/css/Contabilidad.css" asp-append-version="true" />
 }
 
+<div class="sg-visual-hero sg-hero-contabilidad">
+    <div class="sg-visual-hero-content">
+        <span class="sg-visual-badge">
+            <i class="fa-solid fa-coins"></i>
+            Gestión financiera
+        </span>
+        <h1>Contabilidad</h1>
+        <div class="sg-visual-line"></div>
+        <p>Administrá ingresos, egresos, registros financieros y movimientos económicos del microbeneficio.</p>
+    </div>
+</div>
+
 <div class="finanzas-page">
-    <div class="finanzas-header">
+    <div class="sg-page-head">
         <div>
-            <h1></h1>
-            <div class=""></div>
-            <p>
-            </p>
+            <h1>Movimientos económicos</h1>
+            <p>Filtra y consulta el historial completo de ingresos y gastos.</p>
         </div>
 
-        <div class="finanzas-header-actions">
+        <div class="sg-actions">
             <a asp-action="ExportarExcel"
-                   asp-route-fechaInicio="@fechaInicio"
-                   asp-route-fechaFin="@fechaFin"
-                   asp-route-tipo="@tipoFiltro"
-                   class="btn-finanzas btn-finanzas-excel">
-                <i class="fa-solid fa-file-excel"></i>
+               asp-route-fechaInicio="@fechaInicio"
+               asp-route-fechaFin="@fechaFin"
+               asp-route-tipo="@tipoFiltro"
+               class="sg-btn ghost">
+                <i class="fa-solid fa-file-excel text-success"></i>
                 Exportar a Excel
             </a>
 
-            <a asp-action="Create" class="btn-finanzas btn-finanzas-nuevo">
-                <i class="fa-solid fa-plus"></i>
-                Nuevo registro
-            </a>
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Create" class="sg-btn gold">
+                    <i class="fa-solid fa-plus"></i>
+                    Nuevo registro
+                </a>
+            }
         </div>
     </div>
 
-    <section class="finanzas-summary-grid">
-
-        <div class="finanzas-summary-card">
-            <div class="finanzas-summary-icon">
-                <i class="fa-solid fa-list-check"></i>
+    <section class="sg-kpi-grid">
+        <article class="sg-card sg-kpi">
+            <span class="sg-icon green"><i class="fa-solid fa-list-check"></i></span>
+            <div>
+                <span>Registros totales</span>
+                <strong>@totalRegistros</strong>
+                <div class="sg-trend">Historial contable</div>
             </div>
-            <div class="finanzas-summary-label">Registros</div>
-            <div class="finanzas-summary-value">@totalRegistros</div>
-        </div>
+        </article>
 
-        <div class="finanzas-summary-card">
-            <div class="finanzas-summary-icon">
-                <i class="fa-solid fa-arrow-trend-up"></i>
+        <article class="sg-card sg-kpi">
+            <span class="sg-icon green"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            <div>
+                <span>Ingresos (@totalIngresosCantidad)</span>
+                <strong>₡ @totalIngresos.ToString("N0")</strong>
+                <div class="sg-trend">Total recaudado</div>
             </div>
-            <div class="finanzas-summary-label">Ingresos (@totalIngresosCantidad)</div>
-            <div class="finanzas-summary-value success">₡ @totalIngresos.ToString("N2")</div>
-        </div>
+        </article>
 
-        <div class="finanzas-summary-card">
-            <div class="finanzas-summary-icon">
-                <i class="fa-solid fa-arrow-trend-down"></i>
+        <article class="sg-card sg-kpi">
+            <span class="sg-icon brown"><i class="fa-solid fa-arrow-trend-down"></i></span>
+            <div>
+                <span>Gastos (@totalGastosCantidad)</span>
+                <strong>₡ @totalGastos.ToString("N0")</strong>
+                <div class="sg-trend down">Total egresos</div>
             </div>
-            <div class="finanzas-summary-label">Gastos (@totalGastosCantidad)</div>
-            <div class="finanzas-summary-value danger">₡ @totalGastos.ToString("N2")</div>
-        </div>
+        </article>
 
-        <div class="finanzas-summary-card">
-            <div class="finanzas-summary-icon">
-                <i class="fa-solid fa-scale-balanced"></i>
+        <article class="sg-card sg-kpi">
+            <span class="sg-icon gold"><i class="fa-solid fa-scale-balanced"></i></span>
+            <div>
+                <span>Balance neto</span>
+                <strong class="@(balance >= 0 ? "text-success" : "text-danger")">₡ @balance.ToString("N0")</strong>
+                <div class="sg-trend @(balance >= 0 ? "" : "down")">@(balance >= 0 ? "Superávit" : "Déficit")</div>
             </div>
-            <div class="finanzas-summary-label">Balance</div>
-            <div class="finanzas-summary-value @(balance >= 0 ? "success" : "danger")">
-                ₡ @balance.ToString("N2")
-            </div>
-        </div>
-
+        </article>
     </section>
 
-    <div class="finanzas-filter-card">
+    <div class="sg-card finanzas-filter-card">
         <form asp-action="Index" method="get" class="row g-3 align-items-end">
-
             <div class="col-md-3">
-                <label class="form-label">Fecha inicio</label>
+                <label class="form-label font-weight-bold"><i class="fa-solid fa-calendar-day me-1"></i> Fecha inicio</label>
                 <input type="date"
                        name="fechaInicio"
                        value="@fechaInicio"
@@ -128,7 +124,7 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Fecha fin</label>
+                <label class="form-label font-weight-bold"><i class="fa-solid fa-calendar-check me-1"></i> Fecha fin</label>
                 <input type="date"
                        name="fechaFin"
                        value="@fechaFin"
@@ -136,7 +132,7 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Tipo</label>
+                <label class="form-label font-weight-bold"><i class="fa-solid fa-layer-group me-1"></i> Tipo</label>
                 <select name="tipo" class="form-select">
                     <option value="">Todos</option>
 
@@ -161,35 +157,39 @@
             </div>
 
             <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100">
+                <button type="submit" class="sg-btn gold w-100 border-0">
                     <i class="fa-solid fa-filter"></i>
                     Filtrar
                 </button>
 
-                <a asp-action="Index" class="btn btn-secondary w-100">
+                <a asp-action="Index" class="sg-btn ghost w-100">
                     <i class="fa-solid fa-rotate-left"></i>
                     Limpiar
                 </a>
             </div>
-
         </form>
     </div>
 
-    <div class="finanzas-table-card">
+    <section class="sg-card sg-table-card">
+        <div class="sg-panel-head">
+            <div>
+                <h2>Movimientos recientes</h2>
+                <small>Registros de ingresos, egresos y balance contable.</small>
+            </div>
+            <span class="sg-badge">@totalRegistros registro(s)</span>
+        </div>
 
         <div class="table-responsive">
-
-            <table id="tablaContabilidad" class="table align-middle">
-
+            <table id="tablaContabilidad" class="sg-table w-100">
                 <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Categoría</th>
-                        <th>Descripción</th>
-                        <th>Monto</th>
-                        <th>Observación</th>
-                        <th class="text-end" width="280">Acciones</th>
+                    <tr style="background: linear-gradient(100deg, #1c2e19, #284b25) !important; color: #ffffff !important;">
+                        <th style="color: #fff !important; text-align: center !important;">Fecha</th>
+                        <th style="color: #fff !important; text-align: center !important;">Tipo</th>
+                        <th style="color: #fff !important; text-align: center !important;">Categoría</th>
+                        <th style="color: #fff !important; text-align: center !important;">Descripción</th>
+                        <th style="color: #fff !important; text-align: center !important;">Monto</th>
+                        <th style="color: #fff !important; text-align: center !important;">Observación</th>
+                        <th style="color: #fff !important; text-align: center !important;">Acciones</th>
                     </tr>
                 </thead>
 
@@ -198,60 +198,36 @@
                     {
                         bool esIngreso = item.Tipo == "Ingreso";
 
-                        string tipoClase = esIngreso
-                            ? "finanzas-tipo finanzas-tipo-ingreso"
-                            : "finanzas-tipo finanzas-tipo-gasto";
-
-                        string montoClase = esIngreso
-                            ? "finanzas-monto ingreso"
-                            : "finanzas-monto gasto";
-
                         <tr>
-                            <td>
+                            <td class="text-center">
                                 @item.Fecha.ToString("dd/MM/yyyy")
                             </td>
 
-                            <td>
-                                <span class="@tipoClase">
+                            <td class="text-center">
+                                <span class="sg-badge @(esIngreso ? "" : "red")">
+                                    <i class="fa-solid @(esIngreso ? "fa-arrow-up" : "fa-arrow-down") me-1"></i>
                                     @item.Tipo
                                 </span>
                             </td>
 
-                            <td class="finanzas-categoria">
-                                @(string.IsNullOrWhiteSpace(item.Categoria)
-                                    ? "Sin categoría"
-                                    : item.Categoria)
+                            <td class="text-center fw-bold">
+                                @(string.IsNullOrWhiteSpace(item.Categoria) ? "Sin categoría" : item.Categoria)
                             </td>
 
-                            <td class="finanzas-descripcion">
-                                @(string.IsNullOrWhiteSpace(item.Descripcion)
-                                    ? "Sin descripción"
-                                    : item.Descripcion)
+                            <td class="text-center text-muted">
+                                @(string.IsNullOrWhiteSpace(item.Descripcion) ? "Sin descripción" : item.Descripcion)
                             </td>
 
-                            <td class="@montoClase">
-                                ₡ @item.Monto.ToString("N2")
+                            <td class="text-center fw-bold @(esIngreso ? "text-success" : "text-danger")">
+                                ₡ @item.Monto.ToString("N0")
                             </td>
 
-                            <td class="finanzas-observacion">
-                                @(string.IsNullOrWhiteSpace(item.Observacion)
-                                    ? "Sin observación"
-                                    : item.Observacion)
+                            <td class="text-center text-muted">
+                                @(string.IsNullOrWhiteSpace(item.Observacion) ? "Sin observación" : item.Observacion)
                             </td>
 
-                            <td>
-                                <div class="finanzas-actions sg-action-icons justify-content-end">
-
-                                    @if (User.IsInRole("Administrador"))
-                                    {
-                                        <a asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           title="Editar"
-                                           aria-label="Editar">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-                                    }
-
+                            <td class="text-center">
+                                <div class="sg-action-icons justify-content-center">
                                     <a asp-action="Details"
                                        asp-route-id="@item.Id"
                                        title="Detalles"
@@ -261,6 +237,13 @@
 
                                     @if (User.IsInRole("Administrador"))
                                     {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           title="Editar"
+                                           aria-label="Editar">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+
                                         <a asp-action="Delete"
                                            asp-route-id="@item.Id"
                                            title="Eliminar"
@@ -268,31 +251,31 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
                                     }
-
                                 </div>
                             </td>
                         </tr>
                     }
                 </tbody>
-
             </table>
-
         </div>
-
-    </div>
-
+    </section>
 </div>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
+            if ($.fn.DataTable.isDataTable('#tablaContabilidad')) {
+                $('#tablaContabilidad').DataTable().destroy();
+            }
+
             $('#tablaContabilidad').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/es-ES.json'
                 },
                 pageLength: 5,
                 lengthMenu: [5, 10, 15, 20],
-                responsive: true
+                responsive: true,
+                autoWidth: false
             });
         });
     </script>
