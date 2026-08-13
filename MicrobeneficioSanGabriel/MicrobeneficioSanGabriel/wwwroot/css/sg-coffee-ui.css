@@ -1163,6 +1163,12 @@ body {
     border-radius: 12px;
     object-fit: cover;
     border: 1px solid var(--sg-line);
+    flex-shrink: 0;
+}
+
+.sg-product-cell > div {
+    flex: 1;
+    text-align: center;
 }
 
 .sg-product-cell strong {
@@ -1179,6 +1185,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0 auto;
 }
 
 @media (max-width:1100px) {
