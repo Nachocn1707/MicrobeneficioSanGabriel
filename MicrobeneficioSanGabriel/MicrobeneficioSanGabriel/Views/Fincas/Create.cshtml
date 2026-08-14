@@ -1,26 +1,39 @@
 @model MicrobeneficioSanGabriel.Models.Finca
+
 @{
     ViewData["Title"] = "Nueva finca";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="sg-visual-hero sg-hero-fincas">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-mountain-sun"></i> Gestión agrícola</span>
-        <h1>Registrar finca</h1>
-        <div class="sg-visual-line"></div>
-        <p>Asocie una finca con su productor y registre la ubicación de forma estructurada.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
+}
+
+<div class="VistaCreaR-top">
+    <div class="VistaCreaR-title">
+        <span class="VistaCreaR-badge">
+            <i class="fa-solid fa-mountain-sun"></i> Gestión de fincas
+        </span>
+        <h1>Nueva finca</h1>
+        <p>
+            Agregá una nueva finca al sistema del Microbeneficio San Gabriel.
+        </p>
     </div>
 </div>
 
 <div class="sg-card">
     <form asp-action="Create" method="post">
         <partial name="_Form" model="Model" />
+
         <div class="d-flex justify-content-end gap-2 mt-4">
             <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-            <button class="btn btn-success" type="submit"><i class="fa-solid fa-floppy-disk me-2"></i>Registrar finca</button>
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-floppy-disk me-2"></i>Registrar finca
+            </button>
         </div>
     </form>
 </div>
 
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

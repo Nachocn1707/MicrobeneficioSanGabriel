@@ -61,9 +61,9 @@
                                     Fecha de factura
                                 </label>
                                 <input asp-for="FechaFactura" type="datetime-local" class="form-control"
-                                       min="@(Model.FechaFactura.Date >= DateTime.Today ? DateTime.Today.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
+                                       min="@(Model.FechaFactura.Date >= DateTime.UtcNow.AddHours(-6).Date ? DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
                                        data-no-past-date="true"
-                                       data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                       data-today="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")"
                                        data-original-date="@Model.FechaFactura.ToString("yyyy-MM-dd")"
                                        data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                 <span asp-validation-for="FechaFactura" class="text-danger"></span>

@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -104,12 +105,51 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 .GetExternalAuthenticationSchemesAsync())
                 .ToList();
 
+            // Normalización y validación explícita. Esto evita crear cuentas con
+            // campos vacíos o compuestos únicamente por espacios aunque el navegador
+            // omita por alguna razón la validación de cliente.
+            Input ??= new InputModel();
+            Input.Nombre = (Input.Nombre ?? string.Empty).Trim();
+            Input.Apellidos = (Input.Apellidos ?? string.Empty).Trim();
+            Input.Email = (Input.Email ?? string.Empty).Trim();
             Input.PhoneNumber = SoloDigitos(Input.PhoneNumber);
+
+            if (string.IsNullOrWhiteSpace(Input.Nombre))
+                ModelState.AddModelError("Input.Nombre", "El nombre es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(Input.Apellidos))
+                ModelState.AddModelError("Input.Apellidos", "Los apellidos son obligatorios.");
+
             ModelState.Remove("Input.PhoneNumber");
             if (Input.PhoneNumber.Length != 8)
             {
                 ModelState.AddModelError("Input.PhoneNumber",
                     "El teléfono debe contener exactamente 8 dígitos.");
+            }
+
+            if (string.IsNullOrWhiteSpace(Input.Email))
+            {
+                ModelState.AddModelError("Input.Email", "El correo es obligatorio.");
+            }
+            else if (!new CompleteEmailAddressAttribute().IsValid(Input.Email))
+            {
+                ModelState.AddModelError("Input.Email",
+                    "Ingrese un correo electrónico completo y válido, por ejemplo usuario@gmail.com o usuario@hotmail.com.");
+            }
+
+            if (string.IsNullOrWhiteSpace(Input.Password))
+                ModelState.AddModelError("Input.Password", "La contraseña es obligatoria.");
+
+            if (string.IsNullOrWhiteSpace(Input.ConfirmPassword))
+                ModelState.AddModelError("Input.ConfirmPassword", "Debe confirmar la contraseña.");
+
+            // Sprint 4: verificar el correo ANTES de crear la cuenta, enviar mensajes
+            // o mostrar la pantalla "Revisá tu correo". De esta forma un correo
+            // existente nunca avanza al flujo de confirmación.
+            if (ModelState.IsValid && await CorreoRegistradoAsync(Input.Email))
+            {
+                ModelState.AddModelError("Input.Email", "El correo ya está registrado.");
+                return Page();
             }
 
             // El registro requiere SMTP real para que la cuenta reciba el enlace obligatorio de confirmación.
@@ -127,8 +167,8 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                user.Nombre = Input.Nombre;
-                user.Apellidos = Input.Apellidos;
+                user.Nombre = Input.Nombre.Trim();
+                user.Apellidos = Input.Apellidos.Trim();
                 user.PhoneNumber = Input.PhoneNumber;
                 user.EmailConfirmed = false;
 
@@ -214,6 +254,33 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
             return Page();
         }
 
+        /// <summary>
+        /// Comprueba el correo de forma robusta incluso para usuarios históricos que
+        /// pudieron quedar con NormalizedEmail/NormalizedUserName incompletos.
+        /// Identity normalmente busca por NormalizedEmail; esta verificación adicional
+        /// evita que un correo existente avance al modal "Revisá tu correo".
+        /// </summary>
+        private async Task<bool> CorreoRegistradoAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            var limpio = email.Trim();
+            var normalizado = limpio.ToUpperInvariant();
+
+            var encontradoPorIdentity = await _userManager.FindByEmailAsync(limpio);
+            if (encontradoPorIdentity != null)
+                return true;
+
+            return await _userManager.Users
+                .AsNoTracking()
+                .AnyAsync(u =>
+                    (u.NormalizedEmail != null && u.NormalizedEmail == normalizado) ||
+                    (u.NormalizedUserName != null && u.NormalizedUserName == normalizado) ||
+                    (u.Email != null && u.Email.Trim().ToUpper() == normalizado) ||
+                    (u.UserName != null && u.UserName.Trim().ToUpper() == normalizado));
+        }
+
         private async Task<string> CrearUrlConfirmacionAsync(ApplicationUser user, string returnUrl)
         {
             var userId = await _userManager.GetUserIdAsync(user);
@@ -234,7 +301,7 @@ namespace MicrobeneficioSanGabriel.Areas.Identity.Pages.Account
                 protocol: Request.Scheme)!;
         }
 
-        private static string SoloDigitos(string? valor)
+        private static string SoloDigitos(string valor)
         {
             return new string((valor ?? string.Empty).Where(char.IsDigit).ToArray());
         }

@@ -20,21 +20,11 @@
 <section class="Detalle-page-head">
     <div>
         <h1>Detalle del lote</h1>
-        <p>Consultá la información del lote.</p>
+        <p>Consultá la información general del lote.</p>
     </div>
     <div class="Detalle-actions">
         <span class="movimiento-badge-top">
             Lote #@Model.CodigoLote
-        </span>
-    </div>
-</section>
-
-<section class="Detalle-visual-hero Detalle-hero-inventario">
-    <div class="Detalle-visual-hero-content">
-        <h1>Lote: @Model.CodigoLote</h1>
-        <div class="Detalle-visual-line"></div>
-        <span class="Detalle-visual-badge">
-            <i class="fa-solid fa-barcode"></i> @(Model.Productor?.Nombre ?? "Sin Productor") · @(Model.Finca?.Nombre ?? "Sin Finca")
         </span>
     </div>
 </section>

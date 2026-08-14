@@ -45,7 +45,7 @@ namespace MicrobeneficioSanGabriel.Services
                     Accion = accion,
                     RegistroId = registroId,
                     Detalle = detalle,
-                    Fecha = DateTime.Now
+                    Fecha = DateTime.UtcNow.AddHours(-6)
                 });
 
                 await context.SaveChangesAsync();

@@ -19,6 +19,7 @@ namespace MicrobeneficioSanGabriel.Data
         public DbSet<Produccion> Producciones { get; set; }
         public DbSet<Trazabilidad> Trazabilidades { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<PedidoEstadoHistorial> PedidoEstadoHistoriales { get; set; }
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<RegistroFinanciero> RegistrosFinancieros { get; set; }
         public DbSet<AuditoriaRegistro> Auditorias { get; set; }
@@ -102,6 +103,15 @@ namespace MicrobeneficioSanGabriel.Data
                 .HasForeignKey(p => p.ClienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<PedidoEstadoHistorial>()
+                .HasOne(h => h.Pedido)
+                .WithMany()
+                .HasForeignKey(h => h.PedidoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<PedidoEstadoHistorial>()
+                .HasIndex(h => new { h.PedidoId, h.FechaCambio });
+
             builder.Entity<Pedido>()
                 .Property(p => p.ProductoId)
                 .IsRequired(false);
@@ -147,6 +157,13 @@ namespace MicrobeneficioSanGabriel.Data
             builder.Entity<RegistroFinanciero>()
                 .Property(r => r.Monto)
                 .HasPrecision(18, 2);
+
+            builder.Entity<RegistroFinanciero>()
+                .Property(r => r.CantidadKg)
+                .HasPrecision(18, 2);
+
+            builder.Entity<RegistroFinanciero>()
+                .HasIndex(r => new { r.OrigenTipo, r.OrigenId });
 
             builder.Entity<Producto>()
                 .Property(p => p.Stock)

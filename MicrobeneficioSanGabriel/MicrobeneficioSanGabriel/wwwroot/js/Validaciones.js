@@ -128,3 +128,55 @@ document.addEventListener("DOMContentLoaded", function () {
         if (el) el.addEventListener("input", sglValidateRegisterForm);
     });
 });
+
+
+// Registro público: segunda barrera de cliente para impedir campos vacíos o solo espacios.
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("registerForm");
+    if (!form) return;
+
+    const field = name => form.querySelector(`[name="Input.${name}"]`);
+    const nombre = field("Nombre");
+    const apellidos = field("Apellidos");
+    const telefono = field("PhoneNumber");
+    const email = field("Email");
+    const password = field("Password");
+    const confirmPassword = field("ConfirmPassword");
+
+    [nombre, apellidos, email].forEach(input => {
+        input?.addEventListener("blur", () => {
+            input.value = input.value.trim();
+        });
+    });
+
+    form.addEventListener("submit", function (event) {
+        const errores = [];
+        const correo = (email?.value || "").trim();
+        const telefonoLimpio = (telefono?.value || "").replace(/\D/g, "");
+
+        if (!(nombre?.value || "").trim()) errores.push("El nombre es obligatorio.");
+        if (!(apellidos?.value || "").trim()) errores.push("Los apellidos son obligatorios.");
+        if (telefonoLimpio.length !== 8) errores.push("El teléfono debe contener exactamente 8 dígitos.");
+        if (!/^[^\s@]+@[^\s@]+(?:\.[A-Za-z]{2,})+$/.test(correo)) errores.push("Ingrese un correo electrónico completo y válido.");
+        if (!(password?.value || "").trim()) errores.push("La contraseña es obligatoria.");
+        if (!(confirmPassword?.value || "").trim()) errores.push("Debe confirmar la contraseña.");
+        if ((password?.value || "") !== (confirmPassword?.value || "")) errores.push("Las contraseñas no coinciden.");
+
+        if (errores.length === 0) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const mensaje = errores[0];
+        if (window.Swal) {
+            Swal.fire({
+                icon: "warning",
+                title: "Revise el formulario",
+                text: mensaje,
+                confirmButtonText: "Entendido"
+            });
+        } else {
+            alert(mensaje);
+        }
+    }, true);
+});

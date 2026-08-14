@@ -4,14 +4,22 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var soloEstado = (bool?)ViewBag.SoloEstado ?? false;
 }
-<div class="sg-visual-hero sg-hero-lotes">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-pen"></i> Lote</span>
-        <h1>@(soloEstado ? "Cambiar estado" : "Editar") @Model.CodigoLote</h1>
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
+
+<div class="EstiloEditaR-top">
+    <div class="EstiloEditaR-title">
+        <span class="EstiloEditaR-badge">
+            <h1>@(soloEstado ? "Cambiar estado" : "Editar") @Model.CodigoLote</h1>
+        </span>
         <div class="sg-visual-line"></div>
         <p>@(soloEstado ? "Como operador solo podés actualizar el estado del lote." : "El código permanece protegido para conservar la trazabilidad.")</p>
     </div>
 </div>
+
 <div class="sg-card">
     <form asp-action="Edit" method="post">
         <input type="hidden" asp-for="Id" />

@@ -75,7 +75,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(AccessDenied));
             }
 
-            var hoy = DateTime.Today;
+            var hoy = DateTime.UtcNow.AddHours(-6).Date;
             var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
             var finMes = inicioMes.AddMonths(1);
             var inicioAnio = new DateTime(hoy.Year, 1, 1);

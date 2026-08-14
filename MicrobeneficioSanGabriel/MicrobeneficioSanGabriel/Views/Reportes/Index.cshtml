@@ -2,21 +2,6 @@
 @using System.Collections.Generic
 @{
     ViewData["Title"] = "Reportes";
-    <div class="sg-visual-hero sg-hero-reportes">
-        <div class="sg-visual-hero-content">
-            <span class="sg-visual-badge">
-                <i class="fa-solid fa-chart-pie"></i>
-                Análisis del sistema
-            </span>
-
-            <h1>Reportes administrativos</h1>
-            <div class="sg-visual-line"></div>
-
-            <p>
-                Consultá métricas, filtros por fecha, ventas, stock y datos generales para la toma de decisiones.
-            </p>
-        </div>
-    </div>
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     decimal totalVentas = ViewBag.TotalVentas ?? 0;
@@ -25,258 +10,245 @@
     int facturasPendientes = ViewBag.FacturasPendientes ?? 0;
     int productosStockBajo = ViewBag.ProductosStockBajo ?? 0;
 
-    int stockPorcentaje = totalStock > 100 ? 100 : (int)totalStock;
-
     var productosReporte = ViewBag.Productos as IEnumerable<MicrobeneficioSanGabriel.Models.Producto>
         ?? Enumerable.Empty<MicrobeneficioSanGabriel.Models.Producto>();
 
-    var maxStockProducto = productosReporte.Any()
-        ? productosReporte.Max(p => p.Stock)
-        : 0;
-
+    var maxStockProducto = productosReporte.Any() ? productosReporte.Max(p => p.Stock) : 0;
     var coloresStock = new[] { "coffee", "green", "gold", "tan", "brown", "sage" };
     var indiceColorStock = 0;
 }
 
 @section Styles {
-
-    <link rel="stylesheet" href="~/css/VistaIA.css">
+    <link rel="stylesheet" href="~/css/VistaIA.css" />
 }
 
-<h1 class="fw-bold"></h1>
-
-<p class="text-muted mb-4">
-</p>
-
-<form method="get" asp-action="Index" class="row g-3 mb-4 sg-report-filters">
-
-    <div class="col-md-3">
-        <label class="form-label fw-bold">
-            Fecha inicio
-        </label>
-
-        <input type="date"
-               name="fechaInicio"
-               value="@ViewBag.FechaInicio"
-               class="form-control" />
-    </div>
-
-    <div class="col-md-3">
-        <label class="form-label fw-bold">
-            Fecha fin
-        </label>
-
-        <input type="date"
-               name="fechaFin"
-               value="@ViewBag.FechaFin"
-               class="form-control" />
-    </div>
-
-    <div class="col-md-2 d-flex align-items-end">
-        <button type="submit"
-                class="btn btn-primary w-100">
-            <i class="fa-solid fa-filter"></i>
-            Filtrar
-        </button>
-    </div>
-
-    <div class="col-md-2 d-flex align-items-end">
-        <a asp-action="Index"
-           class="btn btn-secondary w-100">
-            <i class="fa-solid fa-rotate-left"></i>
-            Limpiar
-        </a>
-    </div>
-
-    <div class="col-md-2 d-flex align-items-end">
-        <a asp-action="ExportarExcel"
-           asp-route-fechaInicio="@ViewBag.FechaInicio"
-           asp-route-fechaFin="@ViewBag.FechaFin"
-           class="btn btn-success w-100">
-            <i class="fa-solid fa-file-excel"></i>
-            Excel
-        </a>
-    </div>
-
-    <div class="col-md-12 d-flex justify-content-end">
-        <a asp-action="AnalisisIA"
-           asp-route-fechaInicio="@ViewBag.FechaInicio"
-           asp-route-fechaFin="@ViewBag.FechaFin"
-           class="btn btn-dark">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            Generar análisis con IA
-        </a>
-    </div>
-
-</form>
-
-<div class="row g-4 mb-4">
-
-    <div class="col-md-3">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h6 class="text-muted">Productores</h6>
-            <h2 class="fw-bold">@ViewBag.TotalProductores</h2>
+<div class="sg-report-wrapper">
+    <!-- Header Principal y Filtros Integrados -->
+    <div class="sg-report-header-card">
+        <div class="sg-report-header-main">
+            <div class="sg-report-header-text">
+                <span class="sg-report-badge">
+                    <i class="fa-solid fa-chart-pie me-1"></i> Análisis del sistema
+                </span>
+                <h1>Reportes administrativos</h1>
+                <p>Indicadores agrupados por prioridad para facilitar decisiones de ventas, operación e inventario.</p>
+            </div>
+            <a asp-action="AnalisisIA" asp-route-fechaInicio="@ViewBag.FechaInicio" asp-route-fechaFin="@ViewBag.FechaFin" class="sg-btn-ai">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Generar análisis con IA</span>
+            </a>
         </div>
+
+        <form method="get" asp-action="Index" class="sg-report-filter-bar">
+            <div class="sg-filter-field">
+                <label><i class="fa-solid fa-calendar-days"></i> Fecha inicio</label>
+                <input type="date" name="fechaInicio" value="@ViewBag.FechaInicio" class="form-control" />
+            </div>
+            <div class="sg-filter-field">
+                <label><i class="fa-solid fa-calendar-days"></i> Fecha fin</label>
+                <input type="date" name="fechaFin" value="@ViewBag.FechaFin" class="form-control" />
+            </div>
+            <div class="sg-filter-actions">
+                <button type="submit" class="btn sg-btn-primary">
+                    <i class="fa-solid fa-filter"></i> Filtrar
+                </button>
+                <a asp-action="Index" class="btn sg-btn-outline">
+                    <i class="fa-solid fa-rotate-left"></i> Limpiar
+                </a>
+                <a asp-action="ExportarExcel" asp-route-fechaInicio="@ViewBag.FechaInicio" asp-route-fechaFin="@ViewBag.FechaFin" class="btn sg-btn-success">
+                    <i class="fa-solid fa-file-excel"></i> Excel
+                </a>
+            </div>
+        </form>
     </div>
 
-    <div class="col-md-3">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h6 class="text-muted">Productos</h6>
-            <h2 class="fw-bold">@ViewBag.TotalProductos</h2>
+    <!-- Seccion Indicadores Principales -->
+    <section class="sg-report-section">
+        <div class="sg-report-section-head">
+            <div>
+                <span class="sg-section-tag">Resumen ejecutivo</span>
+                <h2>Indicadores principales</h2>
+            </div>
+            <small class="sg-section-subtitle"><i class="fa-solid fa-clock-rotate-left"></i> Datos del periodo seleccionado</small>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h6 class="text-muted">Pedidos</h6>
-            <h2 class="fw-bold">@ViewBag.TotalPedidos</h2>
+        <div class="sg-report-primary-grid">
+            <article class="sg-report-primary-card featured">
+                <div class="sg-report-primary-icon">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <div class="sg-report-primary-info">
+                    <small>Ventas pagadas</small>
+                    <strong>₡ @totalVentas.ToString("N0")</strong>
+                    <p>Ingresos provenientes de facturas con pago completado.</p>
+                </div>
+            </article>
+
+            <article class="sg-report-primary-card">
+                <div class="sg-report-primary-icon icon-stock">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <div class="sg-report-primary-info">
+                    <small>Stock disponible</small>
+                    <strong>@totalStock.ToString("N2") kg</strong>
+                    <p>Existencia acumulada de productos.</p>
+                </div>
+            </article>
+
+            <article class="sg-report-primary-card warning">
+                <div class="sg-report-primary-icon icon-warning">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+                <div class="sg-report-primary-info">
+                    <small>Pedidos en seguimiento</small>
+                    <strong>@pedidosPendientes</strong>
+                    <p>Pendientes o en proceso.</p>
+                </div>
+            </article>
+
+            <article class="sg-report-primary-card danger @(productosStockBajo > 0 ? "has-alert" : "")">
+                <div class="sg-report-primary-icon icon-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="sg-report-primary-info">
+                    <small>Productos con stock bajo</small>
+                    <strong>@productosStockBajo</strong>
+                    <p>Productos en o debajo de su mínimo.</p>
+                </div>
+            </article>
         </div>
-    </div>
+    </section>
 
-    <div class="col-md-3">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h6 class="text-muted">Facturas</h6>
-            <h2 class="fw-bold">@ViewBag.TotalFacturas</h2>
+    <!-- Seccion Volumen del Sistema -->
+    <section class="sg-report-section">
+        <div class="sg-report-section-head">
+            <div>
+                <span class="sg-section-tag">Contexto operativo</span>
+                <h2>Volumen del sistema</h2>
+            </div>
         </div>
-    </div>
 
-</div>
+        <div class="sg-report-context-grid">
+            <article class="sg-context-card">
+                <div class="sg-context-icon icon-producers">
+                    <i class="fa-solid fa-people-group"></i>
+                </div>
+                <div>
+                    <span>Productores</span>
+                    <strong>@ViewBag.TotalProductores</strong>
+                </div>
+            </article>
 
-<div class="row g-4 mb-4">
+            <article class="sg-context-card">
+                <div class="sg-context-icon icon-products">
+                    <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <div>
+                    <span>Productos</span>
+                    <strong>@ViewBag.TotalProductos</strong>
+                </div>
+            </article>
 
-    <div class="col-md-6">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold">Ventas totales</h5>
+            <article class="sg-context-card">
+                <div class="sg-context-icon icon-orders">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div>
+                    <span>Pedidos</span>
+                    <strong>@ViewBag.TotalPedidos</strong>
+                </div>
+            </article>
 
-            <h2 class="text-success fw-bold">
-                ₡ @totalVentas.ToString("N0")
-            </h2>
+            <article class="sg-context-card">
+                <div class="sg-context-icon icon-invoices">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div>
+                    <span>Facturas</span>
+                    <strong>@ViewBag.TotalFacturas</strong>
+                </div>
+            </article>
         </div>
-    </div>
+    </section>
 
-    <div class="col-md-6">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold">Stock total disponible</h5>
-
-            <h2 class="fw-bold">
-                @totalStock kg
-            </h2>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold">Pedidos pendientes</h5>
-
-            <h2 class="text-warning fw-bold">
-                @pedidosPendientes
-            </h2>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold">Facturas pendientes</h5>
-
-            <h2 class="text-danger fw-bold">
-                @facturasPendientes
-            </h2>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card sg-report-card border-0 shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold">Productos con stock bajo</h5>
-
-            <h2 class="text-danger fw-bold">
-                @productosStockBajo
-            </h2>
-        </div>
-    </div>
-
-</div>
-
-<div class="row g-4 mt-2">
-
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0 rounded-4 p-4">
-
-            <h4 class="mb-4 fw-bold">
-                Ventas totales
-            </h4>
-
-            <div class="sg-report-progress lg">
-                <div class="sg-report-bar ventas"
-                     role="progressbar"
-                     style="width: 100%;">
-                    ₡ @totalVentas.ToString("N0")
+    <!-- Seccion Detalle: Inventario y Alertas -->
+    <section class="sg-report-detail-grid">
+        <article class="sg-card-panel sg-report-inventory-card">
+            <div class="sg-panel-head">
+                <div class="sg-panel-title">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <div>
+                        <span class="sg-section-tag">Inventario</span>
+                        <h2>Stock por producto</h2>
+                    </div>
                 </div>
             </div>
 
-        </div>
-    </div>
-
-    <div class="col-md-6">
-
-        <div class="card shadow-sm border-0 rounded-4 p-4">
-
-            <h4 class="mb-4 fw-bold">
-                Stock disponible
-            </h4>
-
-            @if (productosReporte.Any())
-            {
-                foreach (var producto in productosReporte)
+            <div class="sg-panel-body">
+                @if (productosReporte.Any())
                 {
-                    var claseColor = coloresStock[indiceColorStock % coloresStock.Length];
-                    var porcentajeStock = maxStockProducto <= 0
-                        ? 0
-                        : (int)Math.Round(producto.Stock * 100m / maxStockProducto);
-
-                    if (producto.Stock > 0 && porcentajeStock < 6)
+                    foreach (var producto in productosReporte)
                     {
-                        porcentajeStock = 6;
-                    }
+                        var claseColor = coloresStock[indiceColorStock % coloresStock.Length];
+                        var porcentajeStock = maxStockProducto <= 0 ? 0 : (int)Math.Round(producto.Stock * 100m / maxStockProducto);
+                        if (producto.Stock > 0 && porcentajeStock < 6) porcentajeStock = 6;
+                        indiceColorStock++;
 
-                    indiceColorStock++;
-
-                    <div class="mb-4">
-
-                        <div class="d-flex justify-content-between mb-2">
-
-                            <span class="fw-semibold">
-                                @producto.Nombre
-                            </span>
-
-                            <span class="fw-bold sg-report-stock-value">
-                                @producto.Stock kg
-                            </span>
-
-                        </div>
-
-                        <div class="sg-report-progress">
-
-                            <div class="sg-report-bar sg-stock-bar @claseColor"
-                                 role="progressbar"
-                                 aria-valuenow="@producto.Stock"
-                                 aria-valuemin="0"
-                                 aria-valuemax="@maxStockProducto"
-                                 style="width:@porcentajeStock%">
+                        <div class="sg-report-stock-row">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="stock-name"><i class="fa-solid fa-circle-dot me-1"></i> @producto.Nombre</span>
+                                <span class="stock-value">@producto.Stock.ToString("N2") kg</span>
                             </div>
-
+                            <div class="sg-report-progress">
+                                <div class="sg-report-bar sg-stock-bar @claseColor" role="progressbar" aria-valuenow="@producto.Stock" aria-valuemin="0" aria-valuemax="@maxStockProducto" style="width:@porcentajeStock%"></div>
+                            </div>
                         </div>
-
+                    }
+                }
+                else
+                {
+                    <div class="text-muted text-center py-4">
+                        <i class="fa-solid fa-box-open fa-2x mb-2 d-block"></i>
+                        No hay productos registrados para mostrar stock.
                     </div>
                 }
-            }
-            else
-            {
-                <div class="text-muted">
-                    No hay productos registrados para mostrar stock.
+            </div>
+        </article>
+
+        <aside class="sg-card-panel sg-report-alert-card">
+            <div class="sg-panel-head">
+                <div class="sg-panel-title">
+                    <i class="fa-solid fa-bell"></i>
+                    <div>
+                        <span class="sg-section-tag">Atención</span>
+                        <h2>Seguimiento operativo</h2>
+                    </div>
                 </div>
-            }
-        </div>
+            </div>
 
-    </div>
-
+            <div class="sg-panel-body">
+                <div class="sg-report-alert-row">
+                    <div class="icon warning"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <div class="sg-report-alert-text">
+                        <strong>@pedidosPendientes</strong>
+                        <span>Pedidos pendientes o en proceso</span>
+                    </div>
+                </div>
+                <div class="sg-report-alert-row">
+                    <div class="icon danger"><i class="fa-solid fa-file-circle-exclamation"></i></div>
+                    <div class="sg-report-alert-text">
+                        <strong>@facturasPendientes</strong>
+                        <span>Facturas pendientes de pago</span>
+                    </div>
+                </div>
+                <div class="sg-report-alert-row">
+                    <div class="icon danger"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="sg-report-alert-text">
+                        <strong>@productosStockBajo</strong>
+                        <span>Productos que requieren reposición</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </section>
 </div>

@@ -132,9 +132,9 @@
                                         Fecha de registro
                                     </label>
                                     <input asp-for="FechaRegistro" type="datetime-local" class="form-control"
-                                           min="@(Model.FechaRegistro.Date >= DateTime.Today ? DateTime.Today.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
+                                           min="@(Model.FechaRegistro.Date >= DateTime.UtcNow.AddHours(-6).Date ? DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
                                            data-no-past-date="true"
-                                           data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                           data-today="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")"
                                            data-original-date="@Model.FechaRegistro.ToString("yyyy-MM-dd")"
                                            data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                     <span asp-validation-for="FechaRegistro" class="text-danger"></span>

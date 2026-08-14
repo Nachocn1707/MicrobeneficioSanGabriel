@@ -74,6 +74,8 @@
                             <input asp-for="Input.Nombre"
                                    class="sgl-input sgl-input--plain"
                                    maxlength="30"
+                                   required
+                                   pattern=".*\S.*"
                                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                                    autocomplete="given-name"
                                    placeholder="Nombre" />
@@ -87,6 +89,8 @@
                             <input asp-for="Input.Apellidos"
                                    class="sgl-input sgl-input--plain"
                                    maxlength="30"
+                                   required
+                                   pattern=".*\S.*"
                                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,'')"
                                    autocomplete="family-name"
                                    placeholder="Apellidos" />
@@ -103,6 +107,7 @@
                                    type="tel"
                                    inputmode="numeric"
                                    maxlength="8"
+                                   required
                                    pattern="[0-9]{8}"
                                    placeholder="88888888"
                                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
@@ -118,6 +123,8 @@
                                    id="email"
                                    class="sgl-input"
                                    type="email"
+                                   required
+                                   maxlength="256"
                                    autocomplete="username"
                                    placeholder="usuario@gmail.com" />
                         </div>
@@ -131,6 +138,8 @@
                             <input asp-for="Input.Password"
                                    id="password"
                                    class="sgl-input"
+                                   required
+                                   minlength="8"
                                    autocomplete="new-password"
                                    placeholder="Mínimo 8 caracteres" />
                             <button type="button"
@@ -150,6 +159,8 @@
                             <input asp-for="Input.ConfirmPassword"
                                    id="confirmPassword"
                                    class="sgl-input"
+                                   required
+                                   minlength="8"
                                    autocomplete="new-password"
                                    placeholder="Repetí la contraseña" />
                             <button type="button"

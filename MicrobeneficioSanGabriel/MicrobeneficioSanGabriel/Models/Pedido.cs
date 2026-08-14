@@ -74,7 +74,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "La fecha del pedido es obligatoria")]
         [Display(Name = "Fecha Pedido")]
-        public DateTime FechaPedido { get; set; } = DateTime.Now;
+        public DateTime FechaPedido { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [Required(ErrorMessage = "El estado es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]

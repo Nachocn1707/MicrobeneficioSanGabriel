@@ -3,95 +3,173 @@
 @{
     ViewData["Title"] = "Detalle del productor";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var fincas = Model.Fincas ?? new List<MicrobeneficioSanGabriel.Models.Finca>();
 }
 
-<div class="sg-visual-hero sg-hero-productores">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge">
-            <i class="fa-solid fa-seedling"></i> Productor
+@section Styles {
+    <link rel="stylesheet" href="~/css/VistaDetalles.css" />
+}
+
+<section class="Detalle-page-head">
+    <div>
+        <h1>Detalle del productor</h1>
+        <p>Consultá la información general del productor registrado y sus fincas asociadas.</p>
+    </div>
+    <div class="Detalle-actions">
+        <span class="movimiento-badge-top">
+            <i class="fa-solid fa-user me-1"></i> Productor #@Model.Id
         </span>
-        <h1>@Model.Nombre</h1>
-        <div class="sg-visual-line"></div>
-        <p>@Model.UbicacionCompleta</p>
     </div>
-</div>
+</section>
 
-<div class="sg-card mb-4">
-    <div class="row g-4">
-        <div class="col-md-4">
-            <small class="text-muted">Cédula</small>
-            <h5>@Model.Cedula</h5>
+<div class="EstiloDetalle-detalle-page">
+
+    <div class="EstiloDetalle-premium-card mb-4">
+        <div class="EstiloDetalle-premium-header">
+            <h2><i class="fa-solid fa-address-card me-2"></i> Información del Productor</h2>
         </div>
-        <div class="col-md-4">
-            <small class="text-muted">Teléfono</small>
-            <h5>@Model.Telefono</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Correo</small>
-            <h5>@(Model.Correo ?? "Sin correo")</h5>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Provincia</small>
-            <p>@Model.Provincia</p>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Cantón</small>
-            <p>@Model.Canton</p>
-        </div>
-        <div class="col-md-4">
-            <small class="text-muted">Distrito</small>
-            <p>@Model.Distrito</p>
-        </div>
-        <div class="col-12">
-            <small class="text-muted">Dirección exacta</small>
-            <p>@Model.DireccionExacta</p>
+
+        <div class="EstiloDetalle-premium-body">
+            <div class="EstiloDetalle-detail-grid">
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-id-card"></i> CÉDULA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.Cedula
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-user"></i> NOMBRE COMPLETO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.Nombre
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-phone"></i> TELÉFONO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.Telefono
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-envelope"></i> CORREO ELECTRÓNICO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.Correo) ? "Sin correo registrado" : Model.Correo)
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-map-location-dot"></i> PROVINCIA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.Provincia
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-location-dot"></i> CANTÓN
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.Canton
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-map-pin"></i> DISTRITO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @Model.Distrito
+                    </span>
+                </div>
+
+                <div class="EstiloDetalle-detail-item full">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-compass"></i> DIRECCIÓN EXACTA
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(string.IsNullOrWhiteSpace(Model.DireccionExacta) ? "Sin dirección especificada" : Model.DireccionExacta)
+                    </span>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
 
-<div class="sg-card">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Fincas asociadas</h3>
-        <a asp-controller="Fincas"
-           asp-action="Create"
-           asp-route-productorId="@Model.Id"
-           class="btn btn-success btn-sm">
-            Agregar finca
-        </a>
-    </div>
+    <div class="EstiloDetalle-premium-card">
+        <div class="EstiloDetalle-premium-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="fa-solid fa-tree me-2"></i> Fincas asociadas</h2>
+            <a asp-controller="Fincas"
+               asp-action="Create"
+               asp-route-productorId="@Model.Id"
+               class="btn-EstiloDetalle btn-EstiloDetalle-primary text-decoration-none">
+                <i class="fa-solid fa-plus me-1"></i> Agregar finca
+            </a>
+        </div>
 
-    @if (Model.Fincas.Any())
-    {
-        <div class="row g-3">
-            @foreach (var finca in Model.Fincas)
+        <div class="EstiloDetalle-premium-body">
+            @if (fincas.Any())
             {
-                <div class="col-md-6">
-                    <div class="border rounded-4 p-3">
-                        <strong>@finca.Nombre</strong>
-                        <p class="text-muted mb-2">@finca.UbicacionCompleta</p>
-                        <a asp-controller="Fincas"
-                           asp-action="Details"
-                           asp-route-id="@finca.Id">
-                            Ver detalle
-                        </a>
-                    </div>
+                <div class="row g-3">
+                    @foreach (var finca in fincas)
+                    {
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-4" style="background: #ffffff; border: 1px solid var(--cliente-borde); box-shadow: 0 4px 12px rgba(41, 75, 42, 0.05);">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="fw-bold mb-0" style="color: #294b2a;">
+                                        <i class="fa-solid fa-mountain-sun me-1"></i> @finca.Nombre
+                                    </h5>
+                                    <span class="@(finca.Activa ? "movimiento-estado movimiento-entrada" : "movimiento-estado movimiento-salida")">
+                                        @(finca.Activa ? "Activa" : "Inactiva")
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-3">
+                                    <i class="fa-solid fa-location-dot me-1"></i> @finca.UbicacionCompleta
+                                </p>
+                                <a asp-controller="Fincas"
+                                   asp-action="Details"
+                                   asp-route-id="@finca.Id"
+                                   class="btn-EstiloDetalle btn-EstiloDetalle-primary text-decoration-none py-1 px-3 fs-7">
+                                    <i class="fa-solid fa-eye me-1"></i> Ver detalle
+                                </a>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info">
-            Este productor todavía no tiene fincas registradas.
-        </div>
-    }
+            else
+            {
+                <div class="alert alert-info border-0 rounded-4 p-3 d-flex align-items-center gap-3" style="background: rgba(41, 75, 42, 0.08); color: #294b2a;">
+                    <i class="fa-solid fa-circle-info fs-4"></i>
+                    <span>Este productor todavía no tiene fincas registradas. Presioná <strong>Agregar finca</strong> para asociar la primera.</span>
+                </div>
+            }
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+            <div class="EstiloDetalle-actions mt-4">
+                <a asp-action="Index" class="btn-EstiloDetalle btn-EstiloDetalle-primary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Volver
+                </a>
 
-        @if (User.IsInRole("Administrador"))
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
-        }
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-EstiloDetalle btn-EstiloDetalle-warning">
+                        <i class="fa-solid fa-pen-to-square me-1"></i> Editar
+                    </a>
+                }
+            </div>
+        </div>
     </div>
+
 </div>

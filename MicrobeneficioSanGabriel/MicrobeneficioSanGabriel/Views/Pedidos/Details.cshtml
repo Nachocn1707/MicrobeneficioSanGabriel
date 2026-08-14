@@ -12,6 +12,9 @@
         Layout = "~/Views/Shared/_AdminLayout.cshtml";
     }
 
+    var historialEstados = ViewBag.HistorialEstados as List<MicrobeneficioSanGabriel.Models.PedidoEstadoHistorial>
+        ?? new List<MicrobeneficioSanGabriel.Models.PedidoEstadoHistorial>();
+
     string estadoClase = Model.Estado switch
     {
         "Pendiente" => "movimiento-estado estado-pendiente",
@@ -36,16 +39,6 @@
     <div class="Detalle-actions">
         <span class="movimiento-badge-top">
             Pedido #@Model.Id
-        </span>
-    </div>
-</section>
-
-<section class="Detalle-visual-hero Detalle-hero-inventario">
-    <div class="Detalle-visual-hero-content">
-        <h1>Cliente: @Model.ClienteNombre</h1>
-        <div class="Detalle-visual-line"></div>
-        <span class="Detalle-visual-badge">
-            <i class="fa-solid fa-mug-hot"></i> Seguimiento de pedidos
         </span>
     </div>
 </section>
@@ -131,6 +124,54 @@
                 </div>
 
             </div>
+
+            <section class="pedido-trace-section" aria-labelledby="pedido-trace-title">
+                <div class="pedido-trace-head">
+                    <div>
+                        <span class="pedido-trace-kicker"><i class="fa-solid fa-route"></i> Trazabilidad del pedido</span>
+                        <h3 id="pedido-trace-title">Historial completo de estados</h3>
+                        <p>Cada cambio queda registrado con fecha y hora para conservar el recorrido real del pedido.</p>
+                    </div>
+                    <span class="pedido-trace-count">@historialEstados.Count evento(s)</span>
+                </div>
+
+                @if (historialEstados.Any())
+                {
+                    <ol class="pedido-trace-list">
+                        @foreach (var evento in historialEstados)
+                        {
+                            var esActual = string.Equals(evento.EstadoNuevo, Model.Estado, StringComparison.OrdinalIgnoreCase)
+                                && evento.Id == historialEstados.Last().Id;
+                            <li class="pedido-trace-item @(esActual ? "is-current" : "")">
+                                <span class="pedido-trace-dot"><i class="fa-solid fa-check"></i></span>
+                                <div class="pedido-trace-copy">
+                                    <div class="pedido-trace-row">
+                                        <strong>@evento.EstadoNuevo</strong>
+                                        @if (esActual)
+                                        {
+                                            <span class="pedido-trace-current">Estado actual</span>
+                                        }
+                                    </div>
+                                    <time datetime="@evento.FechaCambio.ToString("O")">
+                                        @evento.FechaCambio.ToString("dd/MM/yyyy · HH:mm")
+                                    </time>
+                                    @if (!string.IsNullOrWhiteSpace(evento.Observacion))
+                                    {
+                                        <small>@evento.Observacion</small>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                }
+                else
+                {
+                    <div class="pedido-trace-empty">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>El historial comenzará a mostrarse con el próximo cambio de estado.</span>
+                    </div>
+                }
+            </section>
 
             <div class="EstiloDetalle-actions">
 

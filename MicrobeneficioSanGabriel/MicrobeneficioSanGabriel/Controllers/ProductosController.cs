@@ -1,4 +1,5 @@
 using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Constants;
 using MicrobeneficioSanGabriel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -56,7 +57,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 Activo = true,
                 StockMinimo = 20,
-                FechaRegistro = DateTime.Now
+                FechaRegistro = DateTime.UtcNow.AddHours(-6)
             });
         }
 
@@ -66,6 +67,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro,RowVersion")] Producto producto, IFormFile? imagenArchivo)
         {
+            if (!CategoriasProducto.EsValida(producto.Categoria))
+            {
+                ModelState.AddModelError(nameof(Producto.Categoria), "Seleccione una categoría válida del catálogo.");
+            }
+
             if (!await ValidarImagenProductoAsync(imagenArchivo))
             {
                 return View(producto);
@@ -75,7 +81,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 producto.Nombre = producto.Nombre?.Trim() ?? string.Empty;
                 producto.Categoria = producto.Categoria?.Trim() ?? string.Empty;
-                producto.FechaRegistro = DateTime.Now;
+                producto.FechaRegistro = DateTime.UtcNow.AddHours(-6);
 
                 if (await _context.Productos.AnyAsync(p => p.Nombre.ToLower() == producto.Nombre.ToLower()))
                 {
@@ -121,6 +127,11 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Categoria,Precio,Stock,StockMinimo,Descripcion,Activo,FechaRegistro,RowVersion")] Producto producto, IFormFile? imagenArchivo, bool eliminarImagenActual = false)
         {
+            if (!CategoriasProducto.EsValida(producto.Categoria))
+            {
+                ModelState.AddModelError(nameof(Producto.Categoria), "Seleccione una categoría válida del catálogo.");
+            }
+
             if (id != producto.Id)
             {
                 return NotFound();
@@ -166,7 +177,6 @@ namespace MicrobeneficioSanGabriel.Controllers
                     productoDb.StockMinimo = producto.StockMinimo;
                     productoDb.Descripcion = producto.Descripcion;
                     productoDb.Activo = producto.Activo;
-                    productoDb.FechaRegistro = producto.FechaRegistro;
 
                     if (imagenArchivo is { Length: > 0 })
                     {

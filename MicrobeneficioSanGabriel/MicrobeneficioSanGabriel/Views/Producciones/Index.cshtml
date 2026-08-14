@@ -2,79 +2,306 @@
 @{
     ViewData["Title"] = "Producción";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var producciones = Model.ToList();
+
+    var producciones = Model?.ToList() ?? new List<MicrobeneficioSanGabriel.Models.Produccion>();
     var totalProducciones = producciones.Count;
     var totalProcesada = producciones.Sum(p => p.CantidadProcesadaKg);
     var totalResultante = producciones.Sum(p => p.CantidadResultanteKg);
-    var curso = producciones.Count(p => p.Estado == "En proceso");
-    var completadas = producciones.Count(p => p.Estado == "Completado");
-    var canceladas = producciones.Count(p => p.Estado == "Cancelado");
+    var curso = producciones.Count(p => string.Equals(p.Estado, "En proceso", StringComparison.OrdinalIgnoreCase));
+    var completadas = producciones.Count(p => (p.Estado ?? "").Contains("Complet", StringComparison.OrdinalIgnoreCase));
+    var canceladas = producciones.Count(p => (p.Estado ?? "").Contains("Cancel", StringComparison.OrdinalIgnoreCase));
     var rendimiento = totalProcesada <= 0 ? 0 : Math.Round(totalResultante * 100 / totalProcesada, 1);
-    var totalEstadosProduccion = completadas + curso + canceladas;
-    decimal Porcentaje(int valor) => totalProducciones == 0 ? 0 : Math.Round(valor * 100m / totalProducciones, 0);
+    var etapas = new[] { "Lavado", "Secado", "Tostado", "Molido", "Empaque" };
+    var lotesConProcesos = producciones
+        .GroupBy(p => p.LoteId)
+        .OrderByDescending(g => g.Max(p => p.FechaProduccion))
+        .ToList();
 
-    var coloresProduccion = new[]
+    // Paginación independiente para el resumen de trazabilidad por lote.
+    // Se muestran pocos lotes por página para evitar una vista demasiado larga.
+    const int lotesPorPagina = 1;
+    var totalLotesTrazados = lotesConProcesos.Count;
+    var totalPaginasTrazabilidad = Math.Max(1, (int)Math.Ceiling(totalLotesTrazados / (double)lotesPorPagina));
+    var paginaTrazabilidad = 1;
+
+    if (int.TryParse(Context.Request.Query["tracePage"], out var paginaSolicitada))
     {
-        new { Clase = "green", Hex = "#4F8738", Label = "Completadas", Valor = completadas },
-        new { Clase = "gold", Hex = "#D97800", Label = "En proceso", Valor = curso },
-        new { Clase = "brown", Hex = "#5B3A16", Label = "Canceladas", Valor = canceladas }
-    };
-
-    string FormatoPorcentajeProduccion(decimal valor) =>
-        valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
-
-    string CrearDonutProduccion()
-    {
-        if (totalEstadosProduccion <= 0)
-        {
-            return "conic-gradient(#eadfce 0% 100%)";
-        }
-
-        var segmentos = new List<string>();
-        decimal acumulado = 0m;
-
-        foreach (var estado in coloresProduccion)
-        {
-            if (estado.Valor <= 0)
-            {
-                continue;
-            }
-
-            var inicio = acumulado;
-            acumulado += estado.Valor * 100m / totalEstadosProduccion;
-            segmentos.Add($"{estado.Hex} {FormatoPorcentajeProduccion(inicio)}% {FormatoPorcentajeProduccion(acumulado)}%");
-        }
-
-        return segmentos.Any()
-            ? $"conic-gradient({string.Join(", ", segmentos)})"
-            : "conic-gradient(#eadfce 0% 100%)";
+        paginaTrazabilidad = Math.Clamp(paginaSolicitada, 1, totalPaginasTrazabilidad);
     }
 
-    var donutProduccion = CrearDonutProduccion();
+    var lotesPagina = lotesConProcesos
+        .Skip((paginaTrazabilidad - 1) * lotesPorPagina)
+        .Take(lotesPorPagina)
+        .ToList();
+
+    var primerLoteVisible = totalLotesTrazados == 0 ? 0 : ((paginaTrazabilidad - 1) * lotesPorPagina) + 1;
+    var ultimoLoteVisible = Math.Min(paginaTrazabilidad * lotesPorPagina, totalLotesTrazados);
 }
-<section class="sg-page-head"><div><h1>Lotes y Producción</h1><p>Procesos de beneficiado, rendimiento y control de etapas con datos reales.</p></div><div class="sg-actions"><a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Registrar producción</a><a asp-controller="Lotes" asp-action="Create" class="sg-btn ghost"><i class="fa-solid fa-plus"></i>Nuevo lote</a><label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaProducciones" placeholder="Buscar producción, lote o producto..." /></label></div></section>
+
+<section class="sg-page-head">
+    <div>
+        <h1>Producción</h1>
+        <p>Control de procesos de beneficiado, rendimiento y recorrido de cada lote.</p>
+    </div>
+    <div class="sg-actions">
+        <a asp-action="Create" class="sg-btn gold"><i class="fa-solid fa-plus"></i>Registrar producción</a>
+        <label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-target="tablaProducciones" placeholder="Buscar lote, proceso o producto..." /></label>
+    </div>
+</section>
+
 <section class="sg-kpi-grid">
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-industry"></i></span><div><span>Kg resultantes</span><strong>@totalResultante.ToString("N2") kg</strong><div class="sg-trend">Suma real registrada</div></div></article>
+    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-industry"></i></span><div><span>Procesos registrados</span><strong>@totalProducciones</strong><div class="sg-trend">Historial real de producción</div></div></article>
     <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-arrows-rotate"></i></span><div><span>Procesos en curso</span><strong>@curso</strong><div class="sg-trend">Estado actual</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-leaf"></i></span><div><span>Rendimiento promedio</span><strong>@rendimiento%</strong><div class="sg-trend">Resultante / procesada</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-box"></i></span><div><span>Productos resultantes</span><strong>@producciones.Where(p => p.ProductoId.HasValue).Select(p => p.ProductoId).Distinct().Count()</strong><div class="sg-trend warn">Según producción</div></div></article>
+    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-weight-scale"></i></span><div><span>Kg resultantes</span><strong>@totalResultante.ToString("N2") kg</strong><div class="sg-trend">Suma registrada</div></div></article>
+    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-leaf"></i></span><div><span>Rendimiento promedio</span><strong>@rendimiento%</strong><div class="sg-trend">Resultante / procesada</div></div></article>
 </section>
-<section class="sg-grid-2">
-    <article class="sg-card sg-panel">
-        <h3>Estado de producción</h3>
-        <div class="sg-donut-wrap mt-3">
-            <div class="sg-donut" style="--donut-bg: @donutProduccion;">
-                <div>
-                    <b>@Porcentaje(completadas)%</b><span>Completadas</span>
-                </div>
-            </div>
-            <div class="sg-legend">
-                <div class="sg-legend-row"><span class="sg-dot green"></span><span>Completadas</span><b>@completadas</b></div>
-                <div class="sg-legend-row"><span class="sg-dot gold"></span><span>En proceso</span><b>@curso</b></div>
-                <div class="sg-legend-row"><span class="sg-dot brown"></span><span>Canceladas</span><b>@canceladas</b></div>
-            </div>
+
+<section class="sg-card sg-panel mb-3" id="trazabilidad-lotes">
+    <div class="sg-panel-head">
+        <div>
+            <h2>Trazabilidad de los lotes en producción</h2>
+            <small>Cada etapa muestra el registro y la fecha en que el lote pasó por el proceso.</small>
         </div>
-    </article>
-    <article class="sg-card sg-panel"><h3>Volumen procesado</h3><div class="sg-mini-list mt-3"><div class="sg-mini-row"><i class="fa-solid fa-weight-scale text-success"></i><span>Kg procesados</span><b>@totalProcesada.ToString("N2") kg</b></div><div class="sg-mini-row"><i class="fa-solid fa-scale-balanced text-success"></i><span>Kg resultantes</span><b>@totalResultante.ToString("N2") kg</b></div><div class="sg-mini-row"><i class="fa-solid fa-chart-simple text-success"></i><span>Rendimiento</span><b>@rendimiento%</b></div></div></article>
+        <a asp-controller="Trazabilidades" asp-action="Index"><i class="fa-solid fa-route"></i>Ver trazabilidad completa</a>
+    </div>
+
+    @if (lotesConProcesos.Any())
+    {
+        <div class="d-grid gap-3 mt-3">
+            @foreach (var loteGrupo in lotesPagina)
+            {
+                var muestra = loteGrupo.OrderByDescending(p => p.FechaProduccion).First();
+                var codigo = muestra.Lote?.CodigoLote ?? $"LO-{muestra.LoteId:0000}";
+                <article class="sg-card p-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <strong><i class="fa-solid fa-layer-group me-2 text-success"></i>@codigo</strong>
+                            <small class="d-block text-muted">@loteGrupo.Count() proceso(s) registrado(s)</small>
+                        </div>
+                        <a asp-controller="Lotes" asp-action="Details" asp-route-id="@muestra.LoteId" class="sg-btn ghost">Ver lote</a>
+                    </div>
+                    <div class="sg-process-timeline">
+                        @{
+                            var etapaActualNombre = muestra.TipoProceso ?? "";
+                            var idxActualLote = Array.IndexOf(etapas, etapas.FirstOrDefault(e => string.Equals(e, etapaActualNombre, StringComparison.OrdinalIgnoreCase)) ?? "");
+                            var esEmpaqueCompletado = (muestra.Estado ?? "").Contains("Complet", StringComparison.OrdinalIgnoreCase);
+                        }
+                        @for (var idxEtapa = 0; idxEtapa < etapas.Length; idxEtapa++)
+                        {
+                            var etapa = etapas[idxEtapa];
+                            var esEtapaPrevia = idxActualLote >= 0 && idxEtapa < idxActualLote;
+                            var esEtapaActual = idxActualLote >= 0 && idxEtapa == idxActualLote;
+                            var completada = esEtapaPrevia || (esEtapaActual && esEmpaqueCompletado);
+                            var actual = esEtapaActual && !esEmpaqueCompletado;
+
+                            <div class="sg-process-step @(completada ? "done" : "") @(actual ? "current" : "")">
+                                <i class="fa-solid @(completada ? "fa-circle-check" : actual ? "fa-spinner" : "fa-circle")"></i>
+                                <strong>@etapa</strong>
+                                @if (completada)
+                                {
+                                    <small>Completado</small>
+                                    if (esEtapaActual)
+                                    {
+                                        <small class="d-block">@muestra.FechaProduccion.ToString("dd/MM/yyyy HH:mm")</small>
+                                    }
+                                }
+                                else if (actual)
+                                {
+                                    <small>En proceso</small>
+                                    <small class="d-block">@muestra.FechaProduccion.ToString("dd/MM/yyyy HH:mm")</small>
+                                }
+                                else
+                                {
+                                    <small>Pendiente</small>
+                                }
+                            </div>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+
+        @if (totalLotesTrazados > 0)
+        {
+            <nav class="sg-trace-pager" aria-label="Paginación de lotes en producción">
+                <div class="sg-trace-pager-summary">
+                    <strong>@primerLoteVisible-@ultimoLoteVisible</strong> de <strong>@totalLotesTrazados</strong> lote(s)
+                </div>
+
+                <div class="sg-trace-pager-controls">
+                    @if (paginaTrazabilidad > 1)
+                    {
+                        <a asp-action="Index" asp-route-tracePage="@(paginaTrazabilidad - 1)" asp-fragment="trazabilidad-lotes" class="sg-trace-page-btn" aria-label="Página anterior">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            <span>Anterior</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="sg-trace-page-btn disabled" aria-disabled="true"><i class="fa-solid fa-chevron-left"></i><span>Anterior</span></span>
+                    }
+
+                    <div class="sg-trace-page-numbers">
+                        @{
+                            var inicioPagina = Math.Max(1, paginaTrazabilidad - 2);
+                            var finPagina = Math.Min(totalPaginasTrazabilidad, paginaTrazabilidad + 2);
+                        }
+
+                        @if (inicioPagina > 1)
+                        {
+                            <a asp-action="Index" asp-route-tracePage="1" asp-fragment="trazabilidad-lotes" class="sg-trace-page-number">1</a>
+                            @if (inicioPagina > 2)
+                            {
+                                <span class="sg-trace-page-ellipsis">…</span>
+                            }
+                        }
+
+                        @for (var pagina = inicioPagina; pagina <= finPagina; pagina++)
+                        {
+                            if (pagina == paginaTrazabilidad)
+                            {
+                                <span class="sg-trace-page-number active" aria-current="page">@pagina</span>
+                            }
+                            else
+                            {
+                                <a asp-action="Index" asp-route-tracePage="@pagina" asp-fragment="trazabilidad-lotes" class="sg-trace-page-number">@pagina</a>
+                            }
+                        }
+
+                        @if (finPagina < totalPaginasTrazabilidad)
+                        {
+                            @if (finPagina < totalPaginasTrazabilidad - 1)
+                            {
+                                <span class="sg-trace-page-ellipsis">…</span>
+                            }
+                            <a asp-action="Index" asp-route-tracePage="@totalPaginasTrazabilidad" asp-fragment="trazabilidad-lotes" class="sg-trace-page-number">@totalPaginasTrazabilidad</a>
+                        }
+                    </div>
+
+                    @if (paginaTrazabilidad < totalPaginasTrazabilidad)
+                    {
+                        <a asp-action="Index" asp-route-tracePage="@(paginaTrazabilidad + 1)" asp-fragment="trazabilidad-lotes" class="sg-trace-page-btn" aria-label="Página siguiente">
+                            <span>Siguiente</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="sg-trace-page-btn disabled" aria-disabled="true"><span>Siguiente</span><i class="fa-solid fa-chevron-right"></i></span>
+                    }
+                </div>
+
+                <div class="sg-trace-pager-page">Página <strong>@paginaTrazabilidad</strong> de <strong>@totalPaginasTrazabilidad</strong></div>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="text-center text-muted py-4">Todavía no hay procesos de producción registrados.</div>
+    }
 </section>
-<section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Producciones registradas</h3><span class="sg-badge">@totalProducciones registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaProducciones"><thead><tr><th>Lote</th><th>Proceso</th><th>Cantidad procesada</th><th>Cantidad resultante</th><th>Producto</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>@foreach(var p in producciones){<tr><td>@(p.Lote?.CodigoLote ?? $"LO-{p.LoteId:0000}")</td><td>@p.TipoProceso</td><td>@p.CantidadProcesadaKg.ToString("N2") kg</td><td>@p.CantidadResultanteKg.ToString("N2") kg</td><td>@p.ProductoNombreMostrar</td><td><span class="sg-badge @((p.Estado ?? string.Empty).Contains("Complet") ? "" : (p.Estado ?? string.Empty).Contains("Cancel") ? "brown" : "gold")">@p.Estado</span></td><td>@p.FechaProduccion.ToString("dd MMM yyyy")</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador") || User.IsInRole("Operador")){<a asp-action="Edit" asp-route-id="@p.Id" title="Cambiar/editar"><i class="fa-solid fa-pen"></i></a>}@if(User.IsInRole("Administrador")){<a asp-action="Delete" asp-route-id="@p.Id"><i class="fa-solid fa-trash"></i></a>}</span></td></tr>}</tbody></table></div></section>
+
+<section class="sg-card sg-table-card">
+    <div class="sg-panel-head">
+        <div><h2>Producciones registradas</h2><small>Detalle de cada proceso y su resultado.</small></div>
+        <span class="sg-badge">@totalProducciones registro(s)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="sg-table" id="tablaProducciones">
+            <thead><tr><th>Lote</th><th>Proceso</th><th>Procesada</th><th>Resultante</th><th>Producto</th><th>Estado</th><th>Fecha y hora</th><th>Acciones</th></tr></thead>
+            <tbody>
+                @foreach (var p in producciones)
+                {
+                    <tr>
+                        <td><strong>@(p.Lote?.CodigoLote ?? $"LO-{p.LoteId:0000}")</strong></td>
+                        <td>@p.TipoProceso</td>
+                        <td>@p.CantidadProcesadaKg.ToString("N2") kg</td>
+                        <td>@p.CantidadResultanteKg.ToString("N2") kg</td>
+                        <td>@p.ProductoNombreMostrar</td>
+                        <td><span class="sg-badge @((p.Estado ?? "").Contains("Complet", StringComparison.OrdinalIgnoreCase) ? "" : (p.Estado ?? "").Contains("Cancel", StringComparison.OrdinalIgnoreCase) ? "brown" : "gold")">@p.Estado</span></td>
+                        <td>@p.FechaProduccion.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="sg-action-icons">
+                                <a asp-action="Details" asp-route-id="@p.Id" title="Ver detalle"><i class="fa-solid fa-eye"></i></a>
+                                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@p.Id" title="Editar producción"><i class="fa-solid fa-pen"></i></a>
+
+                                    @if (string.Equals(p.Estado, "En proceso", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <form asp-action="AvanzarProceso" asp-route-id="@p.Id" method="post" class="sg-inline-action-form" id="form-avanzar-@p.Id">
+                                            @Html.AntiForgeryToken()
+                                            <button type="button" class="sg-advance-process-btn js-confirmar-avance"
+                                                    title="Completar y avanzar a la siguiente etapa"
+                                                    aria-label="Completar y avanzar a la siguiente etapa"
+                                                    data-form-id="form-avanzar-@p.Id"
+                                                    data-proceso="@p.TipoProceso">
+                                                <i class="fa-solid fa-forward-step"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                }
+                                @if (User.IsInRole("Administrador"))
+                                {<a asp-action="Delete" asp-route-id="@p.Id" title="Eliminar"><i class="fa-solid fa-trash"></i></a>}
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".js-confirmar-avance").forEach(function (boton) {
+                boton.addEventListener("click", function () {
+                    const formId = boton.dataset.formId;
+                    const proceso = boton.dataset.proceso || "la etapa actual";
+                    const formulario = document.getElementById(formId);
+
+                    if (!formulario) {
+                        return;
+                    }
+
+                    const confirmarAvance = function () {
+                        // submit() evita volver a disparar el evento del botón y mantiene el token antiforgery.
+                        formulario.submit();
+                    };
+
+                    if (typeof Swal === "undefined") {
+                        if (window.confirm(`¿Desea marcar ${proceso} como completado y avanzar automáticamente a la siguiente etapa?`)) {
+                            confirmarAvance();
+                        }
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: "¿Confirmar avance?",
+                        text: `Se marcará ${proceso} como Completado y la siguiente etapa pasará automáticamente a En proceso.`,
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fa-solid fa-check me-2"></i>Confirmar',
+                        cancelButtonText: '<i class="fa-solid fa-xmark me-2"></i>Cancelar',
+                        reverseButtons: true,
+                        focusCancel: true,
+                        allowOutsideClick: false,
+                        buttonsStyling: true,
+                        confirmButtonColor: "#294b2a",
+                        cancelButtonColor: "#6f756c",
+                        customClass: {
+                            popup: "sg-production-confirm-popup",
+                            confirmButton: "px-4 py-2 rounded-pill fw-bold",
+                            cancelButton: "px-4 py-2 rounded-pill fw-bold"
+                        }
+                    }).then(function (resultado) {
+                        if (resultado.isConfirmed) {
+                            confirmarAvance();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

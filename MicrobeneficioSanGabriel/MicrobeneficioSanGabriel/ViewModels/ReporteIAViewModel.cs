@@ -1,8 +1,8 @@
-﻿namespace MicrobeneficioSanGabriel.ViewModels
+namespace MicrobeneficioSanGabriel.ViewModels
 {
     public class ReporteIAViewModel
     {
-        public DateTime FechaGeneracion { get; set; } = DateTime.Now;
+        public DateTime FechaGeneracion { get; set; } = DateTime.UtcNow.AddHours(-6);
         public DateTime? FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
 

@@ -35,7 +35,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "La fecha de recepción es obligatoria")]
         [Display(Name = "Fecha de recepción")]
-        public DateTime FechaRecepcion { get; set; } = DateTime.Now;
+        public DateTime FechaRecepcion { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [Required(ErrorMessage = "El estado es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El estado es obligatorio")]

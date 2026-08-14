@@ -99,7 +99,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (ModelState.IsValid)
             {
-                factura.FechaFactura = DateTime.Now;
+                factura.FechaFactura = DateTime.UtcNow.AddHours(-6);
 
                 factura.EstadoPago =
                     string.IsNullOrWhiteSpace(pedido!.EstadoPago)

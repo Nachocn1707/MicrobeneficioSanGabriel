@@ -22,7 +22,7 @@ namespace MicrobeneficioSanGabriel.Services
         public async Task<List<AlertaSistemaViewModel>> ObtenerAlertasAsync(ClaimsPrincipal user)
         {
             var alertas = new List<AlertaSistemaViewModel>();
-            var hoy = DateTime.Now;
+            var hoy = DateTime.UtcNow.AddHours(-6);
             var fechaLimite = hoy.AddDays(-7);
 
             if (user.IsInRole("Cliente"))
@@ -166,7 +166,7 @@ namespace MicrobeneficioSanGabriel.Services
 
                 foreach (var alertaIA in alertasIA.Where(a => a.NivelRiesgo != "Estable").Take(5))
                 {
-                    var fechaReferencia = alertaIA.UltimoMovimiento ?? DateTime.Now;
+                    var fechaReferencia = alertaIA.UltimoMovimiento ?? DateTime.UtcNow.AddHours(-6);
 
                     alertas.Add(new AlertaSistemaViewModel
                     {
@@ -315,7 +315,7 @@ namespace MicrobeneficioSanGabriel.Services
 
                 if (lotesActivos > 0 && !hayTrazabilidadReciente)
                 {
-                    var fechaReferencia = ultimaTrazabilidad?.FechaRegistro ?? DateTime.Now.AddDays(-7);
+                    var fechaReferencia = ultimaTrazabilidad?.FechaRegistro ?? DateTime.UtcNow.AddHours(-6).AddDays(-7);
 
                     alertas.Add(new AlertaSistemaViewModel
                     {
@@ -455,7 +455,7 @@ namespace MicrobeneficioSanGabriel.Services
                 return ordenadas;
             }
 
-            var limite = DateTime.Now.AddDays(-30);
+            var limite = DateTime.UtcNow.AddHours(-6).AddDays(-30);
             var claves = ordenadas.Select(a => a.Clave).Distinct().ToList();
             var descartadas = await _context.NotificacionesUsuarios
                 .AsNoTracking()
@@ -470,7 +470,7 @@ namespace MicrobeneficioSanGabriel.Services
 
         private static string TiempoRelativo(DateTime fecha)
         {
-            var diferencia = DateTime.Now - fecha;
+            var diferencia = DateTime.UtcNow.AddHours(-6) - fecha;
 
             if (diferencia.TotalMinutes < 1)
             {

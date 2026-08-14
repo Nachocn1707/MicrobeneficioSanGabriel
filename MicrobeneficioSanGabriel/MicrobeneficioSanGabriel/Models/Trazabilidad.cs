@@ -1,4 +1,4 @@
-﻿using MicrobeneficioSanGabriel.Infrastructure;
+using MicrobeneficioSanGabriel.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,11 +27,17 @@ namespace MicrobeneficioSanGabriel.Models
         public string Etapa { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La fecha es obligatoria")]
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [NotWhiteSpace(ErrorMessage = "El responsable es obligatorio y no puede contener únicamente espacios")]
         public string? Responsable { get; set; }
 
         public string? Observacion { get; set; }
+
+        /// <summary>
+        /// Identifica registros generados por el flujo real de producción.
+        /// Los registros automáticos no deben editarse manualmente.
+        /// </summary>
+        public bool EsAutomatico { get; set; }
     }
 }

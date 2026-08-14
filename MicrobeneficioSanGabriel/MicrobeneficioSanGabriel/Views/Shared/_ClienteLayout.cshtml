@@ -34,6 +34,9 @@
     <link rel="stylesheet" href="~/css/portal-unificado.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
+
+    <!-- Carga al final para que los ajustes de jerarquía visual prevalezcan también en vistas con CSS propio. -->
+    <link rel="stylesheet" href="~/css/sprint4-final.css" asp-append-version="true" />
 </head>
 <body class="sg-coffee-bg rc-client-body cafe-portal-body">
     <div class="cafe-portal-shell">
@@ -107,6 +110,7 @@
 
         </header>
 
+        <form id="sgGlobalAntiforgery" class="d-none">@Html.AntiForgeryToken()</form>
         <main class="cafe-portal-main">
             <partial name="_MensajesSistema" />
             @RenderBody()
@@ -115,18 +119,14 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Validaciones.js"></script>
-    <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
-                    setTimeout(() => bootstrap.Alert.getOrCreateInstance(message).close(), 5000);
-                });
-            });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/sg-datatables.js" asp-append-version="true"></script>
     <script src="~/js/notificaciones.js" asp-append-version="true"></script>
+    <script src="~/js/costa-rica-ubicaciones.js" asp-append-version="true"></script>
+    <script src="~/js/sistema-ui.js" asp-append-version="true"></script>
 </body>
 </html>

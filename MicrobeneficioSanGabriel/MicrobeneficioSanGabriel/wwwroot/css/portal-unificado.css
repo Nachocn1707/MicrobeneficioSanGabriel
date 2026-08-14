@@ -330,23 +330,20 @@ body.sg-reference-theme .sg-legend-row {
 }
 
 body.sg-reference-theme .sg-dot.green {
-    background: #53833B !important;
+    background: #4F8738 !important;
 }
 
 body.sg-reference-theme .sg-dot.gold {
-    background: #D4730B !important;
+    background: #D97800 !important;
 }
 
 body.sg-reference-theme .sg-dot.tan {
-    background: #EDAE3E !important;
+    background: #6F8A6B !important;
 }
 
-body.sg-reference-theme .sg-dot.brown {
-    background: #4F3514 !important;
-}
-
+body.sg-reference-theme .sg-dot.brown,
 body.sg-reference-theme .sg-dot.coffee {
-    background: #834003 !important;
+    background: #59271E !important;
 }
 
 body.sg-reference-theme .sg-bar {
@@ -1901,20 +1898,20 @@ body.sg-reference-theme .sg-panel a.fw-bold {
 }
 
 body.sg-reference-theme .sg-dot.green {
-    background: #53833B !important;
+    background: #4F8738 !important;
 }
 
 body.sg-reference-theme .sg-dot.gold {
-    background: #53833B !important;
+    background: #D97800 !important;
 }
 
 body.sg-reference-theme .sg-dot.tan {
-    background: #D4730B !important;
+    background: #6F8A6B !important;
 }
 
 body.sg-reference-theme .sg-dot.brown,
 body.sg-reference-theme .sg-dot.coffee {
-    background: #4F3514 !important;
+    background: #59271E !important;
 }
 
 
@@ -2586,5 +2583,96 @@ body.sg-reference-theme .sg-legend-row b {
         min-height: 36px;
         font-size: .78rem;
         padding: 0 10px;
+    }
+}
+/* =========================================================
+   SPRINT 4 - DASHBOARD CLIENTE COMPACTO Y CON JERARQUÍA
+   ========================================================= */
+body.rc-client-body .cafe-portal-main .cafe-welcome {
+    min-height: 360px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    border-radius: 26px !important;
+}
+
+body.rc-client-body .cafe-portal-main .cafe-welcome-content {
+    width: min(900px, 100%) !important;
+    padding: 46px 52px 42px !important;
+}
+
+body.rc-client-body .cafe-portal-main .cafe-welcome h1 {
+    max-width: 760px !important;
+    margin-bottom: 16px !important;
+    font-size: clamp(2.7rem, 4.4vw, 4.8rem) !important;
+    line-height: .98 !important;
+}
+
+body.rc-client-body .cafe-portal-main .cafe-welcome-content>p {
+    max-width: 690px !important;
+    margin-bottom: 24px !important;
+}
+
+body.rc-client-body .cafe-portal-main .cafe-welcome-visual {
+    display: none !important;
+}
+
+body.rc-client-body .cafe-hero-stock-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 14px;
+    background: rgba(39, 70, 35, .66);
+    color: #fff;
+    backdrop-filter: blur(8px);
+}
+
+body.rc-client-body .cafe-hero-stock-inline i {
+    color: #f0c36b;
+}
+
+body.rc-client-body .cafe-summary-grid {
+    margin-top: 22px !important;
+}
+
+body.rc-client-body .cafe-quick-section {
+    margin-top: 22px !important;
+    margin-bottom: 22px !important;
+}
+
+body.rc-client-body .cafe-main-grid {
+    margin-top: 0 !important;
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-image.cafe-product-image-completa {
+    height: 190px !important;
+    min-height: 190px !important;
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-image.cafe-product-image-completa>img {
+    padding: 10px !important;
+}
+
+body.rc-client-body .cafe-products-section .cafe-product-info {
+    padding: 18px !important;
+}
+
+@media (max-width: 780px) {
+    body.rc-client-body .cafe-portal-main .cafe-welcome {
+        min-height: 0 !important;
+    }
+
+    body.rc-client-body .cafe-portal-main .cafe-welcome-content {
+        padding: 34px 24px !important;
+    }
+
+    body.rc-client-body .cafe-portal-main .cafe-welcome h1 {
+        font-size: clamp(2.45rem, 11vw, 3.7rem) !important;
+    }
+
+    body.rc-client-body .cafe-products-section .cafe-product-image.cafe-product-image-completa {
+        height: 170px !important;
+        min-height: 170px !important;
     }
 }

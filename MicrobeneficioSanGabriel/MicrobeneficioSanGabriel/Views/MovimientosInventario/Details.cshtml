@@ -22,21 +22,11 @@
 <section class="Detalle-page-head">
     <div>
         <h1>Detalle del inventario</h1>
-        <p>Consultá la información del inventario.</p>
+        <p>Consultá la información general del inventario.</p>
     </div>
     <div class="Detalle-actions">
         <span class="movimiento-badge-top">
             Movimiento #@Model.Id
-        </span>
-    </div>
-</section>
-
-<section class="Detalle-visual-hero Detalle-hero-inventario">
-    <div class="Detalle-visual-hero-content">
-        <h1>Categoría: @producto</h1>
-        <div class="Detalle-visual-line"></div>
-        <span class="Detalle-visual-badge">
-            <i class="fa-solid fa-boxes-stacked"></i> Seguimiento de inventario
         </span>
     </div>
 </section>
@@ -90,6 +80,25 @@
                     </span>
                 </div>
 
+                @if (Model.EsAutomatico)
+                {
+                    <div class="EstiloDetalle-detail-item">
+                        <span class="EstiloDetalle-detail-label">
+                            <i class="fa-solid fa-link"></i> ORIGEN
+                        </span>
+                        <span class="EstiloDetalle-detail-value">
+                            @(string.IsNullOrWhiteSpace(Model.OrigenTipo) ? "Proceso automático" : $"{Model.OrigenTipo} #{Model.OrigenId}")
+                        </span>
+                    </div>
+
+                    <div class="EstiloDetalle-detail-item">
+                        <span class="EstiloDetalle-detail-label">
+                            <i class="fa-solid fa-bolt"></i> REGISTRO
+                        </span>
+                        <span class="EstiloDetalle-detail-value">Automático · protegido contra edición manual</span>
+                    </div>
+                }
+
                 <div class="EstiloDetalle-detail-item full">
                     <span class="EstiloDetalle-detail-label">
                         <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
@@ -110,7 +119,7 @@
                     Volver
                 </a>
 
-                @if (User.IsInRole("Administrador"))
+                @if (User.IsInRole("Administrador") && !Model.EsAutomatico)
                 {
                     <a asp-action="Edit"
                        asp-route-id="@Model.Id"

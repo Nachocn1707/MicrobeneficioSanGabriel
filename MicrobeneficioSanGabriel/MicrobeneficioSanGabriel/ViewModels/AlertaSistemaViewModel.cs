@@ -1,4 +1,4 @@
-﻿namespace MicrobeneficioSanGabriel.ViewModels
+namespace MicrobeneficioSanGabriel.ViewModels
 {
     public class AlertaSistemaViewModel
     {
@@ -10,7 +10,7 @@
         public string Icono { get; set; } = "fa-circle-info";
         public string Url { get; set; } = "#";
         public int Prioridad { get; set; } = 99;
-        public DateTime FechaReferencia { get; set; } = DateTime.Now;
+        public DateTime FechaReferencia { get; set; } = DateTime.UtcNow.AddHours(-6);
         public string Tiempo { get; set; } = "Hace un momento";
     }
 }

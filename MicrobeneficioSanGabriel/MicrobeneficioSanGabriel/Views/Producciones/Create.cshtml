@@ -7,7 +7,7 @@
 
 @section Styles {
 
-    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
 
 <div class="VistaCreaR-page">
@@ -99,8 +99,8 @@
                                     <input asp-for="FechaProduccion"
                                            type="datetime-local"
                                            class="form-control"
-                                           min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
-                                           max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
+                                           min="@DateTime.UtcNow.AddHours(-6).Date.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
+                                           max="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddT23:59")" />
                                 </div>
                                 <span asp-validation-for="FechaProduccion" class="text-danger"></span>
                             </div>

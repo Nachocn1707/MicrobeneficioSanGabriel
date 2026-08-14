@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Constants;
 using MicrobeneficioSanGabriel.Models;
 using MicrobeneficioSanGabriel.Services;
 
@@ -91,7 +92,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             hoja.Cell("A1").Value = "REPORTE FINANCIERO";
             hoja.Range("A1:F1").Merge().Style.Font.SetBold().Font.SetFontSize(16);
             hoja.Cell("A2").Value = "Fecha de generación";
-            hoja.Cell("B2").Value = DateTime.Now;
+            hoja.Cell("B2").Value = DateTime.UtcNow.AddHours(-6);
             hoja.Cell("B2").Style.DateFormat.Format = "dd/MM/yyyy HH:mm";
 
             hoja.Cell("A4").Value = "Total ingresos";
@@ -102,24 +103,38 @@ namespace MicrobeneficioSanGabriel.Controllers
             hoja.Cell("B6").Value = balance;
             hoja.Range("B4:B6").Style.NumberFormat.Format = "₡ #,##0.00";
 
-            var encabezados = new[] { "Fecha", "Tipo", "Categoría", "Descripción", "Monto", "Observación" };
+            var encabezados = new[]
+            {
+                "Fecha", "Tipo", "Categoría", "Origen", "Cliente / destinatario",
+                "Producto", "Cantidad (kg)", "Descripción", "Monto", "Observación"
+            };
             for (var columna = 0; columna < encabezados.Length; columna++)
             {
                 hoja.Cell(8, columna + 1).Value = encabezados[columna];
             }
-            hoja.Range("A8:F8").Style.Font.SetBold();
+            hoja.Range("A8:J8").Style.Font.SetBold();
 
             var fila = 9;
             foreach (var item in lista)
             {
                 hoja.Cell(fila, 1).Value = item.Fecha;
-                hoja.Cell(fila, 1).Style.DateFormat.Format = "dd/MM/yyyy";
+                hoja.Cell(fila, 1).Style.DateFormat.Format = item.EsAutomatico ? "dd/MM/yyyy HH:mm" : "dd/MM/yyyy";
                 hoja.Cell(fila, 2).Value = item.Tipo;
                 hoja.Cell(fila, 3).Value = item.Categoria;
-                hoja.Cell(fila, 4).Value = ProtegerFormulaExcel(item.Descripcion);
-                hoja.Cell(fila, 5).Value = item.Monto;
-                hoja.Cell(fila, 5).Style.NumberFormat.Format = "₡ #,##0.00";
-                hoja.Cell(fila, 6).Value = ProtegerFormulaExcel(item.Observacion);
+                hoja.Cell(fila, 4).Value = item.EsAutomatico && item.OrigenId.HasValue
+                    ? $"{item.OrigenTipo ?? "Sistema"} #{item.OrigenId}"
+                    : "Manual";
+                hoja.Cell(fila, 5).Value = ProtegerFormulaExcel(item.Destinatario);
+                hoja.Cell(fila, 6).Value = ProtegerFormulaExcel(item.ProductoNombre);
+                if (item.CantidadKg.HasValue)
+                {
+                    hoja.Cell(fila, 7).Value = item.CantidadKg.Value;
+                    hoja.Cell(fila, 7).Style.NumberFormat.Format = "#,##0.00";
+                }
+                hoja.Cell(fila, 8).Value = ProtegerFormulaExcel(item.Descripcion);
+                hoja.Cell(fila, 9).Value = item.Monto;
+                hoja.Cell(fila, 9).Style.NumberFormat.Format = "₡ #,##0.00";
+                hoja.Cell(fila, 10).Value = ProtegerFormulaExcel(item.Observacion);
                 fila++;
             }
 
@@ -132,7 +147,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return File(
                 memoria.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                $"Reporte_Financiero_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+                $"Reporte_Financiero_{DateTime.UtcNow.AddHours(-6):yyyyMMdd_HHmm}.xlsx");
         }
 
         private static string ProtegerFormulaExcel(string? valor)
@@ -145,7 +160,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         {
             return View(new RegistroFinanciero
             {
-                Fecha = DateTime.Today
+                Fecha = DateTime.UtcNow.AddHours(-6).Date
             });
         }
 
@@ -153,6 +168,25 @@ namespace MicrobeneficioSanGabriel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegistroFinanciero registroFinanciero)
         {
+            if (!CategoriasFinancieras.EsManualValida(registroFinanciero.Categoria))
+            {
+                ModelState.AddModelError(nameof(RegistroFinanciero.Categoria),
+                    "Seleccione una categoría autorizada del catálogo.");
+            }
+
+            if (string.Equals(registroFinanciero.Categoria, "Venta", StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(RegistroFinanciero.Categoria),
+                    "Las ventas se generan automáticamente cuando un pedido se completa.");
+            }
+
+            registroFinanciero.EsAutomatico = false;
+            registroFinanciero.OrigenTipo = null;
+            registroFinanciero.OrigenId = null;
+            registroFinanciero.Destinatario = null;
+            registroFinanciero.ProductoNombre = null;
+            registroFinanciero.CantidadKg = null;
+
             if (ModelState.IsValid)
             {
                 _context.Add(registroFinanciero);
@@ -182,6 +216,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            if (registro.EsAutomatico)
+            {
+                TempData["Info"] = "Las ventas generadas por pedidos son automáticas y no se editan manualmente.";
+                return RedirectToAction(nameof(Details), new { id = registro.Id });
+            }
+
             ViewBag.FechaOriginal = registro.Fecha;
             return View(registro);
         }
@@ -204,9 +244,34 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            if (registroActual.EsAutomatico)
+            {
+                TempData["Error"] = "Las ventas automáticas no pueden modificarse manualmente.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            if (!CategoriasFinancieras.EsManualValida(registroFinanciero.Categoria))
+            {
+                ModelState.AddModelError(nameof(RegistroFinanciero.Categoria),
+                    "Seleccione una categoría autorizada del catálogo.");
+            }
+
+            if (string.Equals(registroFinanciero.Categoria, "Venta", StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(nameof(RegistroFinanciero.Categoria),
+                    "Las ventas se generan automáticamente al completar pedidos.");
+            }
+
+            registroFinanciero.EsAutomatico = false;
+            registroFinanciero.OrigenTipo = null;
+            registroFinanciero.OrigenId = null;
+            registroFinanciero.Destinatario = null;
+            registroFinanciero.ProductoNombre = null;
+            registroFinanciero.CantidadKg = null;
+
             ViewBag.FechaOriginal = registroActual.Fecha;
 
-            if (registroFinanciero.Fecha.Date < DateTime.Today &&
+            if (registroFinanciero.Fecha.Date < DateTime.UtcNow.AddHours(-6).Date &&
                 registroFinanciero.Fecha.Date != registroActual.Fecha.Date)
             {
                 ModelState.AddModelError(nameof(RegistroFinanciero.Fecha),
@@ -274,6 +339,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            if (registro.EsAutomatico)
+            {
+                TempData["Info"] = "Las ventas automáticas se revierten desde el estado del pedido, no desde contabilidad.";
+                return RedirectToAction(nameof(Details), new { id = registro.Id });
+            }
+
             return View(registro);
         }
 
@@ -285,6 +356,12 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (registro != null)
             {
+                if (registro.EsAutomatico)
+                {
+                    TempData["Error"] = "La venta automática debe gestionarse desde el pedido relacionado.";
+                    return RedirectToAction(nameof(Details), new { id = registro.Id });
+                }
+
                 _context.RegistrosFinancieros.Remove(registro);
                 await _context.SaveChangesAsync();
                 await AuditoriaHelper.RegistrarAsync(

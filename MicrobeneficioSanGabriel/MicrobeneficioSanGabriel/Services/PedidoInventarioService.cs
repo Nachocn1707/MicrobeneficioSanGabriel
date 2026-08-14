@@ -39,9 +39,17 @@ namespace MicrobeneficioSanGabriel.Services
 
             if (!pedido.InventarioAplicado && nuevoEstado == EstadosPedido.Completado)
             {
-                return await AplicarSalidaAsync(pedido);
+                var error = await AplicarSalidaAsync(pedido);
+                if (error != null)
+                {
+                    return error;
+                }
             }
 
+            // Sprint 4: la venta contable nace del pedido completado y nunca de
+            // una captura manual. Si el pedido deja de estar completado, se revierte
+            // también el registro financiero automático dentro de la misma transacción.
+            await SincronizarVentaFinancieraAsync(pedido);
             return null;
         }
 
@@ -88,20 +96,41 @@ namespace MicrobeneficioSanGabriel.Services
 
             if (nuevoEstado == EstadosPedido.Completado && !pedido.InventarioAplicado)
             {
-                return await AplicarSalidaAsync(pedido);
+                var error = await AplicarSalidaAsync(pedido);
+                if (error != null)
+                {
+                    return error;
+                }
             }
 
+            await SincronizarVentaFinancieraAsync(pedido);
             return null;
         }
 
         public async Task<string?> PrepararEliminacionAsync(Pedido pedido)
         {
-            if (!pedido.InventarioAplicado)
+            if (pedido.InventarioAplicado)
             {
-                return null;
+                var error = await RevertirSalidaAsync(pedido);
+                if (error != null)
+                {
+                    return error;
+                }
             }
 
-            return await RevertirSalidaAsync(pedido);
+            var ventasAutomaticas = await _context.RegistrosFinancieros
+                .Where(r => r.EsAutomatico &&
+                            r.OrigenTipo == OrigenMovimiento.Pedido &&
+                            r.OrigenId == pedido.Id &&
+                            r.Categoria == "Venta")
+                .ToListAsync();
+
+            if (ventasAutomaticas.Count > 0)
+            {
+                _context.RegistrosFinancieros.RemoveRange(ventasAutomaticas);
+            }
+
+            return null;
         }
 
         private async Task<string?> AplicarSalidaAsync(Pedido pedido)
@@ -144,8 +173,8 @@ namespace MicrobeneficioSanGabriel.Services
                 ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Salida",
                 Cantidad = pedido.Cantidad,
-                FechaMovimiento = DateTime.Now,
-                Observacion = $"Salida automática por pedido #{pedido.Id}",
+                FechaMovimiento = DateTime.UtcNow.AddHours(-6),
+                Observacion = $"Salida automática por pedido #{pedido.Id} · Cliente: {pedido.ClienteNombre}",
                 OrigenTipo = OrigenMovimiento.Pedido,
                 OrigenId = pedido.Id,
                 EsAutomatico = true
@@ -183,14 +212,66 @@ namespace MicrobeneficioSanGabriel.Services
                 ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Entrada",
                 Cantidad = pedido.Cantidad,
-                FechaMovimiento = DateTime.Now,
-                Observacion = $"Reversión automática del inventario del pedido #{pedido.Id}",
+                FechaMovimiento = DateTime.UtcNow.AddHours(-6),
+                Observacion = $"Reversión automática del inventario del pedido #{pedido.Id} · Cliente: {pedido.ClienteNombre}",
                 OrigenTipo = OrigenMovimiento.ReversionPedido,
                 OrigenId = pedido.Id,
                 EsAutomatico = true
             });
 
             return null;
+        }
+
+        private async Task SincronizarVentaFinancieraAsync(Pedido pedido)
+        {
+            if (pedido.Id <= 0)
+            {
+                return;
+            }
+
+            var registros = await _context.RegistrosFinancieros
+                .Where(r => r.EsAutomatico &&
+                            r.OrigenTipo == OrigenMovimiento.Pedido &&
+                            r.OrigenId == pedido.Id &&
+                            r.Categoria == "Venta")
+                .OrderBy(r => r.Id)
+                .ToListAsync();
+
+            if (pedido.Estado != EstadosPedido.Completado)
+            {
+                if (registros.Count > 0)
+                {
+                    _context.RegistrosFinancieros.RemoveRange(registros);
+                }
+                return;
+            }
+
+            var venta = registros.FirstOrDefault();
+            if (venta == null)
+            {
+                venta = new RegistroFinanciero
+                {
+                    Tipo = "Ingreso",
+                    Categoria = "Venta",
+                    Fecha = DateTime.UtcNow.AddHours(-6),
+                    OrigenTipo = OrigenMovimiento.Pedido,
+                    OrigenId = pedido.Id,
+                    EsAutomatico = true
+                };
+                _context.RegistrosFinancieros.Add(venta);
+            }
+
+            venta.Descripcion = $"Venta automática del pedido PP-{pedido.Id:0000}";
+            venta.Monto = pedido.TotalMostrar;
+            venta.Destinatario = pedido.ClienteNombre;
+            venta.ProductoNombre = pedido.ProductoNombreMostrar;
+            venta.CantidadKg = pedido.Cantidad;
+            venta.Observacion = "Generada automáticamente al completar el pedido. No requiere captura manual.";
+
+            if (registros.Count > 1)
+            {
+                _context.RegistrosFinancieros.RemoveRange(registros.Skip(1));
+            }
         }
     }
 }

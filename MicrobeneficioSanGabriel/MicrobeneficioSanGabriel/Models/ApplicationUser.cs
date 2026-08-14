@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MicrobeneficioSanGabriel.Models
 {
@@ -12,7 +12,18 @@ namespace MicrobeneficioSanGabriel.Models
         {
             get
             {
-                var nombreCompleto = $"{Nombre} {Apellidos}".Trim();
+                var nombre = Nombre?.Trim() ?? string.Empty;
+                var apellidos = Apellidos?.Trim() ?? string.Empty;
+
+                // Evita mostrar valores duplicados como "Administrador Administrador"
+                // cuando bases históricas guardaron el mismo texto en ambos campos.
+                if (!string.IsNullOrWhiteSpace(nombre) &&
+                    string.Equals(nombre, apellidos, StringComparison.OrdinalIgnoreCase))
+                {
+                    return nombre;
+                }
+
+                var nombreCompleto = $"{nombre} {apellidos}".Trim();
 
                 return string.IsNullOrWhiteSpace(nombreCompleto)
                     ? Email ?? UserName ?? "Usuario"

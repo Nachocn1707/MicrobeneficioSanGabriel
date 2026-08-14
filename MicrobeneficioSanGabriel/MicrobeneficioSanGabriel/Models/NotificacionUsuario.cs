@@ -18,6 +18,6 @@ namespace MicrobeneficioSanGabriel.Models
         [StringLength(200)]
         public string Clave { get; set; } = string.Empty;
 
-        public DateTime FechaDescartada { get; set; } = DateTime.Now;
+        public DateTime FechaDescartada { get; set; } = DateTime.UtcNow.AddHours(-6);
     }
 }

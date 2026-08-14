@@ -22,12 +22,28 @@ namespace MicrobeneficioSanGabriel.Controllers
         // GET: Producciones
         public async Task<IActionResult> Index()
         {
-            var producciones = _context.Producciones
+            await TrazabilidadProcesoHelper.ReconciliarAsync(_context, User);
+
+            var produccionesQuery = await _context.Producciones
                 .Include(p => p.Lote)
                 .Include(p => p.Producto)
-                .OrderByDescending(p => p.FechaProduccion);
+                .ToListAsync();
 
-            return View(await producciones.ToListAsync());
+            // Garantiza que en la tabla principal de Producción solo se muestre 1 fila por lote (el proceso activo o la etapa más reciente).
+            var produccionesUnicasPorLote = produccionesQuery
+                .GroupBy(p => p.LoteId)
+                .Select(g => g
+                    .OrderByDescending(p => string.Equals(p.Estado, EstadosProduccion.EnProceso, StringComparison.OrdinalIgnoreCase))
+                    .ThenByDescending(p => Array.IndexOf(TrazabilidadProcesoHelper.EtapasOrdenadas, TrazabilidadProcesoHelper.EtapasOrdenadas.FirstOrDefault(e => string.Equals(e, p.TipoProceso, StringComparison.OrdinalIgnoreCase)) ?? ""))
+                    .ThenByDescending(p => p.FechaProduccion)
+                    .ThenByDescending(p => p.Id)
+                    .First())
+                .OrderByDescending(p => string.Equals(p.Estado, EstadosProduccion.EnProceso, StringComparison.OrdinalIgnoreCase))
+                .ThenByDescending(p => p.FechaProduccion)
+                .ThenByDescending(p => p.Id)
+                .ToList();
+
+            return View(produccionesUnicasPorLote);
         }
 
         // GET: Producciones/Details/5
@@ -51,6 +67,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            ViewBag.HistorialLote = await _context.Producciones
+                .AsNoTracking()
+                .Where(p => p.LoteId == produccion.LoteId)
+                .OrderBy(p => p.FechaProduccion)
+                .ToListAsync();
+
             return View(produccion);
         }
 
@@ -69,6 +91,12 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (!EstadoProduccionValido(produccion.Estado))
             {
                 ModelState.AddModelError(nameof(Produccion.Estado), "Seleccione un estado de producción válido.");
+            }
+
+            var errorSecuencia = await TrazabilidadProcesoHelper.ValidarSecuenciaAsync(_context, produccion);
+            if (errorSecuencia != null)
+            {
+                ModelState.AddModelError(nameof(Produccion.TipoProceso), errorSecuencia);
             }
 
             if (produccion.CantidadResultanteKg > produccion.CantidadProcesadaKg)
@@ -101,7 +129,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 await using var transaction = await _context.Database.BeginTransactionAsync();
                 try
                 {
-                    produccion.FechaProduccion = DateTime.Now;
+                    produccion.FechaProduccion = DateTime.UtcNow.AddHours(-6);
                     _context.Producciones.Add(produccion);
                     await _context.SaveChangesAsync();
 
@@ -117,6 +145,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         }
                     }
 
+                    await TrazabilidadProcesoHelper.SincronizarAsync(_context, User, produccion);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
@@ -157,7 +186,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
-            ViewBag.SoloEstado = EsOperadorSoloEstado();
+            ViewBag.SoloEstado = false;
             CargarCombos(produccion.LoteId, produccion.ProductoId);
 
             return View(produccion);
@@ -184,37 +213,6 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
-            if (EsOperadorSoloEstado())
-            {
-                if (!EstadoProduccionValido(produccion.Estado))
-                {
-                    ModelState.AddModelError(nameof(Produccion.Estado), "Seleccione un estado válido.");
-                    ViewBag.SoloEstado = true;
-                    CargarCombos(produccionOriginal.LoteId, produccionOriginal.ProductoId);
-                    produccionOriginal.Estado = produccion.Estado;
-                    return View(produccionOriginal);
-                }
-
-                var estadoAnterior = produccionOriginal.Estado;
-                var errorEstado = await CambiarEstadoProduccionAsync(produccionOriginal, produccion.Estado);
-
-                if (errorEstado != null)
-                {
-                    ModelState.AddModelError(nameof(Produccion.Estado), errorEstado);
-                    ViewBag.SoloEstado = true;
-                    CargarCombos(produccionOriginal.LoteId, produccionOriginal.ProductoId);
-                    return View(produccionOriginal);
-                }
-
-                await _context.SaveChangesAsync();
-                await AuditoriaHelper.RegistrarAsync(
-                    _context, User, "Producciones", "Cambiar estado", produccionOriginal.Id,
-                    $"El operador cambió el estado de la producción #{produccionOriginal.Id} de {estadoAnterior} a {produccionOriginal.Estado}.");
-
-                TempData["Success"] = "Estado de producción actualizado correctamente.";
-                return RedirectToAction(nameof(Index));
-            }
-
             if (produccion.CantidadResultanteKg > produccion.CantidadProcesadaKg)
             {
                 ModelState.AddModelError(nameof(Produccion.CantidadResultanteKg),
@@ -224,6 +222,27 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (!EstadoProduccionValido(produccion.Estado))
             {
                 ModelState.AddModelError(nameof(Produccion.Estado), "Seleccione un estado válido.");
+            }
+
+            if (TrazabilidadProcesoHelper.EsEtapaDeProduccionValida(produccionOriginal.TipoProceso) &&
+                TrazabilidadProcesoHelper.EsEtapaDeProduccionValida(produccion.TipoProceso))
+            {
+                var idxOriginal = Array.IndexOf(TrazabilidadProcesoHelper.EtapasOrdenadas,
+                    TrazabilidadProcesoHelper.EtapasOrdenadas.First(e => string.Equals(e, produccionOriginal.TipoProceso, StringComparison.OrdinalIgnoreCase)));
+                var idxNuevo = Array.IndexOf(TrazabilidadProcesoHelper.EtapasOrdenadas,
+                    TrazabilidadProcesoHelper.EtapasOrdenadas.First(e => string.Equals(e, produccion.TipoProceso, StringComparison.OrdinalIgnoreCase)));
+
+                if (idxNuevo < idxOriginal)
+                {
+                    ModelState.AddModelError(nameof(Produccion.TipoProceso),
+                        $"No se puede devolver el proceso a una etapa anterior ({produccionOriginal.TipoProceso} ➔ {produccion.TipoProceso}). Solo se permite avanzar en la secuencia del proceso.");
+                }
+                else if (idxNuevo > idxOriginal + 1)
+                {
+                    var etapaSiguiente = TrazabilidadProcesoHelper.EtapasOrdenadas[idxOriginal + 1];
+                    ModelState.AddModelError(nameof(Produccion.TipoProceso),
+                        $"No se pueden saltar etapas del proceso ({produccionOriginal.TipoProceso} ➔ {produccion.TipoProceso}). La siguiente etapa correspondiente es {etapaSiguiente}.");
+                }
             }
 
             await ValidarLoteYCapacidadAsync(produccion, produccion.Id);
@@ -245,6 +264,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         return View(produccion);
                     }
 
+                    await TrazabilidadProcesoHelper.SincronizarAsync(_context, User, produccionOriginal);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
@@ -279,6 +299,121 @@ namespace MicrobeneficioSanGabriel.Controllers
             ViewBag.SoloEstado = false;
             CargarCombos(produccion.LoteId, produccion.ProductoId);
             return View(produccion);
+        }
+
+        // POST: Producciones/AvanzarProceso/5
+        // Avanza el proceso a la siguiente etapa en la misma producción (o completa si está en la etapa final)
+        // manteniendo 1 solo proceso activo por lote en la tabla.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrador,Operador")]
+        public async Task<IActionResult> AvanzarProceso(int id)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var produccion = await _context.Producciones
+                    .Include(p => p.Lote)
+                    .Include(p => p.Producto)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (produccion == null)
+                {
+                    await transaction.RollbackAsync();
+                    return NotFound();
+                }
+
+                if (string.Equals(produccion.Estado, EstadosProduccion.Cancelado, StringComparison.OrdinalIgnoreCase))
+                {
+                    await transaction.RollbackAsync();
+                    TempData["Error"] = "No se puede avanzar una producción cancelada.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (string.Equals(produccion.Estado, EstadosProduccion.Completado, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(produccion.Estado, "Completada", StringComparison.OrdinalIgnoreCase))
+                {
+                    await transaction.RollbackAsync();
+                    TempData["Info"] = "Esta producción ya se encuentra completada.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (!TrazabilidadProcesoHelper.EsEtapaDeProduccionValida(produccion.TipoProceso))
+                {
+                    await transaction.RollbackAsync();
+                    TempData["Error"] = "La producción no tiene una etapa válida para continuar el proceso.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var etapaActual = TrazabilidadProcesoHelper.EtapasOrdenadas.First(e =>
+                    string.Equals(e, produccion.TipoProceso, StringComparison.OrdinalIgnoreCase));
+                var indiceActual = Array.IndexOf(TrazabilidadProcesoHelper.EtapasOrdenadas, etapaActual);
+                var ahora = DateTime.UtcNow.AddHours(-6);
+
+                produccion.FechaProduccion = ahora;
+
+                if (indiceActual >= 0 && indiceActual < TrazabilidadProcesoHelper.EtapasOrdenadas.Length - 1)
+                {
+                    var etapaSiguiente = TrazabilidadProcesoHelper.EtapasOrdenadas[indiceActual + 1];
+
+                    // Avanzar la etapa dentro del mismo registro de producción
+                    produccion.TipoProceso = etapaSiguiente;
+                    produccion.Estado = EstadosProduccion.EnProceso;
+                    produccion.Observacion = $"Proceso avanzado de {etapaActual} a {etapaSiguiente}.";
+
+                    _context.Producciones.Update(produccion);
+                    await _context.SaveChangesAsync();
+
+                    await TrazabilidadProcesoHelper.SincronizarAsync(_context, User, produccion);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Producciones", "Avanzar proceso", produccion.Id,
+                        $"Se avanzó el proceso del lote {produccion.LoteId} de {etapaActual} a {etapaSiguiente}.");
+
+                    TempData["Success"] = $"El proceso avanzó correctamente de {etapaActual} a {etapaSiguiente} ({ahora:dd/MM/yyyy HH:mm}).";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Si se encuentra en la última etapa (Empaque), se marca la producción como Completada
+                    var errorInventario = await CambiarEstadoProduccionAsync(
+                        produccion,
+                        EstadosProduccion.Completado);
+
+                    if (errorInventario != null)
+                    {
+                        await transaction.RollbackAsync();
+                        TempData["Error"] = errorInventario;
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    await TrazabilidadProcesoHelper.SincronizarAsync(_context, User, produccion);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    await AuditoriaHelper.RegistrarAsync(
+                        _context, User, "Producciones", "Avanzar proceso", produccion.Id,
+                        $"Se completó la última etapa ({etapaActual}) de la producción #{produccion.Id}.");
+
+                    TempData["Success"] = $"La producción finalizó la etapa de {etapaActual} y se marcó como Completada ({ahora:dd/MM/yyyy HH:mm}).";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                await transaction.RollbackAsync();
+                TempData["Error"] = "La producción cambió mientras se actualizaba. Actualice la página e inténtelo nuevamente.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                TempData["Error"] = "Ocurrió un error al avanzar el proceso: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Producciones/Delete/5
@@ -323,6 +458,14 @@ namespace MicrobeneficioSanGabriel.Controllers
                 if (produccion == null)
                 {
                     return NotFound();
+                }
+
+                var errorDependencias = await TrazabilidadProcesoHelper.ValidarEliminacionAsync(_context, produccion);
+                if (errorDependencias != null)
+                {
+                    await transaction.RollbackAsync();
+                    TempData["Error"] = errorDependencias;
+                    return RedirectToAction(nameof(Index));
                 }
 
                 // Si la producción completada aumentó el inventario, se registra su reversión.
@@ -466,7 +609,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Entrada",
                 Cantidad = cantidad,
-                FechaMovimiento = DateTime.Now,
+                FechaMovimiento = DateTime.UtcNow.AddHours(-6),
                 Observacion = $"Entrada automática por producción #{produccion.Id}",
                 OrigenTipo = OrigenMovimiento.Produccion,
                 OrigenId = produccion.Id,
@@ -506,7 +649,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ProductoNombre = producto.Nombre,
                 TipoMovimiento = "Salida",
                 Cantidad = cantidad,
-                FechaMovimiento = DateTime.Now,
+                FechaMovimiento = DateTime.UtcNow.AddHours(-6),
                 Observacion = $"Reversión automática de producción #{produccion.Id}",
                 OrigenTipo = OrigenMovimiento.ReversionProduccion,
                 OrigenId = produccion.Id,
@@ -550,21 +693,108 @@ namespace MicrobeneficioSanGabriel.Controllers
                     "El producto resultante no existe o está inactivo.");
             }
 
-            var usadasQuery = _context.Producciones
+            if (!TrazabilidadProcesoHelper.EsEtapaDeProduccionValida(produccion.TipoProceso))
+            {
+                return;
+            }
+
+            // En edición se permite actualizar etapa y estado sin bloqueos de capacidad
+            if (excluirProduccionId.HasValue)
+            {
+                return;
+            }
+
+            var etapa = TrazabilidadProcesoHelper.EtapasOrdenadas.First(e =>
+                string.Equals(e, produccion.TipoProceso, StringComparison.OrdinalIgnoreCase));
+            var indiceEtapa = Array.IndexOf(TrazabilidadProcesoHelper.EtapasOrdenadas, etapa);
+
+            // La capacidad se controla por etapa. Sumar Lavado + Secado + Tostado como si
+            // consumieran nuevamente el peso original del lote impediría un flujo secuencial real.
+            // Lavado consume el peso recibido; las etapas siguientes consumen únicamente la salida
+            // completada de la etapa inmediatamente anterior.
+            decimal capacidadEtapa;
+            string descripcionOrigen;
+
+            if (indiceEtapa == 0)
+            {
+                capacidadEtapa = lote.PesoKg;
+                descripcionOrigen = "peso recibido del lote";
+            }
+            else
+            {
+                var etapaAnterior = TrazabilidadProcesoHelper.EtapasOrdenadas[indiceEtapa - 1];
+                var salidasAnteriores = _context.Producciones
+                    .AsNoTracking()
+                    .Where(p => p.LoteId == produccion.LoteId &&
+                                p.Estado == EstadosProduccion.Completado &&
+                                p.TipoProceso == etapaAnterior);
+
+                if (excluirProduccionId.HasValue)
+                {
+                    // Es importante al editar y cambiar de etapa: el registro actual todavía tiene
+                    // sus valores anteriores en la BD y nunca debe abastecerse a sí mismo.
+                    salidasAnteriores = salidasAnteriores.Where(p => p.Id != excluirProduccionId.Value);
+                }
+
+                capacidadEtapa = await salidasAnteriores
+                    .SumAsync(p => (decimal?)p.CantidadResultanteKg) ?? 0m;
+                descripcionOrigen = $"cantidad resultante completada de {etapaAnterior}";
+            }
+
+            var usadasMismaEtapa = _context.Producciones
                 .AsNoTracking()
-                .Where(p => p.LoteId == produccion.LoteId && p.Estado != EstadosProduccion.Cancelado);
+                .Where(p => p.LoteId == produccion.LoteId &&
+                            p.Estado != EstadosProduccion.Cancelado &&
+                            p.TipoProceso == etapa);
 
             if (excluirProduccionId.HasValue)
             {
-                usadasQuery = usadasQuery.Where(p => p.Id != excluirProduccionId.Value);
+                usadasMismaEtapa = usadasMismaEtapa.Where(p => p.Id != excluirProduccionId.Value);
             }
 
-            var cantidadYaProcesada = await usadasQuery.SumAsync(p => (decimal?)p.CantidadProcesadaKg) ?? 0m;
-            if (cantidadYaProcesada + produccion.CantidadProcesadaKg > lote.PesoKg)
+            var cantidadYaProcesada = await usadasMismaEtapa
+                .SumAsync(p => (decimal?)p.CantidadProcesadaKg) ?? 0m;
+            var disponible = Math.Max(0m, capacidadEtapa - cantidadYaProcesada);
+
+            if (produccion.CantidadProcesadaKg > disponible)
             {
-                var disponible = Math.Max(0m, lote.PesoKg - cantidadYaProcesada);
                 ModelState.AddModelError(nameof(Produccion.CantidadProcesadaKg),
-                    $"La suma de producciones supera el peso recibido del lote. Disponible: {disponible:N2} kg.");
+                    $"La etapa {etapa} supera la {descripcionOrigen}. Disponible para esta etapa: {disponible:N2} kg.");
+            }
+
+            // Si una etapa ya alimenta a la siguiente, tampoco puede editarse su rendimiento de
+            // forma que deje a los procesos posteriores consumiendo más café del que realmente salió.
+            if (produccion.Estado == EstadosProduccion.Completado &&
+                indiceEtapa < TrazabilidadProcesoHelper.EtapasOrdenadas.Length - 1)
+            {
+                var otrasSalidasCompletadas = _context.Producciones
+                    .AsNoTracking()
+                    .Where(p => p.LoteId == produccion.LoteId &&
+                                p.Estado == EstadosProduccion.Completado &&
+                                p.TipoProceso == etapa);
+
+                if (excluirProduccionId.HasValue)
+                {
+                    otrasSalidasCompletadas = otrasSalidasCompletadas.Where(p => p.Id != excluirProduccionId.Value);
+                }
+
+                var salidaTotalEtapa = (await otrasSalidasCompletadas
+                    .SumAsync(p => (decimal?)p.CantidadResultanteKg) ?? 0m) + produccion.CantidadResultanteKg;
+
+                var etapaSiguiente = TrazabilidadProcesoHelper.EtapasOrdenadas[indiceEtapa + 1];
+                var consumidoEtapaSiguiente = await _context.Producciones
+                    .AsNoTracking()
+                    .Where(p => p.LoteId == produccion.LoteId &&
+                                p.Estado != EstadosProduccion.Cancelado &&
+                                p.TipoProceso == etapaSiguiente &&
+                                (!excluirProduccionId.HasValue || p.Id != excluirProduccionId.Value))
+                    .SumAsync(p => (decimal?)p.CantidadProcesadaKg) ?? 0m;
+
+                if (consumidoEtapaSiguiente > salidaTotalEtapa)
+                {
+                    ModelState.AddModelError(nameof(Produccion.CantidadResultanteKg),
+                        $"No puede reducir la salida de {etapa} a {salidaTotalEtapa:N2} kg porque {etapaSiguiente} ya tiene {consumidoEtapaSiguiente:N2} kg registrados.");
+                }
             }
         }
 

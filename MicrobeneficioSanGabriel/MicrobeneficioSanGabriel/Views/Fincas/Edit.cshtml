@@ -4,12 +4,19 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="sg-visual-hero sg-hero-fincas">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge"><i class="fa-solid fa-pen-to-square"></i> Actualización</span>
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
+
+<div class="EstiloEditaR-top">
+    <div class="EstiloEditaR-title">
+        <span class="EstiloEditaR-badge">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Actualización
+        </span>
         <h1>Editar finca</h1>
-        <div class="sg-visual-line"></div>
-        <p>Actualice los datos de @Model.Nombre sin perder la relación con sus lotes.</p>
+        <p>Actualizá los datos y estados de las fincas registradas.</p>
     </div>
 </div>
 

@@ -66,7 +66,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         public bool Activo { get; set; } = true;
 
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         public ICollection<Finca> Fincas { get; set; } = new List<Finca>();
         public ICollection<Lote> Lotes { get; set; } = new List<Lote>();

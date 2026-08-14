@@ -101,6 +101,11 @@
                     Compra organizada
                 </span>
             </div>
+
+            <div class="cafe-hero-stock-inline">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span><strong>@totalKgDisponibles kg</strong> disponibles en catálogo</span>
+            </div>
         </div>
 
         <div class="cafe-welcome-visual">
@@ -156,16 +161,88 @@
         </article>
     </section>
 
+    <section class="cafe-quick-section">
+        <header class="cafe-section-header">
+            <div>
+                <span class="cafe-section-label">
+                    Tu portal
+                </span>
+
+                <h2>Accesos rápidos</h2>
+
+                <p>
+                    Todo lo necesario para gestionar tus compras.
+                </p>
+            </div>
+        </header>
+
+        <div class="cafe-quick-grid">
+            <a asp-controller="Productos"
+               asp-action="Index"
+               class="cafe-quick-card">
+
+                <span class="cafe-quick-icon">
+                    <i class="fa-solid fa-store"></i>
+                </span>
+
+                <div>
+                    <strong>Productos</strong>
+                    <small>
+                        Explorá cafés, precios y disponibilidad.
+                    </small>
+                </div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <a asp-controller="Pedidos"
+               asp-action="Create"
+               class="cafe-quick-card">
+
+                <span class="cafe-quick-icon">
+                    <i class="fa-solid fa-cart-plus"></i>
+                </span>
+
+                <div>
+                    <strong>Nuevo pedido</strong>
+                    <small>
+                        Solicitá tu café desde el portal.
+                    </small>
+                </div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <a asp-controller="Pedidos"
+               asp-action="Index"
+               class="cafe-quick-card">
+
+                <span class="cafe-quick-icon">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                </span>
+
+                <div>
+                    <strong>Mis pedidos</strong>
+                    <small>
+                        Consultá estados, pagos y entregas.
+                    </small>
+                </div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
     <section class="cafe-main-grid">
 
         <article class="cafe-section-card cafe-products-section">
             <header class="cafe-section-header">
                 <div>
                     <span class="cafe-section-label">
-                        Nuestras especialidades
+                        Productos disponibles
                     </span>
 
-                    <h2>Cafés elegidos para vos</h2>
+                    <h2>Cafés disponibles para vos</h2>
 
                     <p>
                         Productos disponibles con mayor existencia.
@@ -186,12 +263,10 @@
                     foreach (var producto in productosDestacados)
                     {
                         <article class="cafe-product-card">
-                            <div class="cafe-product-image cafe-product-image-completa"
-                                 style="height: 270px !important; min-height: 270px !important; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden !important; background: #f5f2eb !important;">
+                            <div class="cafe-product-image cafe-product-image-completa">
                                 <img src="@ImagenProducto(producto)"
                                      alt="@producto.Nombre"
-                                     loading="lazy"
-                                     style="width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; object-position: center center !important; transform: none !important; padding: 8px !important; box-sizing: border-box !important;" />
+                                     loading="lazy" />
 
                                 <span>
                                     @producto.Categoria
@@ -309,75 +384,5 @@
 
     </section>
 
-    <section class="cafe-quick-section">
-        <header class="cafe-section-header">
-            <div>
-                <span class="cafe-section-label">
-                    Tu portal
-                </span>
 
-                <h2>Accesos rápidos</h2>
-
-                <p>
-                    Todo lo necesario para gestionar tus compras.
-                </p>
-            </div>
-        </header>
-
-        <div class="cafe-quick-grid">
-            <a asp-controller="Productos"
-               asp-action="Index"
-               class="cafe-quick-card">
-
-                <span class="cafe-quick-icon">
-                    <i class="fa-solid fa-store"></i>
-                </span>
-
-                <div>
-                    <strong>Productos</strong>
-                    <small>
-                        Explorá cafés, precios y disponibilidad.
-                    </small>
-                </div>
-
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-
-            <a asp-controller="Pedidos"
-               asp-action="Create"
-               class="cafe-quick-card">
-
-                <span class="cafe-quick-icon">
-                    <i class="fa-solid fa-cart-plus"></i>
-                </span>
-
-                <div>
-                    <strong>Nuevo pedido</strong>
-                    <small>
-                        Solicitá tu café desde el portal.
-                    </small>
-                </div>
-
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-
-            <a asp-controller="Pedidos"
-               asp-action="Index"
-               class="cafe-quick-card">
-
-                <span class="cafe-quick-icon">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                </span>
-
-                <div>
-                    <strong>Mis pedidos</strong>
-                    <small>
-                        Consultá estados, pagos y entregas.
-                    </small>
-                </div>
-
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-    </section>
 </div>

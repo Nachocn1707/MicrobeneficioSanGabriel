@@ -18,7 +18,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required(ErrorMessage = "La fecha de producción es obligatoria")]
         [Display(Name = "Fecha de producción")]
-        public DateTime FechaProduccion { get; set; } = DateTime.Now;
+        public DateTime FechaProduccion { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [Required(ErrorMessage = "El tipo de proceso es obligatorio")]
         [NotWhiteSpace(ErrorMessage = "El tipo de proceso es obligatorio")]

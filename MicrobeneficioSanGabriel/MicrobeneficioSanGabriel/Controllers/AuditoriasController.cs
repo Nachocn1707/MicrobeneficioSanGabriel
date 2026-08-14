@@ -16,7 +16,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string? modulo, string? usuarioId, DateTime? fechaInicio, DateTime? fechaFin)
+        public async Task<IActionResult> Index(string? modulo, string? usuarioId, DateTime? fechaInicio, DateTime? fechaFin, int page = 1)
         {
             var query = _context.Auditorias.AsNoTracking().AsQueryable();
 
@@ -45,11 +45,31 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             ViewBag.FechaInicio = fechaInicio?.ToString("yyyy-MM-dd");
             ViewBag.FechaFin = fechaFin?.ToString("yyyy-MM-dd");
+            ViewBag.ModuloSeleccionado = modulo;
+            ViewBag.UsuarioIdSeleccionado = usuarioId;
+
+            const int pageSize = 8;
+            var totalRegistros = await query.CountAsync();
+            var totalPages = Math.Max(1, (int)Math.Ceiling(totalRegistros / (double)pageSize));
+            page = Math.Clamp(page, 1, totalPages);
+
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalRegistros = totalRegistros;
+            ViewBag.TotalPages = totalPages;
 
             var registros = await query
                 .OrderByDescending(a => a.Fecha)
-                .Take(500)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            // Corrige visualmente nombres históricos duplicados (por ejemplo, "Administrador Administrador")
+            // sin alterar el registro original de auditoría.
+            foreach (var registro in registros)
+            {
+                registro.UsuarioNombre = NormalizarNombreDuplicado(registro.UsuarioNombre);
+            }
 
             return View(registros);
         }
@@ -109,7 +129,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             ViewBag.Usuarios = usuarios
                 .Select(u =>
                 {
-                    var nombreCompleto = $"{u.Nombre} {u.Apellidos}".Trim();
+                    var nombreCompleto = NormalizarNombreDuplicado($"{u.Nombre} {u.Apellidos}".Trim());
                     var identificador = u.Email ?? u.UserName ?? "Usuario";
 
                     var texto = string.IsNullOrWhiteSpace(nombreCompleto)
@@ -130,6 +150,30 @@ namespace MicrobeneficioSanGabriel.Controllers
                     };
                 })
                 .ToList();
+        }
+
+        private static string NormalizarNombreDuplicado(string? valor)
+        {
+            var texto = (valor ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(texto))
+            {
+                return "Usuario";
+            }
+
+            var partes = texto.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (partes.Length >= 2 && partes.Length % 2 == 0)
+            {
+                var mitad = partes.Length / 2;
+                var izquierda = string.Join(" ", partes.Take(mitad));
+                var derecha = string.Join(" ", partes.Skip(mitad));
+
+                if (string.Equals(izquierda, derecha, StringComparison.OrdinalIgnoreCase))
+                {
+                    return izquierda;
+                }
+            }
+
+            return texto;
         }
     }
 }

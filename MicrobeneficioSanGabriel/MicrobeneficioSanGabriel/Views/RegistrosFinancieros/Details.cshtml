@@ -1,4 +1,4 @@
-﻿@model MicrobeneficioSanGabriel.Models.RegistroFinanciero
+@model MicrobeneficioSanGabriel.Models.RegistroFinanciero
 
 @{
     ViewData["Title"] = "Detalle financiero";
@@ -31,16 +31,6 @@
     </div>
 </section>
 
-<section class="Detalle-visual-hero Detalle-hero-inventario">
-    <div class="Detalle-visual-hero-content">
-        <h1>@Model.Tipo: ₡ @Model.Monto.ToString("N2")</h1>
-        <div class="Detalle-visual-line"></div>
-        <span class="Detalle-visual-badge">
-            <i class="fa-solid fa-sack-dollar"></i> Registro financiero
-        </span>
-    </div>
-</section>
-
 <div class="EstiloDetalle-detalle-page">
     <div class="EstiloDetalle-premium-card">
 
@@ -57,7 +47,7 @@
                         <i class="fa-solid fa-calendar-days"></i> FECHA
                     </span>
                     <span class="EstiloDetalle-detail-value">
-                        @Model.Fecha.ToString("dd/MM/yyyy")
+                        @Model.Fecha.ToString(Model.EsAutomatico ? "dd/MM/yyyy HH:mm" : "dd/MM/yyyy")
                     </span>
                 </div>
 
@@ -92,6 +82,26 @@
                     </span>
                 </div>
 
+                @if (Model.EsAutomatico)
+                {
+                    <div class="EstiloDetalle-detail-item">
+                        <span class="EstiloDetalle-detail-label"><i class="fa-solid fa-link"></i> ORIGEN</span>
+                        <span class="EstiloDetalle-detail-value">@(Model.OrigenTipo ?? "Sistema") #@Model.OrigenId</span>
+                    </div>
+                    <div class="EstiloDetalle-detail-item">
+                        <span class="EstiloDetalle-detail-label"><i class="fa-solid fa-user"></i> CLIENTE</span>
+                        <span class="EstiloDetalle-detail-value">@(Model.Destinatario ?? "Sin cliente")</span>
+                    </div>
+                    <div class="EstiloDetalle-detail-item">
+                        <span class="EstiloDetalle-detail-label"><i class="fa-solid fa-mug-hot"></i> PRODUCTO</span>
+                        <span class="EstiloDetalle-detail-value">@(Model.ProductoNombre ?? "Sin producto")</span>
+                    </div>
+                    <div class="EstiloDetalle-detail-item">
+                        <span class="EstiloDetalle-detail-label"><i class="fa-solid fa-weight-scale"></i> CANTIDAD</span>
+                        <span class="EstiloDetalle-detail-value">@(Model.CantidadKg?.ToString("N2") ?? "0") kg</span>
+                    </div>
+                }
+
                 <div class="EstiloDetalle-detail-item full">
                     <span class="EstiloDetalle-detail-label">
                         <i class="fa-solid fa-file-lines"></i> DESCRIPCIÓN
@@ -124,7 +134,7 @@
                     Volver a la lista
                 </a>
 
-                @if (User.IsInRole("Administrador"))
+                @if (User.IsInRole("Administrador") && !Model.EsAutomatico)
                 {
                     <a asp-action="Edit"
                        asp-route-id="@Model.Id"

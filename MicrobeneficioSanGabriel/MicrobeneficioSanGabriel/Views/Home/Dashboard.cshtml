@@ -21,8 +21,8 @@
     var totalRegistrosTrazabilidad = Convert.ToInt32(ViewBag.TotalRegistrosTrazabilidad ?? 0);
     var lotesConTrazabilidad = Convert.ToInt32(ViewBag.LotesConTrazabilidad ?? 0);
     var porcentajeTrazabilidad = Convert.ToDecimal(ViewBag.PorcentajeTrazabilidad ?? 0m);
-    var periodoActual = ViewBag.PeriodoActual as string ?? DateTime.Today.ToString("MMMM yyyy");
-    var anioActual = Convert.ToInt32(ViewBag.AnioActual ?? DateTime.Today.Year);
+    var periodoActual = ViewBag.PeriodoActual as string ?? DateTime.UtcNow.AddHours(-6).Date.ToString("MMMM yyyy");
+    var anioActual = Convert.ToInt32(ViewBag.AnioActual ?? DateTime.UtcNow.AddHours(-6).Date.Year);
 
     var completados = estadosPedidos.ContainsKey("Completado") ? estadosPedidos["Completado"] : 0;
     var enProcesoPedidos = estadosPedidos.ContainsKey("En proceso") ? estadosPedidos["En proceso"] : 0;
@@ -33,10 +33,10 @@
 
     var coloresPedidos = new[]
     {
-        new { Clase = "green", Hex = "#53833B", Label = "Completados", Valor = completados },
-        new { Clase = "deepgreen", Hex = "#293F25", Label = "En proceso", Valor = enProcesoPedidos },
-        new { Clase = "gold", Hex = "#D4730B", Label = "Pendientes", Valor = pendientesPedidos },
-        new { Clase = "brown", Hex = "#4F3514", Label = "Cancelados", Valor = canceladosPedidos }
+        new { Clase = "green", Hex = "#4F8738", Label = "Completados", Valor = completados },
+        new { Clase = "gold", Hex = "#D97800", Label = "En proceso", Valor = enProcesoPedidos },
+        new { Clase = "tan", Hex = "#6F8A6B", Label = "Pendientes", Valor = pendientesPedidos },
+        new { Clase = "brown", Hex = "#59271E", Label = "Cancelados", Valor = canceladosPedidos }
     };
 
     string FormatoPorcentaje(decimal valor) =>

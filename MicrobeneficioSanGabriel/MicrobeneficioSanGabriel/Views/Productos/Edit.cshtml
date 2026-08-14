@@ -1,4 +1,5 @@
 @model MicrobeneficioSanGabriel.Models.Producto
+@using MicrobeneficioSanGabriel.Constants
 
 @{
     ViewData["Title"] = "Editar producto";
@@ -24,9 +25,15 @@
 
 <div class="EstiloEditar-edit-page">
 
-    <div class="EstiloEditar-header">
-        <h1>Editar producto</h1>
-        <p>Actualizá los datos del producto registrado.</p>
+    <div class="EstiloEditaR-top">
+        <div class="EstiloEditaR-title">
+            <span class="EstiloEditaR-badge">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Actualización
+            </span>
+            <h1>Editar producto</h1>
+            <p>Actualizá los datos y estados de los productos registrados.</p>
+        </div>
     </div>
 
     <div class="EstiloEditaR-card">
@@ -47,7 +54,13 @@
 
                         <div class="col-md-6">
                             <label asp-for="Categoria" class="form-label">Categoría</label>
-                            <input asp-for="Categoria" class="form-control" placeholder="Escriba la categoría del café" />
+                            <select asp-for="Categoria" class="form-select">
+                                <option value="">Seleccione una categoría</option>
+                                @foreach (var categoria in CategoriasProducto.Todas)
+                                {
+                                    <option value="@categoria">@categoria</option>
+                                }
+                            </select>
                             <span asp-validation-for="Categoria" class="text-danger"></span>
                         </div>
 
@@ -83,14 +96,9 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
-                            <input asp-for="FechaRegistro" type="datetime-local" class="form-control"
-                                   min="@(Model.FechaRegistro.Date >= DateTime.Today ? DateTime.Today.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
-                                   data-no-past-date="true"
-                                   data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
-                                   data-original-date="@Model.FechaRegistro.ToString("yyyy-MM-dd")"
-                                   data-date-message="No puede seleccionar una fecha anterior a hoy." />
-                            <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+                            <label class="form-label">Fecha de registro</label>
+                            <input type="text" class="form-control" value="@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")" readonly />
+                            <small class="text-muted">La fecha original del registro no se modifica.</small>
                         </div>
 
                         <div class="col-12">

@@ -385,3 +385,18 @@ textarea.form-control {
         justify-content: center;
     }
 }
+
+/* Sprint 4 - datos del cliente reutilizados desde la sesión */
+.pedido-client-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid rgba(54, 90, 45, .18);
+    border-radius: 16px;
+    background: rgba(245, 249, 242, .82);
+}
+.pedido-client-summary > div { display: grid; gap: 5px; min-width: 0; }
+.pedido-client-summary span { color: #6a7466; font-size: .78rem; font-weight: 700; }
+.pedido-client-summary strong { color: #294426; overflow-wrap: anywhere; }
+@media (max-width: 760px) { .pedido-client-summary { grid-template-columns: 1fr; } }

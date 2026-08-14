@@ -41,7 +41,8 @@ namespace MicrobeneficioSanGabriel.Models
 
         public bool Activo { get; set; } = true;
 
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        [Display(Name = "Fecha de registro")]
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [Timestamp]
         public byte[] RowVersion { get; set; } = Array.Empty<byte>();

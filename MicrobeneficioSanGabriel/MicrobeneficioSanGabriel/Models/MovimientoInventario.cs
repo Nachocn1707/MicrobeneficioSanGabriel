@@ -41,7 +41,7 @@ namespace MicrobeneficioSanGabriel.Models
         [StringLength(300)]
         public string? Observacion { get; set; }
 
-        public DateTime FechaMovimiento { get; set; } = DateTime.Now;
+        public DateTime FechaMovimiento { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [StringLength(40)]
         public string? OrigenTipo { get; set; }

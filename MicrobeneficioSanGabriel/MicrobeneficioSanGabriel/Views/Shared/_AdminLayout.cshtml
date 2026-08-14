@@ -68,9 +68,14 @@
 
     <link rel="stylesheet" href="~/css/sg-crud-overrides.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/portal-unificado.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sprint4-final.css" asp-append-version="true" />
 </head>
 
 <body class="sg-reference-theme">
+    <div class="sg-notification-dock sg-notification-dock--admin">
+        <partial name="_CentroNotificaciones" />
+    </div>
+
     <div class="sg-shell">
 
         <aside class="sg-sidebar">
@@ -203,9 +208,7 @@
         </aside>
 
         <main class="sg-main">
-            <div class="sg-notification-dock">
-                <partial name="_CentroNotificaciones" />
-            </div>
+            <form id="sgGlobalAntiforgery" class="d-none">@Html.AntiForgeryToken()</form>
 
             <div class="sg-content">
                 <partial name="_MensajesSistema" />
@@ -221,21 +224,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="~/js/Validaciones.js"></script>
     <script src="~/js/notificaciones.js" asp-append-version="true"></script>
+    <script src="~/js/costa-rica-ubicaciones.js" asp-append-version="true"></script>
+    <script src="~/js/sistema-ui.js" asp-append-version="true"></script>
 
-    <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const notificationDock = document.querySelector(".sg-notification-dock");
-                if (notificationDock && notificationDock.parentElement !== document.body) {
-                    document.body.appendChild(notificationDock);
-                }
-                document.querySelectorAll("[data-auto-dismiss='true']").forEach(message => {
-                    setTimeout(() => {
-                        const instance = bootstrap.Alert.getOrCreateInstance(message);
-                        if (instance) instance.close();
-                    }, 5000);
-                });
-            });
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 

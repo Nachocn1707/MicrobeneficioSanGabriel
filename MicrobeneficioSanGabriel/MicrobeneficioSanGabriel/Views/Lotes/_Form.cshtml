@@ -24,7 +24,7 @@
     </div>
     <div class="col-md-3">
         <label asp-for="FechaRecepcion" class="form-label"></label>
-        <input asp-for="FechaRecepcion" class="form-control" type="datetime-local" min="@DateTime.Today.ToString("yyyy-MM-ddT00:00")" max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
+        <input asp-for="FechaRecepcion" class="form-control" type="datetime-local" min="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddT00:00")" max="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddT23:59")" />
         <span asp-validation-for="FechaRecepcion" class="text-danger"></span>
     </div>
     <div class="col-md-6">

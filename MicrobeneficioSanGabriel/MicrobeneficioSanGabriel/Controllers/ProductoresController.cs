@@ -52,7 +52,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return View(new Productor
             {
                 Activo = true,
-                FechaRegistro = DateTime.Now
+                FechaRegistro = DateTime.UtcNow.AddHours(-6)
             });
         }
 
@@ -69,7 +69,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             {
                 try
                 {
-                    productor.FechaRegistro = DateTime.Now;
+                    productor.FechaRegistro = DateTime.UtcNow.AddHours(-6);
                     productor.Direccion = ConstruirDireccion(productor);
 
                     _context.Productores.Add(productor);

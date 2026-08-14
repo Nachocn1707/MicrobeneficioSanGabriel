@@ -7,18 +7,28 @@
 
     var modulos = ViewBag.Modulos as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
     var usuarios = ViewBag.Usuarios as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var paginaActual = (int)(ViewBag.Page ?? 1);
+    var totalPaginas = (int)(ViewBag.TotalPages ?? 1);
+    var totalRegistros = (int)(ViewBag.TotalRegistros ?? 0);
+    var tamanoPagina = (int)(ViewBag.PageSize ?? 8);
+    var primerRegistro = totalRegistros == 0 ? 0 : ((paginaActual - 1) * tamanoPagina) + 1;
+    var ultimoRegistro = Math.Min(paginaActual * tamanoPagina, totalRegistros);
+    string? moduloSeleccionado = ViewBag.ModuloSeleccionado as string;
+    string? usuarioIdSeleccionado = ViewBag.UsuarioIdSeleccionado as string;
 }
 
-<div class="sg-visual-hero sg-hero-auditoria">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge">
-            <i class="fa-solid fa-clock-rotate-left"></i> Trazabilidad administrativa
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
+
+<div class="EstiloEditaR-top">
+    <div class="EstiloEditaR-title">
+        <span class="EstiloEditaR-badge">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Actualización
         </span>
-
         <h1>Registro de actividad</h1>
-
-        <div class="sg-visual-line"></div>
-
         <p>Consulte quién creó, modificó o eliminó información del sistema.</p>
     </div>
 </div>
@@ -127,4 +137,82 @@
             }
         </tbody>
     </table>
+
+    @if (totalRegistros > 0)
+    {
+        <nav class="sg-audit-pager" aria-label="Paginación de auditoría">
+            <div class="sg-audit-pager-summary">
+                Mostrando <strong>@primerRegistro-@ultimoRegistro</strong> de <strong>@totalRegistros</strong> registro(s)
+            </div>
+
+            <div class="sg-audit-pager-controls">
+                @if (paginaActual > 1)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(paginaActual - 1)"
+                       asp-route-modulo="@moduloSeleccionado"
+                       asp-route-usuarioId="@usuarioIdSeleccionado"
+                       asp-route-fechaInicio="@ViewBag.FechaInicio"
+                       asp-route-fechaFin="@ViewBag.FechaFin"
+                       class="sg-audit-page-btn" aria-label="Página anterior">
+                        <i class="fa-solid fa-chevron-left"></i> Anterior
+                    </a>
+                }
+                else
+                {
+                    <span class="sg-audit-page-btn disabled" aria-disabled="true"><i class="fa-solid fa-chevron-left"></i> Anterior</span>
+                }
+
+                <div class="sg-audit-page-numbers">
+                    @{
+                        var inicioPagina = Math.Max(1, paginaActual - 2);
+                        var finPagina = Math.Min(totalPaginas, paginaActual + 2);
+                    }
+
+                    @if (inicioPagina > 1)
+                    {
+                        <a asp-action="Index" asp-route-page="1" asp-route-modulo="@moduloSeleccionado" asp-route-usuarioId="@usuarioIdSeleccionado" asp-route-fechaInicio="@ViewBag.FechaInicio" asp-route-fechaFin="@ViewBag.FechaFin" class="sg-audit-page-number">1</a>
+                        @if (inicioPagina > 2) { <span class="sg-audit-page-ellipsis">…</span> }
+                    }
+
+                    @for (var pagina = inicioPagina; pagina <= finPagina; pagina++)
+                    {
+                        if (pagina == paginaActual)
+                        {
+                            <span class="sg-audit-page-number active" aria-current="page">@pagina</span>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" asp-route-page="@pagina" asp-route-modulo="@moduloSeleccionado" asp-route-usuarioId="@usuarioIdSeleccionado" asp-route-fechaInicio="@ViewBag.FechaInicio" asp-route-fechaFin="@ViewBag.FechaFin" class="sg-audit-page-number">@pagina</a>
+                        }
+                    }
+
+                    @if (finPagina < totalPaginas)
+                    {
+                        @if (finPagina < totalPaginas - 1) { <span class="sg-audit-page-ellipsis">…</span> }
+                        <a asp-action="Index" asp-route-page="@totalPaginas" asp-route-modulo="@moduloSeleccionado" asp-route-usuarioId="@usuarioIdSeleccionado" asp-route-fechaInicio="@ViewBag.FechaInicio" asp-route-fechaFin="@ViewBag.FechaFin" class="sg-audit-page-number">@totalPaginas</a>
+                    }
+                </div>
+
+                @if (paginaActual < totalPaginas)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(paginaActual + 1)"
+                       asp-route-modulo="@moduloSeleccionado"
+                       asp-route-usuarioId="@usuarioIdSeleccionado"
+                       asp-route-fechaInicio="@ViewBag.FechaInicio"
+                       asp-route-fechaFin="@ViewBag.FechaFin"
+                       class="sg-audit-page-btn" aria-label="Página siguiente">
+                        Siguiente <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                }
+                else
+                {
+                    <span class="sg-audit-page-btn disabled" aria-disabled="true">Siguiente <i class="fa-solid fa-chevron-right"></i></span>
+                }
+            </div>
+
+            <div class="sg-audit-pager-page">Página <strong>@paginaActual</strong> de <strong>@totalPaginas</strong></div>
+        </nav>
+    }
 </div>

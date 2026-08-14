@@ -5,14 +5,19 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="sg-visual-hero sg-hero-productores">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge">
-            <i class="fa-solid fa-user-pen"></i> Actualización
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/VistaEditar.css" />
+}
+
+<div class="EstiloEditaR-top">
+    <div class="EstiloEditaR-title">
+        <span class="EstiloEditaR-badge">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Actualización
         </span>
         <h1>Editar productor</h1>
-        <div class="sg-visual-line"></div>
-        <p>Actualice la información de @Model.Nombre.</p>
+        <p>Actualizá los datos y estados de los productores registrados.</p>
     </div>
 </div>
 

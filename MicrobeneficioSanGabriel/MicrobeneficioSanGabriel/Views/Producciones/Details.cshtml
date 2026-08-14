@@ -12,6 +12,10 @@
         ? Math.Round((Model.CantidadResultanteKg / Model.CantidadProcesadaKg) * 100, 2)
         : 0;
 
+    var historialLote = ViewBag.HistorialLote as List<MicrobeneficioSanGabriel.Models.Produccion>
+        ?? new List<MicrobeneficioSanGabriel.Models.Produccion>();
+    var etapasLote = new[] { "Lavado", "Secado", "Tostado", "Molido", "Empaque" };
+
     string estadoClase = Model.Estado switch
     {
         "Completado" or "Completada" => "movimiento-estado movimiento-entrada",
@@ -33,16 +37,6 @@
     <div class="Detalle-actions">
         <span class="movimiento-badge-top">
             Producción #@Model.Id
-        </span>
-    </div>
-</section>
-
-<section class="Detalle-visual-hero Detalle-hero-inventario">
-    <div class="Detalle-visual-hero-content">
-        <h1>Lote: @loteCodigo</h1>
-        <div class="Detalle-visual-line"></div>
-        <span class="Detalle-visual-badge">
-            <i class="fa-solid fa-industry"></i> @Model.TipoProceso · @producto
         </span>
     </div>
 </section>
@@ -146,7 +140,7 @@
                         <i class="fa-solid fa-calendar-days"></i> FECHA DE PRODUCCIÓN
                     </span>
                     <span class="EstiloDetalle-detail-value">
-                        @Model.FechaProduccion.ToString("dd/MM/yyyy")
+                        @Model.FechaProduccion.ToString("dd/MM/yyyy HH:mm")
                     </span>
                 </div>
 
@@ -162,6 +156,40 @@
                 </div>
 
             </div>
+
+            <section class="mt-4 pt-3 border-top">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                    <div>
+                        <h3 class="h5 mb-1">Recorrido completo del lote</h3>
+                        <small class="text-muted">Etapas registradas con su estado, fecha y hora.</small>
+                    </div>
+                    <a asp-controller="Trazabilidades" asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-route"></i>Ver módulo de trazabilidad</a>
+                </div>
+                <div class="sg-process-timeline">
+                    @foreach (var etapa in etapasLote)
+                    {
+                        var registroEtapa = historialLote
+                            .Where(p => string.Equals(p.TipoProceso, etapa, StringComparison.OrdinalIgnoreCase))
+                            .OrderByDescending(p => p.FechaProduccion)
+                            .FirstOrDefault();
+                        var etapaCompletada = registroEtapa != null && (registroEtapa.Estado ?? "").Contains("Complet", StringComparison.OrdinalIgnoreCase);
+                        var etapaActual = registroEtapa != null && !etapaCompletada && !(registroEtapa.Estado ?? "").Contains("Cancel", StringComparison.OrdinalIgnoreCase);
+                        <div class="sg-process-step @(etapaCompletada ? "done" : "") @(etapaActual ? "current" : "")">
+                            <i class="fa-solid @(etapaCompletada ? "fa-circle-check" : etapaActual ? "fa-spinner" : "fa-circle")"></i>
+                            <strong>@etapa</strong>
+                            @if (registroEtapa != null)
+                            {
+                                <small>@registroEtapa.Estado</small>
+                                <small class="d-block">@registroEtapa.FechaProduccion.ToString("dd/MM/yyyy HH:mm")</small>
+                            }
+                            else
+                            {
+                                <small>Pendiente</small>
+                            }
+                        </div>
+                    }
+                </div>
+            </section>
 
             <div class="EstiloDetalle-actions">
 

@@ -25,448 +25,570 @@
         ? productor.Nombre
         : "Sin productor";
 
-    string finca = productor != null && !string.IsNullOrWhiteSpace(productor.Finca)
-        ? productor.Finca
-        : "Sin finca";
+    string finca = lote?.Finca?.Nombre ?? "Sin finca";
 }
 
 @section Styles {
     <style>
         .historial-page {
             display: grid;
-            gap: 24px;
-            padding-top: 14px;
+            gap: 22px;
+            padding-top: 10px;
         }
 
+        /* Encabezado Principal */
         .historial-header {
+            background: rgba(250, 249, 245, 0.94);
+            border: 1px solid rgba(41, 75, 42, 0.14);
+            border-radius: 20px;
+            padding: 22px 28px;
+            box-shadow: 0 10px 26px rgba(25, 42, 24, 0.05);
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             gap: 20px;
+            backdrop-filter: blur(10px);
         }
 
         .historial-title h1 {
-            font-size: 2.4rem;
+            font-size: clamp(1.6rem, 2.2vw, 2.1rem);
             font-weight: 950;
             margin: 0;
-            color: #2b160d;
+            color: #1b392b;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
         }
 
         .historial-line {
-            width: 78px;
+            width: 64px;
             height: 4px;
             border-radius: 999px;
-            background: #d8b36a;
-            margin: 12px 0;
+            background: linear-gradient(90deg, #b97822, #4f8738);
+            margin: 10px 0;
+            box-shadow: 0 4px 10px rgba(185, 120, 34, 0.25);
         }
 
         .historial-title p {
-            color: #6f5b4a;
-            font-weight: 650;
+            color: #677066;
+            font-weight: 600;
+            font-size: 0.92rem;
             margin: 0;
         }
 
         .historial-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: #fff4d3;
-            color: #8a6500;
+            gap: 7px;
+            background: rgba(185, 120, 34, 0.1);
+            color: #b97822;
+            border: 1px solid rgba(185, 120, 34, 0.2);
             border-radius: 999px;
-            padding: 8px 14px;
-            font-weight: 900;
-            font-size: 13px;
-            margin-bottom: 14px;
+            padding: 5px 14px;
+            font-weight: 850;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
         }
 
         .historial-actions-top {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
-            justify-content: flex-end;
+            align-items: center;
         }
 
         .btn-historial {
             border: none;
-            border-radius: 14px;
-            padding: 11px 18px;
-            font-weight: 950;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 850;
+            font-size: 0.9rem;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: 0.18s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-            .btn-historial:hover {
-                transform: translateY(-1px);
-            }
 
         .btn-historial-volver {
-            background: #f3f4f6;
-            color: #111827;
+            background: #f0ebe1;
+            color: #263126;
+            border: 1px solid rgba(41, 75, 42, 0.12);
         }
 
-            .btn-historial-volver:hover {
-                background: #e5e7eb;
-                color: #111827;
-            }
+        .btn-historial-volver:hover {
+            background: #e4ddd0;
+            color: #1b392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
 
         .btn-historial-nuevo {
-            background: #198754;
+            background: linear-gradient(135deg, #294b2a 0%, #386639 100%);
             color: #ffffff;
+            box-shadow: 0 4px 14px rgba(41, 75, 42, 0.25);
         }
 
-            .btn-historial-nuevo:hover {
-                background: #157347;
-                color: #ffffff;
-            }
+        .btn-historial-nuevo:hover {
+            background: linear-gradient(135deg, #1b392b 0%, #294b2a 100%);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(41, 75, 42, 0.35);
+        }
 
+        /* Tarjetas KPI Resumen */
         .historial-summary-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
+            gap: 16px;
         }
 
         .historial-summary-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: 0 16px 36px rgba(58, 33, 20, 0.08);
+            background: #ffffff;
+            border: 1px solid rgba(41, 75, 42, 0.12);
+            border-radius: 18px;
+            padding: 18px 20px;
+            box-shadow: 0 6px 20px rgba(25, 42, 24, 0.04);
             position: relative;
             overflow: hidden;
+            transition: all 0.25s ease;
         }
 
-            .historial-summary-card::after {
-                content: "";
-                position: absolute;
-                right: -32px;
-                bottom: -36px;
-                width: 110px;
-                height: 110px;
-                background: rgba(243, 210, 122, 0.22);
-                border-radius: 50%;
-            }
+        .historial-summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(25, 42, 24, 0.09);
+            border-color: rgba(41, 75, 42, 0.24);
+        }
+
+        .historial-summary-card::after {
+            content: "";
+            position: absolute;
+            right: -24px;
+            bottom: -28px;
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(79, 135, 56, 0.09) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .historial-summary-card.accent-gold::after {
+            background: radial-gradient(circle, rgba(185, 120, 34, 0.1) 0%, transparent 70%);
+        }
 
         .historial-summary-icon {
             width: 44px;
             height: 44px;
             border-radius: 14px;
-            background: #fff2d5;
-            color: #a66b20;
+            background: rgba(41, 75, 42, 0.08);
+            color: #294b2a;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 13px;
-            font-size: 18px;
+            margin-bottom: 12px;
+            font-size: 1.15rem;
+        }
+
+        .historial-summary-card.accent-gold .historial-summary-icon {
+            background: rgba(185, 120, 34, 0.1);
+            color: #b97822;
         }
 
         .historial-summary-label {
-            color: #7a6a5d;
-            font-weight: 850;
-            font-size: 0.9rem;
+            color: #677066;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
             margin-bottom: 4px;
         }
 
         .historial-summary-value {
-            color: #2b160d;
-            font-size: 1.35rem;
+            color: #263126;
+            font-size: 1.4rem;
             font-weight: 950;
             line-height: 1.2;
             word-break: break-word;
         }
 
+        /* Tarjeta Principal */
         .historial-main-card {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 28px;
-            box-shadow: 0 22px 55px rgba(58, 33, 20, 0.10);
+            background: #ffffff;
+            border: 1px solid rgba(41, 75, 42, 0.14);
+            border-radius: 22px;
+            box-shadow: 0 14px 38px rgba(25, 42, 24, 0.07);
             overflow: hidden;
         }
 
         .historial-main-header {
-            background: linear-gradient(135deg, #3a1f12, #7a5230);
-            padding: 24px 30px;
+            background: linear-gradient(135deg, #1b392b 0%, #294b2a 100%);
+            padding: 22px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 18px;
-            border-top: 5px solid #f3d27a;
+            border-bottom: 3px solid #b97822;
         }
 
-            .historial-main-header h2 {
-                margin: 0;
-                color: #fff3c4;
-                font-size: 1.8rem;
-                font-weight: 950;
-            }
+        .historial-main-header h2 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 1.7rem;
+            font-weight: 950;
+            letter-spacing: -0.01em;
+        }
 
-            .historial-main-header span {
-                color: #fff8df;
-                font-weight: 700;
-                opacity: 0.92;
-            }
+        .historial-main-header span.subhead {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+
+        .historial-badge-complete {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fce8bd;
+            border: 1px solid rgba(252, 232, 189, 0.3);
+            border-radius: 999px;
+            padding: 6px 16px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(6px);
+        }
 
         .historial-body {
             display: grid;
-            grid-template-columns: 0.35fr 0.65fr;
+            grid-template-columns: 0.34fr 0.66fr;
             min-height: 520px;
         }
 
+        /* Panel Lateral (Origen y Proceso) */
         .historial-side {
-            background: linear-gradient(180deg, rgba(22, 32, 47, 0.94), rgba(13, 22, 35, 0.96)), url("/images/dashboard/coffee-farm-client-hd.jpg");
+            background: linear-gradient(165deg, #1b392b 0%, #294b2a 60%, #172a18 100%);
+            padding: 32px 24px;
+            color: #ffffff;
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .historial-side::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("/images/visual/trazabilidad.jpg");
             background-size: cover;
             background-position: center;
-            padding: 32px;
-            color: #fff8df;
-            display: flex;
-            align-items: center;
+            opacity: 0.08;
+            pointer-events: none;
         }
 
         .historial-side-box {
+            position: relative;
+            z-index: 2;
             width: 100%;
-            background: rgba(255, 253, 248, 0.11);
-            border: 1px solid rgba(255, 243, 196, 0.22);
-            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 20px;
             padding: 24px;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
 
         .historial-side-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff3c4;
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: rgba(185, 120, 34, 0.22);
+            color: #fce8bd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            margin-bottom: 18px;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            border: 1px solid rgba(252, 232, 189, 0.25);
         }
 
         .historial-side-box h3 {
-            color: #fff3c4;
-            font-size: 1.45rem;
+            color: #ffffff;
+            font-size: 1.4rem;
             font-weight: 950;
             margin: 0;
         }
 
         .historial-side-line {
-            width: 70px;
-            height: 4px;
+            width: 54px;
+            height: 3px;
             border-radius: 999px;
-            background: #f3d27a;
-            margin: 14px 0 18px;
+            background: #b97822;
+            margin: 12px 0 16px;
         }
 
         .historial-side-box p {
-            color: #fff8df;
-            opacity: 0.95;
-            font-weight: 650;
-            line-height: 1.55;
-            margin-bottom: 22px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
         }
 
         .historial-side-list {
             display: grid;
-            gap: 14px;
+            gap: 10px;
         }
 
         .historial-side-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #fff8df;
-            font-weight: 800;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #f8f6f0;
+            font-weight: 750;
+            font-size: 0.9rem;
         }
 
-            .historial-side-item i {
-                color: #f3d27a;
-                width: 18px;
-            }
+        .historial-side-item i {
+            color: #e0b468;
+            width: 18px;
+            text-align: center;
+            font-size: 1rem;
+        }
 
+        /* Panel de Línea de Tiempo */
         .historial-timeline-panel {
             padding: 32px;
+            background: #faf9f5;
         }
 
         .timeline-empty {
-            background: #fff8df;
-            border: 1px dashed #d8b36a;
-            border-radius: 22px;
-            padding: 28px;
+            background: #ffffff;
+            border: 1px dashed rgba(41, 75, 42, 0.25);
+            border-radius: 18px;
+            padding: 36px 24px;
             text-align: center;
-            color: #6f5b4a;
-            font-weight: 800;
+            color: #677066;
+            font-weight: 750;
         }
 
         .timeline {
             position: relative;
             display: grid;
             gap: 22px;
-            padding-left: 34px;
+            padding-left: 36px;
         }
 
-            .timeline::before {
-                content: "";
-                position: absolute;
-                top: 8px;
-                bottom: 8px;
-                left: 10px;
-                width: 4px;
-                border-radius: 999px;
-                background: linear-gradient(180deg, #d8b36a, #7a5230);
-            }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            left: 11px;
+            width: 3px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #4f8738 0%, #b97822 50%, #294b2a 100%);
+        }
 
         .timeline-item {
             position: relative;
-            background: #fff8df;
-            border: 1px solid #ead8a2;
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: 0 14px 32px rgba(58, 33, 20, 0.07);
+            background: #ffffff;
+            border: 1px solid rgba(41, 75, 42, 0.12);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 6px 20px rgba(25, 42, 24, 0.04);
+            transition: all 0.22s ease;
+        }
+
+        .timeline-item:hover {
+            box-shadow: 0 10px 28px rgba(25, 42, 24, 0.08);
+            border-color: rgba(41, 75, 42, 0.24);
         }
 
         .timeline-point {
             position: absolute;
-            left: -34px;
+            left: -37px;
             top: 22px;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: #f3d27a;
-            border: 5px solid #fffdf8;
-            box-shadow: 0 0 0 2px #d8b36a;
+            background: #4f8738;
+            border: 4px solid #ffffff;
+            box-shadow: 0 0 0 2px rgba(79, 135, 56, 0.35), 0 3px 8px rgba(0, 0, 0, 0.1);
         }
 
         .timeline-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
-            .timeline-top h3 {
-                margin: 0;
-                color: #2b160d;
-                font-size: 1.25rem;
-                font-weight: 950;
-            }
+        .timeline-top h3 {
+            margin: 0;
+            color: #263126;
+            font-size: 1.25rem;
+            font-weight: 950;
+        }
 
         .timeline-date {
-            color: #6f5b4a;
-            font-weight: 800;
-            white-space: nowrap;
-            font-size: 0.92rem;
+            color: #677066;
+            font-weight: 750;
+            font-size: 0.85rem;
+            background: #f0ebe1;
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(41, 75, 42, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .timeline-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 14px;
         }
 
         .timeline-info {
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 16px;
-            padding: 13px;
+            background: #faf9f5;
+            border: 1px solid rgba(41, 75, 42, 0.08);
+            border-radius: 14px;
+            padding: 12px 14px;
+            transition: background 0.15s ease;
+        }
+
+        .timeline-info:hover {
+            background: #f4efe2;
         }
 
         .timeline-label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #7a5230;
-            font-size: 0.76rem;
-            font-weight: 950;
+            gap: 6px;
+            color: #4f8738;
+            font-size: 0.72rem;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
         }
 
         .timeline-value {
-            color: #2b160d;
+            color: #263126;
             font-weight: 800;
-            line-height: 1.4;
+            font-size: 0.93rem;
+            line-height: 1.35;
         }
 
         .timeline-observacion {
-            margin-top: 12px;
-            background: #fffdf8;
-            border: 1px solid #ead8a2;
-            border-radius: 16px;
-            padding: 13px;
-            color: #2b160d;
-            font-weight: 750;
+            margin-top: 10px;
+            background: #faf9f5;
+            border: 1px solid rgba(41, 75, 42, 0.08);
+            border-radius: 14px;
+            padding: 12px 14px;
+            color: #263126;
+            font-weight: 700;
+            font-size: 0.9rem;
             line-height: 1.45;
         }
 
+        /* Badges de Etapas */
         .trazabilidad-etapa {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 6px;
             border-radius: 999px;
-            padding: 8px 14px;
-            font-size: 0.85rem;
-            font-weight: 950;
+            padding: 5px 13px;
+            font-size: 0.82rem;
+            font-weight: 900;
             width: fit-content;
         }
 
         .trazabilidad-etapa-recepcion {
-            background: #dff6fd;
-            color: #0369a1;
-        }
-
-        .trazabilidad-etapa-produccion {
-            background: #fff4d3;
-            color: #8a6500;
+            background: rgba(45, 106, 79, 0.12);
+            color: #2d6a4f;
+            border: 1px solid rgba(45, 106, 79, 0.22);
         }
 
         .trazabilidad-etapa-secado {
-            background: #e9e0ff;
-            color: #5636a3;
+            background: rgba(185, 120, 34, 0.12);
+            color: #b97822;
+            border: 1px solid rgba(185, 120, 34, 0.22);
         }
 
         .trazabilidad-etapa-tostado {
-            background: #f7dfc7;
-            color: #7a3e12;
+            background: rgba(107, 66, 38, 0.12);
+            color: #6b4226;
+            border: 1px solid rgba(107, 66, 38, 0.22);
         }
 
         .trazabilidad-etapa-molido {
-            background: #fef3c7;
-            color: #92400e;
+            background: rgba(157, 112, 70, 0.12);
+            color: #9d7046;
+            border: 1px solid rgba(157, 112, 70, 0.22);
         }
 
         .trazabilidad-etapa-empaque {
-            background: #dff5e3;
-            color: #1e7d32;
+            background: rgba(41, 75, 42, 0.12);
+            color: #294b2a;
+            border: 1px solid rgba(41, 75, 42, 0.22);
         }
 
         .trazabilidad-etapa-neutral {
-            background: #e9ecef;
-            color: #495057;
+            background: rgba(103, 112, 102, 0.12);
+            color: #677066;
+            border: 1px solid rgba(103, 112, 102, 0.22);
         }
 
+        /* Acciones de Timeline */
         .timeline-actions {
             margin-top: 16px;
             display: flex;
             justify-content: flex-end;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
-            .timeline-actions .btn {
-                border-radius: 10px;
-                font-weight: 850;
-                padding: 8px 11px;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-            }
+        .btn-timeline-detail {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #294b2a;
+            color: #ffffff !important;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 850;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(41, 75, 42, 0.18);
+        }
+
+        .btn-timeline-detail:hover {
+            background: #1b392b;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(41, 75, 42, 0.28);
+        }
+
+        .badge-timeline-auto {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(79, 135, 56, 0.1);
+            color: #4f8738;
+            border: 1px solid rgba(79, 135, 56, 0.22);
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-weight: 850;
+            font-size: 0.83rem;
+        }
 
         @@media (max-width: 1200px) {
             .historial-summary-grid {
@@ -478,16 +600,18 @@
             }
 
             .historial-side {
-                min-height: 300px;
+                min-height: auto;
             }
         }
 
         @@media (max-width: 768px) {
             .historial-header {
                 flex-direction: column;
+                align-items: flex-start;
             }
 
             .historial-actions-top {
+                width: 100%;
                 justify-content: flex-start;
             }
 
@@ -495,25 +619,13 @@
                 grid-template-columns: 1fr;
             }
 
-            .historial-main-header {
+            .timeline-top {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .timeline-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .timeline-top {
-                flex-direction: column;
-            }
-
-            .timeline-date {
-                white-space: normal;
-            }
-
             .historial-title h1 {
-                font-size: 2rem;
+                font-size: 1.7rem;
             }
         }
     </style>
@@ -533,23 +645,23 @@
             <div class="historial-line"></div>
 
             <p>
-                Línea de tiempo del seguimiento registrado para el lote seleccionado.
+                Línea de tiempo automática generada a partir de las producciones completadas del lote.
             </p>
         </div>
 
         <div class="historial-actions-top">
             <a asp-action="Index"
-                   class="btn-historial btn-historial-volver">
+               class="btn-historial btn-historial-volver">
                 <i class="fa-solid fa-arrow-left"></i>
                 Volver
             </a>
 
-            @if (User.IsInRole("Administrador"))
+            @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
             {
-                <a asp-action="Create"
-                       class="btn-historial btn-historial-nuevo">
-                    <i class="fa-solid fa-plus"></i>
-                    Nuevo registro
+                <a asp-controller="Producciones" asp-action="Index"
+                   class="btn-historial btn-historial-nuevo">
+                    <i class="fa-solid fa-industry"></i>
+                    Gestionar producción
                 </a>
             }
         </div>
@@ -566,7 +678,7 @@
             <div class="historial-summary-value">@codigoLote</div>
         </div>
 
-        <div class="historial-summary-card">
+        <div class="historial-summary-card accent-gold">
             <div class="historial-summary-icon">
                 <i class="fa-solid fa-user-tie"></i>
             </div>
@@ -582,7 +694,7 @@
             <div class="historial-summary-value">@totalEtapas</div>
         </div>
 
-        <div class="historial-summary-card">
+        <div class="historial-summary-card accent-gold">
             <div class="historial-summary-icon">
                 <i class="fa-solid fa-route"></i>
             </div>
@@ -597,10 +709,10 @@
         <div class="historial-main-header">
             <div>
                 <h2>@codigoLote</h2>
-                <span>Microbeneficio San Gabriel</span>
+                <span class="subhead">Microbeneficio San Gabriel</span>
             </div>
 
-            <span>
+            <span class="historial-badge-complete">
                 <i class="fa-solid fa-route"></i>
                 Trazabilidad completa
             </span>
@@ -655,7 +767,7 @@
                 @if (!registros.Any())
                 {
                     <div class="timeline-empty">
-                        <i class="fa-solid fa-circle-info"></i>
+                        <i class="fa-solid fa-circle-info me-2"></i>
                         No hay registros de trazabilidad para este lote.
                     </div>
                 }
@@ -667,8 +779,7 @@
                         {
                             string etapaClase = item.Etapa switch
                             {
-                                "Recepción" => "trazabilidad-etapa trazabilidad-etapa-recepcion",
-                                "Producción" => "trazabilidad-etapa trazabilidad-etapa-produccion",
+                                "Lavado" => "trazabilidad-etapa trazabilidad-etapa-recepcion",
                                 "Secado" => "trazabilidad-etapa trazabilidad-etapa-secado",
                                 "Tostado" => "trazabilidad-etapa trazabilidad-etapa-tostado",
                                 "Molido" => "trazabilidad-etapa trazabilidad-etapa-molido",
@@ -769,21 +880,16 @@
                                 <div class="timeline-actions">
 
                                     <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-info btn-sm text-white">
+                                       asp-route-id="@item.Id"
+                                       class="btn-timeline-detail">
                                         <i class="fa-solid fa-eye"></i>
                                         Detalles
                                     </a>
 
-                                    @if (User.IsInRole("Administrador"))
-                                    {
-                                        <a asp-action="Edit"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-warning btn-sm">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                            Editar
-                                        </a>
-                                    }
+                                    <span class="badge-timeline-auto">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Automático
+                                    </span>
 
                                 </div>
 

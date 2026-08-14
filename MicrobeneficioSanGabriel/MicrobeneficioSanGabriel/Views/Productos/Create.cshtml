@@ -1,10 +1,11 @@
 @model MicrobeneficioSanGabriel.Models.Producto
+@using MicrobeneficioSanGabriel.Constants
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
 <div class="VistaCreaR-page">
     <div class="VistaCreaR-top">
@@ -47,7 +48,13 @@
                                 <label asp-for="Categoria" class="form-label"></label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-layer-group"></i>
-                                    <input asp-for="Categoria" class="form-control" placeholder="Escriba la categoría del café"/>
+                                    <select asp-for="Categoria" class="form-select">
+                                        <option value="">Seleccione una categoría</option>
+                                        @foreach (var categoria in CategoriasProducto.Todas)
+                                        {
+                                            <option value="@categoria">@categoria</option>
+                                        }
+                                    </select>
                                 </div>
                                 <span asp-validation-for="Categoria" class="text-danger"></span>
                             </div>
@@ -142,16 +149,12 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label asp-for="FechaRegistro" class="form-label"></label>
+                                <label class="form-label">Fecha de registro</label>
                                 <div class="input-modern">
                                     <i class="fa-solid fa-calendar"></i>
-                                    <input asp-for="FechaRegistro"
-                                           type="datetime-local"
-                                           class="form-control"
-                                           min="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-ddT00:00")"
-                                           max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")" />
+                                    <input type="text" class="form-control" value="@DateTime.UtcNow.AddHours(-6).ToString("dd/MM/yyyy HH:mm")" readonly />
                                 </div>
-                                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+                                <small class="text-muted">Se asigna automáticamente con la hora de Costa Rica.</small>
                             </div>
                         </div>
                     </div>

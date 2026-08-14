@@ -1,4 +1,4 @@
-﻿using MicrobeneficioSanGabriel.Data;
+using MicrobeneficioSanGabriel.Data;
 using MicrobeneficioSanGabriel.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +15,7 @@ namespace MicrobeneficioSanGabriel.Services
 
         public async Task<List<AlertaInventarioIAViewModel>> GenerarAlertasAsync()
         {
-            var fechaHoy = DateTime.Now;
+            var fechaHoy = DateTime.UtcNow.AddHours(-6);
             var fecha30Dias = fechaHoy.AddDays(-30);
             var fecha45Dias = fechaHoy.AddDays(-45);
 

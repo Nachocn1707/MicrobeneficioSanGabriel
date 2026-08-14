@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using MicrobeneficioSanGabriel.Infrastructure;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,7 +18,7 @@ namespace MicrobeneficioSanGabriel.Models
 
         [Required]
         [Display(Name = "Fecha de factura")]
-        public DateTime FechaFactura { get; set; } = DateTime.Now;
+        public DateTime FechaFactura { get; set; } = DateTime.UtcNow.AddHours(-6);
 
         [Required]
         [Display(Name = "Subtotal")]

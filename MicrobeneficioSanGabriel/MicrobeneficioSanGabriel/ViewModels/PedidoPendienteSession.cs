@@ -13,6 +13,6 @@ namespace MicrobeneficioSanGabriel.ViewModels
         public int ProductoId { get; set; }
         public decimal Cantidad { get; set; }
         public string? Observacion { get; set; }
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow.AddHours(-6);
     }
 }

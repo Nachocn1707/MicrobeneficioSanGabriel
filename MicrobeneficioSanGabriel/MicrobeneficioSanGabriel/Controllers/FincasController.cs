@@ -54,11 +54,12 @@ namespace MicrobeneficioSanGabriel.Controllers
             Finca finca)
         {
             Normalizar(finca);
+            await ValidarProductorAsync(finca);
             await ValidarDuplicadoAsync(finca);
 
             if (ModelState.IsValid)
             {
-                finca.FechaRegistro = DateTime.Now;
+                finca.FechaRegistro = DateTime.UtcNow.AddHours(-6);
                 _context.Fincas.Add(finca);
                 await _context.SaveChangesAsync();
                 await AuditoriaHelper.RegistrarAsync(
@@ -99,6 +100,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (original == null) return NotFound();
 
             Normalizar(finca);
+            await ValidarProductorAsync(finca);
             await ValidarDuplicadoAsync(finca, id);
 
             if (ModelState.IsValid)
@@ -162,7 +164,7 @@ namespace MicrobeneficioSanGabriel.Controllers
         private void CargarProductores(int? seleccionado = null)
         {
             var productores = _context.Productores
-                .Where(p => p.Activo)
+                .Where(p => p.Activo || (seleccionado.HasValue && p.Id == seleccionado.Value))
                 .OrderBy(p => p.Nombre)
                 .Select(p => new
                 {
@@ -171,6 +173,25 @@ namespace MicrobeneficioSanGabriel.Controllers
                 });
 
             ViewBag.ProductorId = new SelectList(productores, "Id", "Texto", seleccionado);
+        }
+
+
+        private async Task ValidarProductorAsync(Finca finca)
+        {
+            if (!finca.ProductorId.HasValue || finca.ProductorId.Value <= 0)
+            {
+                return;
+            }
+
+            var existe = await _context.Productores
+                .AsNoTracking()
+                .AnyAsync(p => p.Id == finca.ProductorId.Value);
+
+            if (!existe)
+            {
+                ModelState.AddModelError(nameof(Finca.ProductorId),
+                    "El productor seleccionado ya no existe. Seleccione un productor válido.");
+            }
         }
 
         private async Task ValidarDuplicadoAsync(Finca finca, int? excluirId = null)

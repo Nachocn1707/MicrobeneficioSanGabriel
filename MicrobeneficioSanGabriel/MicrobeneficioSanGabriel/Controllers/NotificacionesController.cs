@@ -39,7 +39,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 {
                     UsuarioId = usuarioId,
                     Clave = clave,
-                    FechaDescartada = DateTime.Now
+                    FechaDescartada = DateTime.UtcNow.AddHours(-6)
                 });
                 try
                 {

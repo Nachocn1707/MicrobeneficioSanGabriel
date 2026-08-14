@@ -48,7 +48,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             return View(new Lote
             {
-                FechaRecepcion = DateTime.Now,
+                FechaRecepcion = DateTime.UtcNow.AddHours(-6),
                 Estado = "Recibido"
             });
         }
@@ -329,7 +329,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         ProductoNombre = produccion.ProductoNombreMostrar,
                         TipoMovimiento = "Salida",
                         Cantidad = produccion.CantidadResultanteKg,
-                        FechaMovimiento = DateTime.Now,
+                        FechaMovimiento = DateTime.UtcNow.AddHours(-6),
                         Observacion = $"Reversión automática al eliminar el lote {lote.CodigoLote}; producción #{produccion.Id}",
                         OrigenTipo = OrigenMovimiento.ReversionProduccion,
                         OrigenId = produccion.Id,

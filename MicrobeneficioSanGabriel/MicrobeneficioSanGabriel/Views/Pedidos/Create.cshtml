@@ -15,7 +15,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
     <link rel="stylesheet" href="~/css/pago-modal.css" asp-append-version="true" />
 }
 
@@ -42,8 +42,11 @@
 
                 @if (User.IsInRole("Cliente"))
                 {
+                    <input type="hidden" asp-for="ClienteId" />
+                    <input type="hidden" asp-for="ClienteNombre" />
+                    <input type="hidden" asp-for="ClienteTelefono" />
                     <input type="hidden" asp-for="Estado" value="Pendiente" />
-                    <input type="hidden" asp-for="FechaPedido" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    <input type="hidden" asp-for="FechaPedido" value="@DateTime.UtcNow.AddHours(-6).ToString("yyyy-MM-ddTHH:mm")" />
 
                     <div class="pedido-alert">
                         <i class="fa-solid fa-circle-info"></i>
@@ -60,32 +63,52 @@
                     </h5>
 
                     <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="ClienteNombre" class="form-label">Cliente</label>
-                                <div class="input-modern">
-                                    <i class="fa-regular fa-user"></i>
-                                    <input asp-for="ClienteNombre"
-                                           class="form-control"
-                                           placeholder="Digite el nombre completo del cliente" />
+                        @if (User.IsInRole("Cliente"))
+                        {
+                            <div class="col-12">
+                                <div class="pedido-client-summary">
+                                    <div>
+                                        <span><i class="fa-regular fa-user"></i> Pedido para</span>
+                                        <strong>@Model.ClienteNombre</strong>
+                                    </div>
+                                    <div>
+                                        <span><i class="fa-solid fa-phone"></i> Teléfono registrado</span>
+                                        <strong>@Model.ClienteTelefono</strong>
+                                    </div>
+                                    <div>
+                                        <span><i class="fa-regular fa-envelope"></i> Correo de la cuenta</span>
+                                        <strong>@Model.ClienteCorreo</strong>
+                                    </div>
                                 </div>
-                                <span asp-validation-for="ClienteNombre" class="text-danger"></span>
+                                <small class="text-muted d-block mt-2">Tus datos se toman automáticamente de la cuenta con la que iniciaste sesión.</small>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ClienteNombre" class="form-label">Cliente</label>
+                                    <div class="input-modern">
+                                        <i class="fa-regular fa-user"></i>
+                                        <input asp-for="ClienteNombre" class="form-control" placeholder="Digite el nombre completo del cliente" />
+                                    </div>
+                                    <span asp-validation-for="ClienteNombre" class="text-danger"></span>
+                                </div>
+                            </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="ClienteTelefono" class="form-label">Teléfono</label>
-                                <div class="input-modern">
-                                    <i class="fa-solid fa-phone"></i>
-                                    <input asp-for="ClienteTelefono"
-                                           class="form-control" type="tel" inputmode="numeric"
-                                           maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
-                                           oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ClienteTelefono" class="form-label">Teléfono</label>
+                                    <div class="input-modern">
+                                        <i class="fa-solid fa-phone"></i>
+                                        <input asp-for="ClienteTelefono" class="form-control" type="tel" inputmode="numeric"
+                                               maxlength="8" pattern="[0-9]{8}" placeholder="88888888"
+                                               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)" />
+                                    </div>
+                                    <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
                                 </div>
-                                <span asp-validation-for="ClienteTelefono" class="text-danger"></span>
                             </div>
-                        </div>
+                        }
 
                         <div class="col-md-6">
                             <div class="form-group">
@@ -133,10 +156,10 @@
                                     <div class="input-modern">
                                         <i class="fa-regular fa-calendar-days"></i>
                                         <input asp-for="FechaPedido" type="datetime-local" class="form-control"
-                                               min="@DateTime.Today.ToString("yyyy-MM-ddTHH:mm")"
+                                               min="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddTHH:mm")"
                                                data-no-past-date="true"
-                                               data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
-                                               data-original-date="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                               data-today="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")"
+                                               data-original-date="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")"
                                                data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                     </div>
                                     <span asp-validation-for="FechaPedido" class="text-danger"></span>

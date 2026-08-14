@@ -244,7 +244,7 @@
             <a href="#proceso">Proceso</a>
             <a asp-area="Identity" asp-page="/Account/Login">Ingresar</a>
         </div>
-        <p>© @DateTime.Now.Year Microbeneficio San Gabriel. Café con origen, control y trazabilidad.</p>
+        <p>© @DateTime.UtcNow.AddHours(-6).Year Microbeneficio San Gabriel. Café con origen, control y trazabilidad.</p>
     </footer>
 </div>
 

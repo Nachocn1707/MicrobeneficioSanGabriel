@@ -52,7 +52,7 @@
 
     var donutStock = CrearDonutStock();
 
-    var desde = DateTime.Today.AddDays(-29);
+    var desde = DateTime.UtcNow.AddHours(-6).Date.AddDays(-29);
     var porDia = movimientos
         .Where(m => m.FechaMovimiento.Date >= desde)
         .GroupBy(m => m.FechaMovimiento.Date)
@@ -89,7 +89,7 @@
         </span>
         <a asp-action="Create" class="sg-btn green">
             <i class="fa-solid fa-plus"></i>
-            Nuevo movimiento
+            Ajuste manual
         </a>
         <label class="sg-search">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -97,6 +97,11 @@
         </label>
     </div>
 </section>
+
+<div class="alert alert-success border-0 shadow-sm mb-4">
+    <i class="fa-solid fa-circle-info me-2"></i>
+    Las salidas y reversiones originadas por pedidos o producción se generan automáticamente y quedan protegidas contra edición o eliminación manual.
+</div>
 
 <section class="sg-kpi-grid">
     <article class="sg-card sg-kpi">
@@ -163,23 +168,35 @@
                     var salida = m.TipoMovimiento == "Salida" ? m.Cantidad.ToString("N0") + " kg" : "–";
 
                     <tr>
-                        <td>@m.FechaMovimiento.ToString("dd MMM yyyy")</td>
+                        <td>@m.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")</td>
                         <td><span class="sg-badge @(m.TipoMovimiento == "Entrada" ? "" : "gold")">@m.TipoMovimiento</span></td>
                         <td>@m.ProductoNombreMostrar</td>
-                        <td>@(m.Observacion ?? $"MOV-{m.Id:0000}") @if (m.EsAutomatico) { <span class="sg-badge ms-1">Automático</span> }</td>
+                        <td>
+                            @if (m.EsAutomatico && !string.IsNullOrWhiteSpace(m.OrigenTipo) && m.OrigenId.HasValue)
+                            {
+                                <strong>@m.OrigenTipo #@m.OrigenId</strong>
+                                <span class="sg-badge ms-1">Automático</span><br />
+                                <small class="text-muted">@m.Observacion</small>
+                            }
+                            else
+                            {
+                                <span>@(m.Observacion ?? $"MOV-{m.Id:0000}")</span>
+                                <span class="sg-badge gold ms-1">Manual</span>
+                            }
+                        </td>
                         <td>@entrada</td>
                         <td>@salida</td>
                         <td>@(m.Producto != null ? $"{m.Producto.Stock:N2} kg" : "Producto eliminado")</td>
                         <td>
                             <span class="sg-action-icons">
                                 <a asp-action="Details" asp-route-id="@m.Id"><i class="fa-solid fa-eye"></i></a>
-                                @if (User.IsInRole("Administrador"))
+                                @if (User.IsInRole("Administrador") && !m.EsAutomatico)
                                 {
                                     @if (m.ProductoId.HasValue)
                                     {
-                                        <a asp-action="Edit" asp-route-id="@m.Id" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                                        <a asp-action="Edit" asp-route-id="@m.Id" title="Editar ajuste manual"><i class="fa-solid fa-pen"></i></a>
                                     }
-                                    <a asp-action="Delete" asp-route-id="@m.Id" title="Eliminar"><i class="fa-solid fa-trash"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@m.Id" title="Eliminar ajuste manual"><i class="fa-solid fa-trash"></i></a>
                                 }
                             </span>
                         </td>
@@ -204,7 +221,7 @@
     <article class="sg-card sg-panel">
         <div class="sg-panel-head">
             <h3>Stock por producto</h3>
-            <a class="text-success fw-bold">Ver detalles</a>
+            <a asp-controller="Productos" asp-action="Index" class="text-success fw-bold">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
         </div>
 
         <div class="sg-donut-wrap">

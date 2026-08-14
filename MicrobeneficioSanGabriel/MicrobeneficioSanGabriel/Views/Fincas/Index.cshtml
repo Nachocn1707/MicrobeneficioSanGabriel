@@ -8,7 +8,7 @@
     var total = fincas.Count;
     var activas = fincas.Count(f => f.Activa);
     var inactivas = fincas.Count(f => !f.Activa);
-    var productores = fincas.Select(f => f.ProductorId).Distinct().Count();
+    var productores = fincas.Where(f => f.Productor != null).Select(f => f.ProductorId).Distinct().Count();
 }
 
 <section class="sg-page-head">
@@ -88,7 +88,16 @@
                 {
                     <tr>
                         <td>@item.Nombre</td>
-                        <td>@item.Productor?.Nombre</td>
+                        <td>
+                            @if (item.Productor != null)
+                            {
+                                <span>@item.Productor.Nombre</span>
+                            }
+                            else
+                            {
+                                <span class="sg-badge tan"><i class="fa-solid fa-triangle-exclamation me-1"></i>Sin productor asociado</span>
+                            }
+                        </td>
                         <td>@item.Provincia</td>
                         <td>@item.Canton</td>
                         <td>@item.Distrito</td>

@@ -19,8 +19,8 @@
     {
         new { Clase = "green", Hex = "#4F8738", Label = "Completados", Valor = completados },
         new { Clase = "gold", Hex = "#D97800", Label = "En proceso", Valor = enProceso },
-        new { Clase = "tan", Hex = "#9DBB8F", Label = "Pendientes", Valor = pendientesSolo },
-        new { Clase = "brown", Hex = "#5B3A16", Label = "Cancelados", Valor = cancelados }
+        new { Clase = "tan", Hex = "#6F8A6B", Label = "Pendientes", Valor = pendientesSolo },
+        new { Clase = "brown", Hex = "#59271E", Label = "Cancelados", Valor = cancelados }
     };
 
     string FormatoPorcentaje(decimal valor) =>
@@ -345,7 +345,7 @@
 }
 else
 {
-    var inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+    var inicioMes = new DateTime(DateTime.UtcNow.AddHours(-6).Date.Year, DateTime.UtcNow.AddHours(-6).Date.Month, 1);
     var finMes = inicioMes.AddMonths(1);
     var ventasMes = pedidos.Where(p => p.FechaPedido >= inicioMes && p.FechaPedido < finMes && p.EstadoPago == "Pago completado").Sum(p => (p.PrecioUnitarioMostrar) * p.Cantidad);
 

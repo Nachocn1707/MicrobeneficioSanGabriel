@@ -6,24 +6,20 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/VistaCreaR.css" />
+    <link rel="stylesheet" href="~/css/VistaCrear.css" />
 }
 
 <div class="VistaCreaR-page">
-    <div class="VistaCreaR-top">
-        <div class="VistaCreaR-banner-overlay">
-            <div class="VistaCreaR-title">
-                <span class="VistaCreaR-badge">
-                    <i class="fa-solid fa-user-gear"></i>
-                    Gestión de usuarios
-                </span>
-                <h1>Registrar usuario</h1>
-                <p>
-                    Creá nuevas cuentas y asigná roles dentro del sistema.
-                </p>
-            </div>
+    <section class="sg-page-head">
+        <div>
+            <span class="sg-badge mb-2"><i class="fa-solid fa-user-gear me-1"></i> Gestión de usuarios</span>
+            <h1>Registrar usuario</h1>
+            <p>Creá una cuenta, asigná su rol y completá únicamente la información necesaria.</p>
         </div>
-    </div>
+        <div class="sg-actions">
+            <a asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-arrow-left"></i>Volver a usuarios</a>
+        </div>
+    </section>
 
     <div class="VistaCreaR-card">
         <div class="VistaCreaR-form-container">

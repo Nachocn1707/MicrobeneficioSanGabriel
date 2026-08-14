@@ -1005,7 +1005,7 @@
 }
 
 @media (max-width: 1100px) {
-    . {
+    .cafe-portal-header {
         grid-template-columns: auto 1fr auto;
         gap: 15px;
     }

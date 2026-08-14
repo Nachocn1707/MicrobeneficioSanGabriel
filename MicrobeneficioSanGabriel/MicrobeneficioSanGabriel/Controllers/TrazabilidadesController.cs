@@ -26,46 +26,54 @@ namespace MicrobeneficioSanGabriel.Controllers
                 TempData["Info"] = "La trazabilidad interna no está disponible para el perfil cliente. Podés consultar el estado de tus pedidos desde Mis pedidos.";
                 return RedirectToAction("ClienteDashboard", "Home");
             }
-            var trazabilidades = _context.Trazabilidades
+
+            // Autorreparación: si existen producciones completadas creadas antes de
+            // esta versión o algún registro automático faltó, se reconstruye desde
+            // la fuente real antes de presentar la trazabilidad.
+            await TrazabilidadProcesoHelper.ReconciliarAsync(_context, User);
+
+            var trazabilidadesQuery = await _context.Trazabilidades
+                .Where(t => t.EsAutomatico)
                 .Include(t => t.Lote)
                     .ThenInclude(l => l!.Productor)
                 .Include(t => t.Lote)
                     .ThenInclude(l => l!.Finca)
                 .Include(t => t.Produccion)
                     .ThenInclude(p => p!.Producto)
-                .AsQueryable();
+                .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(codigoLote))
             {
-                trazabilidades = trazabilidades
-                    .Where(t => t.Lote != null && t.Lote.CodigoLote.Contains(codigoLote));
+                trazabilidadesQuery = trazabilidadesQuery
+                    .Where(t => t.Lote != null && t.Lote.CodigoLote.Contains(codigoLote, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(etapa))
             {
-                trazabilidades = trazabilidades
-                    .Where(t => t.Etapa == etapa);
+                trazabilidadesQuery = trazabilidadesQuery
+                    .Where(t => string.Equals(t.Etapa, etapa, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
+
+            // Garantiza que en la tabla principal de Trazabilidad solo se muestre 1 fila por lote (su etapa actual).
+            var trazabilidadesUnicasPorLote = trazabilidadesQuery
+                .GroupBy(t => t.LoteId)
+                .Select(g => g
+                    .OrderByDescending(t => Array.IndexOf(TrazabilidadProcesoHelper.EtapasOrdenadas, TrazabilidadProcesoHelper.EtapasOrdenadas.FirstOrDefault(e => string.Equals(e, t.Etapa, StringComparison.OrdinalIgnoreCase)) ?? ""))
+                    .ThenByDescending(t => t.FechaRegistro)
+                    .ThenByDescending(t => t.Id)
+                    .First())
+                .OrderByDescending(t => t.FechaRegistro)
+                .ThenByDescending(t => t.Id)
+                .ToList();
 
             ViewBag.CodigoLote = codigoLote;
             ViewBag.Etapa = etapa;
 
-            ViewBag.Etapas = new SelectList(new List<string>
-            {
-                "Recepción",
-                "Producción",
-                "Secado",
-                "Tostado",
-                "Molido",
-                "Empaque",
-                "Almacenamiento"
-            }, etapa);
+            ViewBag.Etapas = new SelectList(TrazabilidadProcesoHelper.EtapasOrdenadas, etapa);
 
-            var resultado = await trazabilidades
-                .OrderByDescending(t => t.FechaRegistro)
-                .ToListAsync();
-
-            return View(resultado);
+            return View(trazabilidadesUnicasPorLote);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -107,6 +115,8 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            await TrazabilidadProcesoHelper.ReconciliarAsync(_context, User);
+
             var lote = await _context.Lotes
                 .Include(l => l.Productor)
                 .Include(l => l.Finca)
@@ -127,7 +137,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             var trazabilidades = await _context.Trazabilidades
                 .Include(t => t.Produccion)
                     .ThenInclude(p => p!.Producto)
-                .Where(t => t.LoteId == lote.Id)
+                .Where(t => t.LoteId == lote.Id && t.EsAutomatico)
                 .OrderBy(t => t.FechaRegistro)
                 .ToListAsync();
 
@@ -145,138 +155,49 @@ namespace MicrobeneficioSanGabriel.Controllers
         [Authorize(Roles = "Administrador,Operador")]
         public IActionResult Create()
         {
-            CargarListas();
-            return View();
+            TempData["Info"] = "La trazabilidad se genera automáticamente desde las producciones completadas. No es necesario crear etapas manualmente.";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador,Operador")]
-        public async Task<IActionResult> Create([Bind("LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
+        public Task<IActionResult> Create([Bind("LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
         {
-            if (!EtapaValida(trazabilidad.Etapa))
-            {
-                ModelState.AddModelError(nameof(Trazabilidad.Etapa), "Seleccione una etapa válida.");
-            }
-
-            await ValidarRelacionAsync(trazabilidad);
-
-            if (ModelState.IsValid)
-            {
-                trazabilidad.FechaRegistro = trazabilidad.FechaRegistro == default
-                    ? DateTime.Now
-                    : trazabilidad.FechaRegistro;
-                trazabilidad.Responsable = trazabilidad.Responsable?.Trim();
-                trazabilidad.Observacion = trazabilidad.Observacion?.Trim();
-
-                _context.Add(trazabilidad);
-                await _context.SaveChangesAsync();
-                await AuditoriaHelper.RegistrarAsync(
-                    _context, User, "Trazabilidad", "Crear", trazabilidad.Id,
-                    $"Se registró la etapa {trazabilidad.Etapa} para el lote #{trazabilidad.LoteId}.");
-
-                TempData["Success"] = "Registro de trazabilidad creado correctamente.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
-            return View(trazabilidad);
+            TempData["Info"] = "La trazabilidad es automática y se genera al completar cada proceso de producción.";
+            return Task.FromResult<IActionResult>(RedirectToAction(nameof(Index)));
         }
 
         [Authorize(Roles = "Administrador,Operador")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) return NotFound();
+            var trazabilidad = await _context.Trazabilidades.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+            if (trazabilidad == null) return NotFound();
+
+            if (trazabilidad.ProduccionId > 0)
             {
-                return NotFound();
+                TempData["Info"] = "Redirigido al módulo de producción para gestionar la etapa o estado del proceso.";
+                return RedirectToAction("Edit", "Producciones", new { id = trazabilidad.ProduccionId });
             }
 
-            var trazabilidad = await _context.Trazabilidades.FindAsync(id);
-
-            if (trazabilidad == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.SoloEtapa = EsOperadorSoloEtapa();
-            CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
-            return View(trazabilidad);
+            TempData["Info"] = "Los registros históricos manuales se conservan únicamente como referencia.";
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrador,Operador")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
+        public Task<IActionResult> Edit(int id, [Bind("Id,LoteId,ProduccionId,Etapa,FechaRegistro,Responsable,Observacion")] Trazabilidad trazabilidad)
         {
-            if (id != trazabilidad.Id)
+            if (trazabilidad.ProduccionId > 0)
             {
-                return NotFound();
+                TempData["Info"] = "Redirigido al módulo de producción para gestionar la etapa o estado del proceso.";
+                return Task.FromResult<IActionResult>(RedirectToAction("Edit", "Producciones", new { id = trazabilidad.ProduccionId }));
             }
 
-            var trazabilidadActual = await _context.Trazabilidades.FindAsync(id);
-            if (trazabilidadActual == null)
-            {
-                return NotFound();
-            }
-
-            if (EsOperadorSoloEtapa())
-            {
-                if (!EtapaValida(trazabilidad.Etapa))
-                {
-                    ModelState.AddModelError(nameof(Trazabilidad.Etapa), "Seleccione una etapa válida.");
-                    ViewBag.SoloEtapa = true;
-                    CargarListas(trazabilidadActual.LoteId, trazabilidadActual.ProduccionId);
-                    trazabilidadActual.Etapa = trazabilidad.Etapa;
-                    return View(trazabilidadActual);
-                }
-
-                var etapaAnterior = trazabilidadActual.Etapa;
-                trazabilidadActual.Etapa = trazabilidad.Etapa;
-
-                await _context.SaveChangesAsync();
-                await AuditoriaHelper.RegistrarAsync(
-                    _context, User, "Trazabilidad", "Cambiar etapa", trazabilidadActual.Id,
-                    $"El operador cambió la etapa del registro de trazabilidad #{trazabilidadActual.Id} de {etapaAnterior} a {trazabilidadActual.Etapa}.");
-
-                TempData["Success"] = "Etapa de trazabilidad actualizada correctamente.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            await ValidarRelacionAsync(trazabilidad);
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    trazabilidadActual.LoteId = trazabilidad.LoteId;
-                    trazabilidadActual.ProduccionId = trazabilidad.ProduccionId;
-                    trazabilidadActual.Etapa = trazabilidad.Etapa;
-                    trazabilidadActual.FechaRegistro = trazabilidad.FechaRegistro;
-                    trazabilidadActual.Responsable = trazabilidad.Responsable?.Trim();
-                    trazabilidadActual.Observacion = trazabilidad.Observacion?.Trim();
-
-                    await _context.SaveChangesAsync();
-                    await AuditoriaHelper.RegistrarAsync(
-                        _context, User, "Trazabilidad", "Editar", trazabilidadActual.Id,
-                        $"Se actualizó el registro de trazabilidad #{trazabilidadActual.Id}.");
-                    TempData["Success"] = "Registro de trazabilidad actualizado correctamente.";
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TrazabilidadExists(trazabilidad.Id))
-                    {
-                        return NotFound();
-                    }
-
-                    throw;
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            ViewBag.SoloEtapa = false;
-            CargarListas(trazabilidad.LoteId, trazabilidad.ProduccionId);
-            return View(trazabilidad);
+            TempData["Info"] = "La trazabilidad se modifica desde el flujo real de producción.";
+            return Task.FromResult<IActionResult>(RedirectToAction(nameof(Details), new { id }));
         }
 
         [Authorize(Roles = "Administrador")]
@@ -297,6 +218,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return NotFound();
             }
 
+            if (trazabilidad.EsAutomatico)
+            {
+                TempData["Info"] = "Los registros automáticos no se eliminan desde trazabilidad. Se sincronizan con la producción relacionada.";
+                return RedirectToAction(nameof(Details), new { id = trazabilidad.Id });
+            }
+
             return View(trazabilidad);
         }
 
@@ -309,6 +236,12 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (trazabilidad != null)
             {
+                if (trazabilidad.EsAutomatico)
+                {
+                    TempData["Error"] = "No puede eliminar una etapa automática. Corrija la producción relacionada.";
+                    return RedirectToAction(nameof(Details), new { id = trazabilidad.Id });
+                }
+
                 _context.Trazabilidades.Remove(trazabilidad);
                 await _context.SaveChangesAsync();
                 await AuditoriaHelper.RegistrarAsync(
@@ -327,7 +260,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
         private static bool EtapaValida(string? etapa)
         {
-            return etapa is "Recepción" or "Producción" or "Secado" or "Tostado" or "Molido" or "Empaque" or "Almacenamiento";
+            return etapa is "Lavado" or "Secado" or "Tostado" or "Molido" or "Empaque";
         }
 
         private async Task ValidarRelacionAsync(Trazabilidad trazabilidad)
@@ -388,16 +321,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 produccionId
             );
 
-            ViewBag.Etapas = new SelectList(new List<string>
-            {
-                "Recepción",
-                "Producción",
-                "Secado",
-                "Tostado",
-                "Molido",
-                "Empaque",
-                "Almacenamiento"
-            });
+            ViewBag.Etapas = new SelectList(TrazabilidadProcesoHelper.EtapasOrdenadas);
         }
 
         private bool TrazabilidadExists(int id)

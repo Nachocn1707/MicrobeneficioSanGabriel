@@ -36,23 +36,12 @@
     <link rel="stylesheet" href="~/css/Contabilidad.css" asp-append-version="true" />
 }
 
-<div class="sg-visual-hero sg-hero-contabilidad">
-    <div class="sg-visual-hero-content">
-        <span class="sg-visual-badge">
-            <i class="fa-solid fa-coins"></i>
-            Gestión financiera
-        </span>
-        <h1>Contabilidad</h1>
-        <div class="sg-visual-line"></div>
-        <p>Administrá ingresos, egresos, registros financieros y movimientos económicos del microbeneficio.</p>
-    </div>
-</div>
-
 <div class="finanzas-page">
     <div class="sg-page-head">
         <div>
-            <h1>Movimientos económicos</h1>
-            <p>Filtra y consulta el historial completo de ingresos y gastos.</p>
+            <span class="sg-badge mb-2"><i class="fa-solid fa-coins me-1"></i> Gestión financiera</span>
+            <h1>Contabilidad</h1>
+            <p>Resumen financiero y movimientos económicos del microbeneficio.</p>
         </div>
 
         <div class="sg-actions">
@@ -186,9 +175,10 @@
                         <th style="color: #fff !important; text-align: center !important;">Fecha</th>
                         <th style="color: #fff !important; text-align: center !important;">Tipo</th>
                         <th style="color: #fff !important; text-align: center !important;">Categoría</th>
+                        <th style="color: #fff !important; text-align: center !important;">Origen</th>
+                        <th style="color: #fff !important; text-align: center !important;">Cliente / cantidad</th>
                         <th style="color: #fff !important; text-align: center !important;">Descripción</th>
                         <th style="color: #fff !important; text-align: center !important;">Monto</th>
-                        <th style="color: #fff !important; text-align: center !important;">Observación</th>
                         <th style="color: #fff !important; text-align: center !important;">Acciones</th>
                     </tr>
                 </thead>
@@ -200,7 +190,7 @@
 
                         <tr>
                             <td class="text-center">
-                                @item.Fecha.ToString("dd/MM/yyyy")
+                                @item.Fecha.ToString(item.EsAutomatico ? "dd/MM/yyyy HH:mm" : "dd/MM/yyyy")
                             </td>
 
                             <td class="text-center">
@@ -212,6 +202,36 @@
 
                             <td class="text-center fw-bold">
                                 @(string.IsNullOrWhiteSpace(item.Categoria) ? "Sin categoría" : item.Categoria)
+                                @if (item.EsAutomatico)
+                                {
+                                    <span class="sg-badge ms-1">Automático</span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.EsAutomatico && item.OrigenId.HasValue)
+                                {
+                                    <span class="sg-badge gold">@(item.OrigenTipo ?? "Sistema") #@item.OrigenId</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Manual</span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (!string.IsNullOrWhiteSpace(item.Destinatario))
+                                {
+                                    <div class="fw-semibold">@item.Destinatario</div>
+                                }
+                                @if (item.CantidadKg.HasValue)
+                                {
+                                    <small class="text-muted">@item.CantidadKg.Value.ToString("N2") kg · @item.ProductoNombre</small>
+                                }
+                                @if (string.IsNullOrWhiteSpace(item.Destinatario) && !item.CantidadKg.HasValue)
+                                {
+                                    <span class="text-muted">—</span>
+                                }
                             </td>
 
                             <td class="text-center text-muted">
@@ -220,10 +240,6 @@
 
                             <td class="text-center fw-bold @(esIngreso ? "text-success" : "text-danger")">
                                 ₡ @item.Monto.ToString("N0")
-                            </td>
-
-                            <td class="text-center text-muted">
-                                @(string.IsNullOrWhiteSpace(item.Observacion) ? "Sin observación" : item.Observacion)
                             </td>
 
                             <td class="text-center">
@@ -235,7 +251,7 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
 
-                                    @if (User.IsInRole("Administrador"))
+                                    @if (User.IsInRole("Administrador") && !item.EsAutomatico)
                                     {
                                         <a asp-action="Edit"
                                            asp-route-id="@item.Id"

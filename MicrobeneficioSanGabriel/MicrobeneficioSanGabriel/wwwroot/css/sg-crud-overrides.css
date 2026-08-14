@@ -1345,3 +1345,15 @@
   content: none !important;
   display: none !important;
 }
+/* Producción: acción para completar la etapa actual y avanzar automáticamente. */
+.sg-action-icons .sg-inline-action-form .sg-advance-process-btn {
+  background: #EEF5EA !important;
+  color: #2F5A2A !important;
+  border-color: #CFE0C9 !important;
+}
+
+.sg-action-icons .sg-inline-action-form .sg-advance-process-btn:hover {
+  background: #DDEBD7 !important;
+  color: #244620 !important;
+  border-color: #B7D0AE !important;
+}

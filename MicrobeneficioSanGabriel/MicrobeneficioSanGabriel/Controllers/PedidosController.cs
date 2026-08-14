@@ -69,8 +69,22 @@ namespace MicrobeneficioSanGabriel.Controllers
                 Cantidad = 1m,
                 Estado = EstadosPedido.Pendiente,
                 EstadoPago = EstadosPago.Pendiente,
-                FechaPedido = DateTime.Now
+                FechaPedido = DateTime.UtcNow.AddHours(-6)
             };
+
+            if (User.IsInRole("Cliente"))
+            {
+                var usuario = await _userManager.GetUserAsync(User);
+                if (usuario == null)
+                {
+                    return Challenge();
+                }
+
+                pedido.ClienteId = usuario.Id;
+                pedido.ClienteNombre = usuario.NombreCompleto;
+                pedido.ClienteCorreo = usuario.Email?.Trim().ToLowerInvariant();
+                pedido.ClienteTelefono = SoloDigitos(usuario.PhoneNumber);
+            }
 
             CargarProductos(productoId);
 
@@ -109,7 +123,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             pedido.Estado = EstadosPedido.Pendiente;
             pedido.EstadoPago = EstadosPago.Pendiente;
             pedido.MetodoPago = "Sin definir";
-            pedido.FechaPedido = DateTime.Now;
+            pedido.FechaPedido = DateTime.UtcNow.AddHours(-6);
             pedido.InventarioAplicado = false;
 
             if (User.IsInRole("Cliente"))
@@ -124,7 +138,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 pedido.ClienteNombre = usuario.NombreCompleto;
                 pedido.ClienteCorreo = usuario.Email?.Trim().ToLowerInvariant();
 
-                if (string.IsNullOrWhiteSpace(pedido.ClienteTelefono) && !string.IsNullOrWhiteSpace(usuario.PhoneNumber))
+                if (!string.IsNullOrWhiteSpace(usuario.PhoneNumber))
                 {
                     pedido.ClienteTelefono = SoloDigitos(usuario.PhoneNumber);
                 }
@@ -195,7 +209,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 ProductoId = pedido.ProductoId!.Value,
                 Cantidad = pedido.Cantidad,
                 Observacion = pedido.Observacion,
-                FechaCreacion = DateTime.Now
+                FechaCreacion = DateTime.UtcNow.AddHours(-6)
             });
 
             if (esSolicitudAjax)
@@ -213,7 +227,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                     codigoPedido = "Pedido nuevo",
                     producto = producto.Nombre,
                     cantidad = pedido.Cantidad.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture),
-                    fecha = DateTime.Now.ToString("dd MMM yyyy", cultura),
+                    fecha = DateTime.UtcNow.AddHours(-6).ToString("dd MMM yyyy", cultura),
                     subtotalDisplay = $"₡{subtotal.ToString("N0", cultura)}",
                     ivaDisplay = $"₡{iva.ToString("N0", cultura)}",
                     totalDisplay = $"₡{total.ToString("N0", cultura)}",
@@ -236,6 +250,13 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido == null) return NotFound();
             if (User.IsInRole("Cliente") && !await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
+
+            ViewBag.HistorialEstados = await _context.PedidoEstadoHistoriales
+                .AsNoTracking()
+                .Where(h => h.PedidoId == pedido.Id)
+                .OrderBy(h => h.FechaCambio)
+                .ThenBy(h => h.Id)
+                .ToListAsync();
 
             return View(pedido);
         }
@@ -272,7 +293,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             datos.ClienteTelefono = SoloDigitos(datos.ClienteTelefono);
             ViewBag.FechaPedidoOriginal = pedido.FechaPedido;
 
-            if (datos.FechaPedido.Date < DateTime.Today &&
+            if (datos.FechaPedido.Date < DateTime.UtcNow.AddHours(-6).Date &&
                 datos.FechaPedido.Date != pedido.FechaPedido.Date)
             {
                 ModelState.AddModelError(nameof(Pedido.FechaPedido),
@@ -326,6 +347,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 pedido.ClienteTelefono = datos.ClienteTelefono;
                 pedido.FechaPedido = datos.FechaPedido;
                 pedido.Observacion = string.IsNullOrWhiteSpace(datos.Observacion) ? null : datos.Observacion.Trim();
+
+                if (!string.Equals(estadoAnterior, pedido.Estado, StringComparison.OrdinalIgnoreCase))
+                {
+                    await PedidoHistorialHelper.RegistrarAsync(
+                        _context, User, pedido, estadoAnterior, pedido.Estado,
+                        "Estado actualizado desde la edición administrativa.");
+                }
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -471,7 +499,11 @@ namespace MicrobeneficioSanGabriel.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var estadoAnterior = pedido.Estado;
             pedido.Estado = EstadosPedido.Cancelado;
+            await PedidoHistorialHelper.RegistrarAsync(
+                _context, User, pedido, estadoAnterior, pedido.Estado,
+                "El cliente canceló el pedido.");
             await _context.SaveChangesAsync();
             TempData["Success"] = "Pedido cancelado correctamente.";
             return RedirectToAction(nameof(Index));
@@ -588,6 +620,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                     await transaction.RollbackAsync();
                     TempData["Error"] = error;
                     return RedirectToAction(nameof(CambiarEstado), new { id });
+                }
+
+                if (!string.Equals(estadoAnterior, pedido.Estado, StringComparison.OrdinalIgnoreCase))
+                {
+                    await PedidoHistorialHelper.RegistrarAsync(
+                        _context, User, pedido, estadoAnterior, pedido.Estado,
+                        "Cambio de estado operativo del pedido.");
                 }
 
                 await _context.SaveChangesAsync();
@@ -814,7 +853,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                 PrecioUnitario = producto.Precio,
                 Cantidad = pendiente.Cantidad,
                 Observacion = pendiente.Observacion,
-                FechaPedido = DateTime.Now,
+                FechaPedido = DateTime.UtcNow.AddHours(-6),
                 Estado = EstadosPedido.Pendiente,
                 EstadoPago = EstadosPago.PendientePago,
                 MetodoPago = metodoPago,
@@ -822,6 +861,10 @@ namespace MicrobeneficioSanGabriel.Controllers
             };
 
             _context.Pedidos.Add(pedido);
+            await _context.SaveChangesAsync();
+            await PedidoHistorialHelper.RegistrarAsync(
+                _context, User, pedido, null, EstadosPedido.Pendiente,
+                "Pedido registrado en el sistema.");
             await _context.SaveChangesAsync();
             EliminarPedidoPendiente();
 
@@ -880,7 +923,11 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (pedido.Estado == EstadosPedido.Pendiente && !pedido.InventarioAplicado)
             {
+                var estadoAnterior = pedido.Estado;
                 pedido.Estado = EstadosPedido.Cancelado;
+                await PedidoHistorialHelper.RegistrarAsync(
+                    _context, User, pedido, estadoAnterior, pedido.Estado,
+                    "Pedido cancelado desde la pantalla de método de pago.");
                 await _context.SaveChangesAsync();
                 await AuditoriaHelper.RegistrarAsync(_context, User, "Pedidos", "Cancelar",
                     pedido.Id, "El pedido se canceló desde la pantalla de método de pago.", _logger);

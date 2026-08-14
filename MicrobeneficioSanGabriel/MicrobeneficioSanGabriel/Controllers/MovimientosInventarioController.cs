@@ -42,13 +42,14 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(m => m.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            return movimiento == null ? NotFound() : View(movimiento);
+            if (movimiento == null) return NotFound();
+            return View(movimiento);
         }
 
         public IActionResult Create()
         {
             CargarProductos();
-            return View(new MovimientoInventario { FechaMovimiento = DateTime.Now });
+            return View(new MovimientoInventario { FechaMovimiento = DateTime.UtcNow.AddHours(-6) });
         }
 
         [HttpPost]
@@ -88,7 +89,7 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             if (ModelState.IsValid && producto != null)
             {
-                movimiento.FechaMovimiento = DateTime.Now;
+                movimiento.FechaMovimiento = DateTime.UtcNow.AddHours(-6);
                 movimiento.ProductoNombre = producto.Nombre;
                 movimiento.Observacion = movimiento.Observacion?.Trim();
                 movimiento.EsAutomatico = false;
@@ -118,6 +119,13 @@ namespace MicrobeneficioSanGabriel.Controllers
 
             var movimiento = await _context.MovimientosInventario.FindAsync(id);
             if (movimiento == null) return NotFound();
+
+            if (movimiento.EsAutomatico)
+            {
+                TempData["Info"] = "Los movimientos automáticos se administran desde el proceso que los originó.";
+                return RedirectToAction(nameof(Details), new { id = movimiento.Id });
+            }
+
             CargarProductos(movimiento.ProductoId);
             return View(movimiento);
         }
@@ -137,6 +145,13 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (original == null) return NotFound();
+
+            if (original.EsAutomatico)
+            {
+                TempData["Error"] = "No se puede editar un movimiento automático. Modifique el pedido o la producción que lo generó.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             if (!EsTipoValido(movimiento.TipoMovimiento))
             {
                 ModelState.AddModelError(nameof(MovimientoInventario.TipoMovimiento),
@@ -230,7 +245,14 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .Include(m => m.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            return movimiento == null ? NotFound() : View(movimiento);
+            if (movimiento == null) return NotFound();
+            if (movimiento.EsAutomatico)
+            {
+                TempData["Info"] = "Los movimientos automáticos se revierten desde el proceso que los originó, no desde inventario.";
+                return RedirectToAction(nameof(Details), new { id = movimiento.Id });
+            }
+
+            return View(movimiento);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -243,6 +265,12 @@ namespace MicrobeneficioSanGabriel.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movimiento == null) return NotFound();
+
+            if (movimiento.EsAutomatico)
+            {
+                TempData["Error"] = "No se puede eliminar un movimiento automático. Cambie el estado del pedido o de la producción para que el sistema lo revierta correctamente.";
+                return RedirectToAction(nameof(Index));
+            }
 
             // Si el producto fue eliminado, el movimiento puede borrarse manualmente
             // sin intentar modificar un inventario que ya no existe.

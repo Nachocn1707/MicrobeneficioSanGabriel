@@ -1,16 +1,17 @@
-﻿@model MicrobeneficioSanGabriel.Models.RegistroFinanciero
+@using MicrobeneficioSanGabriel.Constants
+@model MicrobeneficioSanGabriel.Models.RegistroFinanciero
 
 @{
     ViewData["Title"] = "Editar registro financiero";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var categorias = new[] { "Venta", "Mantenimiento", "Transporte", "Nómina" };
+    var categorias = CategoriasFinancieras.Manuales;
     var categoriaActualEsEstandar = Array.Exists(categorias, c =>
         string.Equals(c, Model.Categoria, StringComparison.OrdinalIgnoreCase));
     var fechaOriginalRegistro = ViewBag.FechaOriginal != null
         ? Convert.ToDateTime(ViewBag.FechaOriginal)
         : Model.Fecha;
-    var fechaMinimaRegistro = fechaOriginalRegistro.Date >= DateTime.Today
-        ? DateTime.Today.ToString("yyyy-MM-dd")
+    var fechaMinimaRegistro = fechaOriginalRegistro.Date >= DateTime.UtcNow.AddHours(-6).Date
+        ? DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")
         : string.Empty;
 }
 
@@ -35,6 +36,11 @@
         <div class="EstiloEditaR-form-container">
             <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+                <div class="Mensaje-alert">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Las <strong>ventas</strong> se generan automáticamente al completar un pedido. Aquí solo se registran otros ingresos y gastos.</span>
+                </div>
                 <input type="hidden" asp-for="Id" />
 
                 <div class="Estilo-alert">
@@ -74,10 +80,10 @@
                                 </label>
                                 <select asp-for="Categoria" class="form-select">
                                     <option value="">Seleccione la categoría</option>
-                                    <option value="Venta">Venta</option>
-                                    <option value="Mantenimiento">Mantenimiento</option>
-                                    <option value="Transporte">Transporte</option>
-                                    <option value="Nómina">Nómina</option>
+                                    @foreach (var categoria in CategoriasFinancieras.Manuales)
+                                    {
+                                        <option value="@categoria">@categoria</option>
+                                    }
                                     @if (!string.IsNullOrWhiteSpace(Model.Categoria) && !categoriaActualEsEstandar)
                                     {
                                         <option value="@Model.Categoria">@Model.Categoria</option>
@@ -107,7 +113,7 @@
                                 <input asp-for="Fecha" type="date" class="form-control"
                                        min="@fechaMinimaRegistro"
                                        data-no-past-date="true"
-                                       data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                       data-today="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")"
                                        data-original-date="@fechaOriginalRegistro.ToString("yyyy-MM-dd")"
                                        data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                 <span asp-validation-for="Fecha" class="text-danger"></span>

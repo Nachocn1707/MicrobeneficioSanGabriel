@@ -12,9 +12,14 @@
 
 <div class="EstiloEditar-edit-page">
 
-    <div class="EstiloEditar-header">
-        <h1>Editar Movimiento</h1>
-        <p>Actualizá los datos del movimiento de inventario.</p>
+    <div class="EstiloEditaR-top">
+        <div class="EstiloEditaR-title">
+            <span class="EstiloEditaR-badge">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Gestión de los movimientos de inventario
+            </span>
+            <p>Gestiona los movimientos de inventario registrados.</p>
+        </div>
     </div>
 
     <div class="EstiloEditaR-card">
@@ -86,10 +91,10 @@
                                     <input asp-for="FechaMovimiento"
                                            type="datetime-local"
                                            class="form-control"
-                                           min="@(Model.FechaMovimiento.Date >= DateTime.Today ? DateTime.Today.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
-                                           max="@DateTime.Today.ToString("yyyy-MM-ddT23:59")"
+                                           min="@(Model.FechaMovimiento.Date >= DateTime.UtcNow.AddHours(-6).Date ? DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
+                                           max="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-ddT23:59")"
                                            data-no-past-date="true"
-                                           data-today="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                           data-today="@DateTime.UtcNow.AddHours(-6).Date.ToString("yyyy-MM-dd")"
                                            data-original-date="@Model.FechaMovimiento.ToString("yyyy-MM-dd")"
                                            data-date-message="No puede seleccionar una fecha anterior a hoy." />
                                 </div>

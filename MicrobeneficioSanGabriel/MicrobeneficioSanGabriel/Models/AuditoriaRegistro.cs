@@ -30,6 +30,6 @@ namespace MicrobeneficioSanGabriel.Models
         [StringLength(500)]
         public string? Detalle { get; set; }
 
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; } = DateTime.UtcNow.AddHours(-6);
     }
 }

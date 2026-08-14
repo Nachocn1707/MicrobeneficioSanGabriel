@@ -1,115 +1,205 @@
-﻿@model IEnumerable<MicrobeneficioSanGabriel.Models.Trazabilidad>
+@model IEnumerable<MicrobeneficioSanGabriel.Models.Trazabilidad>
 @{
     ViewData["Title"] = "Trazabilidad";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     var registros = Model.ToList();
     var total = registros.Count;
     var lotes = registros.Select(t => t.LoteId).Distinct().Count();
     var producciones = registros.Select(t => t.ProduccionId).Distinct().Count();
-    var responsables = registros.Where(t => !string.IsNullOrWhiteSpace(t.Responsable)).Select(t => t.Responsable).Distinct().Count();
-    var etapaActual = ViewBag.Etapa as string ?? string.Empty;
     var codigoLote = ViewBag.CodigoLote as string ?? string.Empty;
-    var etapasConteo = registros.GroupBy(t => t.Etapa).OrderByDescending(g => g.Count()).ToList();
-    var etapaPrincipal = etapasConteo.FirstOrDefault();
-    decimal Porcentaje(int valor) => total == 0 ? 0 : Math.Round(valor * 100m / total, 0);
-    string Fmt(decimal valor) => valor.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    var etapasConteo = registros
+        .GroupBy(t => t.Etapa)
+        .OrderByDescending(g => g.Count())
+        .ToList();
+
     string ColorEtapa(string etapa) => etapa switch
     {
-        "Recepción" => "#2F6B9A",
-        "Despulpado" => "#4F8738",
-        "Fermentación" => "#5B3A16",
-        "Lavado" => "#9DBB8F",
-        "Secado" => "#294B2A",
-        "Tueste" => "#8B5A2B",
-        "Tostado" => "#8B5A2B",
-        "Molido" => "#C27A35",
-        "Producción" => "#5B3A16",
-        "Empaque" => "#E8D4B0",
-        "Almacenamiento" => "#6F8F63",
-        _ => "#667A5B"
+        "Lavado" => "#5f8f79",
+        "Secado" => "#c89d58",
+        "Tostado" => "#765238",
+        "Molido" => "#9d7046",
+        "Empaque" => "#2f5d50",
+        _ => "#667a5b"
     };
-    string CrearDonutEtapas()
-    {
-        if (total <= 0) return "conic-gradient(#E8D4B0 0% 100%)";
-        var partes = new List<string>(); decimal acumulado = 0m;
-        foreach (var etapa in etapasConteo)
-        {
-            var inicio = acumulado; acumulado += etapa.Count() * 100m / total;
-            partes.Add($"{ColorEtapa(etapa.Key)} {Fmt(inicio)}% {Fmt(acumulado)}%");
-        }
-        return $"conic-gradient({string.Join(", ", partes)})";
-    }
-    var donutEtapas = CrearDonutEtapas();
 }
+
 <section class="sg-page-head">
     <div>
+        <span class="sg-eyebrow">Proceso integrado</span>
         <h1>Trazabilidad</h1>
-        <p>Rastrea el origen y recorrido del café desde la finca hasta el cliente con registros reales.</p>
+        <p>Seguimiento automático de las etapas reales de producción de cada lote.</p>
     </div>
 
     <div class="sg-actions">
-        @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
-        {
-            <a asp-action="Create" class="sg-btn gold">
-                <i class="fa-solid fa-plus"></i>
-                Agregar trazabilidad
-            </a>
-        }
-
+        <a asp-controller="Producciones" asp-action="Index" class="sg-btn gold">
+            <i class="fa-solid fa-industry"></i>
+            Gestionar producción
+        </a>
         <a asp-action="Index" class="sg-btn green">
             <i class="fa-solid fa-rotate"></i>
             Actualizar
         </a>
     </div>
 </section>
-<form method="get" asp-action="Index" class="sg-filters">
-    <label class="sg-search"><i class="fa-solid fa-magnifying-glass"></i><input name="codigoLote" value="@codigoLote" placeholder="Buscar por lote o código..." /></label>
-    <select name="etapa" class="sg-filter form-select" asp-items="ViewBag.Etapas"><option value="">Todas las etapas</option></select>
-    <button class="sg-btn ghost" type="submit"><i class="fa-solid fa-filter"></i>Filtrar</button>
-    <a asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-rotate-left"></i>Limpiar</a>
-</form>
-<section class="sg-kpi-grid">
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-shield-halved"></i></span><div><span>Registros</span><strong>@total</strong><div class="sg-trend">Registros de trazabilidad</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon gold"><i class="fa-solid fa-layer-group"></i></span><div><span>Lotes trazados</span><strong>@lotes</strong><div class="sg-trend">Lotes con seguimiento</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon brown"><i class="fa-solid fa-industry"></i></span><div><span>Producciones trazadas</span><strong>@producciones</strong><div class="sg-trend">Producciones asociadas</div></div></article>
-    <article class="sg-card sg-kpi"><span class="sg-icon green"><i class="fa-solid fa-user-check"></i></span><div><span>Responsables</span><strong>@responsables</strong><div class="sg-trend">Responsables registrados</div></div></article>
-</section>
-<section class="sg-grid-2">
-    <article class="sg-card sg-panel"><h3 class="mb-4">Ruta de trazabilidad</h3><div class="sg-steps"><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-user-tie"></i></div><b>Productor</b><br/><small>Origen registrado</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-mountain-sun"></i></div><b>Finca</b><br/><small>Ubicación registrada</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-sack-xmark"></i></div><b>Lote</b><br/><small>@lotes lote(s)</small></div><div class="sg-step-line"></div><div class="sg-step"><div class="sg-step-icon"><i class="fa-solid fa-gear"></i></div><b>Producción</b><br/><small>@producciones proceso(s)</small></div><div class="sg-step-line"></div><div class="sg-step gold"><div class="sg-step-icon"><i class="fa-solid fa-clipboard-check"></i></div><b>Seguimiento</b><br/><small>@total registro(s)</small></div></div></article>
-    <article class="sg-card sg-panel">
-        <h3>Distribución por etapa</h3><div class="sg-donut-wrap mt-3">
-        <div class="sg-donut" style="--donut-bg: @donutEtapas"><div class="sg-donut-center"><b>@(etapaPrincipal == null ? 0 : Porcentaje(etapaPrincipal.Count()))%</b><span>@(etapaPrincipal?.Key ?? "Sin datos")</span></div></div><div class="sg-legend">
-        @if (etapasConteo.Any())
-        {
-            foreach (var etapa in etapasConteo)
-            {
-                var color = etapa.Key switch
-                {
-                    "Recepción" => "gold",
-                    "Despulpado" => "green",
-                    "Fermentación" => "brown",
-                    "Lavado" => "tan",
-                    "Secado" => "coffee",
-                    "Tueste" => "green",
-                    "Empaque" => "gold",
-                    _ => "tan"
-                };
 
-                <div class="sg-legend-row">
-                    <span class="sg-dot" style="background:@ColorEtapa(etapa.Key)"></span>
-                    <span>@etapa.Key</span>
-                    <b>@etapa.Count()</b>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="text-muted">
-                No hay registros para mostrar.
-            </div>
-        }
+<div class="alert alert-success border-0 shadow-sm mb-4" role="status">
+    <div class="d-flex gap-3 align-items-start">
+        <i class="fa-solid fa-circle-check mt-1"></i>
+        <div>
+            <strong>Trazabilidad automática.</strong>
+            Cada registro se genera cuando una etapa de producción se completa. El sistema valida la secuencia del proceso para evitar estados incompatibles.
+        </div>
     </div>
-    </div>
-</article>
+</div>
+
+<form method="get" asp-action="Index" class="sg-filters">
+    <label class="sg-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input name="codigoLote" value="@codigoLote" placeholder="Buscar por lote o código..." />
+    </label>
+    <select name="etapa" class="sg-filter form-select" asp-items="ViewBag.Etapas">
+        <option value="">Todas las etapas</option>
+    </select>
+    <button class="sg-btn ghost" type="submit"><i class="fa-solid fa-filter"></i> Filtrar</button>
+    <a asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-rotate-left"></i> Limpiar</a>
+</form>
+
+<section class="sg-kpi-grid">
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon green"><i class="fa-solid fa-route"></i></span>
+        <div><span>Eventos registrados</span><strong>@total</strong><div class="sg-trend">Generados desde producción</div></div>
+    </article>
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon gold"><i class="fa-solid fa-layer-group"></i></span>
+        <div><span>Lotes trazados</span><strong>@lotes</strong><div class="sg-trend">Con seguimiento automático</div></div>
+    </article>
+    <article class="sg-card sg-kpi">
+        <span class="sg-icon brown"><i class="fa-solid fa-gears"></i></span>
+        <div><span>Producciones</span><strong>@producciones</strong><div class="sg-trend">Procesos vinculados</div></div>
+    </article>
 </section>
-<section class="sg-card sg-table-card"><div class="sg-panel-head"><h3>Registros de trazabilidad</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive"><table class="sg-table" id="tablaTrazabilidad"><thead><tr><th>Código de lote</th><th>Productor</th><th>Finca</th><th>Etapa</th><th>Fecha</th><th>Producción</th><th>Responsable</th><th>Acciones</th></tr></thead><tbody>@foreach(var t in registros){<tr><td>@(t.Lote?.CodigoLote ?? $"LOTE-{t.LoteId:0000}")</td><td>@t.Lote?.Productor?.Nombre</td><td>@(t.Lote?.Finca?.Nombre ?? "Sin finca registrada")</td><td><span class="sg-badge">@t.Etapa</span></td><td>@t.FechaRegistro.ToString("dd MMM yyyy")</td><td>@(t.Produccion != null ? $"#{t.Produccion.Id} - {t.Produccion.Estado}" : $"#{t.ProduccionId}")</td><td>@t.Responsable</td><td><span class="sg-action-icons"><a asp-action="Details" asp-route-id="@t.Id"><i class="fa-solid fa-eye"></i></a>@if(User.IsInRole("Administrador") || User.IsInRole("Operador")){<a asp-action="Edit" asp-route-id="@t.Id" title="Cambiar/editar" aria-label="Cambiar/editar"><i class="fa-solid fa-pen"></i></a>}@if(User.IsInRole("Administrador")){<a asp-action="Delete" asp-route-id="@t.Id" title="Eliminar" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></a>}</span></td></tr>}</tbody></table></div></section>
+
+<section class="sg-grid-2">
+    <article class="sg-card sg-panel">
+        <div class="sg-panel-head">
+            <div>
+                <h3>Secuencia del proceso</h3>
+                <small class="text-muted">Una etapa posterior requiere que las anteriores estén completadas.</small>
+            </div>
+        </div>
+        <div class="sg-steps mt-4">
+            @foreach (var etapa in new[] { "Lavado", "Secado", "Tostado", "Molido", "Empaque" })
+            {
+                var cantidad = registros.Count(t => t.Etapa == etapa);
+                <div class="sg-step">
+                    <div class="sg-step-icon"><i class="fa-solid fa-check"></i></div>
+                    <b>@etapa</b><br />
+                    <small>@cantidad evento(s)</small>
+                </div>
+                @if (etapa != "Empaque")
+                {
+                    <div class="sg-step-line"></div>
+                }
+            }
+        </div>
+    </article>
+
+    <article class="sg-card sg-panel">
+        <div class="sg-panel-head">
+            <div>
+                <h3>Eventos por etapa</h3>
+                <small class="text-muted">Distribución de los registros visibles.</small>
+            </div>
+        </div>
+        <div class="mt-3">
+            @if (etapasConteo.Any())
+            {
+                foreach (var etapa in etapasConteo)
+                {
+                    var porcentaje = total == 0 ? 0 : Math.Round(etapa.Count() * 100m / total, 0);
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold"><span class="sg-dot me-2" style="background:@ColorEtapa(etapa.Key)"></span>@etapa.Key</span>
+                            <span class="text-muted">@etapa.Count() · @porcentaje%</span>
+                        </div>
+                        <div class="progress" style="height:7px;">
+                            <div class="progress-bar" role="progressbar" style="width:@porcentaje%;background:@ColorEtapa(etapa.Key)" aria-valuenow="@porcentaje" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-muted py-4 text-center">No hay registros de trazabilidad para los filtros seleccionados.</div>
+            }
+        </div>
+    </article>
+</section>
+
+<section class="sg-card sg-table-card mt-4">
+    <div class="sg-panel-head">
+        <div>
+            <h3>Historial de trazabilidad</h3>
+            <small class="text-muted">Los registros automáticos no se editan manualmente.</small>
+        </div>
+        <span class="sg-badge">@total registro(s)</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="sg-table" id="tablaTrazabilidad">
+            <thead>
+                <tr>
+                    <th>Lote</th>
+                    <th>Origen</th>
+                    <th>Etapa</th>
+                    <th>Fecha y hora</th>
+                    <th>Producción</th>
+                    <th>Responsable</th>
+                    <th>Tipo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (registros.Any())
+            {
+                foreach (var t in registros)
+                {
+                    <tr>
+                        <td><strong>@(t.Lote?.CodigoLote ?? $"LOTE-{t.LoteId:0000}")</strong></td>
+                        <td>
+                            <div>@(t.Lote?.Productor?.Nombre ?? "Sin productor")</div>
+                            <small class="text-muted">@(t.Lote?.Finca?.Nombre ?? "Sin finca registrada")</small>
+                        </td>
+                        <td><span class="sg-badge">@t.Etapa</span></td>
+                        <td>@t.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            @if (t.Produccion != null)
+                            {
+                                <div><strong>#@t.Produccion.Id · @t.Produccion.TipoProceso</strong></div>
+                                <small class="text-muted">@t.Produccion.Estado</small>
+                            }
+                            else
+                            {
+                                <span>#@t.ProduccionId</span>
+                            }
+                        </td>
+                        <td>@(string.IsNullOrWhiteSpace(t.Responsable) ? "Sistema" : t.Responsable)</td>
+                        <td><span class="badge bg-success-subtle text-success-emphasis"><i class="fa-solid fa-bolt me-1"></i>Automático</span></td>
+                        <td>
+                            <span class="sg-action-icons">
+                                <a asp-action="Details" asp-route-id="@t.Id" title="Ver detalle" aria-label="Ver detalle"><i class="fa-solid fa-eye"></i></a>
+                                <a asp-action="Historial" asp-route-loteId="@t.LoteId" title="Ver historial del lote" aria-label="Ver historial del lote"><i class="fa-solid fa-clock-rotate-left"></i></a>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                @* DataTables muestra el mensaje de tabla vacía sin usar colspan en tbody. *@
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

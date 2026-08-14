@@ -2,7 +2,7 @@
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-<div class="row g-4">
+<div class="row g-4" data-cr-ubicacion>
     <div class="col-md-6">
         <label asp-for="Nombre" class="form-label"></label>
         <input asp-for="Nombre" class="form-control" placeholder="Ej. Finca El Roble" />
@@ -19,28 +19,24 @@
 
     <div class="col-md-4">
         <label asp-for="Provincia" class="form-label"></label>
-        <select asp-for="Provincia" class="form-select">
-            <option value="">Seleccione</option>
-            <option>San José</option>
-            <option>Alajuela</option>
-            <option>Cartago</option>
-            <option>Heredia</option>
-            <option>Guanacaste</option>
-            <option>Puntarenas</option>
-            <option>Limón</option>
-        </select>
+        <select asp-for="Provincia" class="form-select" data-cr-provincia data-current-value="@Model.Provincia">
+            <option value="">Seleccione una provincia</option></select>
         <span asp-validation-for="Provincia" class="text-danger"></span>
     </div>
 
     <div class="col-md-4">
         <label asp-for="Canton" class="form-label"></label>
-        <input asp-for="Canton" class="form-control" placeholder="Cantón" />
+        <select asp-for="Canton" class="form-select" data-cr-canton data-current-value="@Model.Canton" disabled>
+            <option value="">Seleccione un cantón</option>
+        </select>
         <span asp-validation-for="Canton" class="text-danger"></span>
     </div>
 
     <div class="col-md-4">
         <label asp-for="Distrito" class="form-label"></label>
-        <input asp-for="Distrito" class="form-control" placeholder="Distrito" />
+        <select asp-for="Distrito" class="form-select" data-cr-distrito data-current-value="@Model.Distrito" disabled>
+            <option value="">Seleccione un distrito</option>
+        </select>
         <span asp-validation-for="Distrito" class="text-danger"></span>
     </div>
 

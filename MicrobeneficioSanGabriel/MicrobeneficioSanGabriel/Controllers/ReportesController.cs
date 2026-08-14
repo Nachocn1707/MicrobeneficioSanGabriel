@@ -118,7 +118,7 @@ namespace MicrobeneficioSanGabriel.Controllers
                         ? $"Periodo: {fechaInicio?.ToString("dd/MM/yyyy") ?? "Inicio"} - {fechaFin?.ToString("dd/MM/yyyy") ?? "Actual"}"
                         : "Periodo: General";
 
-                worksheet.Cell(4, 1).Value = $"Fecha de generacion: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                worksheet.Cell(4, 1).Value = $"Fecha de generacion: {DateTime.UtcNow.AddHours(-6):dd/MM/yyyy HH:mm}";
 
                 worksheet.Cell(6, 1).Value = "Indicador";
                 worksheet.Cell(6, 2).Value = "Valor";

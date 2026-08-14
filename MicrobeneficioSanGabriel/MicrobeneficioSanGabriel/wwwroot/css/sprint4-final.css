@@ -1,0 +1,1258 @@
+/* Ajustes finales de consistencia visual y usabilidad solicitados en la revisión. */
+
+:root {
+    --sg-final-green: #294b2a;
+    --sg-final-green-2: #4f8738;
+    --sg-final-gold: #b97822;
+    --sg-final-ink: #263126;
+    --sg-final-muted: #677066;
+    --sg-final-surface: rgba(250, 249, 245, .94);
+    --sg-final-border: rgba(41, 75, 42, .14);
+}
+
+/* Barra superior: reserva un lugar real para notificaciones en vez de flotarlas sobre contenido. */
+.sg-utility-bar {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 28px;
+    border-bottom: 1px solid var(--sg-final-border);
+    background: rgba(250, 249, 245, .92);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+}
+
+.sg-utility-context {
+    color: var(--sg-final-muted);
+    font-size: .83rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sg-utility-context i { color: var(--sg-final-green-2); }
+
+.sg-utility-bar .sg-notification-dock,
+body.sg-reference-theme .sg-utility-bar .sg-notification-dock,
+body.sg-reference-theme > .sg-notification-dock {
+    position: static !important;
+    inset: auto !important;
+    width: auto !important;
+    height: auto !important;
+    z-index: auto !important;
+}
+
+.sg-utility-bar .demo-notification-wrap { position: relative !important; }
+.sg-utility-bar .demo-notification-panel {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    left: auto !important;
+    width: min(390px, calc(100vw - 32px)) !important;
+    max-height: min(520px, 70vh);
+    overflow: auto;
+}
+
+/* Encabezados: una sola jerarquía, menos altura y más aire útil. */
+.sg-page-head,
+.Detalle-page-head,
+.EstiloEditar-header,
+.VistaCreaR-top {
+    margin-bottom: 18px !important;
+}
+
+.sg-page-head,
+.Detalle-page-head,
+.EstiloEditar-header,
+.VistaCreaR-top,
+.VistaCreaR-title {
+    min-height: 0 !important;
+}
+
+.sg-page-head {
+    padding: 18px 22px !important;
+    border-radius: 18px !important;
+    background: var(--sg-final-surface) !important;
+    border: 1px solid var(--sg-final-border) !important;
+    box-shadow: 0 10px 26px rgba(25, 42, 24, .06) !important;
+}
+
+.sg-page-head h1,
+.Detalle-page-head h1,
+.EstiloEditar-header h1,
+.VistaCreaR-title h1 {
+    font-size: clamp(1.55rem, 2.1vw, 2rem) !important;
+    line-height: 1.08 !important;
+    margin: 0 0 5px !important;
+}
+
+.sg-page-head p,
+.Detalle-page-head p,
+.EstiloEditar-header p,
+.VistaCreaR-title p {
+    font-size: .9rem !important;
+    line-height: 1.45 !important;
+    margin: 0 !important;
+    color: var(--sg-final-muted) !important;
+}
+
+/* Evita tener Hero y encabezado del mismo peso en una misma pantalla. */
+.sg-visual-hero,
+.Detalle-visual-hero {
+    min-height: 128px !important;
+    height: auto !important;
+    padding: 22px 28px !important;
+    margin: 0 0 18px !important;
+    border-radius: 18px !important;
+}
+
+.sg-visual-hero h1,
+.Detalle-visual-hero h1 {
+    font-size: clamp(1.45rem, 2.2vw, 2rem) !important;
+}
+
+.sg-visual-hero p { max-width: 760px; }
+
+/* Formularios de creación: cabecera compacta sin una segunda imagen/hero dominante. */
+.VistaCreaR-top {
+    padding: 16px 22px !important;
+    border-radius: 18px !important;
+    background: var(--sg-final-surface) !important;
+    border: 1px solid var(--sg-final-border) !important;
+    box-shadow: 0 10px 26px rgba(25, 42, 24, .06) !important;
+    background-image: none !important;
+}
+
+.VistaCreaR-banner-overlay {
+    padding: 0 !important;
+    background: transparent !important;
+    min-height: 0 !important;
+}
+
+.VistaCreaR-card,
+.EstiloEditaR-card {
+    border-radius: 18px !important;
+    box-shadow: 0 10px 26px rgba(25, 42, 24, .07) !important;
+}
+
+.VistaCreaR-form-container,
+.EstiloEditaR-form-container { padding: clamp(18px, 2.5vw, 30px) !important; }
+
+.VistaCreaR-section,
+.EstiloEditar-section { margin-bottom: 20px !important; }
+
+/* Contenido: más consistente y sin huecos excesivos. */
+.sg-content { padding-top: 22px !important; }
+.sg-card { border-color: var(--sg-final-border) !important; }
+.sg-kpi { min-height: 104px !important; }
+.sg-kpi strong { font-size: clamp(1.35rem, 2vw, 1.75rem) !important; }
+.sg-panel { min-height: 0 !important; }
+
+/* Gráficos: dimensiones estables, alineación y responsividad. */
+.sg-chart {
+    position: relative !important;
+    height: 285px !important;
+    min-height: 240px !important;
+    max-height: 320px !important;
+    width: 100% !important;
+}
+.sg-chart canvas,
+.chart-container canvas,
+canvas[id$="Chart"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.sg-donut-wrap {
+    min-height: 190px;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.sg-donut {
+    flex: 0 0 auto;
+    width: 150px !important;
+    height: 150px !important;
+}
+
+/* Los enlaces de detalle deben verse interactivos, no como texto plano. */
+.sg-panel-head > a,
+.sg-panel-head a.text-success,
+.sg-panel-head a.fw-bold {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border: 1px solid rgba(41, 75, 42, .2);
+    border-radius: 999px;
+    background: #fff;
+    text-decoration: none !important;
+    font-size: .82rem;
+    transition: .18s ease;
+}
+.sg-panel-head > a:hover,
+.sg-panel-head a.text-success:hover {
+    background: var(--sg-final-green);
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+/* Cliente: Hero más integrado, accesos arriba y tarjetas compactas. */
+.cafe-portal-main { padding-top: 22px !important; }
+.cafe-welcome,
+.cafe-welcome-hero {
+    min-height: 0 !important;
+    max-height: none !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr) !important;
+    border-radius: 22px !important;
+    overflow: hidden;
+    margin-bottom: 16px !important;
+}
+.cafe-welcome-content { padding: clamp(24px, 3vw, 40px) !important; }
+.cafe-welcome h1,
+.cafe-welcome-content h1 {
+    font-size: clamp(2.1rem, 4vw, 3.65rem) !important;
+    line-height: .98 !important;
+    margin-bottom: 14px !important;
+}
+.cafe-welcome-content > p { max-width: 620px; font-size: .98rem !important; }
+.cafe-welcome-visual { min-height: 300px !important; max-height: 390px !important; }
+.cafe-welcome-visual img { width: 100%; height: 100%; object-fit: cover; }
+.cafe-summary-grid { margin: 14px 0 !important; gap: 12px !important; }
+.cafe-summary-card { min-height: 88px !important; padding: 16px !important; }
+.cafe-quick-section { margin: 14px 0 18px !important; }
+.cafe-quick-card { min-height: 78px !important; padding: 14px 16px !important; }
+.cafe-main-grid { gap: 16px !important; }
+.cafe-product-card { min-height: 0 !important; }
+.cafe-product-image { height: 190px !important; }
+.cafe-product-image img { object-fit: contain !important; padding: 10px; }
+
+.sg-product-card .sg-product-media { height: 220px !important; }
+.sg-product-card .sg-product-media img { object-fit: contain !important; padding: 10px; }
+.sg-product-card .sg-product-body { padding: 16px !important; }
+.sg-product-card h3 { font-size: 1.18rem !important; }
+.sg-product-card p { min-height: 0 !important; }
+
+/* Trazabilidad de producción */
+.sg-process-timeline {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+.sg-process-step {
+    position: relative;
+    padding: 12px 10px;
+    border-radius: 14px;
+    background: #f4f4ef;
+    border: 1px solid rgba(41,75,42,.12);
+    text-align: center;
+    min-height: 92px;
+}
+.sg-process-step.done { background: rgba(79,135,56,.10); border-color: rgba(79,135,56,.32); }
+.sg-process-step.current { box-shadow: 0 0 0 2px rgba(185,120,34,.28) inset; }
+.sg-process-step i { display:block; margin-bottom:6px; color:var(--sg-final-green-2); }
+.sg-process-step strong { display:block; font-size:.86rem; }
+.sg-process-step small { color:var(--sg-final-muted); font-size:.72rem; }
+
+/* SweetAlert alineado con la paleta del sistema. */
+.swal2-popup { border-radius: 18px !important; font-family: inherit !important; }
+.swal2-confirm { border-radius: 10px !important; }
+.swal2-cancel { border-radius: 10px !important; }
+.swal2-container.swal2-bottom-end { padding: 18px !important; }
+
+@media (max-width: 991px) {
+    .sg-utility-bar { padding: 8px 16px; }
+    .sg-content { padding-top: 16px !important; }
+    .cafe-welcome, .cafe-welcome-hero { grid-template-columns: 1fr !important; }
+    .cafe-welcome-visual { display: none !important; }
+    .sg-process-timeline { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+    .sg-utility-context { display: none; }
+    .sg-utility-bar { justify-content: flex-end; min-height: 50px; }
+    .sg-page-head { padding: 15px !important; }
+    .sg-process-timeline { grid-template-columns: 1fr; }
+    .sg-chart { height: 240px !important; }
+    .cafe-product-image { height: 165px !important; }
+}
+
+/* Cuando una vista de detalle conserva encabezado + hero, se perciben como una sola unidad. */
+.Detalle-page-head:has(+ .Detalle-visual-hero) {
+    margin-bottom: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    border-bottom: 0 !important;
+}
+.Detalle-page-head + .Detalle-visual-hero {
+    margin-top: 0 !important;
+    border-radius: 0 0 18px 18px !important;
+    min-height: 105px !important;
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+}
+.Detalle-page-head + .Detalle-visual-hero .Detalle-visual-hero-content {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Edición: evita un segundo hero fotográfico de gran tamaño y mantiene la misma jerarquía. */
+.EstiloEditaR-top {
+    padding: 16px 22px !important;
+    min-height: 0 !important;
+    margin-bottom: 18px !important;
+    border-radius: 18px !important;
+    background: var(--sg-final-surface) !important;
+    background-image: none !important;
+    border: 1px solid var(--sg-final-border) !important;
+    box-shadow: 0 10px 26px rgba(25, 42, 24, .06) !important;
+}
+.EstiloEditaR-title h1 {
+    color: var(--sg-final-ink) !important;
+    font-size: clamp(1.55rem, 2.1vw, 2rem) !important;
+    line-height: 1.08 !important;
+    margin: 0 0 5px !important;
+}
+.EstiloEditaR-title p {
+    color: var(--sg-final-muted) !important;
+    font-size: .9rem !important;
+    margin: 0 !important;
+}
+.EstiloEditaR-badge {
+    color: var(--sg-final-green) !important;
+    background: rgba(79, 135, 56, .10) !important;
+    border-color: rgba(79, 135, 56, .18) !important;
+    margin-bottom: 8px !important;
+}
+.EstiloEditaR-form-container { padding: clamp(18px, 2.5vw, 30px) !important; }
+
+/* Detalles: reduce el peso de tarjetas internas para que el contenido respire sin competir con el encabezado. */
+.EstiloDetalle-premium-card { border-radius: 18px !important; }
+.EstiloDetalle-premium-header { padding: 18px 22px 6px !important; }
+.EstiloDetalle-premium-body { padding: 14px 22px 22px !important; }
+.EstiloDetalle-detail-grid { gap: 12px !important; }
+.EstiloDetalle-detail-item { padding: 15px 16px !important; border-radius: 14px !important; }
+
+/* En el portal cliente la campana permanece como una acción del encabezado, nunca flotante. */
+.cafe-portal-actions .demo-notification-wrap {
+    position: relative !important;
+    flex: 0 0 auto;
+}
+.cafe-portal-actions .demo-notification-panel {
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    left: auto !important;
+}
+
+/* =========================================================
+   V3 - AJUSTES DE VALIDACIÓN EN PRUEBAS (13/08/2026)
+   ========================================================= */
+
+/* Administración: sin banner superior. Solo se reserva una franja transparente
+   para la campana, evitando que tape acciones del contenido. */
+.sg-notification-dock--admin {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100000 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    pointer-events: none;
+}
+
+.sg-notification-dock--admin .demo-notification-wrap {
+    position: relative !important;
+    z-index: 100001 !important;
+    pointer-events: auto;
+}
+
+.sg-notification-dock--admin .demo-icon-button {
+    border-radius: 13px;
+    background: rgba(255,255,255,.96) !important;
+    box-shadow: 0 8px 22px rgba(31,46,29,.12) !important;
+}
+
+.sg-notification-dock--admin .demo-notification-panel {
+    position: fixed !important;
+    top: 68px !important;
+    right: 24px !important;
+    left: auto !important;
+    z-index: 100002 !important;
+    width: min(390px, calc(100vw - 32px)) !important;
+    max-height: min(540px, calc(100vh - 90px)) !important;
+    overflow-y: auto !important;
+    isolation: isolate;
+}
+
+/* El antiguo contexto/barra ya no se usa; se oculta por seguridad si algún
+   navegador conserva markup en caché durante una recompilación incremental. */
+.sg-utility-bar,
+.sg-utility-context {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.sg-utility-context { display: none !important; }
+
+/* Formularios de creación: texto siempre legible sobre el encabezado claro. */
+.VistaCreaR-top .VistaCreaR-title h1,
+.VistaCreaR-top .VistaCreaR-title .VistaCreaR-main-title {
+    color: #213823 !important;
+    text-shadow: none !important;
+}
+.VistaCreaR-top .VistaCreaR-title p {
+    color: #5f685d !important;
+    text-shadow: none !important;
+}
+.VistaCreaR-top .VistaCreaR-badge {
+    color: #315b32 !important;
+    background: rgba(79,135,56,.10) !important;
+    border-color: rgba(49,91,50,.18) !important;
+    text-shadow: none !important;
+}
+
+/* Reportes: los títulos de cada bloque dejan de quedar sobre el cafetal sin
+   contraste. Se convierten en encabezados claros y compactos. */
+.sg-report-section-head {
+    padding: 13px 16px !important;
+    border: 1px solid rgba(41,75,42,.13) !important;
+    border-radius: 15px !important;
+    background: rgba(250,249,245,.96) !important;
+    box-shadow: 0 8px 20px rgba(30,45,28,.05) !important;
+}
+.sg-report-section-head span {
+    color: #81551f !important;
+    text-shadow: none !important;
+}
+.sg-report-section-head h2,
+.sg-report-section-head h3 {
+    color: #233725 !important;
+    text-shadow: none !important;
+}
+.sg-report-section-head small,
+.sg-report-section-head .text-muted {
+    color: #667066 !important;
+}
+.sg-report-filters .form-label {
+    color: #263126 !important;
+    text-shadow: none !important;
+}
+
+@media (max-width: 640px) {
+    .sg-notification-dock--admin {
+        min-height: 54px;
+        padding: 6px 12px;
+    }
+    .sg-notification-dock--admin .demo-notification-panel {
+        top: 62px !important;
+        right: 12px !important;
+        left: 12px !important;
+        width: auto !important;
+    }
+}
+
+/* =========================================================
+   V4 - CIERRE DE PRUEBAS REALES (13/08/2026)
+   Campana, contraste Tipo y trazabilidad con paleta oficial
+   ========================================================= */
+
+/* La campana vive fuera del contenido y dispone de su propia franja visual
+   transparente. El contenido administrativo comienza debajo, por lo que
+   nunca puede quedar encima de botones como Actualizar/Gestionar producción. */
+body.sg-reference-theme > .sg-notification-dock--admin {
+    position: fixed !important;
+    top: 14px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    z-index: 2147483000 !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
+body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button,
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+    pointer-events: auto !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap {
+    position: relative !important;
+    width: 52px !important;
+    height: 52px !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button {
+    position: relative !important;
+    width: 52px !important;
+    height: 52px !important;
+    margin: 0 !important;
+    border-radius: 14px !important;
+    background: #FEFCFA !important;
+    color: #293F25 !important;
+    border: 1px solid #D8D5CC !important;
+    box-shadow: 0 10px 28px rgba(24,35,21,.16) !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-count {
+    top: -7px !important;
+    right: -7px !important;
+    color: #fff !important;
+    background: #D4730B !important;
+    border: 2px solid #FEFCFA !important;
+    z-index: 2147483003 !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+    position: fixed !important;
+    top: 76px !important;
+    right: 20px !important;
+    left: auto !important;
+    z-index: 2147483004 !important;
+    width: min(400px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
+}
+
+/* Reserva espacio vertical únicamente; no existe barra/banner visible. */
+body.sg-reference-theme .sg-main {
+    padding-top: 86px !important;
+}
+
+/* DataTables/Trazabilidad: el tipo automático debe ser visible sobre fondo claro. */
+body.sg-reference-theme #tablaTrazabilidad tbody td:nth-child(7),
+body.sg-reference-theme #tablaTrazabilidad tbody td:nth-child(7) *,
+body.sg-reference-theme #tablaTrazabilidad .badge.bg-success-subtle,
+body.sg-reference-theme #tablaTrazabilidad .text-success-emphasis {
+    color: #293F25 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+body.sg-reference-theme #tablaTrazabilidad .badge.bg-success-subtle {
+    background: #E7EFE3 !important;
+    border: 1px solid #C8D8C1 !important;
+    font-weight: 800 !important;
+}
+
+/* Detalle de trazabilidad: encabezado y hero centrados, con la paleta oficial. */
+body.sg-reference-theme .trazabilidad-detail-head {
+    position: relative !important;
+    min-height: 112px !important;
+    padding: 22px 120px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    background: rgba(248,247,242,.97) !important;
+    border-color: #D8D5CC !important;
+}
+body.sg-reference-theme .trazabilidad-detail-head > div:first-child {
+    width: 100% !important;
+    text-align: center !important;
+}
+body.sg-reference-theme .trazabilidad-detail-head h1 {
+    margin: 0 0 6px !important;
+    color: #293F25 !important;
+    font-weight: 850 !important;
+}
+body.sg-reference-theme .trazabilidad-detail-head p {
+    margin: 0 !important;
+    color: #667066 !important;
+}
+body.sg-reference-theme .trazabilidad-detail-head .Detalle-actions {
+    position: absolute !important;
+    right: 24px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+body.sg-reference-theme .trazabilidad-detail-hero {
+    min-height: 150px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    border: 1px solid rgba(216,213,204,.85) !important;
+}
+body.sg-reference-theme .trazabilidad-detail-hero .Detalle-visual-hero-content {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+body.sg-reference-theme .trazabilidad-detail-hero h1 {
+    margin: 0 !important;
+    color: #fff !important;
+    text-align: center !important;
+}
+body.sg-reference-theme .trazabilidad-detail-hero .Detalle-visual-line {
+    margin: 10px auto !important;
+    background: #8EAA82 !important;
+}
+
+/* Historial de trazabilidad: reemplaza la paleta marrón/azul por la misma
+   familia verde, crema y gris usada por las vistas de detalle del sistema. */
+body.sg-reference-theme .historial-title {
+    text-align: center !important;
+}
+body.sg-reference-theme .historial-title h1,
+body.sg-reference-theme .historial-summary-value,
+body.sg-reference-theme .timeline-top h3,
+body.sg-reference-theme .timeline-value {
+    color: #293F25 !important;
+}
+body.sg-reference-theme .historial-title p,
+body.sg-reference-theme .historial-summary-label,
+body.sg-reference-theme .timeline-date {
+    color: #667066 !important;
+}
+body.sg-reference-theme .historial-line {
+    background: #53833B !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+body.sg-reference-theme .historial-badge {
+    background: #E7EFE3 !important;
+    color: #293F25 !important;
+    border: 1px solid #C8D8C1 !important;
+}
+body.sg-reference-theme .btn-historial-nuevo {
+    background: #293F25 !important;
+    color: #fff !important;
+}
+body.sg-reference-theme .btn-historial-nuevo:hover {
+    background: #1F321C !important;
+}
+body.sg-reference-theme .historial-summary-card,
+body.sg-reference-theme .historial-main-card,
+body.sg-reference-theme .timeline-info,
+body.sg-reference-theme .timeline-observacion {
+    background: #F8F7F2 !important;
+    border-color: #D8D5CC !important;
+    box-shadow: 0 12px 30px rgba(41,63,37,.08) !important;
+}
+body.sg-reference-theme .historial-summary-card::after {
+    background: rgba(142,170,130,.18) !important;
+}
+body.sg-reference-theme .historial-summary-icon {
+    background: #E7EFE3 !important;
+    color: #293F25 !important;
+}
+body.sg-reference-theme .historial-main-header {
+    background: linear-gradient(135deg, #293F25, #3A5333) !important;
+    border-top-color: #8EAA82 !important;
+}
+body.sg-reference-theme .historial-main-header h2,
+body.sg-reference-theme .historial-main-header span {
+    color: #FFFFFF !important;
+}
+body.sg-reference-theme .historial-side {
+    background-image: linear-gradient(180deg, rgba(41,63,37,.94), rgba(31,50,28,.96)), url('/images/dashboard/coffee-farm-client-hd.jpg') !important;
+    color: #FFFFFF !important;
+}
+body.sg-reference-theme .historial-side h3,
+body.sg-reference-theme .historial-side p,
+body.sg-reference-theme .historial-side span,
+body.sg-reference-theme .historial-side li,
+body.sg-reference-theme .historial-side i {
+    color: #FFFFFF !important;
+}
+body.sg-reference-theme .historial-side .historial-side-icon {
+    background: rgba(255,255,255,.10) !important;
+    border-color: rgba(255,255,255,.18) !important;
+}
+body.sg-reference-theme .historial-timeline-panel {
+    background: #FEFCFA !important;
+}
+body.sg-reference-theme .timeline::before {
+    background: linear-gradient(180deg, #8EAA82, #293F25) !important;
+}
+body.sg-reference-theme .timeline-item {
+    background: #F7F8F4 !important;
+    border-color: #D8D5CC !important;
+}
+body.sg-reference-theme .timeline-point {
+    background: #53833B !important;
+    border-color: #FEFCFA !important;
+    box-shadow: 0 0 0 2px #8EAA82 !important;
+}
+body.sg-reference-theme .timeline-label {
+    color: #3A5333 !important;
+}
+body.sg-reference-theme .timeline-observacion {
+    color: #293F25 !important;
+}
+
+@media (max-width: 1100px) {
+    body.sg-reference-theme .sg-main {
+        padding-top: 78px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    body.sg-reference-theme > .sg-notification-dock--admin {
+        top: 10px !important;
+        right: 12px !important;
+    }
+    body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+        top: 70px !important;
+        right: 12px !important;
+        left: 12px !important;
+        width: auto !important;
+    }
+    body.sg-reference-theme .trazabilidad-detail-head {
+        padding: 22px 18px 72px !important;
+    }
+    body.sg-reference-theme .trazabilidad-detail-head .Detalle-actions {
+        right: 50% !important;
+        top: auto !important;
+        bottom: 18px !important;
+        transform: translateX(50%) !important;
+    }
+}
+
+/* ============================================================
+   V5 - Últimos ajustes de Producción / Historial de trazabilidad
+   ============================================================ */
+
+/* Paginación compacta del bloque "Trazabilidad de los lotes en producción". */
+body.sg-reference-theme .sg-trace-pager {
+    margin-top: 18px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    border: 1px solid #D8D5CC;
+    border-radius: 16px;
+    background: rgba(248, 247, 242, .96);
+    box-shadow: 0 8px 22px rgba(41, 63, 37, .07);
+}
+
+body.sg-reference-theme .sg-trace-pager-summary,
+body.sg-reference-theme .sg-trace-pager-page {
+    color: #667066;
+    font-size: .9rem;
+    font-weight: 700;
+}
+
+body.sg-reference-theme .sg-trace-pager-page {
+    text-align: right;
+}
+
+body.sg-reference-theme .sg-trace-pager-summary strong,
+body.sg-reference-theme .sg-trace-pager-page strong {
+    color: #293F25;
+}
+
+body.sg-reference-theme .sg-trace-pager-controls,
+body.sg-reference-theme .sg-trace-page-numbers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+body.sg-reference-theme .sg-trace-page-btn,
+body.sg-reference-theme .sg-trace-page-number {
+    min-height: 38px;
+    border: 1px solid #C8D8C1;
+    background: #FFFFFF;
+    color: #293F25;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 8px 12px;
+    text-decoration: none;
+    font-weight: 800;
+    line-height: 1;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+
+body.sg-reference-theme .sg-trace-page-number {
+    width: 38px;
+    padding: 8px;
+}
+
+body.sg-reference-theme .sg-trace-page-btn:not(.disabled):hover,
+body.sg-reference-theme .sg-trace-page-number:not(.active):hover {
+    background: #E7EFE3;
+    border-color: #8EAA82;
+    color: #1F321C;
+    transform: translateY(-1px);
+}
+
+body.sg-reference-theme .sg-trace-page-number.active {
+    background: #293F25;
+    border-color: #293F25;
+    color: #FFFFFF;
+}
+
+body.sg-reference-theme .sg-trace-page-btn.disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+body.sg-reference-theme .sg-trace-page-ellipsis {
+    color: #667066;
+    font-weight: 900;
+    padding: 0 2px;
+}
+
+/* El encabezado del historial se convierte en un panel centrado y legible
+   sobre el fondo fotográfico. */
+body.sg-reference-theme .historial-header {
+    position: relative !important;
+    min-height: 170px !important;
+    padding: 26px 220px 26px 26px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(216, 213, 204, .92) !important;
+    border-radius: 22px !important;
+    background: rgba(248, 247, 242, .94) !important;
+    box-shadow: 0 14px 34px rgba(41, 63, 37, .12) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+body.sg-reference-theme .historial-title {
+    width: 100% !important;
+    max-width: 850px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .historial-title h1 {
+    margin: 0 !important;
+    color: #293F25 !important;
+    font-size: clamp(2rem, 3.2vw, 3rem) !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    text-align: center !important;
+    text-shadow: none !important;
+}
+
+body.sg-reference-theme .historial-title p {
+    max-width: 760px !important;
+    margin: 0 auto !important;
+    color: #4F5D4D !important;
+    font-size: 1rem !important;
+    line-height: 1.55 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .historial-title .historial-badge {
+    margin: 0 auto 12px !important;
+}
+
+body.sg-reference-theme .historial-title .historial-line {
+    width: 92px !important;
+    height: 4px !important;
+    margin: 13px auto 14px !important;
+    background: #53833B !important;
+}
+
+body.sg-reference-theme .historial-actions-top {
+    position: absolute !important;
+    top: 50% !important;
+    right: 24px !important;
+    transform: translateY(-50%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    z-index: 2;
+}
+
+body.sg-reference-theme .historial-actions-top .btn-historial {
+    justify-content: center !important;
+    min-width: 165px !important;
+}
+
+@media (max-width: 1050px) {
+    body.sg-reference-theme .historial-header {
+        min-height: 0 !important;
+        padding: 24px !important;
+        flex-direction: column !important;
+        gap: 18px !important;
+    }
+
+    body.sg-reference-theme .historial-actions-top {
+        position: static !important;
+        transform: none !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+
+    body.sg-reference-theme .historial-actions-top .btn-historial {
+        min-width: 0 !important;
+    }
+}
+
+@media (max-width: 860px) {
+    body.sg-reference-theme .sg-trace-pager {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    body.sg-reference-theme .sg-trace-pager-page {
+        text-align: center;
+    }
+}
+
+@media (max-width: 560px) {
+    body.sg-reference-theme .sg-trace-pager-controls {
+        flex-wrap: wrap;
+    }
+
+    body.sg-reference-theme .sg-trace-page-btn span {
+        display: none;
+    }
+
+    body.sg-reference-theme .historial-header {
+        padding: 20px 16px !important;
+        border-radius: 18px !important;
+    }
+
+    body.sg-reference-theme .historial-title h1 {
+        font-size: 2rem !important;
+    }
+}
+
+
+/* ============================================================
+   V6 - Paginación final y banners de detalle centrados
+   ============================================================ */
+
+/* Un solo lote por página para que el bloque de trazabilidad en Producción
+   sea compacto y la navegación sea siempre evidente cuando hay varios lotes. */
+body.sg-reference-theme #trazabilidad-lotes .sg-trace-pager {
+    margin-top: 16px !important;
+}
+
+/* Paginación de Auditoría. */
+body.sg-reference-theme .sg-audit-pager {
+    margin-top: 16px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    border-top: 1px solid #D8D5CC;
+    background: #F8F7F2;
+    border-radius: 0 0 14px 14px;
+}
+
+body.sg-reference-theme .sg-audit-pager-summary,
+body.sg-reference-theme .sg-audit-pager-page {
+    color: #667066;
+    font-size: .9rem;
+    font-weight: 700;
+}
+
+body.sg-reference-theme .sg-audit-pager-page { text-align: right; }
+body.sg-reference-theme .sg-audit-pager-summary strong,
+body.sg-reference-theme .sg-audit-pager-page strong { color: #293F25; }
+
+body.sg-reference-theme .sg-audit-pager-controls,
+body.sg-reference-theme .sg-audit-page-numbers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+body.sg-reference-theme .sg-audit-page-btn,
+body.sg-reference-theme .sg-audit-page-number {
+    min-height: 38px;
+    border: 1px solid #C8D8C1;
+    background: #FFFFFF;
+    color: #293F25 !important;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 8px 12px;
+    text-decoration: none !important;
+    font-weight: 800;
+    line-height: 1;
+}
+
+body.sg-reference-theme .sg-audit-page-number {
+    width: 38px;
+    padding: 8px;
+}
+
+body.sg-reference-theme .sg-audit-page-btn:not(.disabled):hover,
+body.sg-reference-theme .sg-audit-page-number:not(.active):hover {
+    background: #E7EFE3;
+    border-color: #8EAA82;
+    color: #1F321C !important;
+}
+
+body.sg-reference-theme .sg-audit-page-number.active {
+    background: #293F25;
+    border-color: #293F25;
+    color: #FFFFFF !important;
+}
+
+body.sg-reference-theme .sg-audit-page-btn.disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+body.sg-reference-theme .sg-audit-page-ellipsis {
+    color: #667066;
+    font-weight: 900;
+}
+
+/* Detalle de lote y detalle de trazabilidad: encabezados totalmente centrados.
+   El título/subtítulo ocupan el centro real del banner y el badge se mantiene
+   anclado a la derecha sin desplazar el texto. */
+body.sg-reference-theme .sg-centered-detail-head {
+    position: relative !important;
+    min-height: 150px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px 210px !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-head > div:first-child {
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-head h1,
+body.sg-reference-theme .sg-centered-detail-head p {
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-head .Detalle-actions {
+    position: absolute !important;
+    top: 50% !important;
+    right: 28px !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-hero {
+    min-height: 175px !important;
+    padding: 28px 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-hero .Detalle-visual-hero-content {
+    width: 100% !important;
+    max-width: 980px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-hero h1,
+body.sg-reference-theme .sg-centered-detail-hero .Detalle-visual-badge {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+body.sg-reference-theme .sg-centered-detail-hero .Detalle-visual-line {
+    margin: 12px auto !important;
+}
+
+@media (max-width: 900px) {
+    body.sg-reference-theme .sg-audit-pager {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    body.sg-reference-theme .sg-audit-pager-page { text-align: center; }
+
+    body.sg-reference-theme .sg-centered-detail-head {
+        min-height: 0 !important;
+        padding: 24px !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+    }
+
+    body.sg-reference-theme .sg-centered-detail-head .Detalle-actions {
+        position: static !important;
+        transform: none !important;
+    }
+}
+
+@media (max-width: 560px) {
+    body.sg-reference-theme .sg-audit-pager-controls {
+        flex-wrap: wrap;
+    }
+    body.sg-reference-theme .sg-audit-page-btn {
+        padding: 8px 10px;
+    }
+    body.sg-reference-theme .sg-centered-detail-hero {
+        min-height: 150px !important;
+        padding: 22px 18px !important;
+    }
+}
+
+/* ============================================================
+   V7 - Alineación final de banners de detalle
+   Mantiene exactamente el mismo ancho y centrado horizontal para
+   el encabezado claro y el hero fotográfico de todas las vistas
+   de detalle. Corrige el margen: 0 heredado del override global.
+   ============================================================ */
+body.sg-reference-theme .Detalle-page-head,
+body.sg-reference-theme .Detalle-visual-hero {
+    width: calc(100% - 56px) !important;
+    max-width: 1720px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Conserva la unión visual encabezado + hero sin perder centrado. */
+body.sg-reference-theme .Detalle-page-head:has(+ .Detalle-visual-hero) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 0 !important;
+}
+
+body.sg-reference-theme .Detalle-page-head + .Detalle-visual-hero {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 18px !important;
+}
+
+/* Las dos vistas señaladas quedan forzadas a la misma caja geométrica. */
+body.sg-reference-theme .sg-centered-detail-head,
+body.sg-reference-theme .sg-centered-detail-hero,
+body.sg-reference-theme .trazabilidad-detail-head,
+body.sg-reference-theme .trazabilidad-detail-hero {
+    width: calc(100% - 56px) !important;
+    max-width: 1720px !important;
+    box-sizing: border-box !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+@media (max-width: 768px) {
+    body.sg-reference-theme .Detalle-page-head,
+    body.sg-reference-theme .Detalle-visual-hero,
+    body.sg-reference-theme .sg-centered-detail-head,
+    body.sg-reference-theme .sg-centered-detail-hero,
+    body.sg-reference-theme .trazabilidad-detail-head,
+    body.sg-reference-theme .trazabilidad-detail-hero {
+        width: calc(100% - 28px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* =========================================================
+   PORTAL CLIENTE: FONDO DE IMAGEN COMPLETO DE ARRIBA A ABAJO
+   Aplica la imagen de fondo de cafetal en todo el body y elimina
+   el color cafe solido y los bloques claros de arriba a abajo.
+   ========================================================= */
+html,
+body.rc-client-body,
+body.cafe-portal-body {
+    min-height: 100vh !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #1c1713 !important;
+    background-image:
+        linear-gradient(rgba(26, 22, 18, 0.20), rgba(26, 22, 18, 0.15)),
+        url('/images/dashboard/coffee-farm-client-hd.jpg') !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+body.rc-client-body .cafe-portal-shell,
+body.cafe-portal-body .cafe-portal-shell {
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: transparent !important;
+}
+
+body.rc-client-body .cafe-portal-main,
+body.cafe-portal-body .cafe-portal-main {
+    flex: 1 0 auto !important;
+    background: transparent !important;
+    padding-bottom: 60px !important;
+}
+
+/* =========================================================
+   ESTILO DE MODAL DE CONFIRMACIÓN DE ELIMINACIÓN Y ALERTAS
+   ========================================================= */
+#sgGlobalConfirmModal {
+    backdrop-filter: blur(4px);
+}
+
+#sgGlobalConfirmModal .modal-content {
+    border-radius: 24px !important;
+    background: #faf9f5 !important;
+    border: 1px solid rgba(41, 75, 42, 0.14) !important;
+    box-shadow: 0 25px 60px rgba(26, 22, 18, 0.28) !important;
+}
+
+#sgGlobalConfirmModal #sgConfirmModalBtnCancel:hover {
+    background: #dcd6c9 !important;
+    color: #294b2a !important;
+}
+
+#sgGlobalConfirmModal #sgConfirmModalBtnConfirm:hover {
+    opacity: 0.94;
+    box-shadow: 0 6px 18px rgba(142, 60, 44, 0.45) !important;
+}
+
+

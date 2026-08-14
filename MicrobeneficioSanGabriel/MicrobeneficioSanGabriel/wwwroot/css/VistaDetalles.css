@@ -614,3 +614,29 @@
         width: 100% !important;
     }
 }
+
+/* Sprint 4 - trazabilidad real de pedidos */
+.pedido-trace-section {
+    margin-top: 28px;
+    padding: 24px;
+    border: 1px solid rgba(55, 83, 45, .14);
+    border-radius: 20px;
+    background: #fbfcf9;
+}
+.pedido-trace-head { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; margin-bottom:20px; }
+.pedido-trace-kicker { display:inline-flex; align-items:center; gap:7px; color:#557047; font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+.pedido-trace-head h3 { margin:6px 0 4px; color:#294426; font-size:1.25rem; }
+.pedido-trace-head p { margin:0; color:#6c7568; font-size:.9rem; }
+.pedido-trace-count, .pedido-trace-current { border-radius:999px; padding:6px 10px; background:#eef4ea; color:#49653e; font-size:.72rem; font-weight:800; white-space:nowrap; }
+.pedido-trace-list { list-style:none; margin:0; padding:0; }
+.pedido-trace-item { position:relative; display:grid; grid-template-columns:34px 1fr; gap:12px; padding-bottom:20px; }
+.pedido-trace-item:not(:last-child)::before { content:""; position:absolute; left:16px; top:28px; bottom:0; width:2px; background:#d9e3d4; }
+.pedido-trace-dot { position:relative; z-index:1; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:#e9f1e5; color:#56784a; font-size:.72rem; }
+.pedido-trace-item.is-current .pedido-trace-dot { background:#355c31; color:#fff; box-shadow:0 0 0 5px rgba(53,92,49,.10); }
+.pedido-trace-copy { min-width:0; padding-top:2px; }
+.pedido-trace-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.pedido-trace-copy strong { color:#2f472b; font-size:1rem; }
+.pedido-trace-copy time { display:block; margin-top:3px; color:#7a8176; font-size:.82rem; }
+.pedido-trace-copy small { display:block; margin-top:5px; color:#6b7368; }
+.pedido-trace-empty { display:flex; gap:10px; align-items:center; padding:16px; border-radius:14px; background:#f2f5ef; color:#687263; }
+@media (max-width:700px) { .pedido-trace-head { flex-direction:column; } .pedido-trace-section { padding:18px; } }

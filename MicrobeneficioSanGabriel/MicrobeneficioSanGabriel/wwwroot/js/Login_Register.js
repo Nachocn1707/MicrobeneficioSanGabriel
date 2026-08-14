@@ -53,79 +53,42 @@ const emailInput = document.getElementById("email");
 const form = document.querySelector("#registerForm");
 
 if (form) {
-    form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
+    form.addEventListener("submit", function (e) {
+        // La confirmación de registro depende SIEMPRE de la respuesta del servidor.
+        // No mostrar "Revisá tu correo" antes de comprobar correo duplicado,
+        // campos requeridos y creación real de la cuenta.
         if (!form.reportValidity()) {
+            e.preventDefault();
             return;
         }
-        const password = document.getElementById("password");
-        const confirmPassword = document.getElementById("confirmPassword");
-        if (password && confirmPassword) {
-            const value = password.value;
+
+        const passwordField = document.getElementById("password");
+        const confirmPasswordField = document.getElementById("confirmPassword");
+
+        if (passwordField && confirmPasswordField) {
+            const value = passwordField.value;
             const validPassword =
                 value.length >= 8 &&
                 /[A-Z]/.test(value) &&
                 /[a-z]/.test(value) &&
                 /[0-9]/.test(value) &&
                 /[^A-Za-z0-9]/.test(value);
-            const match = password.value === confirmPassword.value;
+
+            const match = passwordField.value === confirmPasswordField.value;
+
             if (!validPassword || !match) {
+                e.preventDefault();
+                validate();
                 return;
             }
         }
-        await Swal.fire({
-            html: `
-            <div style="padding:10px 5px;">
-                <div style="
-                    width:85px;
-                    height:85px;
-                    margin:0 auto 25px;
-                    background:#5c3317;
-                    border-radius:50%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    box-shadow:0 10px 25px rgba(0,0,0,0.15);">
-                    <i class="fa-solid fa-envelope"
-                       style="
-                        color:#f8f5e9;
-                        font-size:34px;">
-                    </i>
-                </div>
-                <h2 style="
-                    color:#2b1408;
-                    font-size:30px;
-                    font-weight:800;
-                    margin-bottom:18px;">
 
-                    Revisá tu correo
-                </h2>
-                <p style="
-                    color:#666;
-                    font-size:15px;
-                    line-height:1.8;
-                    margin-bottom:30px;">
-
-                    Te enviamos un enlace para confirmar tu cuenta.
-                </p>
-            </div>
-            `,
-            confirmButtonText: 'ENTENDIDO',
-            confirmButtonColor: '#5c3317',
-            background: '#f8f5e9',
-            color: '#2d2d2d',
-            width: '480px',
-            padding: '2.5rem',
-            borderRadius: '28px',
-            customClass: {
-                popup: 'custom-register-popup',
-                confirmButton: 'custom-register-button'
-            }
-        });
-        HTMLFormElement.prototype.submit.call(form);
+        // Si todo es válido en cliente, el POST continúa normalmente.
+        // ASP.NET Identity decide si el correo ya existe y solo cuando la
+        // creación es exitosa redirige a la pantalla de confirmación.
     });
 }
+
 function toggle(id, valid) {
 
     const element = document.getElementById(id);

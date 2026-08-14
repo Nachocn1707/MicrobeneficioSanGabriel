@@ -14,9 +14,11 @@
 
     string etapaClase = Model.Etapa switch
     {
-        "Completado" or "Finalizado" => "movimiento-estado movimiento-entrada",
-        "En Proceso" or "Procesamiento" or "Recepción" => "movimiento-estado movimiento-neutral",
-        "Detenido" or "Cancelado" => "movimiento-estado movimiento-salida",
+        "Lavado" => "movimiento-estado movimiento-neutral",
+        "Secado" => "movimiento-estado movimiento-neutral",
+        "Tostado" => "movimiento-estado movimiento-entrada",
+        "Molido" => "movimiento-estado movimiento-entrada",
+        "Empaque" => "movimiento-estado movimiento-entrada",
         _ => "movimiento-estado movimiento-neutral"
     };
 }
@@ -25,7 +27,7 @@
     <link rel="stylesheet" href="~/css/VistaDetalles.css" />
 }
 
-<section class="Detalle-page-head">
+<section class="Detalle-page-head trazabilidad-detail-head sg-centered-detail-head">
     <div>
         <h1>Detalle de trazabilidad</h1>
         <p>Consulta el seguimiento del lote, su etapa actual y la producción asociada.</p>
@@ -33,16 +35,6 @@
     <div class="Detalle-actions">
         <span class="movimiento-badge-top">
             Registro #@Model.Id
-        </span>
-    </div>
-</section>
-
-<section class="Detalle-visual-hero Detalle-hero-inventario">
-    <div class="Detalle-visual-hero-content">
-        <h1>Lote: @loteCodigo</h1>
-        <div class="Detalle-visual-line"></div>
-        <span class="Detalle-visual-badge">
-            <i class="fa-solid fa-route"></i> @productor · @finca
         </span>
     </div>
 </section>
@@ -132,6 +124,15 @@
                     </span>
                 </div>
 
+                <div class="EstiloDetalle-detail-item">
+                    <span class="EstiloDetalle-detail-label">
+                        <i class="fa-solid fa-bolt"></i> TIPO DE REGISTRO
+                    </span>
+                    <span class="EstiloDetalle-detail-value">
+                        @(Model.EsAutomatico ? "Automático desde producción" : "Histórico manual")
+                    </span>
+                </div>
+
                 <div class="EstiloDetalle-detail-item full">
                     <span class="EstiloDetalle-detail-label">
                         <i class="fa-solid fa-align-left"></i> OBSERVACIÓN
@@ -154,11 +155,12 @@
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
                 {
-                    <a asp-action="Edit"
-                       asp-route-id="@Model.Id"
+                    <a asp-controller="Producciones"
+                       asp-action="Edit"
+                       asp-route-id="@Model.ProduccionId"
                        class="btn-EstiloDetalle btn-EstiloDetalle-warning">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        Editar
+                        <i class="fa-solid fa-industry"></i>
+                        Gestionar producción
                     </a>
                 }
 

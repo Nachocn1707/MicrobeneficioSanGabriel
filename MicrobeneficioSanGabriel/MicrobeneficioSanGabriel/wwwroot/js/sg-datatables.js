@@ -51,6 +51,23 @@
         return null;
     }
 
+    function removePlaceholderRows(table) {
+        const headerColumns = table.querySelectorAll("thead th").length;
+        if (headerColumns === 0) return;
+
+        table.querySelectorAll("tbody tr").forEach(row => {
+            const cells = row.querySelectorAll(":scope > td, :scope > th");
+            if (cells.length !== 1) return;
+
+            const colspan = Number(cells[0].getAttribute("colspan") || "1");
+            if (colspan >= headerColumns) {
+                // DataTables no admite colspan en tbody para una fila de datos.
+                // Su mensaje emptyTable reemplaza correctamente esta fila vacía.
+                row.remove();
+            }
+        });
+    }
+
     function initTable(table) {
         if (!table || !table.id || table.dataset.sgDtProcessed === "true") {
             return getApi(table);
@@ -61,6 +78,8 @@
         if (!hasDataTables()) {
             return null;
         }
+
+        removePlaceholderRows(table);
 
         try {
             const api = isDataTable(table)
