@@ -230,46 +230,422 @@ canvas[id$="Chart"] {
     transform: translateY(-1px);
 }
 
-/* Cliente: Hero más integrado, accesos arriba y tarjetas compactas. */
-.cafe-portal-main {
-    padding-top: 22px !important;
+body.rc-client-body .cafe-portal-main {
+    padding-top: 20px !important;
 }
 
-.cafe-welcome,
-.cafe-welcome-hero {
-    min-height: 0 !important;
-    max-height: none !important;
-    grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr) !important;
-    border-radius: 22px !important;
-    overflow: hidden;
-    margin-bottom: 16px !important;
+body.rc-client-body .cafe-welcome.sg-ref-hero,
+.cafe-welcome.sg-ref-hero {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 480px !important;
+    padding: clamp(34px, 4.5vw, 52px) clamp(30px, 4.5vw, 56px) clamp(28px, 4vw, 44px) !important;
+    border-radius: 28px !important;
+    border: 1px solid rgba(212, 163, 115, 0.22) !important;
+    background: url('/images/visual/coffee-banner-hd.jpg') center/cover no-repeat !important;
+    box-shadow: 0 24px 60px rgba(10, 7, 5, 0.45) !important;
+    margin-bottom: 24px !important;
 }
 
-.cafe-welcome-content {
-    padding: clamp(24px, 3vw, 40px) !important;
+body.rc-client-body .cafe-welcome.sg-ref-hero::before,
+.cafe-welcome.sg-ref-hero::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    background: linear-gradient(108deg, rgba(8, 6, 4, 0.94) 0%, rgba(14, 10, 7, 0.86) 42%, rgba(18, 12, 8, 0.58) 78%, rgba(12, 8, 5, 0.38) 100%) !important;
 }
 
-.cafe-welcome h1,
-.cafe-welcome-content h1 {
-    font-size: clamp(2.1rem, 4vw, 3.65rem) !important;
-    line-height: .98 !important;
-    margin-bottom: 14px !important;
+.sg-ref-hero-body {
+    position: relative !important;
+    z-index: 2 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.95fr) !important;
+    gap: clamp(24px, 4vw, 48px) !important;
+    align-items: center !important;
+    width: 100% !important;
 }
 
-.cafe-welcome-content>p {
-    max-width: 620px;
-    font-size: .98rem !important;
+.sg-ref-hero-left {
+    position: relative !important;
+    width: 100% !important;
 }
 
-.cafe-welcome-visual {
-    min-height: 300px !important;
-    max-height: 390px !important;
+.sg-ref-eyebrow {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
 }
 
-.cafe-welcome-visual img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.sg-ref-eyebrow-line {
+    width: 32px !important;
+    height: 1px !important;
+    background: rgba(212, 163, 115, 0.45) !important;
+    display: inline-block !important;
+}
+
+.sg-ref-eyebrow-icon {
+    color: #d4a373 !important;
+    font-size: 0.88rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.sg-ref-eyebrow-text {
+    color: #d4a373 !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.16em !important;
+    text-transform: uppercase !important;
+}
+
+.sg-ref-title {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif !important;
+    color: #ffffff !important;
+    font-size: clamp(2.6rem, 4.4vw, 4.3rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.025em !important;
+    font-weight: 700 !important;
+    margin: 0 0 10px 0 !important;
+    text-transform: none !important;
+}
+
+.sg-ref-title-gold {
+    color: #d4a373 !important;
+    font-style: normal !important;
+    font-family: inherit !important;
+}
+
+.sg-ref-title-underline {
+    width: 44px !important;
+    height: 2.5px !important;
+    background: #d4a373 !important;
+    border-radius: 2px !important;
+    margin-bottom: 20px !important;
+}
+
+.sg-ref-desc {
+    color: #c4b5a7 !important;
+    font-size: clamp(0.94rem, 1.05vw, 1.04rem) !important;
+    line-height: 1.68 !important;
+    max-width: 500px !important;
+    margin: 0 0 26px 0 !important;
+}
+
+.sg-ref-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 14px !important;
+    margin-bottom: 26px !important;
+}
+
+.sg-ref-btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 48px !important;
+    padding: 0 24px !important;
+    border-radius: 999px !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    background: rgba(38, 58, 32, 0.90) !important;
+    border: 1px solid rgba(133, 196, 107, 0.40) !important;
+    text-decoration: none !important;
+    backdrop-filter: blur(8px) !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.sg-ref-btn-primary:hover {
+    color: #ffffff !important;
+    background: #34542a !important;
+    border-color: rgba(133, 196, 107, 0.65) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+.sg-ref-btn-secondary {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 48px !important;
+    padding: 0 24px !important;
+    border-radius: 999px !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    background: rgba(16, 12, 8, 0.50) !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    text-decoration: none !important;
+    backdrop-filter: blur(8px) !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.sg-ref-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: #d4a373 !important;
+    color: #d4a373 !important;
+    transform: translateY(-2px) !important;
+}
+
+.sg-ref-arrow {
+    font-size: 0.76rem !important;
+    transition: transform 0.2s ease !important;
+}
+
+.sg-ref-btn-primary:hover .sg-ref-arrow,
+.sg-ref-btn-secondary:hover .sg-ref-arrow {
+    transform: translateX(3px) !important;
+}
+
+.sg-ref-stock-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    background: rgba(14, 10, 7, 0.68) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 16px !important;
+    padding: 14px 20px !important;
+    backdrop-filter: blur(14px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+.sg-ref-stock-icon {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(212, 163, 115, 0.45) !important;
+    color: #d4a373 !important;
+    display: grid !important;
+    place-items: center !important;
+    font-size: 1.15rem !important;
+    background: rgba(212, 163, 115, 0.10) !important;
+    flex-shrink: 0 !important;
+}
+
+.sg-ref-stock-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+}
+
+.sg-ref-stock-label {
+    color: #a89a8c !important;
+    font-size: 0.68rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+}
+
+.sg-ref-stock-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: #4ade80 !important;
+    box-shadow: 0 0 8px #4ade80 !important;
+}
+
+.sg-ref-stock-qty {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    line-height: 1.1 !important;
+    margin: 2px 0 !important;
+    font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+.sg-ref-stock-sub {
+    color: #948578 !important;
+    font-size: 0.74rem !important;
+    display: block !important;
+}
+
+.sg-ref-hero-right {
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+}
+
+.sg-ref-harvest-card {
+    position: relative !important;
+    background: rgba(16, 12, 8, 0.72) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 20px !important;
+    padding: 32px 26px 22px !important;
+    backdrop-filter: blur(20px) !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    margin: 0 auto !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+.sg-ref-harvest-tag {
+    position: absolute !important;
+    top: -14px !important;
+    left: 20px !important;
+    background: #d4a373 !important;
+    color: #160f09 !important;
+    font-size: 0.68rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+    padding: 5px 14px !important;
+    border-radius: 999px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.sg-ref-spec-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin-top: 4px !important;
+}
+
+.sg-ref-spec-item {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+}
+
+.sg-ref-spec-icon {
+    color: #d4a373 !important;
+    font-size: 1.15rem !important;
+    margin-top: 2px !important;
+    flex-shrink: 0 !important;
+}
+
+.sg-ref-spec-info small {
+    display: block !important;
+    color: #a49486 !important;
+    font-size: 0.66rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.09em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 2px !important;
+}
+
+.sg-ref-spec-info strong {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+}
+
+.sg-ref-harvest-footer {
+    margin-top: 18px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+    text-align: center !important;
+    color: #d4a373 !important;
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+}
+
+.sg-ref-bottom-bar {
+    position: relative !important;
+    z-index: 2 !important;
+    margin-top: 36px !important;
+    background: rgba(14, 10, 7, 0.72) !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    border-radius: 16px !important;
+    padding: 18px 28px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr auto 1fr !important;
+    align-items: center !important;
+    gap: 20px !important;
+    backdrop-filter: blur(14px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+.sg-ref-benefit-col {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+.sg-ref-benefit-icon {
+    font-size: 1.6rem !important;
+    color: #d4a373 !important;
+    flex-shrink: 0 !important;
+}
+
+.sg-ref-benefit-text strong {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: 0.90rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 2px !important;
+}
+
+.sg-ref-benefit-text small {
+    display: block !important;
+    color: #9c8e82 !important;
+    font-size: 0.76rem !important;
+}
+
+.sg-ref-benefit-divider {
+    width: 1px !important;
+    height: 36px !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+}
+
+@media (max-width: 991px) {
+    .sg-ref-hero-body {
+        grid-template-columns: 1fr !important;
+        gap: 28px !important;
+    }
+
+    .sg-ref-harvest-card {
+        max-width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .sg-ref-bottom-bar {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .sg-ref-benefit-divider {
+        display: none !important;
+    }
+}
+
+@media (max-width: 576px) {
+
+    body.rc-client-body .cafe-welcome.sg-ref-hero,
+    .cafe-welcome.sg-ref-hero {
+        padding: 28px 18px !important;
+        border-radius: 20px !important;
+    }
+
+    .sg-ref-title {
+        font-size: clamp(2rem, 8.5vw, 2.5rem) !important;
+    }
+
+    .sg-ref-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .sg-ref-btn-primary,
+    .sg-ref-btn-secondary {
+        width: 100% !important;
+        justify-content: center !important;
+    }
 }
 
 .cafe-summary-grid {
@@ -1758,7 +2134,7 @@ body.cafe-portal-body .cafe-portal-main {
    - Consistencia visual de tarjetas/targets
    ========================================================= */
 
-body.sg-reference-theme > .sg-notification-dock--admin {
+body.sg-reference-theme>.sg-notification-dock--admin {
     position: fixed !important;
     top: 14px !important;
     right: 20px !important;
@@ -1778,19 +2154,19 @@ body.sg-reference-theme > .sg-notification-dock--admin {
     pointer-events: none !important;
 }
 
-body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap {
+body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-wrap {
     position: relative !important;
     z-index: 2147483641 !important;
     pointer-events: auto !important;
 }
 
-body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button {
+body.sg-reference-theme>.sg-notification-dock--admin .demo-icon-button {
     position: relative !important;
     z-index: 2147483642 !important;
     pointer-events: auto !important;
 }
 
-body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-panel {
     position: fixed !important;
     top: 76px !important;
     right: 20px !important;
@@ -1813,7 +2189,7 @@ body.sg-reference-theme .sg-page-head {
 }
 
 body.sg-reference-theme .sg-donut.sg-donut-orders .sg-donut-center,
-body.sg-reference-theme .sg-donut.sg-donut-orders > div {
+body.sg-reference-theme .sg-donut.sg-donut-orders>div {
     inset: 26% !important;
     width: auto !important;
     height: auto !important;
@@ -1823,12 +2199,12 @@ body.sg-reference-theme .sg-donut.sg-donut-orders > div {
 }
 
 body.sg-reference-theme .sg-donut.sg-donut-orders .sg-donut-center b,
-body.sg-reference-theme .sg-donut.sg-donut-orders > div b {
+body.sg-reference-theme .sg-donut.sg-donut-orders>div b {
     margin: 0 !important;
 }
 
 body.sg-reference-theme .sg-donut.sg-donut-orders .sg-donut-center span,
-body.sg-reference-theme .sg-donut.sg-donut-orders > div span {
+body.sg-reference-theme .sg-donut.sg-donut-orders>div span {
     display: block !important;
     max-width: 74px !important;
     margin: 6px auto 0 !important;
@@ -1839,12 +2215,12 @@ body.sg-reference-theme .sg-donut.sg-donut-orders > div span {
 }
 
 @media (max-width: 640px) {
-    body.sg-reference-theme > .sg-notification-dock--admin {
+    body.sg-reference-theme>.sg-notification-dock--admin {
         top: 10px !important;
         right: 12px !important;
     }
 
-    body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+    body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-panel {
         top: 70px !important;
         right: 12px !important;
         left: 12px !important;
@@ -1939,8 +2315,8 @@ body.sg-reference-theme .EstiloEditaR-title p {
 
 /* Campana completamente fija respecto al viewport. El wrapper también es fixed
    para que no dependa de ningún contenedor que haga scroll o tenga transform. */
-html body.sg-reference-theme > .sg-notification-dock--admin,
-html body.sg-reference-theme > .sg-notification-dock {
+html body.sg-reference-theme>.sg-notification-dock--admin,
+html body.sg-reference-theme>.sg-notification-dock {
     position: fixed !important;
     inset: 14px 20px auto auto !important;
     top: 14px !important;
@@ -1958,8 +2334,8 @@ html body.sg-reference-theme > .sg-notification-dock {
     pointer-events: none !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
-html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-wrap,
+html body.sg-reference-theme>.sg-notification-dock .demo-notification-wrap {
     position: fixed !important;
     top: 14px !important;
     right: 20px !important;
@@ -1974,8 +2350,8 @@ html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
     pointer-events: auto !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button,
-html body.sg-reference-theme > .sg-notification-dock .demo-icon-button {
+html body.sg-reference-theme>.sg-notification-dock--admin .demo-icon-button,
+html body.sg-reference-theme>.sg-notification-dock .demo-icon-button {
     width: 58px !important;
     height: 58px !important;
     margin: 0 !important;
@@ -1983,8 +2359,8 @@ html body.sg-reference-theme > .sg-notification-dock .demo-icon-button {
     transition: box-shadow .15s ease, background-color .15s ease !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
-html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-panel,
+html body.sg-reference-theme>.sg-notification-dock .demo-notification-panel {
     position: fixed !important;
     top: 80px !important;
     right: 20px !important;
@@ -2023,7 +2399,7 @@ body.sg-reference-theme .sg-donut.sg-donut-reference::after {
 }
 
 body.sg-reference-theme .sg-donut.sg-donut-reference .sg-donut-center,
-body.sg-reference-theme .sg-donut.sg-donut-reference > div {
+body.sg-reference-theme .sg-donut.sg-donut-reference>div {
     position: absolute !important;
     inset: 31px !important;
     width: auto !important;
@@ -2095,16 +2471,17 @@ body.sg-reference-theme .sg-donut-wrap:has(.sg-donut-reference) .sg-mini-list {
 }
 
 @media (max-width: 640px) {
-    html body.sg-reference-theme > .sg-notification-dock--admin,
-    html body.sg-reference-theme > .sg-notification-dock,
-    html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
-    html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+
+    html body.sg-reference-theme>.sg-notification-dock--admin,
+    html body.sg-reference-theme>.sg-notification-dock,
+    html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-wrap,
+    html body.sg-reference-theme>.sg-notification-dock .demo-notification-wrap {
         top: 10px !important;
         right: 12px !important;
     }
 
-    html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
-    html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+    html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-panel,
+    html body.sg-reference-theme>.sg-notification-dock .demo-notification-panel {
         top: 74px !important;
         right: 12px !important;
         left: 12px !important;
@@ -2143,8 +2520,8 @@ html body.sg-reference-theme {
     position: relative !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin,
-html body.sg-reference-theme > .sg-notification-dock {
+html body.sg-reference-theme>.sg-notification-dock--admin,
+html body.sg-reference-theme>.sg-notification-dock {
     position: absolute !important;
     inset: 14px 20px auto auto !important;
     top: 14px !important;
@@ -2162,8 +2539,8 @@ html body.sg-reference-theme > .sg-notification-dock {
     pointer-events: none !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
-html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-wrap,
+html body.sg-reference-theme>.sg-notification-dock .demo-notification-wrap {
     position: absolute !important;
     top: 0 !important;
     right: 0 !important;
@@ -2178,16 +2555,16 @@ html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
     pointer-events: auto !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button,
-html body.sg-reference-theme > .sg-notification-dock .demo-icon-button {
+html body.sg-reference-theme>.sg-notification-dock--admin .demo-icon-button,
+html body.sg-reference-theme>.sg-notification-dock .demo-icon-button {
     width: 58px !important;
     height: 58px !important;
     margin: 0 !important;
     transform: none !important;
 }
 
-html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
-html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-panel,
+html body.sg-reference-theme>.sg-notification-dock .demo-notification-panel {
     position: absolute !important;
     top: calc(100% + 12px) !important;
     right: 0 !important;
@@ -2207,14 +2584,15 @@ body.sg-reference-theme .sg-main {
 }
 
 @media (max-width: 640px) {
-    html body.sg-reference-theme > .sg-notification-dock--admin,
-    html body.sg-reference-theme > .sg-notification-dock {
+
+    html body.sg-reference-theme>.sg-notification-dock--admin,
+    html body.sg-reference-theme>.sg-notification-dock {
         top: 10px !important;
         right: 12px !important;
     }
 
-    html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
-    html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+    html body.sg-reference-theme>.sg-notification-dock--admin .demo-notification-panel,
+    html body.sg-reference-theme>.sg-notification-dock .demo-notification-panel {
         position: fixed !important;
         top: 70px !important;
         right: 12px !important;
@@ -2251,6 +2629,7 @@ body.sg-reference-theme .sg-trazabilidad-kpis {
 }
 
 @media (max-width: 640px) {
+
     body.sg-reference-theme .sg-trazabilidad-filters,
     body.sg-reference-theme .sg-trazabilidad-kpis {
         grid-template-columns: 1fr !important;
