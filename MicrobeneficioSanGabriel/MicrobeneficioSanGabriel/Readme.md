@@ -1,4 +1,4 @@
-﻿# ☕ Sistema de Gestión Agroindustrial - Microbeneficio San Gabriel
+﻿# Sistema de Gestión Agroindustrial - Microbeneficio San Gabriel
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![Entity Framework Core](https://img.shields.io/badge/EF%20Core-8.0-512BD4?logo=nuget)](https://docs.microsoft.com/ef/)
@@ -9,7 +9,7 @@ Bienvenido a la documentación oficial del sistema de información para el **Mic
 
 ---
 
-## 👥 Integrantes del Proyecto - Grupo N° 3
+## Integrantes del Proyecto - Grupo N° 3
 
 * **Grupo:** N° 3
 * **Proyecto:** Sistema de Gestión y Trazabilidad Agroindustrial para Microbeneficio San Gabriel
@@ -22,42 +22,42 @@ Bienvenido a la documentación oficial del sistema de información para el **Mic
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 El proyecto está desarrollado bajo el patrón de arquitectura **Model-View-Controller (MVC)** en **.NET 8**, promoviendo un diseño limpio, desacoplado y mantenible.
 
 ```mermaid
 graph TD
-    Client[📱/💻 Cliente Web / Navegador] -->|HTTP / HTTPS| Controllers[🎮 Capa de Controladores - Controllers]
+    Client[Cliente Web / Navegador] -->|HTTP / HTTPS| Controllers[ Capa de Controladores - Controllers]
     
     subgraph Capa Presentación
-        Controllers --> Views[🖼️ Vistas Razor - Views / CSHTML]
-        Controllers --> IdentityPages[🔐 Páginas de Autenticación Identity]
+        Controllers --> Views[Vistas Razor - Views / CSHTML]
+        Controllers --> IdentityPages[Páginas de Autenticación Identity]
     end
 
     subgraph Capa de Servicios y Negocio
-        Controllers --> EmailSvc[📧 EmailService]
-        Controllers --> PedidoSvc[📦 PedidoInventarioService]
-        Controllers --> IASvc[🧠 AnalisisInventarioIAService / ReporteIAService]
-        Controllers --> AlertasSvc[🔔 AlertasSistemaService]
-        Controllers --> TrazabilidadHlp[🔍 TrazabilidadProcesoHelper]
-        Controllers --> AuditoriaHlp[📝 AuditoriaHelper]
+        Controllers --> EmailSvc[EmailService]
+        Controllers --> PedidoSvc[PedidoInventarioService]
+        Controllers --> IASvc[AnalisisInventarioIAService / ReporteIAService]
+        Controllers --> AlertasSvc[AlertasSistemaService]
+        Controllers --> TrazabilidadHlp[TrazabilidadProcesoHelper]
+        Controllers --> AuditoriaHlp[AuditoriaHelper]
     end
 
     subgraph Capa de Datos y Persistencia
-        PedidoSvc --> DbContext[🗄️ ApplicationDbContext - EF Core 8]
+        PedidoSvc --> DbContext[ApplicationDbContext - EF Core 8]
         IASvc --> DbContext
         AlertasSvc --> DbContext
         TrazabilidadHlp --> DbContext
         AuditoriaHlp --> DbContext
         Controllers --> DbContext
-        DbContext --> SQLServer[(💾 Base de Datos - SQL Server)]
+        DbContext --> SQLServer[(Base de Datos - SQL Server)]
     end
 
     subgraph Seguridad & Archivos
-        Identity[🔐 ASP.NET Core Identity] --> DbContext
-        DataProtection[🛡️ DataProtectionKeys Persistence] --> LocalDisk[📁 Disco Local / HOME]
-        PDFGen[📄 QuestPDF / Rotativa] --> PDFOutput[🖨️ Documentos PDF]
+        Identity[ASP.NET Core Identity] --> DbContext
+        DataProtection[DataProtectionKeys Persistence] --> LocalDisk[Disco Local / HOME]
+        PDFGen[QuestPDF / Rotativa] --> PDFOutput[Documentos PDF]
     end
 ```
 
@@ -70,23 +70,23 @@ graph TD
 
 ---
 
-## 🧱 Módulos del Sistema
+## Módulos del Sistema
 
 | Módulo | Descripción | Controladores / Vistas |
 | :--- | :--- | :--- |
-| 🌾 **Productores y Fincas** | Registro de caficultores, ubicación geográfica, variedades cultivadas, certificación y altitude de cosecha. | `ProductoresController`, `FincasController` |
-| ☕ **Lotes y Procesamiento** | Control de ingreso de café cereza/húmedo, tipo de beneficio (Lavado, Natural, Honey, Anaeróbico), mermas y procesos (despulpado, fermentado, secado, trillado, tostado). | `LotesController`, `ProduccionesController` |
-| 🔍 **Trazabilidad de Procesos** | Cadena de custodia del grano desde la recepción de la finca hasta el empaque final comercializable. | `TrazabilidadesController`, `TrazabilidadProcesoHelper` |
-| 📦 **Inventario y Productos** | Catálogo de presentaciones de café (grano, molido, especialidades), movimientos de entradas/salidas, stocks mínimos y máximos. | `ProductosController`, `MovimientosInventarioController` |
-| 🛒 **Ventas y Pedidos** | Carrito de compras, procesamiento de pedidos en línea, compras asistidas y ciclo de vida del pedido (Pendiente, Procesado, Enviado, Entregado). | `PedidosController`, `PedidoInventarioService` |
-| 🧾 **Facturación y Finanzas** | Emisión de comprobantes de pago, cálculo de impuestos (IVA 13%), descarga de facturas en PDF y control de ingresos/egresos del negocio. | `FacturasController`, `RegistrosFinancierosController`, `FacturaDocument` |
-| 📊 **Reportes e Inteligencia** | Paneles ejecutivos con métricas de rendimiento, informes de ventas, rentabilidad y diagnósticos asistidos por IA. | `ReportesController`, `AnalisisInventarioIAService`, `ReporteIAService` |
-| 🔔 **Notificaciones y Alertas** | Avisos en tiempo real para usuarios según stock bajo, lotes pendientes o cambios de estado en pedidos. | `NotificacionesController`, `AlertasSistemaService` |
-| 🔐 **Usuarios y Auditoría** | Gestión de cuentas, asignación de roles y registro inmutable de auditoría de cada acción relevante en el sistema. | `UsuariosController`, `AuditoriasController`, `AuditoriaHelper` |
+| **Productores y Fincas** | Registro de caficultores, ubicación geográfica, variedades cultivadas, certificación y altitude de cosecha. | `ProductoresController`, `FincasController` |
+| **Lotes y Procesamiento** | Control de ingreso de café cereza/húmedo, tipo de beneficio (Lavado, Natural, Honey, Anaeróbico), mermas y procesos (despulpado, fermentado, secado, trillado, tostado). | `LotesController`, `ProduccionesController` |
+| **Trazabilidad de Procesos** | Cadena de custodia del grano desde la recepción de la finca hasta el empaque final comercializable. | `TrazabilidadesController`, `TrazabilidadProcesoHelper` |
+| **Inventario y Productos** | Catálogo de presentaciones de café (grano, molido, especialidades), movimientos de entradas/salidas, stocks mínimos y máximos. | `ProductosController`, `MovimientosInventarioController` |
+| **Ventas y Pedidos** | Carrito de compras, procesamiento de pedidos en línea, compras asistidas y ciclo de vida del pedido (Pendiente, Procesado, Enviado, Entregado). | `PedidosController`, `PedidoInventarioService` |
+| **Facturación y Finanzas** | Emisión de comprobantes de pago, cálculo de impuestos (IVA 13%), descarga de facturas en PDF y control de ingresos/egresos del negocio. | `FacturasController`, `RegistrosFinancierosController`, `FacturaDocument` |
+| **Reportes e Inteligencia** | Paneles ejecutivos con métricas de rendimiento, informes de ventas, rentabilidad y diagnósticos asistidos por IA. | `ReportesController`, `AnalisisInventarioIAService`, `ReporteIAService` |
+| **Notificaciones y Alertas** | Avisos en tiempo real para usuarios según stock bajo, lotes pendientes o cambios de estado en pedidos. | `NotificacionesController`, `AlertasSistemaService` |
+| **Usuarios y Auditoría** | Gestión de cuentas, asignación de roles y registro inmutable de auditoría de cada acción relevante en el sistema. | `UsuariosController`, `AuditoriasController`, `AuditoriaHelper` |
 
 ---
 
-## 🛠️ Servicios Integrados
+## Servicios Integrados
 
 El sistema cuenta con una arquitectura de servicios inyectados por **Inyección de Dependencias (DI)**:
 
@@ -114,41 +114,41 @@ El sistema cuenta con una arquitectura de servicios inyectados por **Inyección 
 
 ---
 
-## 🔐 Roles de Usuario y Matriz de Permisos
+## Roles de Usuario y Matriz de Permisos
 
 El sistema implementa **ASP.NET Core Identity** habilitando 4 roles principales con permisos diferenciados:
 
-```
-                          ┌──────────────────────────┐
-                          │    🎭 ROLES DEL SISTEMA   │
-                          └─────────────┬────────────┘
-                                        │
-      ┌─────────────────┬───────────────┴───────────────┬─────────────────┐
-      ▼                 ▼                               ▼                 ▼
-👑 Administrador   ⚙️ Operador                      💼 Vendedor       🛍️ Cliente
- (Acceso Total)  (Procesamiento/Inventarios)       (Ventas/Facturas)  (Catálogo/Pedidos)
-```
+                                    ```
+                                                              ┌──────────────────────────┐
+                                                              │     ROLES DEL SISTEMA   │
+                                                              └─────────────┬────────────┘
+                                                                            │
+                                          ┌─────────────────┬───────────────┴───────────────┬─────────────────┐
+                                          ▼                 ▼                               ▼                 ▼
+                                     Administrador    Operador                       Vendedor       Cliente
+                                     (Acceso Total)  (Procesamiento/Inventarios)       (Ventas/Facturas)  (Catálogo/Pedidos)
+                                    ```
 
 ### Matriz de Permisos por Rol:
 
-| Funcionalidad / Módulo | 👑 Administrador | ⚙️ Operador | 💼 Vendedor | 🛍️ Cliente |
-| :--- | :---: | :---: | :---: | :---: |
-| **Gestión de Usuarios y Roles** | ✅ | ❌ | ❌ | ❌ |
-| **Bitácora de Auditoría** | ✅ | ❌ | ❌ | ❌ |
-| **Configuración General del Sistema** | ✅ | ❌ | ❌ | ❌ |
-| **Registro de Fincas y Productores** | ✅ | ✅ | ❌ | ❌ |
-| **Recepción y Procesamiento de Lotes** | ✅ | ✅ | ❌ | ❌ |
-| **Movimientos de Inventario de Café** | ✅ | ✅ | ❌ | ❌ |
-| **Consulta de Trazabilidad de Lotes** | ✅ | ✅ | ✅ | ✅ (Sólo sus compras) |
-| **Gestión de Ventas y Facturación** | ✅ | ❌ | ✅ | ❌ |
-| **Creación de Pedidos Asistidos** | ✅ | ❌ | ✅ | ❌ |
-| **Catálogo y Compra Online** | ✅ | ❌ | ❌ | ✅ |
-| **Historial de Mis Pedidos** | ✅ | ❌ | ❌ | ✅ |
-| **Visualización de Reportes e IA** | ✅ | ✅ | ✅ | ❌ |
+| Funcionalidad / Módulo        | 👑 Administrador | ⚙️ Operador | 💼 Vendedor | 🛍️ Cliente |
+
+| **Gestión de Usuarios y Roles**       | ✅       | ❌           | ❌         | ❌ |
+| **Bitácora de Auditoría**             | ✅       | ❌           | ❌         | ❌ |
+| **Configuración General del Sistema** | ✅       | ❌           | ❌         | ❌ |
+| **Registro de Fincas y Productores**  | ✅       | ✅           | ❌         | ❌ |
+| **Recepción y Procesamiento de Lotes**| ✅       | ✅           | ❌         | ❌ |
+| **Movimientos de Inventario de Café** | ✅       | ✅           | ❌         | ❌ |
+| **Consulta de Trazabilidad de Lotes** | ✅       | ✅           | ✅         | ✅ (Sólo sus compras) |
+| **Gestión de Ventas y Facturación**   | ✅       | ❌           | ✅         | ❌ |
+| **Creación de Pedidos Asistidos**     | ✅       | ❌           | ✅         | ❌ |
+| **Catálogo y Compra Online**          | ✅       | ❌           | ❌         | ✅ |
+| **Historial de Mis Pedidos**          | ✅       | ❌           | ❌         | ✅ |
+| **Visualización de Reportes e IA**    | ✅       | ✅           | ✅         | ❌ |
 
 ---
 
-## 💻 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 * **Framework Principal:** .NET 8.0 (C# 12) - ASP.NET Core MVC & Razor Pages
 * **ORM & Base de Datos:** Entity Framework Core 8.0 / Microsoft SQL Server
@@ -159,7 +159,7 @@ El sistema implementa **ASP.NET Core Identity** habilitando 4 roles principales 
 
 ---
 
-## 🚀 Guía de Instalación y Configuración Local
+## Guía de Instalación y Configuración Local
 
 ### Prerrequisitos
 1. **.NET 8.0 SDK** o superior ([Descargar aquí](https://dotnet.microsoft.com/download/dotnet/8.0))
@@ -203,7 +203,7 @@ El sistema implementa **ASP.NET Core Identity** habilitando 4 roles principales 
 
 ---
 
-## 📌 Sembrado de Datos e Inicios de Sesión (Seeding)
+## Sembrado de Datos e Inicios de Sesión (Seeding)
 
 El sistema incluye una clase de inicialización (`DbInitializer`) que al arrancar crea automáticamente los **4 roles del sistema** (`Administrador`, `Operador`, `Vendedor`, `Cliente`).
 
@@ -217,6 +217,6 @@ dotnet user-secrets set "AdminSeed:Apellidos" "General"
 
 ---
 
-## 📄 Licencia y Derechos
+## Licencia y Derechos
 
 Desarrollado como proyecto académico para el curso de Desarrollo Web / Ingeniería de Software por los integrantes del **Grupo N° 3**. Todos los derechos reservados © 2026 - Microbeneficio San Gabriel.

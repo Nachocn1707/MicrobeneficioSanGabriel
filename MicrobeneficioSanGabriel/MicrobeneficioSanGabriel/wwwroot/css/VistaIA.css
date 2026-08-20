@@ -387,9 +387,9 @@
 
 /* Override de Encabezados de Sección (Anula cajas flotantes sobrantes) */
 .sg-report-wrapper .sg-report-section-head {
-    padding: 2px 4px !important;
+    padding: 22px 24px !important;
     border: none !important;
-    border-radius: 5px !important;
+    border-radius: 20px !important;
     background: #EFECE4 !important;
     box-shadow: none !important;
     margin-bottom: 16px !important;
