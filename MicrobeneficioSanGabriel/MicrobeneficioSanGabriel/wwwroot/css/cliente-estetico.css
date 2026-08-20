@@ -745,7 +745,7 @@
 }
 
 .cafe-portal-header {
-    position: sticky;
+    position: static;
     top: 14px;
     z-index: 1000;
     width: calc(100% - 56px);
