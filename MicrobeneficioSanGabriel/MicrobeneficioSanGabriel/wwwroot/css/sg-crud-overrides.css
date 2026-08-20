@@ -728,17 +728,17 @@
   text-decoration: none;
 }
 
-.sg-main .btn-primary,
-.sg-main .btn.btn-primary,
-.sg-main .btn-guardar,
-.sg-main .btn-save,
-.sg-main .btn-success,
-.sg-main .btn.btn-success {
-  background: linear-gradient(135deg, var(--sg-green), var(--sg-green-2)) !important;
-  border-color: transparent !important;
-  color: #fff !important;
-  box-shadow: 0 12px 22px rgba(53, 95, 49, .22) !important;
-}
+    .sg-main .btn-primary,
+    .sg-main .btn.btn-primary,
+    .sg-main .btn-guardar,
+    .sg-main .btn-save,
+    .sg-main .btn-success,
+    .sg-main .btn.btn-success {
+        background: #293f25 !important;
+        border-color: transparent !important;
+        color: #fff !important;
+        box-shadow: 0 12px 22px rgba(53, 95, 49, .22) !important;
+    }
 
 .sg-main .btn-warning,
 .sg-main .btn.btn-warning,
@@ -775,6 +775,7 @@
 .sg-main .btn-volver:hover,
 .sg-main .btn-guardar:hover {
   transform: translateY(-1px);
+
 }
 
 .VistaCrear-actions,
@@ -782,11 +783,11 @@
 .EstiloDetalle-actions,
 .delete-actions,
 .payment-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 26px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 26px;
 }
 
 /* ---------- Generic helpers inside sg-cards ---------- */
@@ -1357,3 +1358,67 @@
   color: #244620 !important;
   border-color: #B7D0AE !important;
 }
+
+.btn-crear,
+.btn-guardar,
+.VistaCreaR-actions .btn-crear,
+.EstiloEditaR-actions .btn-guardar,
+.VistaCreaR-card button[type="submit"]:not(.btn-cancelar):not(.btn-volver),
+.EstiloEditaR-card button[type="submit"]:not(.btn-cancelar):not(.btn-volver),
+.sg-card form button[type="submit"]:not(.btn-danger):not(.btn-cancelar):not(.btn-volver),
+.sg-card button.btn-success,
+.sg-card button.btn-primary,
+.client-edit-save {
+  background-color: #293f25 !important;
+  background: #293f25 !important;
+  border-color: #293f25 !important;
+  color: #ffffff !important;
+}
+
+.btn-crear:hover,
+.btn-guardar:hover,
+.VistaCreaR-actions .btn-crear:hover,
+.EstiloEditaR-actions .btn-guardar:hover,
+.VistaCreaR-card button[type="submit"]:not(.btn-cancelar):not(.btn-volver):hover,
+.EstiloEditaR-card button[type="submit"]:not(.btn-cancelar):not(.btn-volver):hover,
+.sg-card form button[type="submit"]:not(.btn-danger):not(.btn-cancelar):not(.btn-volver):hover,
+.sg-card button.btn-success:hover,
+.sg-card button.btn-primary:hover,
+.client-edit-save:hover {
+  background-color: #1e2f1b !important;
+  background: #1e2f1b !important;
+  border-color: #1e2f1b !important;
+  color: #ffffff !important;
+}
+
+.btn-cancelar,
+.btn-volver,
+.VistaCreaR-actions .btn-cancelar,
+.EstiloEditaR-actions .btn-volver,
+.sg-card .btn-outline-secondary,
+.sg-card form a.btn-outline-secondary,
+.sg-card form a.btn-cancelar,
+.sg-card form a.btn-volver,
+.client-edit-back {
+  background-color: #ffffff;
+  color: #3a4d39 !important;
+  border: 1px solid #dcded6 !important;
+}
+
+.btn-cancelar:hover,
+.btn-volver:hover,
+.VistaCreaR-actions .btn-cancelar:hover,
+.EstiloEditaR-actions .btn-volver:hover,
+.sg-card .btn-outline-secondary:hover,
+.sg-card form a.btn-outline-secondary:hover,
+.sg-card form a.btn-cancelar:hover,
+.sg-card form a.btn-volver:hover,
+.client-edit-back:hover,
+.sg-cancel-button.secondary:hover,
+.sg-payment-button.secondary:hover {
+  background-color: #ebece6 !important;
+  background: #ebece6 !important;
+  color: #293f25 !important;
+  border-color: #dcded6 !important;
+}
+

@@ -2040,7 +2040,7 @@ body.rc-client-body .client-purchase-action.pay:hover,
 }
 
 .client-edit-back {
-    color: #284b25;
+    color: #293f25;
     border: 1px solid #cdd8c8;
     background: #ffffff;
 }
@@ -2048,21 +2048,21 @@ body.rc-client-body .client-purchase-action.pay:hover,
 .client-edit-save {
     color: #ffffff;
     border: 0;
-    background: #284b25;
-    box-shadow: 0 8px 20px rgba(40, 75, 37, .25);
+    background: #293f25;
+    box-shadow: 0 8px 20px rgba(41, 63, 37, .25);
 }
 
 .client-edit-back:hover {
-    color: #1c361a;
+    color: #1e2f1b;
     border-color: #b5c5af;
-    background: #f2f7f0;
+    background: #ebece6 !important;
     transform: translateY(-2px);
 }
 
 .client-edit-save:hover {
     color: #ffffff;
-    background: #1c361a;
-    box-shadow: 0 10px 24px rgba(28, 54, 26, .35);
+    background: #1e2f1b;
+    box-shadow: 0 10px 24px rgba(30, 47, 27, .35);
     transform: translateY(-2px);
 }
 

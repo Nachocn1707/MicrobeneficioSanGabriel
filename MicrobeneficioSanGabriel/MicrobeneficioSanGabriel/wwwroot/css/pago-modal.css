@@ -407,6 +407,10 @@ body.modal-open #paymentModal {
     background: #fff;
 }
 
+.sg-payment-button.secondary:hover {
+    background: #ebece6 !important;
+}
+
 .sg-payment-button.primary {
     min-width: 200px;
     border: 1px solid #3b2016;

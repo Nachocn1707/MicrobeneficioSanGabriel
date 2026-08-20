@@ -77,8 +77,9 @@ h1, h2, h3, h4 {
     hyphens: none !important;
 }
 
-    h1::after,
-    h2::after {
+    /* Solo en encabezados de pagina principales (no modales ni auth) */
+    h1:not(.swal2-title):not(.sgl-headline)::after,
+    h2:not(.swal2-title):not(.sgl-card-header h2):not(.sgl-state-card h2)::after {
         content: "";
         display: block;
         width: 72px;
@@ -87,6 +88,17 @@ h1, h2, h3, h4 {
         border-radius: 999px;
         background: linear-gradient(90deg, var(--cafe-medio), var(--amarillo-suave));
     }
+
+.swal2-container h1::after,
+.swal2-container h2::after,
+.swal2-container h3::after,
+.swal2-title::after,
+.sgl-shell h1::after,
+.sgl-shell h2::after,
+.sgl-card-header h2::after {
+    display: none !important;
+    content: none !important;
+}
 
 /* Tarjetas */
 .card {
@@ -135,38 +147,22 @@ h1, h2, h3, h4 {
     min-width: 240px;
 }
 
-/* Botones */
-.btn-primary,
-.btn-success,
-button[type="submit"],
-input[type="submit"] {
-    background: var(--cafe) !important;
-    border-color: var(--cafe) !important;
-    color: #fff8df !important;
-    font-weight: 700;
-    border-radius: 8px;
-}
 
-    .btn-primary:hover,
-    .btn-success:hover,
-    button[type="submit"]:hover,
-    input[type="submit"]:hover {
-        background: var(--cafe-oscuro) !important;
-        border-color: var(--cafe-oscuro) !important;
-    }
 
-/* Boton cerrar sesion */
+/* Boton cancelar / outline */
 .btn-outline-dark,
 .btn-outline-secondary {
-    border-color: var(--cafe) !important;
-    color: var(--cafe) !important;
+    border-color: #dcded6 !important;
+    color: #3a4d39 !important;
     border-radius: 8px;
+    background: #ffffff;
 }
 
     .btn-outline-dark:hover,
     .btn-outline-secondary:hover {
-        background: var(--cafe) !important;
-        color: #fff8df !important;
+        background: #ebece6 !important;
+        color: #293f25 !important;
+        border-color: #dcded6 !important;
     }
 
 /* Tablas */
@@ -307,30 +303,35 @@ input[type="submit"] {
             color: #7a5230 !important;
         }
 
-        /* Botones cafe */
+        /* Botones formulario */
         html body .btn-success,
         html body .btn-primary,
         html body .module-card .btn,
         html body .card .btn,
-        html body a.btn,
         html body button[type="submit"],
         html body input[type="submit"] {
-            background-color: #4a2c1a !important;
-            border-color: #4a2c1a !important;
-            color: #fff8df !important;
+            background-color: #293f25 !important;
+            border-color: #293f25 !important;
+            color: #ffffff !important;
         }
 
             html body .btn-success:hover,
             html body .btn-primary:hover,
             html body .module-card .btn:hover,
             html body .card .btn:hover,
-            html body a.btn:hover,
             html body button[type="submit"]:hover,
             html body input[type="submit"]:hover {
-                background-color: #2b160d !important;
-                border-color: #2b160d !important;
-                color: #fff8df !important;
+                background-color: #1e2f1b !important;
+                border-color: #1e2f1b !important;
+                color: #ffffff !important;
             }
+
+        html body .btn-outline-secondary:hover,
+        html body .btn-outline-dark:hover {
+            background-color: #ebece6 !important;
+            color: #293f25 !important;
+            border-color: #dcded6 !important;
+        }
 }
 
 .password-wrapper {
@@ -366,3 +367,268 @@ input[type="submit"] {
     .password-toggle:hover {
         color: #4b2413;
     }
+
+.swal2-container {
+    z-index: 99999 !important;
+}
+.swal2-container.swal2-backdrop-show:not(.swal2-no-backdrop):not(.swal2-bottom-end):not(.swal2-bottom-start):not(.swal2-top-end):not(.swal2-top-start) {
+    background: rgba(18, 12, 8, 0.58) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+body.swal2-toast-shown .swal2-container,
+.swal2-container.swal2-bottom-end,
+.swal2-container.swal2-bottom-start,
+.swal2-container.swal2-top-end,
+.swal2-container.swal2-top-start,
+.swal2-container.swal2-no-backdrop {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    pointer-events: none !important;
+}
+body.swal2-toast-shown .swal2-popup,
+.swal2-container.swal2-bottom-end .swal2-popup,
+.swal2-container.swal2-bottom-start .swal2-popup,
+.swal2-container.swal2-top-end .swal2-popup,
+.swal2-container.swal2-top-start .swal2-popup,
+.swal2-popup.swal2-toast {
+    pointer-events: auto !important;
+}
+
+.swal2-popup,
+.sgl-swal-popup {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(224, 172, 82, 0.3) !important;
+    box-shadow: 0 25px 70px -12px rgba(24, 16, 11, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.9) inset !important;
+    padding: 32px 28px 26px !important;
+    font-family: inherit !important;
+    width: 440px !important;
+    max-width: 92vw !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.swal2-popup::before,
+.sgl-swal-popup::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, #e0ac52, #df913a, #b8621b) !important;
+}
+
+.swal2-icon {
+    margin: 4px auto 16px !important;
+    width: 68px !important;
+    height: 68px !important;
+    border-width: 2px !important;
+}
+
+
+.swal2-icon.swal2-warning {
+    border-color: #df913a !important;
+    color: #df913a !important;
+    background: rgba(224, 172, 82, 0.12) !important;
+    box-shadow: 0 0 0 6px rgba(224, 172, 82, 0.1) !important;
+}
+
+.swal2-icon.swal2-warning .swal2-icon-content {
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    line-height: 64px !important;
+    color: #df913a !important;
+}
+
+.swal2-icon.swal2-success {
+    border-color: #3f8a58 !important;
+    color: #3f8a58 !important;
+    background: rgba(63, 138, 88, 0.12) !important;
+    box-shadow: 0 0 0 6px rgba(63, 138, 88, 0.1) !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #3f8a58 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(63, 138, 88, 0.3) !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #c0392b !important;
+    color: #c0392b !important;
+    background: rgba(192, 57, 43, 0.12) !important;
+    box-shadow: 0 0 0 6px rgba(192, 57, 43, 0.1) !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+    background-color: #c0392b !important;
+}
+
+.swal2-icon.swal2-info,
+.swal2-icon.swal2-question {
+    border-color: #7a5230 !important;
+    color: #7a5230 !important;
+    background: rgba(122, 82, 48, 0.12) !important;
+    box-shadow: 0 0 0 6px rgba(122, 82, 48, 0.1) !important;
+}
+
+.swal2-title,
+.sgl-swal-title {
+    color: #241a15 !important;
+    font-size: 1.32rem !important;
+    font-weight: 800 !important;
+    margin: 10px 0 6px !important;
+    padding: 0 !important;
+    letter-spacing: -0.02em !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
+}
+
+.swal2-title::after,
+.sgl-swal-title::after {
+    display: none !important;
+    content: none !important;
+}
+
+.swal2-html-container {
+    color: #5c4d41 !important;
+    font-size: 0.94rem !important;
+    line-height: 1.55 !important;
+    margin: 8px 0 20px !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+.sgl-swal-single-msg {
+    color: #5c4d41;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    font-weight: 500;
+}
+
+.sgl-swal-list-wrapper {
+    text-align: left;
+    margin-top: 6px;
+}
+
+.sgl-swal-subtitle {
+    font-size: 0.85rem;
+    color: #7c6f62;
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-weight: 600;
+}
+
+.sgl-swal-error-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.sgl-swal-error-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 13px;
+    background: rgba(224, 172, 82, 0.08);
+    border: 1px solid rgba(224, 172, 82, 0.22);
+    border-radius: 10px;
+    font-size: 0.86rem;
+    color: #3b2b20;
+    font-weight: 500;
+}
+
+.sgl-swal-error-list li i {
+    color: #df913a;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.swal2-actions {
+    margin: 18px 0 0 !important;
+    gap: 12px !important;
+    justify-content: center !important;
+}
+
+.swal2-confirm,
+.sgl-swal-confirm-btn {
+    background: linear-gradient(135deg, #e0ac52 0%, #df913a 100%) !important;
+    color: #241a15 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    padding: 12px 28px !important;
+    box-shadow: 0 8px 20px -4px rgba(223, 145, 58, 0.45) !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    min-width: 130px !important;
+}
+
+.swal2-confirm:hover,
+.sgl-swal-confirm-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 24px -4px rgba(223, 145, 58, 0.6) !important;
+    background: linear-gradient(135deg, #e5b45f 0%, #e69b46 100%) !important;
+    color: #1a120e !important;
+}
+
+.swal2-confirm:active,
+.sgl-swal-confirm-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 10px rgba(223, 145, 58, 0.4) !important;
+}
+
+.swal2-confirm:focus-visible,
+.sgl-swal-confirm-btn:focus-visible {
+    outline: 2px solid #df913a !important;
+    outline-offset: 2px !important;
+}
+
+.swal2-cancel {
+    background: rgba(224, 172, 82, 0.08) !important;
+    color: #5c4d41 !important;
+    border: 1px solid #e7ddd1 !important;
+    border-radius: 12px !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    padding: 12px 24px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.swal2-cancel:hover {
+    background: rgba(224, 172, 82, 0.16) !important;
+    border-color: #df913a !important;
+    color: #241a15 !important;
+}
+
+.swal2-close {
+    font-family: inherit !important;
+    color: #7c6f62 !important;
+    border-radius: 50% !important;
+    transition: all 0.2s ease !important;
+}
+
+.swal2-close:hover {
+    color: #241a15 !important;
+    background: rgba(224, 172, 82, 0.12) !important;
+}
+
+.swal2-timer-progress-bar {
+    display: none !important;
+}

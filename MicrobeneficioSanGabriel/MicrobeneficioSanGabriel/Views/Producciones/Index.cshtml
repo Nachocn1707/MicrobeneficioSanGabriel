@@ -235,6 +235,7 @@
                                                     title="Completar y avanzar a la siguiente etapa"
                                                     aria-label="Completar y avanzar a la siguiente etapa"
                                                     data-form-id="form-avanzar-@p.Id"
+                                                    data-lote="@(p.Lote?.CodigoLote ?? $"LO-{p.LoteId:0000}")"
                                                     data-proceso="@p.TipoProceso">
                                                 <i class="fa-solid fa-forward-step"></i>
                                             </button>
@@ -253,55 +254,7 @@
 </section>
 
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".js-confirmar-avance").forEach(function (boton) {
-                boton.addEventListener("click", function () {
-                    const formId = boton.dataset.formId;
-                    const proceso = boton.dataset.proceso || "la etapa actual";
-                    const formulario = document.getElementById(formId);
 
-                    if (!formulario) {
-                        return;
-                    }
+    <script src="~/js/ModalEstado.js" asp-append-version="true"></script>
 
-                    const confirmarAvance = function () {
-                        // submit() evita volver a disparar el evento del botón y mantiene el token antiforgery.
-                        formulario.submit();
-                    };
-
-                    if (typeof Swal === "undefined") {
-                        if (window.confirm(`¿Desea marcar ${proceso} como completado y avanzar automáticamente a la siguiente etapa?`)) {
-                            confirmarAvance();
-                        }
-                        return;
-                    }
-
-                    Swal.fire({
-                        title: "¿Confirmar avance?",
-                        text: `Se marcará ${proceso} como Completado y la siguiente etapa pasará automáticamente a En proceso.`,
-                        icon: "question",
-                        showCancelButton: true,
-                        confirmButtonText: '<i class="fa-solid fa-check me-2"></i>Confirmar',
-                        cancelButtonText: '<i class="fa-solid fa-xmark me-2"></i>Cancelar',
-                        reverseButtons: true,
-                        focusCancel: true,
-                        allowOutsideClick: false,
-                        buttonsStyling: true,
-                        confirmButtonColor: "#294b2a",
-                        cancelButtonColor: "#6f756c",
-                        customClass: {
-                            popup: "sg-production-confirm-popup",
-                            confirmButton: "px-4 py-2 rounded-pill fw-bold",
-                            cancelButton: "px-4 py-2 rounded-pill fw-bold"
-                        }
-                    }).then(function (resultado) {
-                        if (resultado.isConfirmed) {
-                            confirmarAvance();
-                        }
-                    });
-                });
-            });
-        });
-    </script>
 }

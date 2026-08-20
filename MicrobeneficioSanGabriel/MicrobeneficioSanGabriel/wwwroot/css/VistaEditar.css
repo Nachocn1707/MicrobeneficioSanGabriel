@@ -5,12 +5,13 @@
     --sg-input-bg: #fafafa; /* Blanco crema para los inputs */
     --sg-input-border: #dcded6; /* Borde beige sutil */
 
-    --sg-primary: #3a5333; /* Verde bosque principal */
-    --sg-primary-hover: #2b3e26; /* Verde oscuro hover */
+    --sg-primary: #293f25; /* Verde bosque principal para aceptar formulario */
+    --sg-primary-hover: #1e2f1b; /* Verde oscuro hover */
 
     --sg-cancel-bg: #ffffff; /* Blanco para botón volver/cancelar */
     --sg-cancel-text: #3a4d39; /* Texto oscuro botón volver */
     --sg-cancel-border: #dcded6; /* Borde botón volver */
+    --sg-cancel-hover-bg: #ebece6; /* Hover de cancelar para regresar */
 }
 
 .EstiloEditaR-page {
@@ -182,25 +183,35 @@ textarea.form-control {
     text-decoration: none !important;
 }
 
-.btn-guardar {
+.btn-guardar,
+.EstiloEditaR-page .btn-primary,
+.EstiloEditaR-card button[type="submit"]:not(.btn-volver) {
     border: none;
-    background: var(--sg-primary) !important;
+    background: #293f25 !important;
     color: #ffffff !important;
     cursor: pointer;
+    box-shadow: 0 4px 10px rgba(41, 63, 37, 0.2);
 }
 
-    .btn-guardar:hover {
-        background: var(--sg-primary-hover) !important;
+    .btn-guardar:hover,
+    .EstiloEditaR-page .btn-primary:hover,
+    .EstiloEditaR-card button[type="submit"]:not(.btn-volver):hover {
+        background: #1e2f1b !important;
+        box-shadow: 0 6px 14px rgba(41, 63, 37, 0.3);
     }
 
-.btn-volver {
+.btn-volver,
+.EstiloEditaR-page .btn-outline-secondary {
     background: var(--sg-cancel-bg) !important;
     color: var(--sg-cancel-text) !important;
     border: 1px solid var(--sg-cancel-border) !important;
 }
 
-    .btn-volver:hover {
-        background: #f5f6f2 !important;
+    .btn-volver:hover,
+    .EstiloEditaR-page .btn-outline-secondary:hover {
+        background: #ebece6 !important;
+        color: #293f25 !important;
+        border-color: var(--sg-cancel-border) !important;
     }
 
 @media (max-width: 768px) {

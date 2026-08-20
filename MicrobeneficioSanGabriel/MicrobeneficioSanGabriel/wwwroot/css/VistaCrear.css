@@ -1,14 +1,15 @@
-﻿:root {
+:root {
     --sg-bg-card: #ebece6; /* Beige suave de fondo de tarjeta */
     --sg-text-label: #3a4d39; /* Verde oliva oscuro para títulos/labels */
     --sg-text-muted: #8b9388; /* Gris/verde tenue para placeholders */
     --sg-input-bg: #fafafa; /* Blanco crema para los inputs */
     --sg-input-border: #dcded6; /* Borde beige/gris muy sutil */
-    --sg-primary: #3a5333; /* Verde bosque principal */
-    --sg-primary-hover: #2b3e26; /* Verde oscuro hover */
+    --sg-primary: #293f25; /* Verde bosque principal formulario */
+    --sg-primary-hover: #1e2f1b; /* Verde oscuro hover */
     --sg-cancel-bg: #ffffff; /* Blanco para el botón cancelar */
     --sg-cancel-text: #3a4d39; /* Texto oscuro botón cancelar */
     --sg-cancel-border: #dcded6; /* Borde cancelar */
+    --sg-cancel-hover-bg: #ebece6; /* Hover de cancelar para regresar */
 }
 
 .VistaCreaR-page {
@@ -312,28 +313,35 @@ textarea.form-control {
     text-decoration: none !important;
 }
 
-.btn-crear {
+.btn-crear,
+.VistaCreaR-page .btn-success,
+.VistaCreaR-card button[type="submit"]:not(.btn-cancelar) {
     border: none;
-    background: var(--sg-primary);
+    background: #293f25 !important;
     color: #ffffff !important;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(58, 83, 51, 0.2);
+    box-shadow: 0 4px 10px rgba(41, 63, 37, 0.2);
 }
 
-    .btn-crear:hover {
-        background: var(--sg-primary-hover);
-        box-shadow: 0 6px 14px rgba(58, 83, 51, 0.3);
+    .btn-crear:hover,
+    .VistaCreaR-page .btn-success:hover,
+    .VistaCreaR-card button[type="submit"]:not(.btn-cancelar):hover {
+        background: #1e2f1b !important;
+        box-shadow: 0 6px 14px rgba(41, 63, 37, 0.3);
     }
 
-.btn-cancelar {
+.btn-cancelar,
+.VistaCreaR-page .btn-outline-secondary {
     background: var(--sg-cancel-bg);
     color: var(--sg-cancel-text) !important;
     border: 1px solid var(--sg-cancel-border);
 }
 
-    .btn-cancelar:hover {
-        background: #f5f6f2;
-        color: var(--sg-primary-hover) !important;
+    .btn-cancelar:hover,
+    .VistaCreaR-page .btn-outline-secondary:hover {
+        background: #ebece6 !important;
+        color: #293f25 !important;
+        border-color: var(--sg-cancel-border) !important;
     }
 
 .sgl-back-home {

@@ -61,7 +61,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     icon: "warning",
                     title: "Contraseña inválida",
-                    text: "Debe contener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo."
+                    html: '<div class="sgl-swal-single-msg">Debe contener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo.</div>',
+                    confirmButtonText: '<i class="fa-solid fa-check me-2"></i>Entendido',
+                    customClass: {
+                        popup: "sgl-swal-popup",
+                        title: "sgl-swal-title",
+                        confirmButton: "sgl-swal-confirm-btn"
+                    },
+                    buttonsStyling: false
                 });
                 e.preventDefault();
                 return;
@@ -71,7 +78,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     icon: "warning",
                     title: "Contraseñas diferentes",
-                    text: "Las contraseñas no coinciden."
+                    html: '<div class="sgl-swal-single-msg">Las contraseñas no coinciden.</div>',
+                    confirmButtonText: '<i class="fa-solid fa-check me-2"></i>Entendido',
+                    customClass: {
+                        popup: "sgl-swal-popup",
+                        title: "sgl-swal-title",
+                        confirmButton: "sgl-swal-confirm-btn"
+                    },
+                    buttonsStyling: false
                 });
                 e.preventDefault();
             }
@@ -167,16 +181,34 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         event.stopPropagation();
 
-        const mensaje = errores[0];
         if (window.Swal) {
+            let htmlContent = "";
+            if (errores.length === 1) {
+                htmlContent = `<div class="sgl-swal-single-msg">${errores[0]}</div>`;
+            } else {
+                htmlContent = `
+                    <div class="sgl-swal-list-wrapper">
+                        <p class="sgl-swal-subtitle">Por favor complete o corrija los siguientes campos:</p>
+                        <ul class="sgl-swal-error-list">
+                            ${errores.map(e => `<li><i class="fa-solid fa-circle-exclamation"></i><span>${e}</span></li>`).join("")}
+                        </ul>
+                    </div>`;
+            }
+
             Swal.fire({
                 icon: "warning",
                 title: "Revise el formulario",
-                text: mensaje,
-                confirmButtonText: "Entendido"
+                html: htmlContent,
+                confirmButtonText: '<i class="fa-solid fa-check me-2"></i>Entendido',
+                customClass: {
+                    popup: "sgl-swal-popup",
+                    title: "sgl-swal-title",
+                    confirmButton: "sgl-swal-confirm-btn"
+                },
+                buttonsStyling: false
             });
         } else {
-            alert(mensaje);
+            alert(errores.join("\n"));
         }
     }, true);
 });

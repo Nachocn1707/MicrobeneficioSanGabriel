@@ -52,8 +52,10 @@
                         title: mensaje.titulo || "Información",
                         text: mensaje.texto || "",
                         showConfirmButton: false,
+                        showBackdrop: false,
+                        backdrop: false,
                         timer: mensaje.tipo === "error" ? 6000 : 4200,
-                        timerProgressBar: true,
+                        timerProgressBar: false,
                         didOpen: toast => {
                             toast.addEventListener("mouseenter", Swal.stopTimer);
                             toast.addEventListener("mouseleave", Swal.resumeTimer);

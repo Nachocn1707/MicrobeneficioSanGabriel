@@ -144,8 +144,9 @@ body.dark .text-secondary {
 }
 
     .sg-card .btn-outline-secondary:hover {
-        background: #D4C8B8;
-        color: #2C2420;
+        background: #ebece6 !important;
+        color: #293f25;
+        border-color: #dcded6;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }

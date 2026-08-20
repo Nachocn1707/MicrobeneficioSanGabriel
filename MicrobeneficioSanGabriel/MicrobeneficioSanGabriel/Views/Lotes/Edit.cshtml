@@ -49,8 +49,10 @@
             <partial name="_Form" model="Model" />
         }
         <div class="d-flex justify-content-end gap-2 mt-4">
-            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-            <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-2"></i>Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-volver">
+                <i class="fa-solid fa-arrow-left me-1"></i>Cancelar
+            </a>
+            <button class="btn btn-primary btn-guardar" type="submit"><i class="fa-solid fa-floppy-disk me-2"></i>Guardar cambios</button>
         </div>
     </form>
 </div>

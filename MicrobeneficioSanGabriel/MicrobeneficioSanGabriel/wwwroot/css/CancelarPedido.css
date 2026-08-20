@@ -268,7 +268,7 @@ body.modal-open #anularFacturaModal {
 .sg-cancel-button.secondary:hover {
     color: #4a2d20 !important;
     border-color: #cbb4a3 !important;
-    background: #f7ede5 !important;
+    background: #ebece6 !important;
 }
 
 .sg-cancel-button.danger {

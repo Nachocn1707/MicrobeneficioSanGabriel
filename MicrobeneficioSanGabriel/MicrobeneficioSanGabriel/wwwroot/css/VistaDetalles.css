@@ -4,11 +4,12 @@
     --sg-text-muted: #8b9388; /* Verde grisáceo para placeholders/íconos */
     --sg-input-bg: #fafafa; /* Blanco crema para tarjetas/inputs */
     --sg-input-border: #dcded6; /* Borde beige sutil */
-    --sg-primary: #3a5333;  /* Verde bosque principal */
-    --sg-primary-hover: #2b3e26; /* Verde oscuro hover */
+    --sg-primary: #293f25;  /* Verde bosque principal */
+    --sg-primary-hover: #1e2f1b; /* Verde oscuro hover */
     --sg-cancel-bg: #ffffff; /* Blanco para botón volver/cancelar */
     --sg-cancel-text: #3a4d39; /* Texto oscuro botón volver */
     --sg-cancel-border: #dcded6; /* Borde botón volver */
+    --sg-cancel-hover-bg: #ebece6; /* Hover cancelar para regresar */
     --Detalle-card: var(--sg-bg-card);
     --Detalle-card-item: var(--sg-input-bg);
     --Detalle-border: var(--sg-input-border);
@@ -558,9 +559,9 @@
 }
 
 .sg-details-page-container .VistaCrear-actions .btn-outline-secondary:hover {
-    color: #1c361a !important;
+    color: #293f25 !important;
     border-color: #b5c5af !important;
-    background: #f2f7f0 !important;
+    background: #ebece6 !important;
     transform: translateY(-2px) !important;
 }
 

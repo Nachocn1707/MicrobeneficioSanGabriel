@@ -177,6 +177,11 @@
     text-decoration: none;
 }
 
+    .btn-ia-secondary:hover {
+        color: #3a4d39;
+        background-color: #ebece6;
+    }
+
 
 /* =========================================================
    DASHBOARD REPORTES ADMINISTRATIVOS - PALETA INSTITUCIONAL
@@ -387,9 +392,9 @@
 
 /* Override de Encabezados de Sección (Anula cajas flotantes sobrantes) */
 .sg-report-wrapper .sg-report-section-head {
-    padding: 22px 24px !important;
+    padding: 23px 24px !important;
     border: none !important;
-    border-radius: 20px !important;
+    border-radius: 21px !important;
     background: #EFECE4 !important;
     box-shadow: none !important;
     margin-bottom: 16px !important;
