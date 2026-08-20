@@ -1750,3 +1750,509 @@ body.cafe-portal-body .cafe-portal-main {
     opacity: 0.94;
     box-shadow: 0 6px 18px rgba(142, 60, 44, 0.45) !important;
 }
+
+/* =========================================================
+   AJUSTES FINALES SOLICITADOS (20/08/2026)
+   - Campana fija arriba a la derecha
+   - Donut de estado de pedidos con texto centrado
+   - Consistencia visual de tarjetas/targets
+   ========================================================= */
+
+body.sg-reference-theme > .sg-notification-dock--admin {
+    position: fixed !important;
+    top: 14px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    z-index: 2147483640 !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap {
+    position: relative !important;
+    z-index: 2147483641 !important;
+    pointer-events: auto !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button {
+    position: relative !important;
+    z-index: 2147483642 !important;
+    pointer-events: auto !important;
+}
+
+body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+    position: fixed !important;
+    top: 76px !important;
+    right: 20px !important;
+    left: auto !important;
+    z-index: 2147483643 !important;
+    width: min(400px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
+    pointer-events: auto !important;
+}
+
+body.sg-reference-theme .sg-main {
+    padding-top: 86px !important;
+}
+
+body.sg-reference-theme .sg-card,
+body.sg-reference-theme .sg-panel,
+body.sg-reference-theme .sg-page-head {
+    border-radius: 18px !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-orders .sg-donut-center,
+body.sg-reference-theme .sg-donut.sg-donut-orders > div {
+    inset: 26% !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 10px !important;
+    margin: auto !important;
+    line-height: 1.05 !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-orders .sg-donut-center b,
+body.sg-reference-theme .sg-donut.sg-donut-orders > div b {
+    margin: 0 !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-orders .sg-donut-center span,
+body.sg-reference-theme .sg-donut.sg-donut-orders > div span {
+    display: block !important;
+    max-width: 74px !important;
+    margin: 6px auto 0 !important;
+    line-height: 1.12 !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+@media (max-width: 640px) {
+    body.sg-reference-theme > .sg-notification-dock--admin {
+        top: 10px !important;
+        right: 12px !important;
+    }
+
+    body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel {
+        top: 70px !important;
+        right: 12px !important;
+        left: 12px !important;
+        width: auto !important;
+    }
+
+    body.sg-reference-theme .sg-main {
+        padding-top: 78px !important;
+    }
+}
+
+
+/* =========================================================
+   ENTREGA FINAL - CABECERAS COMPACTAS, CAMPANA FIJA Y DONAS
+   Ajustes uniformes solicitados en la revisión final.
+   ========================================================= */
+
+/* Todos los encabezados principales de módulos se comportan como una tarjeta
+   compacta: sin altura artificial y con acciones alineadas. */
+body.sg-reference-theme .sg-page-head {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 16px 24px !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+    border-radius: 18px !important;
+    background: rgba(250, 249, 245, .95) !important;
+    border: 1px solid rgba(41, 75, 42, .14) !important;
+    box-shadow: 0 10px 26px rgba(25, 42, 24, .06) !important;
+}
+
+body.sg-reference-theme .sg-page-head h1 {
+    font-size: clamp(1.55rem, 2vw, 2rem) !important;
+    line-height: 1.08 !important;
+    margin: 0 0 4px !important;
+}
+
+body.sg-reference-theme .sg-page-head p {
+    margin: 0 !important;
+    font-size: .9rem !important;
+    line-height: 1.35 !important;
+}
+
+body.sg-reference-theme .sg-page-head .sg-actions {
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    margin-left: auto !important;
+}
+
+body.sg-reference-theme .sg-page-head .sg-btn,
+body.sg-reference-theme .sg-page-head .sg-search {
+    min-height: 42px !important;
+}
+
+/* Auditoría ya era la referencia visual: se mantiene compacta y consistente. */
+body.sg-reference-theme .EstiloEditaR-top {
+    min-height: 0 !important;
+    padding: 16px 24px !important;
+    margin-bottom: 16px !important;
+    border-radius: 18px !important;
+    background: rgba(250, 249, 245, .95) !important;
+    border: 1px solid rgba(41, 75, 42, .14) !important;
+    box-shadow: 0 10px 26px rgba(25, 42, 24, .06) !important;
+}
+
+body.sg-reference-theme .EstiloEditaR-badge {
+    margin-bottom: 6px !important;
+    color: #294b2a !important;
+    background: #eef5e9 !important;
+    border-color: #cfe0c9 !important;
+}
+
+body.sg-reference-theme .EstiloEditaR-title h1 {
+    color: #1f351f !important;
+    font-size: clamp(1.55rem, 2vw, 2rem) !important;
+    line-height: 1.08 !important;
+    margin: 0 0 4px !important;
+}
+
+body.sg-reference-theme .EstiloEditaR-title p {
+    color: #667066 !important;
+    margin: 0 !important;
+    font-size: .9rem !important;
+}
+
+/* Campana completamente fija respecto al viewport. El wrapper también es fixed
+   para que no dependa de ningún contenedor que haga scroll o tenga transform. */
+html body.sg-reference-theme > .sg-notification-dock--admin,
+html body.sg-reference-theme > .sg-notification-dock {
+    position: fixed !important;
+    inset: 14px 20px auto auto !important;
+    top: 14px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: 2147483640 !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
+html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+    position: fixed !important;
+    top: 14px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: 2147483641 !important;
+    pointer-events: auto !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button,
+html body.sg-reference-theme > .sg-notification-dock .demo-icon-button {
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    transform: none !important;
+    transition: box-shadow .15s ease, background-color .15s ease !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
+html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+    position: fixed !important;
+    top: 80px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: min(400px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto !important;
+    transform: none !important;
+    z-index: 2147483643 !important;
+    pointer-events: auto !important;
+}
+
+/* Espacio superior constante para que la campana fija no invada el encabezado. */
+body.sg-reference-theme .sg-main {
+    padding-top: 82px !important;
+}
+
+/* Donas de Estado de pedidos y Rendimiento de trazabilidad: misma proporción,
+   mismo hueco central y texto sin cortes. */
+body.sg-reference-theme .sg-donut.sg-donut-reference {
+    width: 176px !important;
+    height: 176px !important;
+    min-width: 176px !important;
+    min-height: 176px !important;
+    max-width: 176px !important;
+    max-height: 176px !important;
+    aspect-ratio: 1 / 1 !important;
+    margin: 0 !important;
+    flex: 0 0 176px !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-reference::after {
+    inset: 31px !important;
+    background: #fbfaf6 !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-reference .sg-donut-center,
+body.sg-reference-theme .sg-donut.sg-donut-reference > div {
+    position: absolute !important;
+    inset: 31px !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    line-height: 1 !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-reference b {
+    font-size: 1.8rem !important;
+    line-height: 1 !important;
+    margin: 0 0 7px !important;
+    white-space: nowrap !important;
+}
+
+body.sg-reference-theme .sg-donut.sg-donut-reference span {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: .69rem !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    letter-spacing: -.01em !important;
+}
+
+body.sg-reference-theme .sg-donut-wrap:has(.sg-donut-reference) {
+    min-height: 205px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 34px !important;
+    text-align: left !important;
+}
+
+body.sg-reference-theme .sg-donut-wrap:has(.sg-donut-reference) .sg-legend,
+body.sg-reference-theme .sg-donut-wrap:has(.sg-donut-reference) .sg-mini-list {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    max-width: 300px !important;
+    margin: 0 !important;
+}
+
+@media (max-width: 900px) {
+    body.sg-reference-theme .sg-page-head {
+        padding: 14px 18px !important;
+        align-items: stretch !important;
+        flex-direction: column !important;
+    }
+
+    body.sg-reference-theme .sg-page-head .sg-actions {
+        width: 100% !important;
+        justify-content: flex-start !important;
+    }
+
+    body.sg-reference-theme .sg-donut-wrap:has(.sg-donut-reference) {
+        flex-direction: column !important;
+        gap: 18px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    html body.sg-reference-theme > .sg-notification-dock--admin,
+    html body.sg-reference-theme > .sg-notification-dock,
+    html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
+    html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+        top: 10px !important;
+        right: 12px !important;
+    }
+
+    html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
+    html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+        top: 74px !important;
+        right: 12px !important;
+        left: 12px !important;
+        width: auto !important;
+    }
+
+    body.sg-reference-theme .sg-main {
+        padding-top: 74px !important;
+    }
+}
+
+/* =========================================================
+   AJUSTE FINAL SOLICITADO
+   - Encabezados del mismo ancho que Auditoría
+   - Campana anclada arriba y que desaparezca al hacer scroll
+   ========================================================= */
+
+/* Los encabezados ya no se estiran con márgenes negativos.
+   Quedan alineados con el resto de cards, igual que Auditoría. */
+body.sg-reference-theme .sg-page-head {
+    margin: 0 0 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Mantiene la misma alineación visual en el contenedor principal. */
+body.sg-reference-theme .sg-content {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* La campana queda anclada en la parte superior de la página,
+   no flotando sobre el viewport: al bajar desaparece hasta volver arriba. */
+html body.sg-reference-theme {
+    position: relative !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin,
+html body.sg-reference-theme > .sg-notification-dock {
+    position: absolute !important;
+    inset: 14px 20px auto auto !important;
+    top: 14px !important;
+    right: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: 1200 !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-wrap,
+html body.sg-reference-theme > .sg-notification-dock .demo-notification-wrap {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: 1201 !important;
+    pointer-events: auto !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin .demo-icon-button,
+html body.sg-reference-theme > .sg-notification-dock .demo-icon-button {
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    transform: none !important;
+}
+
+html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
+html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+    position: absolute !important;
+    top: calc(100% + 12px) !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: min(400px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 120px) !important;
+    overflow-y: auto !important;
+    transform: none !important;
+    z-index: 1203 !important;
+    pointer-events: auto !important;
+}
+
+/* Ya no hace falta reservar tanto espacio superior como cuando era fija al viewport. */
+body.sg-reference-theme .sg-main {
+    padding-top: 28px !important;
+}
+
+@media (max-width: 640px) {
+    html body.sg-reference-theme > .sg-notification-dock--admin,
+    html body.sg-reference-theme > .sg-notification-dock {
+        top: 10px !important;
+        right: 12px !important;
+    }
+
+    html body.sg-reference-theme > .sg-notification-dock--admin .demo-notification-panel,
+    html body.sg-reference-theme > .sg-notification-dock .demo-notification-panel {
+        position: fixed !important;
+        top: 70px !important;
+        right: 12px !important;
+        left: 12px !important;
+        width: auto !important;
+    }
+
+    body.sg-reference-theme .sg-main {
+        padding-top: 18px !important;
+    }
+}
+
+
+/* =========================================================
+   TRAZABILIDAD - FILTROS Y KPI SIN ESPACIO VACÍO A LA DERECHA
+   Ajuste únicamente visual.
+   ========================================================= */
+body.sg-reference-theme .sg-trazabilidad-filters {
+    grid-template-columns: minmax(260px, 1.5fr) minmax(190px, 1fr) minmax(150px, .85fr) minmax(150px, .85fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+body.sg-reference-theme .sg-trazabilidad-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+@media (max-width: 991.98px) {
+    body.sg-reference-theme .sg-trazabilidad-filters {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+@media (max-width: 640px) {
+    body.sg-reference-theme .sg-trazabilidad-filters,
+    body.sg-reference-theme .sg-trazabilidad-kpis {
+        grid-template-columns: 1fr !important;
+    }
+}

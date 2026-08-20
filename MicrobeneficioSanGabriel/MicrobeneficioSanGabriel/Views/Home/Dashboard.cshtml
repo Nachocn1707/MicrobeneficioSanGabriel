@@ -172,7 +172,7 @@
         <article class="sg-card sg-panel">
             <div class="sg-panel-head"><h2>Estado de pedidos</h2></div>
             <div class="sg-donut-wrap">
-                <div class="sg-donut sg-donut-orders" style="--donut-bg: @donutPedidos;"><div class="sg-donut-center"><b>@Porcentaje(completados)%</b><span>Completados</span></div></div>
+                <div class="sg-donut sg-donut-orders sg-donut-reference" style="--donut-bg: @donutPedidos;"><div class="sg-donut-center"><b>@Porcentaje(completados)%</b><span>Completados</span></div></div>
                 <div class="sg-legend">
                     @foreach (var estado in coloresPedidos)
                     {
@@ -238,7 +238,7 @@
         <article class="sg-card sg-panel">
             <div class="sg-panel-head"><h3>Rendimiento de trazabilidad</h3><a class="text-success fw-bold" asp-controller="Trazabilidades" asp-action="Index">Ver detalles</a></div>
             <div class="sg-donut-wrap">
-                <div class="sg-donut" style="--donut-bg: conic-gradient(#D97800 0% @FormatoPorcentaje(porcentajeTrazabilidad)%, #E8D4B0 @FormatoPorcentaje(porcentajeTrazabilidad)% 100%);"><div><b>@porcentajeTrazabilidad%</b><span>Trazabilidad</span></div></div>
+                <div class="sg-donut sg-donut-reference" style="--donut-bg: conic-gradient(#D97800 0% @FormatoPorcentaje(porcentajeTrazabilidad)%, #E8D4B0 @FormatoPorcentaje(porcentajeTrazabilidad)% 100%);"><div class="sg-donut-center"><b>@porcentajeTrazabilidad%</b><span>Trazabilidad</span></div></div>
                 <div class="sg-mini-list">
                     <div class="sg-mini-row"><i class="fa-solid fa-shield-halved text-success"></i><span>Registros de trazabilidad</span><b>@totalRegistrosTrazabilidad</b></div>
                     <div class="sg-mini-row"><i class="fa-solid fa-layer-group text-success"></i><span>Lotes con trazabilidad</span><b>@lotesConTrazabilidad</b></div>
