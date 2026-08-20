@@ -740,14 +740,14 @@
         box-shadow: 0 12px 22px rgba(53, 95, 49, .22) !important;
     }
 
-.sg-main .btn-warning,
-.sg-main .btn.btn-warning,
-.sg-main .btn-gold {
-  background: linear-gradient(135deg, #b8791c, #d9a747) !important;
-  border-color: transparent !important;
-  color: #fff !important;
-  box-shadow: 0 12px 22px rgba(184, 121, 28, .22) !important;
-}
+    .sg-main .btn-warning,
+    .sg-main .btn.btn-warning,
+    .sg-main .btn-gold {
+        background: #293f25 !important;
+        border-color: transparent !important;
+        color: #fff !important;
+        box-shadow: 0 12px 22px rgba(184, 121, 28, .22) !important;
+    }
 
 .sg-main .btn-danger,
 .sg-main .btn.btn-danger,

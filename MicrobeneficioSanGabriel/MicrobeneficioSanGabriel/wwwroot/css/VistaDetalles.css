@@ -541,12 +541,12 @@
 
 .sg-details-page-container .VistaCrear-actions .btn {
     min-height: 44px !important;
-    padding: 0 22px !important;
+    padding: 0 18px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
-    border-radius: 999px !important;
+    border-radius: 12px !important;
     font-size: 0.78rem !important;
     font-weight: 900 !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -572,9 +572,7 @@
 }
 
 .sg-details-page-container .VistaCrear-actions .btn-warning:hover {
-    color: #3b270b !important;
-    border-color: #d9b173 !important;
-    background: #f3d496 !important;
+    color: #fff;
     transform: translateY(-2px) !important;
 }
 
