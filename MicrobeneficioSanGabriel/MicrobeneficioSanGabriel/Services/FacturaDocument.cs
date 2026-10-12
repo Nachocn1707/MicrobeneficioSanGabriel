@@ -10,8 +10,6 @@ namespace MicrobeneficioSanGabriel.Services
         public Factura Model { get; }
         public string? LogoPath { get; }
 
-        private string CodigoFactura => $"FAC-{Model.Id:D4}";
-
         public FacturaDocument(Factura model, string? logoPath = null)
         {
             Model = model;
@@ -20,7 +18,7 @@ namespace MicrobeneficioSanGabriel.Services
 
         public DocumentMetadata GetMetadata() => new DocumentMetadata
         {
-            Title = $"Factura {CodigoFactura}"
+            Title = $"Factura #{Model.Id}"
         };
 
         public DocumentSettings GetSettings() => DocumentSettings.Default;
@@ -77,8 +75,8 @@ namespace MicrobeneficioSanGabriel.Services
                     {
                         row.AutoItem().Text(t =>
                         {
-                            t.Span("Factura: ").Bold();
-                            t.Span(CodigoFactura);
+                            t.Span("Factura #: ").Bold();
+                            t.Span(Model.Id.ToString());
                         });
                     });
 

@@ -5,6 +5,7 @@
     Layout = esCliente ? "~/Views/Shared/_ClienteLayout.cshtml" : "~/Views/Shared/_AdminLayout.cshtml";
 
     var pedidos = Model?.ToList() ?? new List<MicrobeneficioSanGabriel.Models.Pedido>();
+    var pedidosConFactura = ViewBag.PedidosConFactura as HashSet<int> ?? new HashSet<int>();
     var total = pedidos.Count;
     var pendientes = pedidos.Count(p => p.Estado == "Pendiente" || p.Estado == "En proceso");
     var completados = pedidos.Count(p => p.Estado == "Completado");
@@ -237,7 +238,7 @@
                                 </div>
 
                                 <div class="client-purchase-total">
-                                    <small>Total</small>
+                                    <small>Total con IVA (13%)</small>
                                     <strong>₡@totalPedido.ToString("N0")</strong>
                                 </div>
 
@@ -262,7 +263,9 @@
                                     Ver detalles
                                 </a>
 
-                                @if (p.Estado == "Pendiente")
+                                @if (p.Estado == "Pendiente" &&
+                                     !string.Equals(p.EstadoPago, "Pago completado", StringComparison.OrdinalIgnoreCase) &&
+                                     !pedidosConFactura.Contains(p.Id))
                                 {
                                     <a asp-action="EditCliente"
                                        asp-route-id="@p.Id"
@@ -377,12 +380,12 @@ else
                 </div>
             </div>
         </article>
-        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => string.Equals(p.EstadoPago, "Pago completado", StringComparison.OrdinalIgnoreCase))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto cobrado</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
+        <article class="sg-card sg-panel"><h3>Resumen de pagos</h3><div class="sg-legend mt-4"><div class="sg-legend-row"><span class="sg-dot tan"></span><span>Pagos pendientes</span><b>@pagosPendientes</b></div><div class="sg-legend-row"><span class="sg-dot"></span><span>Pedidos con pago completado</span><b>@pedidos.Count(p => string.Equals(p.EstadoPago, "Pago completado", StringComparison.OrdinalIgnoreCase))</b></div><div class="sg-legend-row"><span class="sg-dot gold"></span><span>Monto cobrado sin IVA</span><b>₡@ventas.ToString("N0")</b></div></div><hr /><div class="d-flex justify-content-between fw-bold text-success"><span>Total de pedidos</span><span>@total</span></div></article>
     </section>
     <section class="sg-card sg-table-card">
         <div class="sg-panel-head"><h3>Pedidos recientes</h3><span class="sg-badge">@total registro(s)</span></div><div class="table-responsive">
         <table class="sg-table" id="tablaPedidos">
-            <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Total</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Subtotal sin IVA</th><th>Acciones</th></tr></thead>
             <tbody>
                 @foreach (var p in pedidos)
                 {

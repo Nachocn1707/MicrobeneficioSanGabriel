@@ -470,7 +470,7 @@ namespace MicrobeneficioSanGabriel.Controllers
             return File(
                 pdfBytes,
                 "application/pdf",
-                $"FAC-{factura.Id:D4}.pdf");
+                $"Factura_{factura.Id}.pdf");
         }
 
         private void CargarPedidos(int? pedidoSeleccionado = null)
