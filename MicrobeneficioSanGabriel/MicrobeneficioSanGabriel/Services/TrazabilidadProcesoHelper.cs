@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using MicrobeneficioSanGabriel.Constants;
 using MicrobeneficioSanGabriel.Data;
@@ -218,93 +218,40 @@ namespace MicrobeneficioSanGabriel.Services
         }
 
         /// <summary>
-        /// Consolida producciones duplicadas dejando 1 solo proceso activo por lote en la tabla de producciones,
-        /// y garantiza que la trazabilidad conserve la trayectoria completa de todas las etapas completadas del lote.
+        /// Sincroniza solamente etapas que constan realmente como registros de producción.
+        /// IMPORTANTE (BUG-001): leer los listados nunca elimina producciones, ni da por
+        /// completadas etapas cuya evidencia no existe. No corrige datos históricos erróneos;
+        /// dichos datos requieren una revisión y ajuste administrativo con respaldo.
         /// </summary>
         public static async Task ReconciliarAsync(
             ApplicationDbContext context,
             ClaimsPrincipal usuario)
         {
-            // 1. Consolidar registros de producción duplicados por lote (dejar 1 solo proceso por lote con la etapa más avanzada)
-            var lotesConDuplicados = await context.Producciones
+            var producciones = await context.Producciones
+                .AsNoTracking()
                 .Where(p => p.Estado != EstadosProduccion.Cancelado)
-                .GroupBy(p => p.LoteId)
-                .Where(g => g.Count() > 1)
-                .Select(g => g.Key)
                 .ToListAsync();
 
-            foreach (var loteId in lotesConDuplicados)
+            foreach (var produccion in producciones)
             {
-                var produccionesLote = await context.Producciones
-                    .Where(p => p.LoteId == loteId && p.Estado != EstadosProduccion.Cancelado)
-                    .ToListAsync();
-
-                if (produccionesLote.Count > 1)
+                if (!EsEtapaDeProduccionValida(produccion.TipoProceso))
                 {
-                    var produccionPrincipal = produccionesLote
-                        .OrderByDescending(p => Array.IndexOf(EtapasOrdenadas, EtapasOrdenadas.FirstOrDefault(e => string.Equals(e, p.TipoProceso, StringComparison.OrdinalIgnoreCase)) ?? ""))
-                        .ThenByDescending(p => p.FechaProduccion)
-                        .ThenByDescending(p => p.Id)
-                        .First();
-
-                    var produccionesObs = produccionesLote
-                        .Where(p => p.Id != produccionPrincipal.Id)
-                        .ToList();
-
-                    // Reasignar la referencia de trazabilidad a la producción principal antes de remover duplicados
-                    var idsEliminar = produccionesObs.Select(p => p.Id).ToList();
-                    var trazabilidadesAsociadas = await context.Trazabilidades
-                        .Where(t => idsEliminar.Contains(t.ProduccionId))
-                        .ToListAsync();
-
-                    foreach (var t in trazabilidadesAsociadas)
-                    {
-                        t.ProduccionId = produccionPrincipal.Id;
-                    }
-
-                    context.Producciones.RemoveRange(produccionesObs);
+                    continue;
                 }
-            }
 
-            await context.SaveChangesAsync();
+                var registrada = await context.Trazabilidades
+                    .AsNoTracking()
+                    .AnyAsync(t => t.LoteId == produccion.LoteId &&
+                                   t.Etapa == produccion.TipoProceso &&
+                                   t.EsAutomatico);
+                var pendiente = context.Trazabilidades.Local.Any(t =>
+                    t.LoteId == produccion.LoteId &&
+                    string.Equals(t.Etapa, produccion.TipoProceso, StringComparison.OrdinalIgnoreCase) &&
+                    t.EsAutomatico && context.Entry(t).State == EntityState.Added);
 
-            // 2. Reconstruir la trayectoria completa de trazabilidad para cada lote según la etapa alcanzada
-            var produccionesVigentes = await context.Producciones
-                .Where(p => p.Estado != EstadosProduccion.Cancelado)
-                .ToListAsync();
-
-            var responsableDefault = await ObtenerNombreUsuarioAsync(context, usuario);
-
-            foreach (var prod in produccionesVigentes)
-            {
-                if (!EsEtapaDeProduccionValida(prod.TipoProceso)) continue;
-
-                var etapaActualNombre = EtapasOrdenadas.First(e => string.Equals(e, prod.TipoProceso, StringComparison.OrdinalIgnoreCase));
-                var idxActual = Array.IndexOf(EtapasOrdenadas, etapaActualNombre);
-
-                // Garantizar que existan registros de trazabilidad para la etapa actual y todas las etapas previas completadas
-                for (int i = 0; i <= idxActual; i++)
+                if (!registrada && !pendiente)
                 {
-                    var etapaNombre = EtapasOrdenadas[i];
-                    var trazabilidadEta = await context.Trazabilidades
-                        .FirstOrDefaultAsync(t => t.LoteId == prod.LoteId && t.Etapa == etapaNombre && t.EsAutomatico);
-
-                    if (trazabilidadEta == null)
-                    {
-                        var estadoSub = (i == idxActual) ? prod.Estado : EstadosProduccion.Completado;
-                        context.Trazabilidades.Add(new Trazabilidad
-                        {
-                            LoteId = prod.LoteId,
-                            ProduccionId = prod.Id,
-                            Etapa = etapaNombre,
-                            FechaRegistro = prod.FechaProduccion == default
-                                ? DateTime.UtcNow.AddHours(-6)
-                                : prod.FechaProduccion,
-                            Responsable = responsableDefault,
-                            Observacion = $"Seguimiento automático de producción #{prod.Id} ({etapaNombre} - {estadoSub}).",
-                            EsAutomatico = true
-                        });
-                    }
+                    await SincronizarAsync(context, usuario, produccion);
                 }
             }
 

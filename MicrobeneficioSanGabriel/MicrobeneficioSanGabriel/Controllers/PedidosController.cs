@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -56,9 +56,24 @@ namespace MicrobeneficioSanGabriel.Controllers
                     (p.ClienteId == null && p.ClienteCorreo != null && p.ClienteCorreo.ToLower() == correo));
             }
 
-            return View(await pedidos
+            var listaPedidos = await pedidos
                 .OrderByDescending(p => p.FechaPedido)
-                .ToListAsync());
+                .ToListAsync();
+
+            // BUG-002: la vista solo debe ofrecer acciones en pedidos sin factura.
+            // El control se repite en GET/POST para evitar cambios mediante URLs directas.
+            if (User.IsInRole("Cliente") && listaPedidos.Count > 0)
+            {
+                var ids = listaPedidos.Select(p => p.Id).ToArray();
+                ViewBag.PedidosConFactura = (await _context.Facturas
+                    .AsNoTracking()
+                    .Where(f => ids.Contains(f.PedidoId))
+                    .Select(f => f.PedidoId)
+                    .Distinct()
+                    .ToListAsync()).ToHashSet();
+            }
+
+            return View(listaPedidos);
         }
 
         [Authorize(Roles = "Administrador,Cliente")]
@@ -374,6 +389,13 @@ namespace MicrobeneficioSanGabriel.Controllers
             }
         }
 
+        // Verificación centralizada para BUG-002: no basta con ocultar enlaces.
+        private async Task<bool> PedidoProtegidoParaClienteAsync(Pedido pedido)
+        {
+            return EstadosPago.EsPagado(pedido.EstadoPago) ||
+                   await _context.Facturas.AsNoTracking().AnyAsync(f => f.PedidoId == pedido.Id);
+        }
+
         [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> EditCliente(int? id)
         {
@@ -387,9 +409,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (pedido == null) return NotFound();
             if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (pedido.Estado != EstadosPedido.Pendiente)
+            if (pedido.Estado != EstadosPedido.Pendiente || await PedidoProtegidoParaClienteAsync(pedido))
             {
-                TempData["Error"] = "Solo puede modificar pedidos en estado Pendiente.";
+                TempData["Error"] = "Solo puede modificar pedidos pendientes que no estén pagados ni facturados.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -407,9 +429,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (pedido == null) return NotFound();
             if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (pedido.Estado != EstadosPedido.Pendiente)
+            if (pedido.Estado != EstadosPedido.Pendiente || await PedidoProtegidoParaClienteAsync(pedido))
             {
-                TempData["Error"] = "Solo puede modificar pedidos en estado Pendiente.";
+                TempData["Error"] = "Solo puede modificar pedidos pendientes que no estén pagados ni facturados.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -475,9 +497,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (pedido == null) return NotFound();
             if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (pedido.Estado != EstadosPedido.Pendiente)
+            if (pedido.Estado != EstadosPedido.Pendiente || await PedidoProtegidoParaClienteAsync(pedido))
             {
-                TempData["Error"] = "Solo puede cancelar pedidos en estado Pendiente.";
+                TempData["Error"] = "Solo puede cancelar pedidos pendientes que no estén pagados ni facturados.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -493,9 +515,9 @@ namespace MicrobeneficioSanGabriel.Controllers
             if (pedido == null) return NotFound();
             if (!await PedidoPerteneceAlClienteAsync(pedido)) return Forbid();
 
-            if (pedido.Estado != EstadosPedido.Pendiente)
+            if (pedido.Estado != EstadosPedido.Pendiente || await PedidoProtegidoParaClienteAsync(pedido))
             {
-                TempData["Error"] = "Solo puede cancelar pedidos en estado Pendiente.";
+                TempData["Error"] = "Solo puede cancelar pedidos pendientes que no estén pagados ni facturados.";
                 return RedirectToAction(nameof(Index));
             }
 

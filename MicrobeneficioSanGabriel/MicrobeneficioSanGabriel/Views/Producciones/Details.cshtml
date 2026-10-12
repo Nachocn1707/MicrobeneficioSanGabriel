@@ -15,6 +15,21 @@
     var historialLote = ViewBag.HistorialLote as List<MicrobeneficioSanGabriel.Models.Produccion>
         ?? new List<MicrobeneficioSanGabriel.Models.Produccion>();
     var etapasLote = new[] { "Lavado", "Secado", "Tostado", "Molido", "Empaque" };
+    var hayEtapaFinalCompletada = historialLote.Any(p =>
+        string.Equals(p.TipoProceso, "Empaque", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(p.Estado, "Completado", StringComparison.OrdinalIgnoreCase));
+    // Mostrar alerta solo cuando existe una contradicción verificable (etapa cancelada
+    // antes de Empaque completado). El avance normal del sistema reutiliza un registro
+    // de Producción y no deja una fila de Producción completada por cada etapa.
+    var hayEtapaPreviaCancelada = historialLote.Any(p =>
+        string.Equals(p.Estado, "Cancelado", StringComparison.OrdinalIgnoreCase) &&
+        !string.Equals(p.TipoProceso, "Empaque", StringComparison.OrdinalIgnoreCase));
+    var etapasSinEvidencia = hayEtapaFinalCompletada && hayEtapaPreviaCancelada
+        ? etapasLote.Take(etapasLote.Length - 1).Where(etapa =>
+            !historialLote.Any(p =>
+                string.Equals(p.TipoProceso, etapa, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(p.Estado, "Completado", StringComparison.OrdinalIgnoreCase))).ToList()
+        : new List<string>();
 
     string estadoClase = Model.Estado switch
     {
@@ -165,6 +180,15 @@
                     </div>
                     <a asp-controller="Trazabilidades" asp-action="Index" class="sg-btn ghost"><i class="fa-solid fa-route"></i>Ver módulo de trazabilidad</a>
                 </div>
+                @if (etapasSinEvidencia.Count > 0)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Historial por verificar:</strong> el lote figura como finalizado,
+                        aunque una etapa anterior consta como cancelada. Es necesario revisar las etapas
+                        @(string.Join(", ", etapasSinEvidencia)).
+                        Se conserva la información original para su revisión; no se modificaron etapas automáticamente.
+                    </div>
+                }
                 <div class="sg-process-timeline">
                     @foreach (var etapa in etapasLote)
                     {
